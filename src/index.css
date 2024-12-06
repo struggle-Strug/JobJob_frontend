@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './styles/antd-var.css';
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
 
 body {
@@ -16,6 +17,6 @@ code {
     monospace;
 }
 
-.mobile {
-  @apply px-2;
+.container {
+  @apply max-w-[1018px] mx-auto;
 }
