@@ -1,12 +1,35 @@
 import { Input, Select } from "antd";
 
-const Step5 = () => {
+const Step5 = ({setSei, setMei, setHiraganaSei, setHiraganaMei, setYear, setMonth, setDay}) => {
     const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
     const months = Array.from({ length: 12 }, (_, i) => i + 1)
     const days = Array.from({ length: 31 }, (_, i) => i + 1)
     const yearsOptions = years.map(year => ({ label: year, value: year }))
     const monthsOptions = months.map(month => ({ label: month, value: month }))
     const daysOptions = days.map(day => ({ label: day, value: day }))
+
+    const onChangeSei = (value) => {
+        setSei(value);
+    }
+    const onChangeMei = (value) => {
+        setMei(value);
+    }
+    const onChangeHiraganaSei = (value) => {
+        setHiraganaSei(value);
+    }
+    const onChangeHiraganaMei = (value) => {
+        setHiraganaMei(value);
+    }
+    const onChangeYear = (value) => {
+        setYear(value);
+    }
+    const onChangeMonth = (value) => {
+        setMonth(value);
+    }
+    const onChangeDay = (value) => {
+        setDay(value);
+    }
+
     return (
         <>
             <div className="flex justify-between w-full mt-12">
@@ -18,8 +41,8 @@ const Step5 = () => {
                         <div className="flex flex-col px-2">
                             <div className="duration-300 overflow-hidden">
                                 <div className="flex justify-start gap-8">
-                                    <Input placeholder="姓" className="w-1/3 py-2"/>
-                                    <Input placeholder="名" className="w-1/3"/>
+                                    <Input placeholder="姓" className="w-1/3 py-2" onChange={onChangeSei}/>
+                                    <Input placeholder="名" className="w-1/3" onChange={onChangeMei}/>
                                 </div>
                             </div>
                         </div>
@@ -34,8 +57,8 @@ const Step5 = () => {
                         <div className="flex flex-col px-2">
                             <div className="duration-300 overflow-hidden">
                                 <div className="flex justify-start gap-8">
-                                    <Input placeholder="せい" className="w-1/3 py-2"/>
-                                    <Input placeholder="めい" className="w-1/3"/>
+                                    <Input placeholder="せい" className="w-1/3 py-2" onChange={onChangeHiraganaSei}/>
+                                    <Input placeholder="めい" className="w-1/3" onChange={onChangeHiraganaMei}/>
                                 </div>
                             </div>
                         </div>
@@ -50,11 +73,11 @@ const Step5 = () => {
                         <div className="flex flex-col px-2">
                             <div className="duration-300 overflow-hidden">
                                 <div className="flex justify-start gap-4">
-                                    <Select options={yearsOptions} className="w-1/4"/>
+                                    <Select options={yearsOptions} className="w-1/4" onChange={onChangeYear}/>
                                     年
-                                    <Select options={monthsOptions} className="w-1/4"/>
+                                    <Select options={monthsOptions} className="w-1/4" onChange={onChangeMonth}/>
                                     月
-                                    <Select options={daysOptions} className="w-1/4"/>
+                                    <Select options={daysOptions} className="w-1/4" onChange={onChangeDay}/>
                                     日
                                 </div>
                             </div>
