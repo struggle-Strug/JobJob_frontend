@@ -9,16 +9,16 @@ const Step5 = ({setSei, setMei, setHiraganaSei, setHiraganaMei, setYear, setMont
     const daysOptions = days.map(day => ({ label: day, value: day }))
 
     const onChangeSei = (value) => {
-        setSei(value);
+        setSei(value.target.value);
     }
     const onChangeMei = (value) => {
-        setMei(value);
+        setMei(value.target.value);
     }
     const onChangeHiraganaSei = (value) => {
-        setHiraganaSei(value);
+        setHiraganaSei(value.target.value);
     }
     const onChangeHiraganaMei = (value) => {
-        setHiraganaMei(value);
+        setHiraganaMei(value.target.value);
     }
     const onChangeYear = (value) => {
         setYear(value);

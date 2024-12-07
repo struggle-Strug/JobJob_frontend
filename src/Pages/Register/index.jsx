@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import Step from "./Step";
@@ -31,6 +31,8 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+
+    const navigate = useNavigate();
     
     
     const onChangeNext = () => {
@@ -105,9 +107,12 @@ const Register = () => {
             facilityType: facilityType,
             paymentMethod: paymentMethod,
         }
-
-        const response = await axios.post(`/api/v1/users/register`, userData);
-        console.log(response);
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/user`, userData);
+        if(res.data.error) return setErrorMessage(res.data.message);
+        setErrorMessage(res.data.message);
+        setTimeout(() => {
+            navigate("/members/login");
+        }, 1000);
     }
     return (
         <section className="flex flex-col justify-center bg-[#EFEFEF]">
