@@ -115,7 +115,7 @@ const Register = () => {
         }, 1000);
     }
     return (
-        <section className="flex flex-col justify-center bg-[#EFEFEF]">
+        <section className="flex flex-col justify-center bg-[#EFEFEF] px-4">
             <div className="container">
                 <div className="flex items-center justify-between border-[1.5px] border-[#a7a3a3] rounded-lg p-4 bg-white px-8">
                     <p className="text-2xl font-bold">新規会員登録</p>

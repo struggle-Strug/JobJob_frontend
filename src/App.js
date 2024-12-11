@@ -1,20 +1,59 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate, Navigate } from 'react-router-dom';
 import './index.css';
 import LandingPage from './components/LandingPage';
-import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import Register from './Pages/Register';
 import Login from './Pages/Login';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from './context/AuthContext';
+import checkAuth from './utils/checkAuth';
+import Dashboard from './Pages/Dashboard';
+import MyPageLayout from './components/MyPageLayout/index';
+import MyPage from './Pages/MyPage';
 function App() {
+  const { setIsAuthenticated, setUser } = useAuth();
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token')
+
+  checkAuth();
+
+  const getUserData = async () => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/user/tokenlogin`);
+    setUser(res.data.user)
+    setIsAuthenticated(true)
+  }
+  
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = token;
+      getUserData()
+    }
+  },[])
+  
   return (
     <>
       <Routes>
         <Route path='/' element={<LandingPage />} />
         <Route element={<Layout />}>
-          <Route element={<ProtectedRoute />}>
-            <Route path='/members/register' element={<Register />} />
-            <Route path='/members/login' element={<Login />} />
-          </Route>
+         {token ?
+            (
+              <Route path='/*' element={<Navigate to="/dashboard" />} />
+            ) : (
+              <>
+                <Route path='/members/register' element={<Register />} />
+                <Route path='/members/login' element={<Login />} />
+              </>
+            )
+          }
+        <Route path='/dashboard' element={<Dashboard />} />
+          {token ? (
+            <Route element={<MyPageLayout />}>
+              <Route path='/members/mypage' element={<MyPage />} />
+            </Route>
+          ) : (
+            <Route path='/*' element={<Navigate to="/members/login" />} />
+          )}
         </Route>
       </Routes>
     </>

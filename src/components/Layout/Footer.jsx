@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Footer = () => {
     return (
         <footer>
-            <div className="bg-[#EFEFEF] w-full h-auto flex items-center">
+            <div className="bg-[#EFEFEF] w-full h-auto flex items-center px-4">
                 <div className="flex flex-col justify-center container py-12">
                     <Link to={"/"}>
                         <img src={"/assets/images/header/jobjob_logo 1.png"} alt="logo" />

@@ -2,14 +2,13 @@ import { Input } from "antd";
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { useAuth } from "../../context/AuthContext";
 const Login = () => {
     const [ email, setEmail ] = useState    ("");
     const [ password, setPassword ] = useState("");
     const [ errorMessage, setErrorMessage ] = useState("");
-
+    const { setIsAuthenticated, setUser } = useAuth();
     const navigate = useNavigate();
-
     const onChangeEmail = (e) => {
         setEmail(e.target.value)
     }
@@ -27,13 +26,16 @@ const Login = () => {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/user/login`, payload)
         if(res.data.error) return setErrorMessage(res.data.message);
         setErrorMessage(res.data.message);
+        localStorage.setItem("token", res.data.token)
+        setIsAuthenticated(true)
+        setUser(res.data.user)
         setTimeout(() => {
-            navigate("/members/mypage");
+            navigate("/dashboard");
         }, 1000);
     }
 
     return (
-        <div className="flex flex-col justify-center bg-[#EFEFEF]">
+        <div className="flex flex-col justify-center bg-[#EFEFEF] px-4">
             <div className="container">
                 <div className="flex items-center justify-between border-[1.5px] border-[#a7a3a3] rounded-lg p-4 bg-white px-8">
                     <p className="text-2xl font-bold">ログイン</p>
