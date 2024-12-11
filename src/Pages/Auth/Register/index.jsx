@@ -23,6 +23,7 @@ const Register = () => {
     const [mei, setMei] = useState("");
     const [hiraganaSei, setHiraganaSei] = useState("");
     const [hiraganaMei, setHiraganaMei] = useState("");
+    const [gender, setGender] = useState("");
     const [year, setYear] = useState("");
     const [month, setMonth] = useState("");
     const [day, setDay] = useState("");
@@ -55,6 +56,7 @@ const Register = () => {
             const error = [];
             if(sei === "" || mei === "") error.push("名前");
             if(hiraganaSei === "" || hiraganaMei === "") error.push("ふるがな");
+            if(gender === "") error.push("性別");
             if(year === "" || month === "" || day === "") error.push("生年月日");
             if(error.length > 0) return setErrorMessage(error.join(", ") + "を入力してください。");
         }
@@ -95,6 +97,7 @@ const Register = () => {
         const userData = {
             name: `${sei} ${mei}`,
             hiraganaName: `${hiraganaSei} ${hiraganaMei}`,
+            gender: gender,
             birthday: `${year}-${month}-${day}`,
             phoneNumber: phoneNumber,
             email: email,
@@ -129,7 +132,7 @@ const Register = () => {
                     {step === 2 && <Step2 setEmploymentType={setEmploymentType} setQualification={setQualification} setFeature={setFeature} />}
                     {step === 3 && <Step3 setPrefecture={setPrefecture} errorMessage={errorMessage} />}
                     {step === 4 && <Step4 setFacilityType={setFacilityType} setPaymentMethod={setPaymentMethod} />}
-                    {step === 5 && <Step5 setSei={setSei} setMei={setMei} setHiraganaSei={setHiraganaSei} setHiraganaMei={setHiraganaMei} setYear={setYear} setMonth={setMonth} setDay={setDay} />}
+                    {step === 5 && <Step5 setSei={setSei} setMei={setMei} setHiraganaSei={setHiraganaSei} setHiraganaMei={setHiraganaMei} setGender={setGender} setYear={setYear} setMonth={setMonth} setDay={setDay} />}
                     {step === 6 && <Step6 setPhoneNumber={setPhoneNumber} setEmail={setEmail} setPassword={setPassword} setPasswordConfirm={setPasswordConfirm} />}
                     {errorMessage && <p className="text-red-500 pt-4">{errorMessage}</p>}
                     <div className="flex items-center justify-center mt-12 w-full gap-4">
