@@ -63,6 +63,14 @@ const Profile = () => {
                     </div>
                     <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
                         <div className="flex items-center justify-start gap-2 w-1/3">
+                            <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">性別</span>
+                        </div>
+                        <div className="flex items-center justify-start w-2/3">
+                            <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.gender}</p>
+                        </div>
+                    </div>
+                    <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                        <div className="flex items-center justify-start gap-2 w-1/3">
                             <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">都道府県</span>
                         </div>
                         <div className="flex items-center justify-start w-2/3">
