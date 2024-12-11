@@ -1,7 +1,6 @@
 import { ReactComponent as Avatar } from '../../avatar.svg'
 import { Link } from 'react-router-dom';
 
-
 const LandingPage = () => {
     return (
         <>
