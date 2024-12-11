@@ -1,5 +1,5 @@
 import { Checkbox } from "antd";
-import { facilities, paysystems } from "../../../utils/constants/categories";
+import { facilities, paysystems } from "../../../../utils/constants/categories";
 
 const Step4 = ({setFacilityType, setPaymentMethod}) => {
     const facilityKeys = Object.keys(facilities);
