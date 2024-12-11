@@ -16,6 +16,7 @@ import Message from './Pages/MemberProfile/Message';
 import Applied from './Pages/MemberProfile/Applied';
 import Favorites from './Pages/MemberProfile/Favorites';
 import Recent from './Pages/MemberProfile/Recent';
+import Resumes from './Pages/MemberProfile/Resumes';
 function App() {
   const { setIsAuthenticated, setUser } = useAuth();
   const token = localStorage.getItem('token')
@@ -51,6 +52,7 @@ function App() {
               <Route path='/members/job_offers/apply' element={<Applied />} />
               <Route path='/members/job_offers/favorite' element={<Favorites />} />
               <Route path='/members/job_offers/recent' element={<Recent />} />
+              <Route path='/members/resumes' element={<Resumes />} />
             </Route>
           ) : (
             <Route path='/*' element={<Navigate to="/members/login" />} />
