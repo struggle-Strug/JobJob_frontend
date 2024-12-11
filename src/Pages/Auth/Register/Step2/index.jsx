@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Checkbox } from "antd";
-import { Features, Qualifications, EmploymentType } from "../../../utils/constants/categories";
+import { Features, Qualifications, EmploymentType } from "../../../../utils/constants/categories";
 
 const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage}) => {
     const [toggleEmployment, setToggleEmployment] = useState(false);

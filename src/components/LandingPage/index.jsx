@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 const LandingPage = () => {
     return (
         <>
-            <section className="bg-[#F1F1F1] w-full md:h-8 2xs:h-4 ">
+            <section className="bg-[#F1F1F1] w-full md:h-8 2xs:h-4 px-4">
                 <p className='max-w-[1440px] mx-auto md:text-lg 2sx:text-[0.5rem]'>求人掲載・採用が完全無料 医療・歯科・介護・保育・美容{" "}総合求人サイト</p>
             </section>
-            <section className="flex justify-between items-center max-w-[1440px] mx-auto h-12">
+            <section className="flex justify-between items-center max-w-[1440px] mx-auto h-12 px-4">
                 <Avatar />
                 <div className='flex items-center gap-8'>
                 <p className='text-[#F53544] font-semibold'>求人検索</p>
@@ -15,7 +15,7 @@ const LandingPage = () => {
                 <Link to={'/members/register'} className='text-[#F53544] font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2'>新規登録</Link>
                 </div>
             </section>
-            <section className='relative max-w-[1440px] mx-auto text-center'>
+            <section className='relative max-w-[1440px] mx-auto text-center px-4'>
                 <img src="/assets/images/top/fv.png" alt="fv"/>
                 <div className='absolute top-0 w-full h-full lg:px-52 lg:py-16 md:px-12 md:py-8'>
                     <div className='bg-[#ffffffed] shadow-lg rounded-lg h-full flex flex-col items-center lg:gap-12 sm:gap-6'>
@@ -29,7 +29,7 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
-            <section>
+            <section className="px-4">
                 <div className="bg-red-500 text-white py-12">
                 <div className="max-w-[1440px] mx-auto text-center">
                     <p className="text-xl mb-4 font-bold">医療や福祉の現場をなんとかしたい</p>
@@ -39,7 +39,7 @@ const LandingPage = () => {
                 </div>
                 </div>
             </section>
-            <section className='max-w-[1440px] mx-auto flex flex-col justify-center py-20 gap-20'>
+            <section className='max-w-[1440px] mx-auto flex flex-col justify-center py-20 gap-20 px-4'>
                 <div className='flex flex-col items-center'>
                 <h1 className='text-2xl font-bold'>JobJobの求人採用</h1>
                 <img src="/assets/images/top/Rectangle_13.png" alt="jobjob" className='mt-4'/>
@@ -64,7 +64,7 @@ const LandingPage = () => {
                 </div>
                 </div>
             </section>
-            <section className='bg-[#F8F8F8] mt-12 flex flex-col justify-center py-20 gap-20'>
+            <section className='bg-[#F8F8F8] mt-12 flex flex-col justify-center py-20 gap-20 px-4'>
             <div className='flex flex-col items-center max-w-[1440px] mx-auto'>
                 <h1 className='text-2xl font-bold'>求人掲載から採用まで完全無料!</h1>
                 <img src="/assets/images/top/Rectangle_13.png" alt="jobjob" className='mt-4'/>
@@ -122,7 +122,7 @@ const LandingPage = () => {
                 </div>
                 </div>
             </section>
-            <section className='mt-[-1rem] flex flex-col justify-center py-20 gap-20 bg-[#F8F8F8]'>
+            <section className='mt-[-1rem] flex flex-col justify-center py-20 gap-20 bg-[#F8F8F8] px-4'>
                 <div className='max-w-[1440px] mx-auto flex flex-col items-center'>
                 <h1 className='text-2xl font-bold'>無料で求人掲載!カンタン3ステップで掲載!</h1>
                 <img src="/assets/images/top/Rectangle_13.png" alt="jobjob" className='mt-4'/>
@@ -175,7 +175,7 @@ const LandingPage = () => {
                 </div>
                 </div>
             </section>
-            <section className='flex flex-col justify-center py-20 gap-20 bg-[#FFF7F2]'>
+            <section className='flex flex-col justify-center py-20 gap-20 bg-[#FFF7F2] px-4'>
                 <div className='max-w-[1440px] mx-auto flex flex-col items-center'>
                 <h1 className='text-2xl font-bold'>JobJobの採用の強み</h1>
                 <img src="/assets/images/top/Rectangle_13.png" alt="jobjob" className='mt-4'/>
@@ -215,7 +215,7 @@ const LandingPage = () => {
                 </div>
                 </div>
             </section>
-            <section>
+            <section className="px-4">
                 <div className='max-w-[1440px] mx-auto flex flex-col items-center mt-20'>
                 <h1 className='text-2xl font-bold'>即採用につながる便利な機能</h1>
                 <img src="/assets/images/top/Rectangle_13.png" alt="jobjob" className='mt-4'/>
@@ -298,7 +298,7 @@ const LandingPage = () => {
                 </div>
                 </div>
             </section>
-            <section className='flex flex-col justify-center mt-20'>
+            <section className='flex flex-col justify-center mt-20 px-4'>
                 <div className='max-w-[1440px] mx-auto flex flex-col items-center'>
                 <h1 className='text-2xl font-bold'>よくある質問</h1>
                 <img src="/assets/images/top/Rectangle_13.png" alt="jobjob" className='mt-4'/>
@@ -385,7 +385,7 @@ const LandingPage = () => {
                 </div>
                 </div>
             </section>
-            <section className='bg-[#343434] w-full h-20 flex items-center'>
+            <section className='bg-[#343434] w-full h-20 flex items-center px-4'>
                 <div className='max-w-[1000px] mx-auto flex items-center justify-start w-full gap-4'>
                 <img src="/assets/images/top/logo_negative_horizontal00 1.png" alt="logo" className=''/>
                 <Link to={"/#"} className='text-white text-sm'>利用規約</Link>
