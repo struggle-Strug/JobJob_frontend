@@ -29,7 +29,7 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
-            <section className="px-4">
+            <section>
                 <div className="bg-red-500 text-white py-12">
                 <div className="max-w-[1440px] mx-auto text-center">
                     <p className="text-xl mb-4 font-bold">医療や福祉の現場をなんとかしたい</p>

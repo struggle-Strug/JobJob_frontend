@@ -17,6 +17,7 @@ import Applied from './Pages/MemberProfile/Applied';
 import Favorites from './Pages/MemberProfile/Favorites';
 import Recent from './Pages/MemberProfile/Recent';
 import Resumes from './Pages/MemberProfile/Resumes';
+import Edit from './Pages/MemberProfile/ProfileEdit';
 function App() {
   const { setIsAuthenticated, setUser } = useAuth();
   const token = localStorage.getItem('token')
@@ -48,6 +49,7 @@ function App() {
             <Route element={<MyPageLayout />}>
               <Route path='/members/mypage' element={<MyPage />} />
               <Route path='/members/profile' element={<Profile />} />
+              <Route path='/members/profile/edit/*' element={<Edit />} />
               <Route path='/members/message' element={<Message />} />
               <Route path='/members/job_offers/apply' element={<Applied />} />
               <Route path='/members/job_offers/favorite' element={<Favorites />} />
