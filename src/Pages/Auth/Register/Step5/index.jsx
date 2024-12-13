@@ -95,7 +95,7 @@ const Step5 = ({setSei, setMei, setHiraganaSei, setHiraganaMei, setGender, setYe
                     <div className="flex flex-col w-4/5">
                         <div className="flex flex-col px-2">
                             <div className="duration-300 overflow-hidden">
-                                <div className="flex justify-start gap-4">
+                                <div className="flex justify-start gap-4 lg:text-sm md:text-xs text-xs">
                                     <Select options={yearsOptions} className="w-1/4" onChange={onChangeYear}/>
                                     年
                                     <Select options={monthsOptions} className="w-1/4" onChange={onChangeMonth}/>

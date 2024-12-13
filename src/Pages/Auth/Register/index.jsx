@@ -9,6 +9,7 @@ import Step3 from "./Step3";
 import Step4 from "./Step4";
 import Step5 from "./Step5";
 import Step6 from "./Step6";
+import { message } from "antd";
 
 const Register = () => {
     const [step, setStep] = useState(1);
@@ -37,20 +38,20 @@ const Register = () => {
     
     
     const onChangeNext = () => {
-        if(step === 1 && jobType.length === 0) return setErrorMessage("希望職種を選択してください。");
+        if(step === 1 && jobType.length === 0) return message.error("希望職種を選択してください。");
         if(step === 2) {
             const error = [];
             if(employmentType.length === 0) error.push("雇用形態");
             if(qualification.length === 0) error.push("資格");
             if(feature.length === 0) error.push("特徴");
-            if(error.length > 0) return setErrorMessage(error.join(", ") + "を選択してください。");
+            if(error.length > 0) return message.error(error.join(", ") + "を選択してください。");
         }
-        if(step === 3 && prefecture === "") return setErrorMessage("都道府県を選択してください。");
+        if(step === 3 && prefecture === "") return message.error("都道府県を選択してください。");
         if(step === 4){
             const error = [];
             if(facilityType.length === 0) error.push("施設ジャンル");
             if(paymentMethod === "") error.push("支払い方法");
-            if(error.length > 0) return setErrorMessage(error.join(", ") + "を選択してください。");
+            if(error.length > 0) return message.error(error.join(", ") + "を選択してください。");
         }
         if(step === 5){
             const error = [];
@@ -58,10 +59,9 @@ const Register = () => {
             if(hiraganaSei === "" || hiraganaMei === "") error.push("ふるがな");
             if(gender === "") error.push("性別");
             if(year === "" || month === "" || day === "") error.push("生年月日");
-            if(error.length > 0) return setErrorMessage(error.join(", ") + "を入力してください。");
+            if(error.length > 0) return message.error(error.join(", ") + "を入力してください。");
         }
         
-        setErrorMessage("");
         setStep(prev => prev + 1)
     }
     const onChangeBefore = () => {
@@ -80,19 +80,25 @@ const Register = () => {
             
             // Check email format only if email is not empty
             if (!email.includes("@")) {
-                return setErrorMessage("メールアドレスの形式が不正です。");
+                return message.error("メールアドレスの形式が不正です。");
             }
             
             // If any required fields are empty, show that error first
             if (error.length > 0) {
-                return setErrorMessage(error.join(", ") + "を入力してください。");
+                return message.error(error.join(", ") + "を入力してください。");
             }
             
             // Check password match only if both passwords are not empty
             if (password !== passwordConfirm) {
-                return setErrorMessage("PASSWORDが一致しません。");
+                return message.error("PASSWORDが一致しません。");
             }
         }
+
+        const qualificationData = qualification.map(detail => ({
+            qualification: detail,
+            year: "",
+            month: ""
+        }));
 
         const userData = {
             name: `${sei} ${mei}`,
@@ -104,15 +110,15 @@ const Register = () => {
             password: password,
             jobType: jobType,
             employmentType: employmentType,
-            qualification: qualification,
+            qualification: qualificationData,
             feature: feature,
             prefecture: prefecture,
             facilityType: facilityType,
             paymentMethod: paymentMethod,
         }
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/user`, userData);
-        if(res.data.error) return setErrorMessage(res.data.message);
-        setErrorMessage(res.data.message);
+        if(res.data.error) return message.error(res.data.message);
+        message.success(res.data.message);
         setTimeout(() => {
             navigate("/members/login");
         }, 1000);
@@ -134,7 +140,6 @@ const Register = () => {
                     {step === 4 && <Step4 setFacilityType={setFacilityType} setPaymentMethod={setPaymentMethod} />}
                     {step === 5 && <Step5 setSei={setSei} setMei={setMei} setHiraganaSei={setHiraganaSei} setHiraganaMei={setHiraganaMei} setGender={setGender} setYear={setYear} setMonth={setMonth} setDay={setDay} />}
                     {step === 6 && <Step6 setPhoneNumber={setPhoneNumber} setEmail={setEmail} setPassword={setPassword} setPasswordConfirm={setPasswordConfirm} />}
-                    {errorMessage && <p className="text-red-500 pt-4">{errorMessage}</p>}
                     <div className="flex items-center justify-center mt-12 w-full gap-4">
                         {step !== 1 &&
                             <button className="bg-[#929292] hover:bg-[#c2c2c2] duration-300 text-white py-4 px-6 rounded-lg mt-5" onClick={onChangeBefore}>戻る</button>
