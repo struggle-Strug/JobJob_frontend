@@ -1,13 +1,17 @@
-import { Checkbox, Image, Input, message, Modal, Select, Upload, Button } from "antd";
+import { Checkbox, Image, Input, message, Modal, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { prefectures } from "../../../utils/constants/categories";
-import { getPrefectureKeyByValue, getQualificationKeyByValue } from "../../../utils/getFunctions";
 import { PlusOutlined } from "@ant-design/icons";
 import { getBase64 } from "../../../utils/getBase64";
 import TextArea from "antd/es/input/TextArea";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
+
+import { prefectures } from "../../../utils/constants/categories";
+import { getPrefectureKeyByValue, getQualificationKeyByValue } from "../../../utils/getFunctions";
+import Private from "../../../components/Private";
+import { getDateOptions } from "../../../utils/date";
+import { Qualifications } from './../../../utils/constants/categories/qualifications';
 
 const Basic = () => {
     const [sei, setSei] = useState("");
@@ -27,11 +31,22 @@ const Basic = () => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [selfPR, setSelfPR] = useState("");
+    const [photo, setPhoto] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [isQualificationOpen, setIsQualificationOpen] = useState(false);
-    const { user } = useAuth();
+    const [isQualificationOtherOpen, setIsQualificationOtherOpen] = useState(false);
+    const [qualificationOther, setQualificationOther] = useState([]);
+    const { user, setUser } = useAuth();
     const navigate = useNavigate();
 
+    const [qualificationDetails, setQualificationDetails] = useState(
+        user?.qualification.length > 0 ? user?.qualification.map(qualification => ({ qualification: qualification.qualification, year: "", month: "" })) : []
+    );
+
+    const qualificationKeys = [
+        ...Object.keys(Qualifications.REQUIRED),
+        ...Object.keys(Qualifications.OTHERS)
+    ];
     
     const genderOptions = [
         { label: "男性", value: "男性" },
@@ -50,23 +65,9 @@ const Basic = () => {
         Object.entries(prefs).map(([name, value]) => ({ label: name, value: value }))
     );
 
-    console.log(prefecturesOptions);
-    
-
-    const years = Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i)
-    const months = Array.from({ length: 12 }, (_, i) => i + 1)
-    const days = Array.from({ length: 31 }, (_, i) => i + 1)
-    const yearsOptions = years.map(year => ({ label: year, value: year }))
-    const monthsOptions = months.map(month => ({ label: month, value: month }))
-    const daysOptions = days.map(day => ({ label: day, value: day }))
+    const { yearsOptions, monthsOptions, daysOptions } = getDateOptions();
 
 
-
-    const qualifications = user?.qualification?.map(qualification => getQualificationKeyByValue(qualification.qualification)) || [];
-
-    const [qualificationDetails, setQualificationDetails] = useState(
-        qualifications.length > 0 ? qualifications.map(qualification => ({ qualification: qualification, year: "", month: "" })) : []
-    );
     const beforeUpload = () => {
         return false
     }
@@ -119,6 +120,12 @@ const Basic = () => {
         }
     };
 
+    const handleQualificationOtherSave = async () => {
+        const addedQualifications = qualificationOther.map(qualification => ({qualification: qualification, year: "", month: ""}))
+        
+        setQualificationDetails(prev => [...prev, ...addedQualifications])
+    }
+
     const handleSave = async () => {
         const error = [];
         if(sei === "" || mei === "") error.push("名前");
@@ -154,8 +161,10 @@ const Basic = () => {
             photo: photoUrl,
         }
 
+
         const resData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/user/${user._id}/update`, userData);
         if(resData.data.error) return message.error(resData.data.message);
+        setUser(resData.data.user);
         message.success(resData.data.message);
         navigate("/members/profile");
 
@@ -172,9 +181,12 @@ const Basic = () => {
         setDay(new Date(user?.birthday).getDate());
         setPhoneNumber(user?.phoneNumber);
         setEmail(user?.email);
-        
-        const qualifications = user?.qualification?.map(qualification => getQualificationKeyByValue(qualification.qualification)) || [];
-        setQualificationDetails(qualifications.length > 0 ? qualifications.map(qualification => ({ qualification: qualification, year: "", month: "" })) : []);
+        setDependents(user?.dependents);
+        setSpouse(user?.spouse);
+        setSelfPR(user?.selfPR);
+        setPhoto(user?.photo);
+        setQualificationDetails(user?.qualification.length > 0 ? user?.qualification.map(qualification => ({ qualification: qualification.qualification, year: qualification.year, month: qualification.month })) : []);
+        setIsQualificationOpen(user?.qualification.length > 0);
     },[user])
     return (
         <>
@@ -186,149 +198,152 @@ const Basic = () => {
                         <button className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開について</button>
                     </div>
                 </div>
-                    <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 shadow-xl mt-2">
-                        <div className="flex items-center justify-center w-full mt-2">
-                            <div className="flex items-center justify-start gap-2 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">氏名</span>
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
-                                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                            </div>
-                            <div className="flex items-center justify-start gap-2 w-3/5">
-                                <Input placeholder="性" value={sei} onChange={(e) => setSei(e.target.value)} />
-                                <Input placeholder="名" value={mei} onChange={(e) => setMei(e.target.value)}/>
-                            </div>
+                <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 shadow-xl mt-2">
+                    <div className="flex items-center justify-center w-full mt-2">
+                        <div className="flex items-center justify-start gap-2 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">氏名</span>
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
                         </div>
-                        <div className="flex items-center justify-center w-full mt-4">
-                            <div className="flex items-center justify-start gap-2 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">ふりがな</span>
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
-                                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                            </div>
-                            <div className="flex items-center justify-start gap-2 w-3/5">
-                                <Input placeholder="せい" value={hiraganaSei} onChange={(e) => setHiraganaSei(e.target.value)}/>
-                                <Input placeholder="めい" value={hiraganaMei} onChange={(e) => setHiraganaMei(e.target.value)}/>
-                            </div>
+                        <div className="flex items-center justify-start gap-2 w-3/5">
+                            <Input placeholder="性" value={sei} onChange={(e) => setSei(e.target.value)} />
+                            <Input placeholder="名" value={mei} onChange={(e) => setMei(e.target.value)}/>
                         </div>
-                        <div className="flex items-center justify-center w-full mt-4">
-                            <div className="flex items-center justify-start gap-2 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">性別</span>
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
-                                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                            </div>
-                            <div className="flex items-center justify-start gap-2 w-3/5">
-                                <Select options={genderOptions} value={gender} className="w-1/3" onChange={(e) => setGender(e.target.value)}/>
-                            </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full mt-4">
+                        <div className="flex items-center justify-start gap-2 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">ふりがな</span>
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
                         </div>
-                        <div className="flex items-center justify-center w-full mt-4">
-                            <div className="flex items-center justify-start gap-2 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">生年月日</span>
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
-                                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                            </div>
-                            <div className="flex items-center justify-start gap-2 w-3/5 lg:text-sm md:text-xs text-xs">
-                                <Select options={yearsOptions} className="w-2/5" value={year} onChange={(e) => setYear(e.target.value)}/>
-                                年
-                                <Select options={monthsOptions} className="w-1/4" value={month} onChange={(e) => setMonth(e.target.value)}/>
-                                月
-                                <Select options={daysOptions} className="w-1/4" value={day} onChange={(e) => setDay(e.target.value)}/>
-                                日
-                            </div>
+                        <div className="flex items-center justify-start gap-2 w-3/5">
+                            <Input placeholder="せい" value={hiraganaSei} onChange={(e) => setHiraganaSei(e.target.value)}/>
+                            <Input placeholder="めい" value={hiraganaMei} onChange={(e) => setHiraganaMei(e.target.value)}/>
                         </div>
-                        <div className="flex items-center justify-center w-full mt-4">
-                            <div className="flex items-center justify-start gap-2 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">都道府県</span>
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
-                            </div>
-                            <div className="flex items-center justify-start gap-2 w-3/5">
-                                <Select options={prefecturesOptions} className="w-1/3" value={prefecture ? prefecture : initialPrefecture} onChange={(value) => setPrefecture(value)}/>
-                            </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full mt-4">
+                        <div className="flex items-center justify-start gap-2 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">性別</span>
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
                         </div>
-                        <div className="flex items-center justify-center w-full mt-4">
-                            <div className="flex items-center justify-start gap-2 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">電話番号</span>
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
-                                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                            </div>
-                            <div className="flex items-center justify-start gap-2 w-3/5">
-                                <Input placeholder="000-0000-0000" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="w-1/2"/>
-                            </div>
+                        <div className="flex items-center justify-start gap-2 w-3/5">
+                            <Select options={genderOptions} value={gender} className="w-1/3" onChange={(e) => setGender(e.target.value)}/>
                         </div>
-                        <div className="flex items-center justify-center w-full mt-4">
-                            <div className="flex items-center justify-start gap-1 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">メールアドレス</span>
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
-                                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                            </div>
-                            <div className="flex items-center justify-start gap-2 w-3/5">
-                                <Input placeholder="example@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-                            </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full mt-4">
+                        <div className="flex items-center justify-start gap-2 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">生年月日</span>
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
                         </div>
-                        <div className="flex items-start justify-center w-full mt-4">
-                            <div className="flex items-center justify-start gap-1 w-2/5 pt-2">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">資格/取得年月</span>
+                        <div className="flex items-center justify-start gap-2 w-3/5 lg:text-sm md:text-xs text-xs">
+                            <Select options={yearsOptions} className="w-2/5" value={year} onChange={(e) => setYear(e.target.value)}/>
+                            年
+                            <Select options={monthsOptions} className="w-1/4" value={month} onChange={(e) => setMonth(e.target.value)}/>
+                            月
+                            <Select options={daysOptions} className="w-1/4" value={day} onChange={(e) => setDay(e.target.value)}/>
+                            日
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full mt-4">
+                        <div className="flex items-center justify-start gap-2 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">都道府県</span>
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
+                        </div>
+                        <div className="flex items-center justify-start gap-2 w-3/5">
+                            <Select options={prefecturesOptions} className="w-1/3" value={prefecture ? prefecture : initialPrefecture} onChange={(value) => setPrefecture(value)}/>
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full mt-4">
+                        <div className="flex items-center justify-start gap-2 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">電話番号</span>
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
+                        </div>
+                        <div className="flex items-center justify-start gap-2 w-3/5">
+                            <Input placeholder="000-0000-0000" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="w-1/2"/>
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full mt-4">
+                        <div className="flex items-center justify-start gap-1 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">メールアドレス</span>
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
+                        </div>
+                        <div className="flex items-center justify-start gap-2 w-3/5">
+                            <Input placeholder="example@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-center w-full mt-4">
+                        <div className="flex items-center justify-start gap-1 w-2/5 pt-2">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">資格/取得年月</span>
+                        </div>
+                        <div className="flex flex-col w-3/5">
+                            <div className="flex flex-col items-start justify-start w-full">
+                                <Checkbox className="lg:text-sm md:text-xs text-xs font-bold w-full bg-[#EFEFEF] rounded-lg text-[#343434] p-2 border-none" checked={isQualificationOpen} onClick={() => setIsQualificationOpen(!isQualificationOpen)}>資格を持っている</Checkbox>
                             </div>
-                            <div className="flex flex-col w-3/5">
-                                <div className="flex items-center w-full">
-                                    <Checkbox className="lg:text-sm md:text-xs text-xs font-bold w-full bg-[#EFEFEF] rounded-lg text-[#343434] p-2 border-none" checked={isQualificationOpen} onClick={() => setIsQualificationOpen(!isQualificationOpen)}>資格を持っている</Checkbox>
-                                </div>
-                                <div className="flex flex-col w-full bg-[#EFEFEF] rounded-lg mt-4" style={{display: isQualificationOpen ? "block" : "none"}}>
-                                    {qualificationDetails.map((detail, index) => (
-                                        <div className="flex flex-col items-start justify-start gap-2 w-full p-2" key={index}>
-                                            <p className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">{detail.qualification}</p>
-                                            <div className="flex items-center justify-start gap-2 w-4/5 lg:text-sm md:text-xs text-xs">
-                                                <Select 
-                                                    options={yearsOptions} 
-                                                    className="w-1/2 p-0.5" 
-                                                    value={detail.year} 
-                                                    onChange={(year) => {
-                                                        const updatedDetails = [...qualificationDetails];
-                                                        updatedDetails[index].year = year;
-                                                        setQualificationDetails(updatedDetails);
-                                                    }} 
-                                                />
-                                                年
-                                                <Select 
-                                                    options={monthsOptions} 
-                                                    className="w-1/2 p-0.5"  
-                                                    value={detail.month} 
-                                                    onChange={(month) => {
-                                                        const updatedDetails = [...qualificationDetails];
-                                                        updatedDetails[index].month = month;
-                                                        setQualificationDetails(updatedDetails);
-                                                    }} 
-                                                />
-                                                月
-                                            </div>
+                            <div className="flex flex-col w-full bg-[#EFEFEF] rounded-lg mt-4" style={{display: isQualificationOpen ? "block" : "none"}}>
+                                <button className="lg:text-sm md:text-xs text-xs font-bold text-white bg-[#ff9a9a] rounded-lg p-2 border-none mt-4 ml-2" onClick={() => setIsQualificationOtherOpen(!isQualificationOtherOpen)}>上記以外の資格を追加</button>
+                                {qualificationDetails.map((detail, index) => (
+                                    <div className="flex flex-col items-start justify-start gap-2 w-full p-2" key={index}>
+                                        <p className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">{detail.qualification}</p>
+                                        <div className="flex items-center justify-start gap-2 w-4/5 lg:text-sm md:text-xs text-xs">
+                                            <Select 
+                                                options={yearsOptions} 
+                                                className="w-1/2 p-0.5" 
+                                                value={detail.year} 
+                                                onChange={(year) => {
+                                                    const updatedDetails = [...qualificationDetails];
+                                                    updatedDetails[index].year = year;
+                                                    setQualificationDetails(updatedDetails);
+                                                }} 
+                                            />
+                                            年
+                                            <Select 
+                                                options={monthsOptions} 
+                                                className="w-1/2 p-0.5"  
+                                                value={detail.month} 
+                                                onChange={(month) => {
+                                                    const updatedDetails = [...qualificationDetails];
+                                                    updatedDetails[index].month = month;
+                                                    setQualificationDetails(updatedDetails);
+                                                }} 
+                                            />
+                                            月
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                        <div className="flex items-center justify-start w-full mt-4">
-                            <div className="flex items-center justify-start gap-1 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">扶養家族</span>
-                                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                            </div>
-                            <div className="flex items-center justify-start gap-2 w-1/5">
-                                <Input placeholder="1" value={dependents} onChange={(e) => setDependents(e.target.value)} />
-                                <p className="lg:text-base md:text-sm text-xs text-[#343434]">人</p>
-                            </div>
+                    </div>
+                    <div className="flex items-center justify-start w-full mt-4">
+                        <div className="flex items-center justify-start gap-1 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">扶養家族</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
                         </div>
-                        <div className="flex items-center justify-start w-full mt-4">
-                            <div className="flex items-center justify-start gap-1 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">配偶者</span>
-                                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                            </div>
-                            <div className="flex items-center justify-start gap-2 w-3/5">
-                                <Select options={spouseOptions} value={spouse} onChange={(e) => setSpouse(e)} className="w-1/3"/>
-                            </div>
+                        <div className="flex items-center justify-start gap-2 w-1/5">
+                            <Input placeholder="1" value={dependents} onChange={(e) => setDependents(e.target.value)} />
+                            <p className="lg:text-base md:text-sm text-xs text-[#343434]">人</p>
                         </div>
-                        <div className="flex items-start justify-start w-full mt-6">
-                            <div className="flex items-center justify-start gap-1 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">顔写真</span>
-                                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                            </div>
-                            <div className="flex flex-col items-start justify-center gap-2 w-3/5">
+                    </div>
+                    <div className="flex items-center justify-start w-full mt-4">
+                        <div className="flex items-center justify-start gap-1 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">配偶者</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
+                        </div>
+                        <div className="flex items-center justify-start gap-2 w-3/5">
+                            <Select options={spouseOptions} value={spouse} onChange={(e) => setSpouse(e)} className="w-1/3"/>
+                        </div>
+                    </div>
+                    <div className="flex items-start justify-start w-full mt-6">
+                        <div className="flex items-center justify-start gap-1 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">顔写真</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
+                        </div>
+                        <div className="flex flex-col items-start justify-center gap-2 w-3/5">
+                            <div className="flex items-center justify-start gap-2 w-full">
+                                {!previewImage && <img src={photo} alt="顔写真" className="w-32 h-32 rounded-lg"/>}
                                 <Upload
                                     name="avatar"
                                     listType="picture-card"
@@ -337,57 +352,65 @@ const Basic = () => {
                                     beforeUpload={beforeUpload}
                                     onChange={handleChange}
                                 >
-                                {previewImage ? (
-                                    <Image
-                                    wrapperStyle={{
-                                        display: 'none',
-                                    }}
-                                    preview={{
-                                        visible: previewOpen,
-                                        onVisibleChange: (visible) => setPreviewOpen(visible),
-                                        afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                                    }}
-                                    src={previewImage}
-                                    />
-                                    ) : (
-                                        <div className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3">
-                                            <PlusOutlined />
-                                            <div className="mt-2 text-center">Upload</div>
-                                        </div>
-                                    )
-                                }
+                                    <div className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3">
+                                        <PlusOutlined />
+                                        <div className="mt-2 text-center">Upload</div>
+                                    </div>
                                 </Upload>
-                                <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">※ 単身胸から上。3ヶ月以内に撮影されたものを使用してください</p>
                             </div>
-                        </div>
-                        <div className="flex items-start justify-start w-full mt-4">
-                            <div className="flex items-center justify-start gap-1 w-2/5">
-                                <span className="lg:text-base md:text-sm text-xs text-[#343434]">自己PR</span>
-                            </div>
-                            <div className="flex flex-col items-start justify-start gap-2 w-3/5 textarea">
-                                <p className="lg:text-sm md:text-xs text-xs text-[#343434]">特技、好きな学科、アピールポイントなど</p>
-                                <TextArea placeholder="自己PRを入力してください" value={selfPR} onChange={(e) => setSelfPR(e.target.value)} className="w-full h-40"/>
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-center w-full mt-8 gap-4">
-                            <Link to={"/members/profile"} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] bg-[#ffdbdb] hover:bg-[#ff9a9a] rounded-lg p-4 duration-300">プロフィール一覧を見る</Link>
-                            <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg p-4 hover:bg-[#ff1d30] duration-300" onClick={handleSave}>保存して確認する</button>
+                            <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">※ 単身胸から上。3ヶ月以内に撮影されたものを使用してください</p>
                         </div>
                     </div>
+                    <div className="flex items-start justify-start w-full mt-4">
+                        <div className="flex items-center justify-start gap-1 w-2/5">
+                            <span className="lg:text-base md:text-sm text-xs text-[#343434]">自己PR</span>
+                        </div>
+                        <div className="flex flex-col items-start justify-start gap-2 w-3/5 textarea">
+                            <p className="lg:text-sm md:text-xs text-xs text-[#343434]">特技、好きな学科、アピールポイントなど</p>
+                            <TextArea placeholder="自己PRを入力してください" value={selfPR} onChange={(e) => setSelfPR(e.target.value)} className="w-full h-40"/>
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full mt-8 gap-4">
+                        <Link to={"/members/profile"} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] bg-[#ffdbdb] hover:bg-[#ff9a9a] rounded-lg px-4 py-3 duration-300">プロフィール一覧を見る</Link>
+                        <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ff1d30] duration-300" onClick={handleSave}>保存して確認する</button>
+                    </div>
+                </div>
             </div>
 
             {isOpen && 
+                <Private isOpen={isOpen} setIsOpen={setIsOpen}/>
+            }
+
+            {isQualificationOtherOpen && 
                 <Modal
-                    open={isOpen}
-                    onCancel={() => setIsOpen(false)}
-                    footer={null}
-                    width={300}
+                open={isQualificationOtherOpen}
+                onCancel={() => setIsQualificationOtherOpen(false)}
+                footer={null}
+                width={1000}
+                height={800}
                 >
-                    <p className="lg:text-lg md:text-base text-sm text-[#343434] font-bold">非公開について</p>
-                    <p className="lg:text-base md:text-sm text-xs text-[#343434] mt-8">
-                        <span className="lg:text-[0.7rem] md:text-[0.6rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-md" onClick={() => setIsOpen(!isOpen)}>非公開</span>
-                        の項目は、応募した求人機関のみ閲覧できます。応募していなければ、どこからも閲覧されることはありません。
-                    </p>
+                    <div className="flex flex-col items-center w-full">
+                        <div className="flex items-center justify-between gap-2 w-full flex-wrap p-4 overflow-scroll h-[40rem] overflow-x-hidden">
+                            {qualificationKeys.map((qualification) => (
+                                    <Checkbox
+                                        key={qualification} // Ensure to provide a unique key
+                                        className="lg:text-sm md:text-sm text-xs text-[#000000] w-1/5 px-2 py-2 border-none bg-[#EFEFEF] rounded-lg"
+                                        value={qualification} // Set the value prop
+                                        disabled={qualificationDetails.some(detail => detail.qualification === qualification)}
+                                        onChange={(e) => {
+                                            const { checked } = e.target; // Get the checked state
+                                            if (checked) {
+                                                // If checked, add the qualification to the state
+                                                setQualificationOther((prev) => [...prev, qualification]);
+                                            }
+                                        }}
+                                    >
+                                        {qualification}
+                                    </Checkbox>
+                            ))}
+                        </div>
+                        <button className="lg:text-base md:text-sm text-xs text-white bg-[#ff6e7a] hover:bg-[#ff1d30] p-2 rounded-lg w-40 mt-8" onClick={handleQualificationOtherSave}>資格を追加する</button>
+                    </div>
                 </Modal>
             }
         </>

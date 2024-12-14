@@ -95,6 +95,75 @@ const Profile = () => {
                             <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.email}</p>
                         </div>
                     </div>
+                    {
+                        user?.qualification?.length > 0 &&
+                        <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <div className="flex items-start justify-start gap-2 w-1/3">
+                                <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">資格/取得年月</span>
+                            </div>
+                            <div className="flex flex-col items-start justify-start w-2/3">
+                                {
+                                    user?.qualification?.map(qualification => {
+                                    return (
+                                                <div className="flex item-start justify-between w-4/5">
+                                                    <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2 py-2">{qualification.qualification}</p>
+                                                    <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2 py-2">{qualification.year}-{qualification.month}</p>
+                                                </div>    
+                                            )
+                                        })
+                                }
+                                </div>
+                        </div>
+                    }
+                    {
+                        user?.dependents !== "" &&
+                        <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <div className="flex items-center justify-start gap-2 w-1/3">
+                                <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">扶養家族</span>
+                                <span className="lg:text-[0.55rem] md:text-[0.5rem] text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg">非公開</span>
+                            </div>
+                            <div className="flex items-center justify-start w-2/3">
+                                <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.dependents}</p>
+                            </div>
+                        </div>
+
+                    }
+                    {
+                        user?.spouse !== "" &&
+                        <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <div className="flex items-center justify-start gap-2 w-1/3">
+                                <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">配偶者</span>
+                                <span className="lg:text-[0.55rem] md:text-[0.5rem] text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg">非公開</span>
+                            </div>
+                            <div className="flex items-center justify-start w-2/3">
+                                <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.spouse}</p>
+                            </div>
+                        </div>
+
+                    }
+                    { user?.photo !=="" &&
+                        <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <div className="flex items-center justify-start gap-2 w-1/3">
+                                <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">顔写真</span>
+                            </div>
+                            <div className="flex items-center justify-start w-2/3">
+                                <img src={user?.photo} alt="face" className="w-56"/>
+                            </div>
+                        </div>
+                    }
+                    {
+                        user?.selfPR !== "" &&
+                        <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <div className="flex items-center justify-start gap-2 w-1/3">
+                                <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">自己PR</span>
+                                <span className="lg:text-[0.55rem] md:text-[0.5rem] text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg">非公開</span>
+                            </div>
+                            <div className="flex items-center justify-start w-2/3">
+                                <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.selfPR}</p>
+                            </div>
+                        </div>
+
+                    }
                 </div>
             </div>
             <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 mt-4 shadow-xl">
@@ -102,8 +171,57 @@ const Profile = () => {
                     <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">学歴</p>
                     <Link to="/members/profile/edit/education" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
                 </div>
-                {/* <div className="flex flex-col w-full mt-6">
-                </div> */}
+                <div className="flex flex-col w-full mt-6">
+                    <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                        <div className="flex items-center justify-start gap-2 w-1/3">
+                            <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">最終学歴</span>
+                        </div>
+                        <div className="flex items-center justify-start w-2/3">
+                            <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.lastEducation}</p>
+                        </div>
+                    </div>
+                    <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                        <div className="flex items-center justify-start gap-2 w-1/3">
+                            <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">学校名</span>
+                            <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg">非公開</span>
+                        </div>
+                        <div className="flex items-center justify-start w-2/3">
+                            <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.schoolName}</p>
+                        </div>
+                    </div>
+                    <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                        <div className="flex items-center justify-start gap-2 w-1/3">
+                            <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">学部・学科</span>
+                        </div>
+                        <div className="flex items-center justify-start w-2/3">
+                            <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.department}</p>
+                        </div>
+                    </div>
+                    <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                        <div className="flex items-center justify-start gap-2 w-1/3">
+                            <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">専攻</span>
+                        </div>
+                        <div className="flex items-center justify-start w-2/3">
+                            <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.major}</p>
+                        </div>
+                    </div>
+                    <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                        <div className="flex items-center justify-start gap-2 w-1/3">
+                            <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">卒業年月</span>
+                        </div>
+                        <div className="flex items-center justify-start w-2/3">
+                            <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.graduationDate}</p>
+                        </div>
+                    </div>
+                    <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                        <div className="flex items-center justify-start gap-2 w-1/3">
+                            <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">卒業区分</span>
+                        </div>
+                        <div className="flex items-center justify-start w-2/3">
+                            <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.graduation}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 mt-4 shadow-xl">
                 <p className="lg:text-2xl md:text-xl text-lg text-[#343434]">職務経歴</p>
