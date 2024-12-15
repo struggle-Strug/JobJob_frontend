@@ -32,8 +32,6 @@ function App() {
   
   useEffect(() => {
     if (token) {
-      console.log("get user");
-      
       axios.defaults.headers.common["Authorization"] = token;
       getUserData()
     }

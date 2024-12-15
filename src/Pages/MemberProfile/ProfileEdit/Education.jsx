@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Private from "../../../components/Private";
 import { Input, message, Select } from "antd";
 import { getDateOptions } from "../../../utils/date";
@@ -58,6 +58,18 @@ const Education = () => {
         message.success(res.data.message);
         navigate("/members/profile");
     }
+
+    useEffect(() => {
+        setLastEducation(user?.lastEducation)
+        setSchoolName(user?.schoolName)
+        setDepartment(user?.department)
+        setMajor(user?.major)
+        setGraduation(user?.graduation)
+        const graduationYear = user?.graduationDate.split("-")[0]
+        const graduationMonth = user?.graduationDate.split("-")[1]
+        setGraduationYear(graduationYear)
+        setGraduationMonth(graduationMonth)
+    },[])
 
     return (
         <>
