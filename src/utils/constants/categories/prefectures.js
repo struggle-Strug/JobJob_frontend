@@ -1,4 +1,4 @@
-export const prefectures = {
+export const Prefectures = {
     KANTO: {
         東京都: "pref1",
         神奈川県: "pref2",

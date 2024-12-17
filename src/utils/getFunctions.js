@@ -1,12 +1,12 @@
-import { prefectures } from "./constants/categories";
+import { Prefectures } from "./constants/categories";
 import { JobType as jobTypes } from "./constants/categories";
 import { EmploymentType as employmentTypes } from './constants/categories/employmenttype';
 import { Qualifications as qualifications } from './constants/categories/qualifications';
 
 export const getPrefectureKeyByValue = (value) => {
-    for (const region in prefectures) {
-        for (const key in prefectures[region]) {
-            if (prefectures[region][key] === value) {
+    for (const region in Prefectures) {
+        for (const key in Prefectures[region]) {
+            if (Prefectures[region][key] === value) {
                 return key; // Return the key if the value matches
             }
         }

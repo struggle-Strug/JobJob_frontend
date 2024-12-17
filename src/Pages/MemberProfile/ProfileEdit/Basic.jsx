@@ -7,8 +7,7 @@ import TextArea from "antd/es/input/TextArea";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-import { prefectures } from "../../../utils/constants/categories";
-import { getPrefectureKeyByValue, getQualificationKeyByValue } from "../../../utils/getFunctions";
+import { Prefectures } from "../../../utils/constants/categories";
 import Private from "../../../components/Private";
 import { getDateOptions } from "../../../utils/date";
 import { Qualifications } from './../../../utils/constants/categories/qualifications';
@@ -59,10 +58,8 @@ const Basic = () => {
     ]
     
     
-    const initialPrefecture = getPrefectureKeyByValue(user?.prefecture);
-    
-    const prefecturesOptions = Object.entries(prefectures).flatMap(([region, prefs]) => 
-        Object.entries(prefs).map(([name, value]) => ({ label: name, value: value }))
+    const prefecturesOptions = Object.entries(Prefectures).flatMap(([region, prefs]) => 
+        Object.entries(prefs).map(([name, value]) => ({ label: name, value: name }))
     );
 
     const { yearsOptions, monthsOptions, daysOptions } = getDateOptions();
@@ -124,6 +121,7 @@ const Basic = () => {
         const addedQualifications = qualificationOther.map(qualification => ({qualification: qualification, year: "", month: ""}))
         
         setQualificationDetails(prev => [...prev, ...addedQualifications])
+        setIsQualificationOtherOpen(false)
     }
 
     const handleSave = async () => {
@@ -180,6 +178,7 @@ const Basic = () => {
         setMonth(new Date(user?.birthday).getMonth() + 1);
         setDay(new Date(user?.birthday).getDate());
         setPhoneNumber(user?.phoneNumber);
+        setPrefecture(user?.prefecture);
         setEmail(user?.email);
         setDependents(user?.dependents);
         setSpouse(user?.spouse);
@@ -252,7 +251,7 @@ const Basic = () => {
                             <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
                         </div>
                         <div className="flex items-center justify-start gap-2 w-3/5">
-                            <Select options={prefecturesOptions} className="w-1/3" value={prefecture ? prefecture : initialPrefecture} onChange={(value) => setPrefecture(value)}/>
+                            <Select options={prefecturesOptions} className="w-1/3" value={prefecture ? prefecture : user?.prefecture} onChange={(value) => setPrefecture(value)}/>
                         </div>
                     </div>
                     <div className="flex items-center justify-center w-full mt-4">
@@ -343,7 +342,7 @@ const Basic = () => {
                         </div>
                         <div className="flex flex-col items-start justify-center gap-2 w-3/5">
                             <div className="flex items-center justify-start gap-2 w-full">
-                                {!previewImage && <img src={photo} alt="顔写真" className="w-32 h-32 rounded-lg"/>}
+                                {fileList.length == 0 && <img src={photo} alt="顔写真" className="w-32 h-32 rounded-lg"/>}
                                 <Upload
                                     name="avatar"
                                     listType="picture-card"
@@ -371,8 +370,8 @@ const Basic = () => {
                         </div>
                     </div>
                     <div className="flex items-center justify-center w-full mt-8 gap-4">
-                        <Link to={"/members/profile"} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] bg-[#ffdbdb] hover:bg-[#ff9a9a] rounded-lg px-4 py-3 duration-300">プロフィール一覧を見る</Link>
-                        <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ff1d30] duration-300" onClick={handleSave}>保存して確認する</button>
+                        <Link to={"/members/profile"} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">プロフィール一覧を見る</Link>
+                        <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300" onClick={handleSave}>保存して確認する</button>
                     </div>
                 </div>
             </div>

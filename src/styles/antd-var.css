@@ -1,5 +1,13 @@
 .ant-checkbox-wrapper {
-    @apply bg-[#fffbfb] text-[1rem] p-4 rounded-lg border-[0.05rem] border-[#a7a3a3] mt-2;
+    @apply bg-[#fffbfb] lg:text-[1rem] md:text-sm text-xs p-4 rounded-lg border-[0.05rem] border-[#a7a3a3] mt-2;
+}
+
+.desire .ant-checkbox-wrapper {
+    @apply bg-[#ffe3e3] lg:text-base md:text-sm text-xs p-2 rounded-lg mt-0.5 border-none w-full;
+}
+
+.desireEmployment .ant-checkbox-wrapper {
+    @apply bg-[#ffe3e3] lg:text-base md:text-sm text-xs p-2 rounded-lg mt-0.5 border-none;
 }
 
 .textarea textarea {

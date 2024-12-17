@@ -1,6 +1,6 @@
 import { Radio } from "antd";
 import { useState } from "react";
-import { prefectures } from "../../../../utils/constants/categories";
+import { Prefectures } from "../../../../utils/constants/categories";
 
 const Step3 = ({setPrefecture}) => {
     const [togglePrefecture_1, setTogglePrefecture_1] = useState(false);
@@ -11,54 +11,54 @@ const Step3 = ({setPrefecture}) => {
     const [togglePrefecture_6, setTogglePrefecture_6] = useState(false);
     const [togglePrefecture_7, setTogglePrefecture_7] = useState(false);
 
-    const prefectureKeys_1 = Object.keys(prefectures.KANTO);
-    const prefectureKeys_2 = Object.keys(prefectures.KANSAI);
-    const prefectureKeys_3 = Object.keys(prefectures.TOKAI);
-    const prefectureKeys_4 = Object.keys(prefectures.HOKKAIDO_TOHOKU);
-    const prefectureKeys_5 = Object.keys(prefectures.KOSHINETSU_HOKURIKU);
-    const prefectureKeys_6 = Object.keys(prefectures.CHUGOKU_SHIKOKU);
-    const prefectureKeys_7 = Object.keys(prefectures.KYUSHU_OKINAWA);
+    const prefectureKeys_1 = Object.keys(Prefectures.KANTO);
+    const prefectureKeys_2 = Object.keys(Prefectures.KANSAI);
+    const prefectureKeys_3 = Object.keys(Prefectures.TOKAI);
+    const prefectureKeys_4 = Object.keys(Prefectures.HOKKAIDO_TOHOKU);
+    const prefectureKeys_5 = Object.keys(Prefectures.KOSHINETSU_HOKURIKU);
+    const prefectureKeys_6 = Object.keys(Prefectures.CHUGOKU_SHIKOKU);
+    const prefectureKeys_7 = Object.keys(Prefectures.KYUSHU_OKINAWA);
 
     const prefectureOptions_1 = prefectureKeys_1.map((item) => {
         return {
             label: item,
-            value: prefectures.KANTO[item]
+            value: item
         }
     })
     const prefectureOptions_2 = prefectureKeys_2.map((item) => {
         return {
             label: item,
-            value: prefectures.KANSAI[item]
+            value: item
         }
     })
     const prefectureOptions_3 = prefectureKeys_3.map((item) => {
         return {
             label: item,
-            value: prefectures.TOKAI[item]
+            value: item
         }
     })
     const prefectureOptions_4 = prefectureKeys_4.map((item) => {
         return {
             label: item,
-            value: prefectures.HOKKAIDO_TOHOKU[item]
+            value: item
         }
     })
     const prefectureOptions_5 = prefectureKeys_5.map((item) => {
         return {
             label: item,
-            value: prefectures.KOSHINETSU_HOKURIKU[item]
+            value: item
         }
     })
     const prefectureOptions_6 = prefectureKeys_6.map((item) => {
         return {
             label: item,
-            value: prefectures.CHUGOKU_SHIKOKU[item]
+            value: item
         }
     })
     const prefectureOptions_7 = prefectureKeys_7.map((item) => {
         return {
             label: item,
-            value: prefectures.KYUSHU_OKINAWA[item]
+            value: item
         }
     })
 

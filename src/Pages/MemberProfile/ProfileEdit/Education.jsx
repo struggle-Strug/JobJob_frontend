@@ -38,9 +38,6 @@ const Education = () => {
 
     const { yearsOptions, monthsOptions } = getDateOptions();
 
-    console.log(lastEducation);
-    
-
     const handleSave = async () => {
         if(graduation === "卒業見込み" && (graduationYear < new Date().getFullYear() || (graduationYear === new Date().getFullYear() && graduationMonth < new Date().getMonth() + 1))) return message.error("卒業年月を正確に選択してください。");
         const userData = {
@@ -65,8 +62,8 @@ const Education = () => {
         setDepartment(user?.department)
         setMajor(user?.major)
         setGraduation(user?.graduation)
-        const graduationYear = user?.graduationDate.split("-")[0]
-        const graduationMonth = user?.graduationDate.split("-")[1]
+        const graduationYear = user?.graduationDate?.split("-")[0]
+        const graduationMonth = user?.graduationDate?.split("-")[1]
         setGraduationYear(graduationYear)
         setGraduationMonth(graduationMonth)
     },[])
@@ -136,8 +133,8 @@ const Education = () => {
                     </div>
                 </div>
                 <div className="flex items-center justify-center w-full mt-8 gap-4">
-                    <Link to={"/members/profile"} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] bg-[#ffdbdb] hover:bg-[#ff9a9a] rounded-lg px-4 py-3 duration-300">プロフィール一覧を見る</Link>
-                    <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ff1d30] duration-300" onClick={handleSave}>保存して確認する</button>
+                    <Link to={"/members/profile"} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">プロフィール一覧を見る</Link>
+                    <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300" onClick={handleSave}>保存して確認する</button>
                 </div>
             </div>
 
