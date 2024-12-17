@@ -36,7 +36,6 @@ const Register = () => {
 
     const navigate = useNavigate();
     
-    
     const onChangeNext = () => {
         if(step === 1 && jobType.length === 0) return message.error("希望職種を選択してください。");
         if(step === 2) {
@@ -99,7 +98,7 @@ const Register = () => {
             year: "",
             month: ""
         }));
-
+        
         const userData = {
             name: `${sei} ${mei}`,
             hiraganaName: `${hiraganaSei} ${hiraganaMei}`,
@@ -134,7 +133,7 @@ const Register = () => {
                 </div>
                 <div className="flex flex-col items-center justify-between mt-12 border-[1.5px] border-[#a7a3a3] rounded-lg p-4 bg-white px-8">
                     <Step steps={6} currentStep={step} />
-                    {step === 1 && <Step1 setJobType={setJobType} />}
+                    {step === 1 && <Step1 jobType={jobType} setJobType={setJobType} />}
                     {step === 2 && <Step2 setEmploymentType={setEmploymentType} setQualification={setQualification} setFeature={setFeature} />}
                     {step === 3 && <Step3 setPrefecture={setPrefecture} errorMessage={errorMessage} />}
                     {step === 4 && <Step4 setFacilityType={setFacilityType} setPaymentMethod={setPaymentMethod} />}

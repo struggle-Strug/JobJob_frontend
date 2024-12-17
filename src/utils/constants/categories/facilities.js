@@ -1,4 +1,4 @@
-export const facilities = {
+export const Facilities = {
     病院: "hospital",
     診療所: "Clinic",
     歯科診療所・技工所: "dental",

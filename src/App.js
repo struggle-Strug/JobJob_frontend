@@ -18,6 +18,7 @@ import Favorites from './Pages/MemberProfile/Favorites';
 import Recent from './Pages/MemberProfile/Recent';
 import Resumes from './Pages/MemberProfile/Resumes';
 import Edit from './Pages/MemberProfile/ProfileEdit';
+import Desire from './Pages/MemberProfile/ProfileEdit/Desire';
 function App() {
   const { setIsAuthenticated, setUser } = useAuth();
   const token = localStorage.getItem('token')

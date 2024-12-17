@@ -1,5 +1,5 @@
 export const JobType = {
-    MEDICAL: {
+    医科: {
         医師: "dr",
         薬剤師: "ph",
         "看護師/准看護師": "nan",
@@ -21,13 +21,13 @@ export const JobType = {
         MR: "mr",
         MS_医薬品卸: "mrp"
     },
-    DENTISTRY: {
+    歯科: {
         歯科医師: "de",
         歯科衛生士: "dh",
         歯科技工士: "dt",
         歯科助手: "deas"
     },
-    NURSING: {
+    介護: {
         "介護職/ヘルパー": "cwh",
         生活相談員: "lc",
         ケアマネジャー: "cm",
@@ -47,7 +47,7 @@ export const JobType = {
         介護事務: "nca",
         相談支援専門員: "nca"
     },
-    CHILDCARE: {
+    保育: {
         保育士: "chil",
         幼稚園教諭: "kt",
         保育補助: "ca",
@@ -58,7 +58,7 @@ export const JobType = {
         "調理師/調理スタッフ": "ccs",
         "放課後児童支援員/学童指導員": "acsw"
     },
-    REHABILITATION: {
+    "リハビリ／代替医療": {
         理学療法士: "pt",
         言語聴覚士: "st",
         作業療法士: "ot",
@@ -68,10 +68,10 @@ export const JobType = {
         鍼灸師: "acu",
         整体師: "chir"
     },
-    OTHER: {
+    その他: {
         "営業/管理部門/その他": "sado"
     },
-    HEALTHCARE: {
+    "ヘルスケア／美容": {
         美容師: "hai",
         理容師: "bar",
         ネイリスト: "naar",

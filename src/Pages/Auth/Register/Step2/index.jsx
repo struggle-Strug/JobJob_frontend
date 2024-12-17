@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Checkbox } from "antd";
 import { Features, Qualifications, EmploymentType } from "../../../../utils/constants/categories";
 
-const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage}) => {
+const Step2 = ({ setEmploymentType, setQualification, setFeature, setErrorMessage }) => {
     const [toggleEmployment, setToggleEmployment] = useState(false);
     const [toggleQualification_required, setToggleQualification_required] = useState(false);
     const [toggleQualification_other, setToggleQualification_other] = useState(false);
@@ -14,9 +14,11 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
     const [toggleFeature_6, setToggleFeature_6] = useState(false);
     const [toggleFeature_7, setToggleFeature_7] = useState(false);
     const [toggleFeature_8, setToggleFeature_8] = useState(false);
-    const onChange = () => {
 
-    }
+    const [selectedEmploymentTypes, setSelectedEmploymentTypes] = useState([]);
+    const [selectedQualifications, setSelectedQualifications] = useState([]);
+    const [selectedFeatures, setSelectedFeatures] = useState([]);
+    
     const employmentKeys = Object.keys(EmploymentType);
     const qualificationKeys_required = Object.keys(Qualifications.REQUIRED);
     const qualificationKeys_other = Object.keys(Qualifications.OTHERS);
@@ -29,84 +31,53 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
     const featureKeys_7 = Object.keys(Features.EDUCATION);
     const featureKeys_8 = Object.keys(Features.MEDICAL_DEPARTMENT);
     
-    const employmentOptions = employmentKeys.map((item) => {
-        return {
-            label: item,
-            value: EmploymentType[item]
-        }
-    })
-    const qualificationOptions_required = qualificationKeys_required.map((item) => {
-        return {
-            label: item,
-            value: Qualifications.REQUIRED[item]
-        }
-    })
-    const qualificationOptions_other = qualificationKeys_other.map((item) => {
-        return {
-            label: item,
-            value: Qualifications.OTHERS[item]
-        }
-    })
-    const featureOptions_1 = featureKeys_1.map((item) => {
-        return {
-            label: item,
-            value: Features.HOLIDAY[item]
-        }
-    })
-    const featureOptions_2 = featureKeys_2.map((item) => {
-        return {
-            label: item,
-            value: Features.WORKING_HOURS[item]
-        }
-    })
-    const featureOptions_3 = featureKeys_3.map((item) => {
-        return {
-            label: item,
-            value: Features.ACCESS[item]
-        }
-    })
-    const featureOptions_4 = featureKeys_4.map((item) => {
-        return {
-            label: item,
-            value: Features.DESCRIPTION[item]
-        }
-    })
-    const featureOptions_5 = featureKeys_5.map((item) => {
-        return {
-            label: item,
-            value: Features.SALARY_BENEFITS_WELFARE[item]
-        }
-    })
-    const featureOptions_6 = featureKeys_6.map((item) => {
-        return {
-            label: item,
-            value: Features.SERVICE_TYPES[item]
-        }
-    })
-    const featureOptions_7 = featureKeys_7.map((item) => {
-        return {
-            label: item,
-            value: Features.EDUCATION[item]
-        }
-    })
-    const featureOptions_8 = featureKeys_8.map((item) => {
-        return {
-            label: item,
-            value: Features.MEDICAL_DEPARTMENT[item]
-        }
-    })
+    const createOptions = (keys) => keys.map((item) => ({
+        label: item,
+        value: item
+    }));
 
-    const onChangeEmployment = (value) => {
-        setEmploymentType(value)
-    }
+    const employmentOptions = createOptions(employmentKeys);
+    const qualificationOptions_required = createOptions(qualificationKeys_required);
+    const qualificationOptions_other = createOptions(qualificationKeys_other);
+    const featureOptions_1 = createOptions(featureKeys_1);
+    const featureOptions_2 = createOptions(featureKeys_2);
+    const featureOptions_3 = createOptions(featureKeys_3);
+    const featureOptions_4 = createOptions(featureKeys_4);
+    const featureOptions_5 = createOptions(featureKeys_5);
+    const featureOptions_6 = createOptions(featureKeys_6);
+    const featureOptions_7 = createOptions(featureKeys_7);
+    const featureOptions_8 = createOptions(featureKeys_8);
 
-    const onChangeQualification = (value) => {
-        setQualification(value)
-    }
+    const onChangeEmployment = (values) => {
+        setSelectedEmploymentTypes(values);
+        setEmploymentType(values);
+    };
 
-    const onChangeFeature = (value) => {
-        setFeature(value)
-    }
+    const onChangeQualification = (values, category) => {
+        const otherCategory = category === 'REQUIRED' ? 'OTHERS' : 'REQUIRED';
+        const otherValues = selectedQualifications.filter(q => Object.keys(Qualifications[otherCategory]).includes(q));
+        const newQualifications = [...otherValues, ...values];
+        setSelectedQualifications(newQualifications);
+        setQualification(newQualifications);
+    };
+
+    const onChangeFeature = (values, category) => {
+        const otherCategories = Object.keys(Features).filter(key => key !== category);
+        const otherValues = selectedFeatures.filter(f => 
+            otherCategories.some(cat => Object.keys(Features[cat]).includes(f))
+        );
+        const newFeatures = [...otherValues, ...values];
+        setSelectedFeatures(newFeatures);
+        setFeature(newFeatures);
+    };
+
+    const renderCheckboxGroup = (options, onChange, selectedValues, category = null) => (
+        <Checkbox.Group
+            options={options}
+            value={selectedValues}
+            onChange={(values) => onChange(values, category)}
+        />
+    );
 
     return (
         <>
@@ -120,9 +91,7 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
                         <div className="w-full gap-2">
                             <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
                                onClick={() => setToggleEmployment(!toggleEmployment)}>
-                                <p>
-                                形態
-                                </p>
+                                <span>形態</span>
                                 <img 
                                     src={'/assets/images/top/ep_arrow-right_red.png'} 
                                     alt="arrow" 
@@ -132,10 +101,7 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
                         </div>
                         <div className={`duration-300 overflow-hidden ${toggleEmployment ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
                             <div className="mt-4">
-                                <Checkbox.Group
-                                    options={employmentOptions}
-                                    onChange={onChangeEmployment}
-                                />
+                                {renderCheckboxGroup(employmentOptions, onChangeEmployment, selectedEmploymentTypes)}
                             </div>
                         </div>
                     </div>
@@ -151,9 +117,7 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
                         <div className="w-full gap-2">
                             <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
                                onClick={() => setToggleQualification_required(!toggleQualification_required)}>
-                                <p>
-                                応募要件（資格）
-                                </p>
+                                <span>応募要件（資格）</span>
                                 <img 
                                     src={'/assets/images/top/ep_arrow-right_red.png'} 
                                     alt="arrow" 
@@ -163,10 +127,7 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
                         </div>
                         <div className={`duration-300 overflow-hidden ${toggleQualification_required ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
                             <div className="mt-4">
-                                <Checkbox.Group
-                                    options={qualificationOptions_required}
-                                    onChange={onChangeQualification}
-                                />
+                                {renderCheckboxGroup(qualificationOptions_required, onChangeQualification, selectedQualifications, 'REQUIRED')}
                             </div>
                         </div>
                     </div>
@@ -174,9 +135,7 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
                         <div className="w-full gap-2">
                             <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
                                onClick={() => setToggleQualification_other(!toggleQualification_other)}>
-                                <p>
-                                応募要件（その他）
-                                </p>
+                                <span>応募要件（その他）</span>
                                 <img 
                                     src={'/assets/images/top/ep_arrow-right_red.png'} 
                                     alt="arrow" 
@@ -186,10 +145,7 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
                         </div>
                         <div className={`duration-300 overflow-hidden ${toggleQualification_other ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
                             <div className="mt-4">
-                                <Checkbox.Group
-                                    options={qualificationOptions_other}
-                                    onChange={onChangeQualification}
-                                />
+                                {renderCheckboxGroup(qualificationOptions_other, onChangeQualification, selectedQualifications, 'OTHERS')}
                             </div>
                         </div>
                     </div>
@@ -201,190 +157,35 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
                     <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
                 </div>
                 <div className="flex flex-col w-4/5">
-                    <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-                        <div className="w-full gap-2">
-                            <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
-                               onClick={() => setToggleFeature_1(!toggleFeature_1)}>
-                                <p>
-                                休日
+                    {[
+                        { title: '休日', options: featureOptions_1, toggle: toggleFeature_1, setToggle: setToggleFeature_1, category: 'HOLIDAY' },
+                        { title: '勤務時間', options: featureOptions_2, toggle: toggleFeature_2, setToggle: setToggleFeature_2, category: 'WORKING_HOURS' },
+                        { title: 'アクセス', options: featureOptions_3, toggle: toggleFeature_3, setToggle: setToggleFeature_3, category: 'ACCESS' },
+                        { title: '仕事内容', options: featureOptions_4, toggle: toggleFeature_4, setToggle: setToggleFeature_4, category: 'DESCRIPTION' },
+                        { title: '給与・待遇・福利厚生', options: featureOptions_5, toggle: toggleFeature_5, setToggle: setToggleFeature_5, category: 'SALARY_BENEFITS_WELFARE' },
+                        { title: 'サービス形態', options: featureOptions_6, toggle: toggleFeature_6, setToggle: setToggleFeature_6, category: 'SERVICE_TYPES' },
+                        { title: '教育体制・教育', options: featureOptions_7, toggle: toggleFeature_7, setToggle: setToggleFeature_7, category: 'EDUCATION' },
+                        { title: '診療科目', options: featureOptions_8, toggle: toggleFeature_8, setToggle: setToggleFeature_8, category: 'MEDICAL_DEPARTMENT' },
+                    ].map((feature, index) => (
+                        <div key={index} className={`flex flex-col border-t-[0.1rem] ${index === 7 ? 'border-b-[0.1rem]' : ''} border-[#a7a3a3] py-4 px-2`}>
+                            <div className="w-full gap-2">
+                                <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
+                                   onClick={() => feature.setToggle(!feature.toggle)}>
+                                    <span>{feature.title}</span>
+                                    <img 
+                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        alt="arrow" 
+                                        className={`duration-300 ${!feature.toggle ? "rotate-90" : "-rotate-90"}`}
+                                    />
                                 </p>
-                                <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                    alt="arrow" 
-                                    className={`duration-300 ${!toggleFeature_1 ? "rotate-90" : "-rotate-90"}`}
-                                />
-                            </p>
-                        </div>
-                        <div className={`duration-300 overflow-hidden ${toggleFeature_1 ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-                            <div className="mt-4">
-                                <Checkbox.Group
-                                    options={featureOptions_1}
-                                    onChange={onChangeFeature}
-                                />
+                            </div>
+                            <div className={`duration-300 overflow-hidden ${feature.toggle ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                                <div className="mt-4">
+                                    {renderCheckboxGroup(feature.options, onChangeFeature, selectedFeatures, feature.category)}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-                        <div className="w-full gap-2">
-                            <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
-                               onClick={() => setToggleFeature_2(!toggleFeature_2)}>
-                                <p>
-                                勤務時間
-                                </p>
-                                <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                    alt="arrow" 
-                                    className={`duration-300 ${!toggleFeature_2 ? "rotate-90" : "-rotate-90"}`}
-                                />
-                            </p>
-                        </div>
-                        <div className={`duration-300 overflow-hidden ${toggleFeature_2 ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-                            <div className="mt-4">
-                                <Checkbox.Group
-                                    options={featureOptions_2}
-                                    onChange={onChangeFeature}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-                        <div className="w-full gap-2">
-                            <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
-                               onClick={() => setToggleFeature_3(!toggleFeature_3)}>
-                                <p>
-                                アクセス
-                                </p>
-                                <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                    alt="arrow" 
-                                    className={`duration-300 ${!toggleFeature_3 ? "rotate-90" : "-rotate-90"}`}
-                                />
-                            </p>
-                        </div>
-                        <div className={`duration-300 overflow-hidden ${toggleFeature_3 ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-                            <div className="mt-4">
-                                <Checkbox.Group
-                                    options={featureOptions_3}
-                                    onChange={onChangeFeature}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-                        <div className="w-full gap-2">
-                            <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
-                               onClick={() => setToggleFeature_4(!toggleFeature_4)}>
-                                <p>
-                                仕事内容
-                                </p>
-                                <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                    alt="arrow" 
-                                    className={`duration-300 ${!toggleFeature_4 ? "rotate-90" : "-rotate-90"}`}
-                                />
-                            </p>
-                        </div>
-                        <div className={`duration-300 overflow-hidden ${toggleFeature_4 ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-                            <div className="mt-4">
-                                <Checkbox.Group
-                                    options={featureOptions_4}
-                                    onChange={onChangeFeature}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-                        <div className="w-full gap-2">
-                            <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
-                               onClick={() => setToggleFeature_5(!toggleFeature_5)}>
-                                <p>
-                                給与・待遇・福利厚生
-                                </p>
-                                <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                    alt="arrow" 
-                                    className={`duration-300 ${!toggleFeature_5 ? "rotate-90" : "-rotate-90"}`}
-                                />
-                            </p>
-                        </div>
-                        <div className={`duration-300 overflow-hidden ${toggleFeature_5 ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-                            <div className="mt-4">
-                                <Checkbox.Group
-                                    options={featureOptions_5}
-                                    onChange={onChangeFeature}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-                        <div className="w-full gap-2">
-                            <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
-                               onClick={() => setToggleFeature_6(!toggleFeature_6)}>
-                                <p>
-                                サービス形態
-                                </p>
-                                <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                    alt="arrow" 
-                                    className={`duration-300 ${!toggleFeature_6 ? "rotate-90" : "-rotate-90"}`}
-                                />
-                            </p>
-                        </div>
-                        <div className={`duration-300 overflow-hidden ${toggleFeature_6 ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-                            <div className="mt-4">
-                                <Checkbox.Group
-                                    options={featureOptions_6}
-                                    onChange={onChangeFeature}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-                        <div className="w-full gap-2">
-                            <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
-                               onClick={() => setToggleFeature_7(!toggleFeature_7)}>
-                                <p>
-                                教育体制・教育
-                                </p>
-                                <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                    alt="arrow" 
-                                    className={`duration-300 ${!toggleFeature_7 ? "rotate-90" : "-rotate-90"}`}
-                                />
-                            </p>
-                        </div>
-                        <div className={`duration-300 overflow-hidden ${toggleFeature_7 ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-                            <div className="mt-4">
-                                <Checkbox.Group
-                                    options={featureOptions_7}
-                                    onChange={onChangeFeature}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col border-t-[0.1rem] border-b-[0.1rem] border-[#a7a3a3] py-4 px-2">
-                        <div className="w-full gap-2">
-                            <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300" 
-                               onClick={() => setToggleFeature_8(!toggleFeature_8)}>
-                                <p>
-                                診療科目
-                                </p>
-                                <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                    alt="arrow" 
-                                    className={`duration-300 ${!toggleFeature_8 ? "rotate-90" : "-rotate-90"}`}
-                                />
-                            </p>
-                        </div>
-                        <div className={`duration-300 overflow-hidden ${toggleFeature_8 ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
-                            <div className="mt-4">
-                                <Checkbox.Group
-                                    options={featureOptions_8}
-                                    onChange={onChangeFeature}
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
             </div>
         </>
@@ -392,3 +193,4 @@ const Step2 = ({setEmploymentType, setQualification, setFeature, setErrorMessage
 };
 
 export default Step2;
+
