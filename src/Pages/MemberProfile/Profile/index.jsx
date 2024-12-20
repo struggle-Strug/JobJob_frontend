@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import { getEmploymentTypeKeyByValue } from "../../../utils/getFunctions";
 
 const Profile = () => {
     const { user } = useAuth();
@@ -344,7 +343,7 @@ const Profile = () => {
                             <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">希望勤務地</span>
                         </div>
                         <div className="flex items-center justify-start w-2/3">
-                            <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.prefecture}</p>
+                            <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.desirePrefecture.length > 0 ? user?.desirePrefecture.map(prefecture => prefecture.toString()).join(", ") : user?.prefecture}</p>
                         </div>
                     </div>
                     <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">

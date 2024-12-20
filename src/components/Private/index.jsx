@@ -7,6 +7,7 @@ const Private = ({ isOpen, setIsOpen }) => {
                     onCancel={() => setIsOpen(false)}
                     footer={null}
                     width={300}
+                    className="modal"
                 >
                     <p className="lg:text-lg md:text-base text-sm text-[#343434] font-bold">非公開について</p>
                     <p className="lg:text-base md:text-sm text-xs text-[#343434] mt-8">
