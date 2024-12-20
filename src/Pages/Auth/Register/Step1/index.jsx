@@ -53,7 +53,7 @@ const Step1 = ({ jobType, setJobType }) => {
                     />
                 </p>
             </div>
-            <div className={`duration-300 overflow-hidden ${toggle ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+            <div className={`duration-300 overflow-hidden ${toggle ? "opacity-100" : "max-h-0 opacity-0"}`}>
                 <div className="mt-4">
                     <Checkbox.Group
                         options={options}

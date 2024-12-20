@@ -203,10 +203,11 @@ const Desire = () => {
         setUser(res.data.user);
         navigate("/members/profile");
     }
+console.log(prefectures);
 
     useEffect(() => {
         setJobTypes(user?.jobType);
-        setPrefectures(user?.prefecture);
+        setPrefectures(user?.desirePrefecture.length > 0 ? user?.desirePrefecture : Array(user?.prefecture));
         setEmploymentType(user?.employmentType);
         setEmploymentDate(user?.employmentDate);
         setYearSalary(user?.desireYearSalary);
