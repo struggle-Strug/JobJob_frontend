@@ -186,7 +186,7 @@ const RirekiDetail = ({rireki}) => {
                                 return (
                                     <>
                                         <p className="lg:text-sm md:text-xs text-xs font-bold text-[#343434] pb-2">学歴1</p>
-                                        <Link to={`/members/resumes/rireki/edit/${rireki?._id}/education`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                        <Link to={`/members/resumes/rireki/edit/education/${rireki?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
                                             <div className="flex items-center justify-start gap-2 w-2/5">
                                                 <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">学校・学部・学科・専攻名</span>
                                             </div>

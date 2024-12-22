@@ -47,7 +47,9 @@ const Resumes = () => {
                 schoolName_department_major: `${user?.schoolName}${" "}${user?.department}${" "}${user?.major}`,
                 notes: "",
                 admissionDate: "",
-                graduationDate: user?.graduationDate
+                admission: "",
+                graduationDate: user?.graduationDate,
+                graduation: user?.graduation,
             }],
             workhistory: user?.workHistories.map((workHistory) => {
                 return {
