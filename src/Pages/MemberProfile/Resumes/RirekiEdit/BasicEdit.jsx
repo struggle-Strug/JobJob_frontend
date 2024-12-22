@@ -26,7 +26,7 @@ const BasicEdit = ({rireki}) => {
     const [previewImage, setPreviewImage] = useState('');
     const [photo, setPhoto] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [otherContacts, setOtherContacts] = useState(true);
+    const [otherContacts, setOtherContacts] = useState(false);
     const [otherContactsDetail, setOtherContactsDetail] = useState({
         phoneNumber: "",
         email: "",
@@ -38,8 +38,6 @@ const BasicEdit = ({rireki}) => {
         { label: "男性", value: "男性" },
         { label: "女性", value: "女性" },
     ]
-    
-    console.log(rireki);
     
     const prefecturesOptions = Object.entries(Prefectures).flatMap(([region, prefs]) => 
         Object.entries(prefs).map(([name, value]) => ({ label: name, value: name }))
@@ -122,17 +120,17 @@ const BasicEdit = ({rireki}) => {
             prefecture: prefecture,
             phoneNumber: phoneNumber,
             email: email,
-            photo: photoUrl,
+            photo: photo,
             otherPhone: otherContacts ? otherContactsDetail.phoneNumber : "同上",
             otherEmail: otherContacts ? otherContactsDetail.email : "同上",
             otherPrefecture: otherContacts ? otherContactsDetail.prefecture : "同上",
         }
 
 
-        const resData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/rireki/${rireki._id}/update`, rirekiData);
+        const resData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/rireki/update/basic/${rireki._id}`, rirekiData);
         if(resData.data.error) return message.error(resData.data.message);
         message.success(resData.data.message);
-        navigate("/members/resumes");
+        navigate(`/members/resumes/rireki/detail/${rireki._id}`);
 
     }
 
@@ -260,11 +258,11 @@ const BasicEdit = ({rireki}) => {
                             <span className="lg:text-base md:text-sm text-xs text-[#343434]">連絡先</span>
                         </div>
                         <div className="flex items-center justify-start gap-2 w-3/5 desire duration-300">
-                            <Checkbox checked={otherContacts} onChange={() => setOtherContacts(true)}>同上</Checkbox>
-                            <Checkbox checked={!otherContacts} onChange={() => setOtherContacts(false)}>その他連絡先</Checkbox>
+                            <Checkbox checked={!otherContacts} onChange={() => setOtherContacts(true)}>同上</Checkbox>
+                            <Checkbox checked={otherContacts} onChange={() => setOtherContacts(false)}>その他連絡先</Checkbox>
                         </div>
                     </div>
-                    {!otherContacts &&
+                    {otherContacts &&
                         <>
                             <div className="flex items-center justify-center w-full mt-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-2/5">
@@ -299,7 +297,7 @@ const BasicEdit = ({rireki}) => {
                         <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300" onClick={handleSave}>プレビュー</button>
                     </div>
                     <div className="flex items-center justify-center w-full mt-8 gap-4">
-                        <Link to={"/members/profile"} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">もどる</Link>
+                        <Link to={`/members/resumes/rireki/detail/${rireki?._id}`} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">もどる</Link>
                         <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300" onClick={handleSave}>保存する</button>
                     </div>
                 </div>
