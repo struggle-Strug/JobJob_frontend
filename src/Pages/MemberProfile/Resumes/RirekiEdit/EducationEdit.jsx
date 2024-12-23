@@ -7,7 +7,7 @@ import axios from "axios";
 const EducationEdit = ({rireki}) => {
     const [educations, setEducations] = useState([{
         schoolName_department_major: "",
-        notes: "",
+        notes: [],
         admissionYear: "",
         admissionMonth: "",
         admission: "",
@@ -69,10 +69,23 @@ const EducationEdit = ({rireki}) => {
         }]);
     };
 
+    const handleDeleteEducation = (index) => {
+        const newEducations = educations.filter((_, i) => i !== index);
+        setEducations(newEducations);
+    };
+
     const handleSave = async () => {
+        let educationDatas = [];
+        if(educations.length === 0) {
+            const resData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/rireki/update/education/${rireki._id}`, educationDatas);
+            if(resData.data.error) return message.error(resData.data.message);
+            message.success(resData.data.message);
+            navigate(`/members/resumes/rireki/detail/${rireki._id}`);
+            return;
+        }
         const lastEducation = educations[educations.length - 1];
         if(!validateEducation(lastEducation).status) return message.error("すべてのフィールドに入力してください。")
-        const educationDatas = educations.map(education => ({
+           educationDatas = educations.map(education => ({
             schoolName_department_major: education.schoolName_department_major,
             notes: education.notes,
             admissionDate: `${education.admissionYear}-${education.admissionMonth}`,
@@ -88,7 +101,7 @@ const EducationEdit = ({rireki}) => {
     };
 
     useEffect(() => {
-        setEducations(rireki.education.map(education => {
+        setEducations(rireki?.education.length > 0 ? rireki.education.map(education => {
             return {
                 schoolName_department_major: education.schoolName_department_major,
                 notes: education.notes,
@@ -99,7 +112,16 @@ const EducationEdit = ({rireki}) => {
                 graduationMonth: education.graduationDate ? education.graduationDate.split("-")[1] : "",
                 graduation: education.graduation,
             }
-        }))
+        }) : [{
+            schoolName_department_major: "",
+            notes: [""],
+            admissionYear: "",
+            admissionMonth: "",
+            admission: "",
+            graduationYear: "",
+            graduationMonth: "",
+            graduation: "",
+        }])
     },[])
 
     return (
@@ -119,8 +141,10 @@ const EducationEdit = ({rireki}) => {
                         <>
                             <EducationEditEntry
                                 key={index}
+                                educations={educations}
                                 education={education}
                                 setEducations={setEducations}
+                                handleDeleteEducation={handleDeleteEducation}
                                 index={index}
                                 updateEducation={(field, value) => {
                                     const newEducations = [...educations];
@@ -140,9 +164,9 @@ const EducationEdit = ({rireki}) => {
                         <span className="lg:text-base md:text-sm text-xs text-[#343434]"></span>
                     </div>
                     <div className="flex items-start justify-start gap-2 w-3/5 desire">
-                        <Checkbox onChange={() => setEducations([{
+                        { educations.length > 1 && <Checkbox onChange={() => setEducations([{
                                                 schoolName_department_major: "",
-                                                notes: "",
+                                                notes: [""],
                                                 admissionYear: "",
                                                 admissionMonth: "",
                                                 admission: "",
@@ -152,25 +176,33 @@ const EducationEdit = ({rireki}) => {
 
                                             }])} className="lg:text-base md:text-sm text-xs text-[#343434]">
                             学歴を記載しない
-                        </Checkbox>
+                        </Checkbox>}
                     </div>
                 </div>
                 <div className="text-center w-full mt-8">
                     <button onClick={handleGenerate} className="bg-[#fff8f8] text-[#FF2A3B] px-2 py-1 rounded-lg">学歴を追加する</button>
                 </div>
                 <div className="flex items-center justify-center w-full mt-8 gap-4">
-                    <Link to={`/members/resumes/rireki/detail/${rireki?._id}`} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">プロフィール一覧を見る</Link>
-                    <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300" onClick={handleSave}>保存して確認する</button>
+                    <Link to={`/members/resumes/rireki/detail/${rireki?._id}`} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">もどる</Link>
+                    <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300" onClick={handleSave}>保存する</button>
                 </div>
             </div>
         </>
     )
 }
 
-const EducationEditEntry = ({education, setEducations, index, updateEducation, yearsOptions, monthsOptions, admissionOptions, graduationOptions, handleGenerate}) => {
+const EducationEditEntry = ({educations, education, setEducations, index, updateEducation, yearsOptions, monthsOptions, admissionOptions, graduationOptions, handleDeleteEducation}) => {
     return (
         <div className="flex flex-col items-start justify-start w-full mt-2">
-            <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">学歴<span className="number">{index + 1}</span></p>
+            <div className="flex items-center justify-between w-full">
+                <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">学歴<span className="number">{index + 1}</span></p>
+                <button
+                    onClick={() => handleDeleteEducation(index)}
+                    className="text-[#FF2A3B] lg:text-sm md:text-xs text-xs hover:underline"
+                >
+                    この学歴を削除する
+                </button>
+            </div>
             <div className="flex items-start justify-center w-full mt-2">
                 <div className="flex items-center justify-start gap-2 w-2/5">
                     <span className="lg:text-base md:text-sm text-xs text-[#343434]">学校・学部・学科・専攻名</span>
@@ -186,8 +218,44 @@ const EducationEditEntry = ({education, setEducations, index, updateEducation, y
                 </div>
                 <div className="flex flex-col items-start justify-start gap-2 w-3/5">
                     <p className="lg:text-sm md:text-xs text-xs text-[#343434]">休学や留学の場合は、備考欄を使用してください</p>
-                    <Input placeholder="備考欄" value={education.notes} onChange={(e) => {updateEducation("notes", e.target.value)}}  className="p-2"/>
-                    <button className="lg:text-sm md:text-xs text-xs text-[#343434] p-1 bg-[#e7e7e7] rounded-lg hover:text-white hover:bg-[#343434] duration-300">備考欄を一行追加する</button>
+                    {education.notes.map((note, noteIndex) => {
+                        return (
+                                    <>
+                                            <Input placeholder="備考欄"  key={noteIndex} value={note} onChange={(e) => {
+                                                const newEducations = [...educations];
+                                                newEducations[index].notes[noteIndex] = e.target.value;
+                                                setEducations(newEducations);
+                                            }} className="p-2"/>
+                                            <button 
+                                                onClick={() => {
+                                                    const newEducations = [...educations];
+                                                    newEducations[index].notes = education.notes.filter((_, i) => i !== noteIndex);
+                                                    setEducations(newEducations);
+                                                }}
+                                                className="text-[#FF2A3B] lg:text-sm md:text-xs text-xs hover:underline whitespace-nowrap"
+                                            >
+                                                この備考欄を削除する
+                                            </button>
+                                    </>
+                                )
+                    })}
+                </div>
+            </div>
+            <div className="flex items-start justify-center w-full mt-4">
+                <div className="flex items-center justify-start gap-2 w-2/5">
+                    <span className="lg:text-base md:text-sm text-xs text-[#343434]"></span>
+                </div>
+                <div className="flex flex-col items-start justify-start gap-2 w-3/5">
+                    <button
+                        onClick={() => {
+                            const newEducations = [...educations];
+                            newEducations[index].notes = [...education.notes, ""];
+                            setEducations(newEducations);
+                        }}
+                        className="lg:text-sm md:text-xs text-xs text-[#343434] p-1 bg-[#e7e7e7] rounded-lg hover:text-white hover:bg-[#343434] duration-300"
+                        >
+                        備考欄を一行追加する
+                    </button>
                 </div>
             </div>
             <div className="flex items-start justify-center w-full mt-6">
