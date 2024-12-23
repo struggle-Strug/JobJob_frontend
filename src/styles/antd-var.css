@@ -6,6 +6,10 @@
     @apply bg-[#ffe3e3] lg:text-base md:text-sm text-xs p-2 rounded-lg mt-0.5 border-none w-full;
 }
 
+.qualification .ant-checkbox-wrapper {
+    @apply bg-[#fff7f7] lg:text-base md:text-sm text-xs p-2 rounded-lg mt-0.5 border-none w-full;
+}
+
 .desireEmployment .ant-checkbox-wrapper {
     @apply bg-[#ffe3e3] lg:text-base md:text-sm text-xs p-2 rounded-lg mt-0.5 border-none;
 }

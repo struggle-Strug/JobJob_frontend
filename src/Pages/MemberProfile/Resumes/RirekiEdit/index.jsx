@@ -4,6 +4,7 @@ import EducationEdit from "./EducationEdit";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import WorkHistoryEdit from "./WorkHistoryEdit";
+import QualificationEdit from "./QualificationEdit";
 
 const RirekiEdit = () => {
     const [rireki, setRireki] = useState(null);
@@ -29,6 +30,7 @@ const RirekiEdit = () => {
             {type === "basic" && <BasicEdit rireki={rireki}/>}
             {type === "education" && <EducationEdit rireki={rireki}/>}
             {type === "work_history" && <WorkHistoryEdit rireki={rireki}/>}
+            {type === "qualification" && <QualificationEdit rireki={rireki}/>}
         </>
     )
 }
