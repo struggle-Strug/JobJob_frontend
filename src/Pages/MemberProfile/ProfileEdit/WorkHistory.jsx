@@ -153,7 +153,7 @@ const WorkHistory = () => {
         if(!validateWorkHistory(lastHistory).status) return message.error("すべてのフィールドに入力してください。")
         const workDatas = workHistories.map(workHistory => ({
             companyName: workHistory.companyName,
-            contents: workHistory.companyName,
+            contents: workHistory.contents,
             startDate: `${workHistory.startYear}-${workHistory.startMonth}`,
             endDate: `${workHistory.endYear}-${workHistory.endMonth}`,
             employmentType: workHistory.employmentType,

@@ -3,6 +3,7 @@ import BasicEdit from "./BasicEdit";
 import EducationEdit from "./EducationEdit";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import WorkHistoryEdit from "./WorkHistoryEdit";
 
 const RirekiEdit = () => {
     const [rireki, setRireki] = useState(null);
@@ -27,6 +28,7 @@ const RirekiEdit = () => {
         <>
             {type === "basic" && <BasicEdit rireki={rireki}/>}
             {type === "education" && <EducationEdit rireki={rireki}/>}
+            {type === "work_history" && <WorkHistoryEdit rireki={rireki}/>}
         </>
     )
 }

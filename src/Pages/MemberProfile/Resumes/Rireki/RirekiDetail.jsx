@@ -182,7 +182,7 @@ const RirekiDetail = ({rireki}) => {
                     </button>
                     <div className={`duration-300 overflow-hidden w-full ${isEducationOpen ? "opacity-100" : "max-h-0 opacity-0"}`}>
                         <div className="mt-2 px-4">
-                            {rireki?.education.map((education) => {
+                            {rireki?.education.length > 0 && rireki?.education.map((education) => {
                                 return (
                                     <>
                                         <p className="lg:text-sm md:text-xs text-xs font-bold text-[#343434] pb-2">学歴1</p>
@@ -230,7 +230,20 @@ const RirekiDetail = ({rireki}) => {
                                     </>
                                 )
                             })}
-                            
+                            {rireki?.education.length === 0 &&
+                                <Link to={`/members/resumes/rireki/edit/education/${rireki?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                    <div className="flex items-center justify-start gap-2 w-2/5 px-2">
+                                        <span className="lg:text-sm md:text-xs text-xs text-[#343434]">学歴なし</span>
+                                    </div>
+                                    <div className="flex items-center justify-start w-3/5">
+                                    </div>
+                                    <img 
+                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        alt="arrow" 
+                                        className="duration-300 h-4"
+                                    />
+                                </Link>
+                            }
                         </div>
                     </div>
                 </div>
@@ -247,7 +260,7 @@ const RirekiDetail = ({rireki}) => {
                     </button>
                     <div className={`duration-300 overflow-hidden w-full ${isCareerOpen ? "opacity-100" : "max-h-0 opacity-0"}`}>
                         <div className="mt-2 px-4">
-                            {rireki?.workhistory?.map((workhistory, index) => {
+                            {rireki?.workhistory?.length > 0 && rireki?.workhistory?.map((workhistory, index) => {
                                 return (
                                     <>
                                         <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] pb-2">職歴{index + 1}</p>
@@ -293,6 +306,20 @@ const RirekiDetail = ({rireki}) => {
                                     </>
                                 )
                             })}
+                            {rireki?.workhistory?.length === 0 &&
+                                <Link to={`/members/resumes/rireki/edit/work_history/${rireki?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                    <div className="flex items-center justify-start gap-2 w-2/5 px-2">
+                                        <span className="lg:text-sm md:text-xs text-xs text-[#343434]">職歴なし</span>
+                                    </div>
+                                    <div className="flex items-center justify-start w-3/5">
+                                    </div>
+                                    <img 
+                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        alt="arrow" 
+                                        className="duration-300 h-4"
+                                    />
+                                </Link>
+                            }
                         </div>
                     </div>
                 </div>
@@ -316,7 +343,7 @@ const RirekiDetail = ({rireki}) => {
                                 <div className="flex flex-col items-center justify-start w-full">
                                     {rireki?.qualification?.map(qualification => (
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">
-                                        {qualification.qualification}{" "}{"取得年月:" + qualification.year + "/" + qualification.month}
+                                        {qualification.qualification}{" "}({"取得年月:" + qualification.year + "/" + qualification.month})
                                     </p>
                                     ))}
                                 </div>
