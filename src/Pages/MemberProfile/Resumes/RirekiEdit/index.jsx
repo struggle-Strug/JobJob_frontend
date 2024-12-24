@@ -7,6 +7,7 @@ import WorkHistoryEdit from "./WorkHistoryEdit";
 import QualificationEdit from "./QualificationEdit";
 import OtherEdit from "./OtherEdit";
 import DesireEdit from "./DesireEdit";
+import DateEdit from "./DateEdit";
 
 const RirekiEdit = () => {
     const [rireki, setRireki] = useState(null);
@@ -35,6 +36,7 @@ const RirekiEdit = () => {
             {type === "qualification" && <QualificationEdit rireki={rireki}/>}
             {type === "other" && <OtherEdit rireki={rireki}/>}
             {type === "desire" && <DesireEdit rireki={rireki}/>}
+            {type === "date" && <DateEdit rireki={rireki}/>}
         </>
     )
 }

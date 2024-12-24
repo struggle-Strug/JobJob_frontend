@@ -194,11 +194,11 @@ const BasicEdit = ({rireki}) => {
                             <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
                         </div>
                         <div className="flex items-center justify-start gap-2 w-3/5 lg:text-sm md:text-xs text-xs">
-                            <Select options={yearsOptions} className="w-2/5" value={year} onChange={(e) => setYear(e.target.value)}/>
+                            <Select options={yearsOptions} className="w-2/5" value={year} onChange={(value) => setYear(value)}/>
                             年
-                            <Select options={monthsOptions} className="w-1/4" value={month} onChange={(e) => setMonth(e.target.value)}/>
+                            <Select options={monthsOptions} className="w-1/4" value={month} onChange={(value) => setMonth(value)}/>
                             月
-                            <Select options={daysOptions} className="w-1/4" value={day} onChange={(e) => setDay(e.target.value)}/>
+                            <Select options={daysOptions} className="w-1/4" value={day} onChange={(value) => setDay(value)}/>
                             日
                         </div>
                     </div>
@@ -270,7 +270,7 @@ const BasicEdit = ({rireki}) => {
                                     <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
                                 </div>
                                 <div className="flex items-center justify-start gap-2 w-3/5">
-                                    <Input placeholder="00000000000" value={otherContactsDetail.phoneNumber} onChange={(e) => setOtherContactsDetail({...otherContactsDetail, phoneNumber: e.target.value})} className="w-1/2"/>
+                                    <Input placeholder="00000000000" value={otherContactsDetail.phoneNumber} onChange={(value) => setOtherContactsDetail({...otherContactsDetail, phoneNumber: value})} className="w-1/2"/>
                                 </div>
                             </div>
                             <div className="flex items-center justify-center w-full mt-4">
@@ -279,7 +279,7 @@ const BasicEdit = ({rireki}) => {
                                     <span className="lg:text-base md:text-sm text-xs text-[#343434]">(必須)</span>
                                 </div>
                                 <div className="flex items-center justify-start gap-2 w-3/5">
-                                    <Input placeholder="example@example.com" value={otherContactsDetail.email} onChange={(e) => setOtherContactsDetail({...otherContactsDetail, email: e.target.value})} />
+                                    <Input placeholder="example@example.com" value={otherContactsDetail.email} onChange={(value) => setOtherContactsDetail({...otherContactsDetail, email: value})} />
                                 </div>
                             </div>
                             <div className="flex items-center justify-center w-full mt-4">
