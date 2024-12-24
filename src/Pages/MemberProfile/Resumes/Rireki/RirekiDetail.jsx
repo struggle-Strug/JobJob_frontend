@@ -495,7 +495,7 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                                 <div className="flex flex-col items-center justify-start w-full">
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">
-                                        {rireki?.creationDate}
+                                        {rireki?.creationDate.split('-')[0] + "年" + rireki?.creationDate.split('-')[1] + "月" + rireki?.creationDate.split('-')[2] + "日"}
                                     </p>
                                 </div>
                                 <div className="flex items-center">
