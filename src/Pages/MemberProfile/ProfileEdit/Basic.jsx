@@ -237,11 +237,11 @@ const Basic = () => {
                             <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg" onClick={() => setIsOpen(!isOpen)}>非公開</span>
                         </div>
                         <div className="flex items-center justify-start gap-2 w-3/5 lg:text-sm md:text-xs text-xs">
-                            <Select options={yearsOptions} className="w-2/5" value={year} onChange={(e) => setYear(e.target.value)}/>
+                            <Select options={yearsOptions} className="w-2/5" value={year} onChange={(value) => setYear(value)}/>
                             年
-                            <Select options={monthsOptions} className="w-1/4" value={month} onChange={(e) => setMonth(e.target.value)}/>
+                            <Select options={monthsOptions} className="w-1/4" value={month} onChange={(value) => setMonth(value)}/>
                             月
-                            <Select options={daysOptions} className="w-1/4" value={day} onChange={(e) => setDay(e.target.value)}/>
+                            <Select options={daysOptions} className="w-1/4" value={day} onChange={(value) => setDay(value)}/>
                             日
                         </div>
                     </div>

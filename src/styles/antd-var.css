@@ -15,9 +15,11 @@
 }
 
 .textarea textarea {
+    font-family: 'Noto Sans JP', sans-serif;
     @apply h-40;
 }
 
 .modal {
     font-family: 'Noto Sans JP', sans-serif;
 }
+
