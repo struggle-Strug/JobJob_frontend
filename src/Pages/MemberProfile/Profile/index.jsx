@@ -156,7 +156,7 @@ const Profile = () => {
                                 <span className="lg:text-[0.55rem] md:text-[0.5rem] text-center text-[#FF2A3B] px-1 py-0.5 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg">非公開</span>
                             </div>
                             <div className="flex items-center justify-start w-2/3">
-                                <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{user?.selfPR}</p>
+                                <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2 break-all">{user?.selfPR}</p>
                             </div>
                         </div>
 
@@ -234,7 +234,7 @@ const Profile = () => {
             </div>
             <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 mt-4 shadow-xl">
                 <div className="flex items-center justify-between w-full mt-2">
-                    <p className="lg:text-2xl md:text-xl text-lg text-[#343434]">職務経歴</p>
+                    <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">職務経歴</p>
                     <Link to="/members/profile/edit/work_history" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
                 </div>
                 <div className="flex flex-col w-full mt-6">
@@ -300,7 +300,7 @@ const Profile = () => {
                                         <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">仕事内容</span>
                                     </div>
                                     <div className="flex items-center justify-start w-2/3">
-                                        <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{workHistory.workContent}</p>
+                                        <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2 break-all">{workHistory.workContent}</p>
                                     </div>
                                 </div>
                                 <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">

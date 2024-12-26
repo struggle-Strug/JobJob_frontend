@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const DesireEdit = ({rireki}) => {
     const [desire, setDesire] = useState({
-        applyreason: "",
+        applyReason: "",
         hope: "",
     })
 
@@ -24,7 +24,7 @@ const DesireEdit = ({rireki}) => {
 
     useEffect(() => {
         setDesire({
-            applyreason: rireki?.desire?.applyreason,
+            applyReason: rireki?.desire?.applyReason,
             hope: rireki?.desire?.hope,
         })
     },[])
@@ -44,7 +44,7 @@ const DesireEdit = ({rireki}) => {
                             <span className="lg:text-base md:text-sm text-xs font-bold text-[#343434]">志望動機</span>
                         </div>
                         <div className="flex flex-col items-start justify-start gap-2 w-4/5 textarea">
-                            <TextArea className="w-full h-full" placeholder="例文を挿入できます" value={desire.applyreason} onChange={(e) => setDesire({...desire, applyreason: e.target.value})}/>
+                            <TextArea className="w-full h-full" placeholder="例文を挿入できます" value={desire.applyReason} onChange={(e) => setDesire({...desire, applyReason: e.target.value})}/>
                             <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-2 py-1 hover:bg-[#ffe4e4] hover:text-red-500 duration-300" onClick={() => setEgApplyReasonOpen(true)}>志望動機の例文を挿入する</button>
                         </div>
                     </div>
@@ -141,7 +141,7 @@ const ApplyReasonModal = ({ isOpen, onClose, desire, setDesire }) => {
 
     const handleInsertTemplate = (content) => {
         // Here you would handle the template insertion
-        setDesire({...desire, applyreason: desire.applyreason + content})
+        setDesire({...desire, applyReason: desire.applyReason + content})
         onClose();
     };
 

@@ -147,6 +147,10 @@ const WorkHistory = () => {
         }]);
     };
 
+    const handleDeleteWorkHistory = (index) => {
+        const newWorkHistories = workHistories.filter((_, i) => i !== index);
+        setWorkHistories(newWorkHistories);
+    };
 
     const handleSave = async () => {
         const lastHistory = workHistories[workHistories.length - 1];
@@ -225,6 +229,7 @@ const WorkHistory = () => {
                                 newHistories[index][field] = value;
                                 setWorkHistories(newHistories);
                             }}
+                            handleDeleteWorkHistory={handleDeleteWorkHistory}
                             facilitiesOptions={facilitiesOptions}
                             employmentTypeOptions={employmentTypeOptions}
                             jobTypesOptions={jobTypesOptions}
@@ -250,9 +255,17 @@ const WorkHistory = () => {
     )
 }
 
-const WorkHistoryEntry = ({ history, index, updateHistory, facilitiesOptions, employmentTypeOptions, jobTypesOptions, jobTypeDetailOptions, officalPositionOptions, PayTypeOptions, yearsOptions, monthsOptions }) => (
-    <div key={index}>
-        <div className="flex items-center justify-center w-full mt-2">
+const WorkHistoryEntry = ({ history, index, updateHistory, handleDeleteWorkHistory, facilitiesOptions, employmentTypeOptions, jobTypesOptions, jobTypeDetailOptions, officalPositionOptions, PayTypeOptions, yearsOptions, monthsOptions }) => (
+    <div key={index} className="w-full">
+        <div className="flex items-center justify-end w-full">
+            <button
+                onClick={() => handleDeleteWorkHistory(index)}
+                className="text-[#FF2A3B] lg:text-sm md:text-xs text-xs hover:underline"
+            >
+                この職歴を削除する
+            </button>
+        </div>
+        <div className="flex items-center justify-center w-full mt-4">
             <div className="flex items-center justify-start gap-2 w-2/5">
                 <span className="lg:text-base md:text-sm text-xs text-[#343434] font-bold">勤務先名</span>
                 <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg">非公開</span>
