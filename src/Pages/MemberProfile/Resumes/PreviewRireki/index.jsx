@@ -40,12 +40,16 @@ const styles = StyleSheet.create({
 });
 
 // Resume component
-const Preview = ({ rireki, datas }) => {
+const PreviewRireki = ({ rireki, datas }) => {
   const firstPage = datas.slice(0, 13)
   const secondPage = datas.slice(13, datas.length)
-  const blank = [];
+  const blankFirstPage = [];
+  for(let i = 0; i < 13-firstPage.length; i++){
+    blankFirstPage.push({year: "", month: "", contents: ""})
+  }
+  const blankSecondPage = [];
   for(let i = 0; i < 15-secondPage.length; i++){
-    blank.push({year: "", month: "", contents: ""})
+    blankSecondPage.push({year: "", month: "", contents: ""})
   }
   
   return (
@@ -56,7 +60,7 @@ const Preview = ({ rireki, datas }) => {
         <View style={{display: 'flex', flexDirection: 'row', gap: 50, width: '100%'}}>
           <View style={[{display: 'flex', flexDirection: 'column'}, styles.section_1]}>
             {/* Date */}
-            <Text style={[{ textAlign: 'right', letterSpacing: 1, color: '#343434'}, styles.date]}>{rireki?.creationDate?.split("-")[0]}年 {rireki?.creationDate?.split("-")[1]}月 {rireki?.creationDate?.split("-")[2]}日現在</Text>
+            <Text style={[{ textAlign: 'right', letterSpacing: 1, color: '#343434'}, styles.date]}>{rireki?.creationDate}現在</Text>
             {/* Name */}
             <View style={{display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'flex-start', padding: 8, border: '1px solid black', borderBottom: '1px dotted black'}}>
               <Text style={[styles.text, {fontWeight: 'bold', width: '15%', color: '#343434'}]}>ふりがな</Text>
@@ -159,46 +163,55 @@ const Preview = ({ rireki, datas }) => {
           </View>
         {firstPage?.map((data, index) => {
           return (
-            (data?.title ?
-              (
+            <>
+              {data?.title &&
+                  <View key={index} style={{display: 'flex', width: '100%'}}>
+                      <View style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+                        <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px dotted black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.year}</Text>
+                        <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px solid black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.month}</Text>
+                        <Text style={{fontSize: 10, width: '80%', textAlign: 'center', padding: 6, borderTop: '1px dotted black', color: '#343434', letterSpacing: 0.5}}>{data?.contents}</Text>
+                      </View>
+                  </View>
+              }
+              { !data?.title && !data?.end && (data?.year !== '' || data?.month !== '' || data?.contents !== '') &&
                 <View key={index} style={{display: 'flex', width: '100%'}}>
-                    <View style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-                      <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px dotted black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.year}</Text>
-                      <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px solid black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.month}</Text>
-                      <Text style={{fontSize: 10, width: '80%', textAlign: 'center', padding: 6, borderTop: '1px dotted black', color: '#343434', letterSpacing: 0.5}}>{data?.contents}</Text>
-                    </View>
+                  <View style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+                    <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px dotted black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.year}</Text>
+                    <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px solid black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.month}</Text>
+                    <Text style={{fontSize: 10, width: '80%', textAlign: 'left', padding: 6, borderTop: '1px dotted black', color: '#343434', letterSpacing: 0.5}}>{data?.contents}</Text>
+                  </View>
                 </View>
-            )
-            :
-            (
-              <View key={index} style={{display: 'flex', width: '100%'}}>
-                <View style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-                  <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px dotted black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.year}</Text>
-                  <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px solid black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.month}</Text>
-                  <Text style={{fontSize: 10, width: '80%', textAlign: 'left', padding: 6, borderTop: '1px dotted black', color: '#343434', letterSpacing: 0.5}}>{data?.contents}</Text>
-                </View>
-              </View>
-            )),
-            (data?.end ?
-              (
+              }
+              { (data?.year === '' && data?.month === '' && data?.contents === '') &&
                 <View key={index} style={{display: 'flex', width: '100%'}}>
-                    <View style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-                      <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px dotted black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.year}</Text>
-                      <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px solid black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.month}</Text>
-                      <Text style={{fontSize: 10, width: '80%', textAlign: 'right', padding: 6, borderTop: '1px dotted black', color: '#343434', letterSpacing: 0.5}}>{data?.contents}</Text>
-                    </View>
+                  <View style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+                    <View style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px dotted black', borderTop: '1px dotted black', padding: 12, color: '#343434'}}></View>
+                    <View style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px solid black', borderTop: '1px dotted black', padding: 12, color: '#343434'}}></View>
+                    <View style={{fontSize: 10, width: '80%', textAlign: 'left', padding: 12, borderTop: '1px dotted black', color: '#343434', letterSpacing: 0.5}}></View>
+                  </View>
                 </View>
-            )
-            :
-            (
-              <View key={index} style={{display: 'flex', width: '100%'}}>
-                <View style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-                  <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px dotted black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.year}</Text>
-                  <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px solid black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.month}</Text>
-                  <Text style={{fontSize: 10, width: '80%', textAlign: 'left', padding: 6, borderTop: '1px dotted black', color: '#343434', letterSpacing: 0.5}}>{data?.contents}</Text>
-                </View>
+              }
+              {data?.end &&
+                  <View key={index} style={{display: 'flex', width: '100%'}}>
+                      <View style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+                        <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px dotted black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.year}</Text>
+                        <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px solid black', borderTop: '1px dotted black', padding: 6, color: '#343434'}}>{data?.month}</Text>
+                        <Text style={{fontSize: 10, width: '80%', textAlign: 'right', padding: 6, borderTop: '1px dotted black', color: '#343434', letterSpacing: 0.5}}>{data?.contents}</Text>
+                      </View>
+                  </View>
+              }
+            </>
+          )
+        })}
+        {blankFirstPage?.map((data, index) => {
+          return (
+            <View key={index} style={{display: 'flex', width: '100%'}}>
+              <View style={{display: 'flex', flexDirection: 'row', width: '100%',}}>
+                <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px dotted black', borderTop: '1px dotted black', padding: 12, color: '#343434'}}></Text>
+                <Text style={{fontSize: 10, width: '10%', textAlign: 'center', borderRight: '1px solid black', borderTop: '1px dotted black', padding: 12, color: '#343434'}}></Text>
+                <Text style={{fontSize: 10, width: '80%', textAlign: 'left', padding: 12, borderTop: '1px dotted black', color: '#343434', letterSpacing: 0.5}}></Text>
               </View>
-            ))
+            </View>
           )
         })}
         </View>
@@ -254,7 +267,7 @@ const Preview = ({ rireki, datas }) => {
             ))
           )
         })}
-        {blank?.map((data, index) => {
+        {blankSecondPage?.map((data, index) => {
           return (
             <View key={index} style={{display: 'flex', width: '100%'}}>
               <View style={{display: 'flex', flexDirection: 'row', width: '100%',}}>
@@ -280,7 +293,7 @@ const Preview = ({ rireki, datas }) => {
               <Text style={{fontSize: 10, color: '#343434', textAlign: 'left', width: '100%', padding: 6}}>扶養家族数（配偶者を除く）</Text>
               <Text style={{fontSize: 10, color: '#343434', textAlign: 'center', width: '100%', padding: 6}}>{rireki?.other?.dependents}人</Text>
             </View>
-            <View style={{display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'flex-start', alignItems: 'center'}}>
+            <View style={{display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'flex-start', alignItems: 'center', paddingBottom: 6}}>
               <Text style={{fontSize: 10, color: '#343434', textAlign: 'left', width: '100%', padding: 6}}>配偶者</Text>
               {rireki?.other?.spouse === '有り' ? 
                     (
@@ -327,5 +340,5 @@ const Preview = ({ rireki, datas }) => {
   )
 }
 
-export default Preview;
+export default PreviewRireki;
 

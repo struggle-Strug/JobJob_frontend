@@ -5,7 +5,7 @@ import Rireki from "./Rireki";
 import RirekiEdit from "./RirekiEdit";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
-import RirekiPreview from "./preview";
+import Careersheets from "./CareerSheets";
 
 const Resumes = () => {
     const { user } = useAuth();
@@ -13,6 +13,7 @@ const Resumes = () => {
     const initialDate = `${new Date().getFullYear()}年${new Date().getMonth() + 1}月${new Date().getDate()}日`;
     const [resumeTitle, setResumeTitle] = useState(initialDate);
     const [titleModalOpen, setTitleModalOpen] = useState(false);
+    const [careerSheets, setCareerSheets] = useState([]);
 
     const navigate = useNavigate();
 
@@ -25,6 +26,11 @@ const Resumes = () => {
     const getAllRirekis = async () => {
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/rireki/all/${user?._id}`);
         setRirekis(res.data.rirekis);
+    }
+
+    const getAllCareerSheets = async () => {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/career/all/${user?._id}`);
+        setCareerSheets(res.data.careerSheets);
     }
 
     const handleRireki = async () => {
@@ -89,7 +95,8 @@ const Resumes = () => {
 
     useEffect(() => {
        user && getAllRirekis()
-    },[user]);
+       user && getAllCareerSheets()
+    },[user, pathname]);
     return (
         <>
             { path === "resumes" &&
@@ -99,20 +106,34 @@ const Resumes = () => {
                         <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">項目は応募済みの求人機関だけが閲覧できます</p>
                         <div className="flex items-center justify-center gap-4 w-full mt-4">
                             <button onClick={handleTitleModalOpen} className="bg-[#e9e9e9] hover:shadow-xl w-1/2 text-center font-bold lg:text-lg md:text-sm text-xs duration-500 text-[#FF2A3B] px-2 lg:py-4 md:py-2 py-1 rounded-lg">履歴書を作成する</button>
-                            <button onClick={() => setTitleModalOpen(true)} className="bg-[#e9e9e9] hover:shadow-xl w-1/2 text-center font-bold lg:text-lg md:text-sm text-xs duration-500 text-[#FF2A3B] px-2 lg:py-4 md:py-2 py-1 rounded-lg">職務経歴書を作成する</button>
+                            <Link to={"/members/resumes/careersheets/new"} className="bg-[#e9e9e9] hover:shadow-xl w-1/2 text-center font-bold lg:text-lg md:text-sm text-xs duration-500 text-[#FF2A3B] px-2 lg:py-4 md:py-2 py-1 rounded-lg">職務経歴書を作成する</Link>
                         </div>
                         <Link to={"/members/profile"} className=" lg:text-[1rem] py-1 md:text-sm text-xs duration-500 text-[#FF2A3B] hover:underline rounded-lg mt-2">プロフィールを見る</Link>
                     </div>
-                    <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 shadow-xl mt-8">
-                        <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">履歴書</p>
-                        <div className="flex flex-col items-start justify-start w-full mt-4">
-                            {rirekis?.map((rireki) => {
-                                return (
-                                    <Link to={`/members/resumes/rireki/detail/${rireki?._id}`} className="lg:text-xl md:text-lg text-base font-bold text-[#343434]">{rireki?.title}</Link>
-                                )
-                            })}
+                    {rirekis?.length > 0 && 
+                        <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 shadow-xl mt-8">
+                            <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">履歴書</p>
+                            <div className="flex flex-col items-start justify-start w-full mt-4 border-[#e7e7e7] border-b-[1px]">
+                                {rirekis?.length !== 0 && rirekis?.map((rireki) => {
+                                    return (
+                                        <Link to={`/members/resumes/rireki/detail/${rireki?._id}`} className="lg:text-xl md:text-lg text-base font-bold text-[#343434] w-full border-[#e7e7e7] border-t-[1px] py-2">{rireki?.title}</Link>
+                                    )
+                                })}
+                            </div>
                         </div>
-                    </div>
+                    }
+                    {careerSheets?.length > 0 && 
+                        <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 shadow-xl mt-8">
+                            <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">職務経歴書</p>
+                            <div className="flex flex-col items-start justify-start w-full mt-4 border-[#e7e7e7] border-b-[1px]">
+                                {careerSheets?.length !== 0 && careerSheets?.map((careerSheet) => {
+                                    return (
+                                        <Link to={`/members/resumes/careersheets/detail/${careerSheet?._id}`} className="lg:text-xl md:text-lg text-base font-bold text-[#343434] w-full border-[#e7e7e7] border-t-[1px] py-2">{careerSheet?.title}</Link>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    }
                 </div>
             }
 
@@ -145,6 +166,9 @@ const Resumes = () => {
             }
             {
                 pathname.split('/').includes("rireki") && pathname.split('/').includes("edit") && <RirekiEdit />
+            }
+            {
+                pathname.split('/').includes("careersheets") && <Careersheets />
             }
         </>
     )
