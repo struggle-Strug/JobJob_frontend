@@ -58,7 +58,7 @@ const EducationEdit = ({rireki}) => {
         }
         setEducations([...educations, {
             schoolName_department_major: "",
-            notes: "",
+            notes: [""],
             admissionYear: "",
             admissionMonth: "",
             admission: "",

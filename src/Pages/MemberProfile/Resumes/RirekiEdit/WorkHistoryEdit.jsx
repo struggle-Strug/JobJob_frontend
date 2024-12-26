@@ -53,7 +53,7 @@ const WorkHistoryEdit = ({rireki}) => {
         }
         setWorkHistories([...workHistories, {
             companyName: "",
-            notes: "",
+            notes: [""],
             startYear: "",
             startMonth: "",
             endYear: "",
@@ -157,19 +157,6 @@ const WorkHistoryEdit = ({rireki}) => {
                         <span className="lg:text-base md:text-sm text-xs text-[#343434]"></span>
                     </div>
                     <div className="flex items-start justify-start gap-2 w-3/5 desire">
-                        {workHistories.length > 1 && <Checkbox onChange={() => setWorkHistories([{
-                                                companyName: "",
-                                                notes: "",
-                                                startYear: "",
-                                                startMonth: "",
-                                                endYear: "",
-                                                endMonth: "",
-                                                endStatus: "",
-                                                resignationReason: "",
-
-                                            }])} className="lg:text-base md:text-sm text-xs text-[#343434]">
-                            職歴なし
-                        </Checkbox>}
                     </div>
                 </div>
                 <div className="flex items-start justify-center w-full mt-6">
@@ -221,7 +208,7 @@ const WorkHistoryEditEntry = ({workHistory, workHistories, setWorkHistories, ind
                     <span className="lg:text-base md:text-sm text-xs text-[#343434]">勤務先名</span>
                 </div>
                 <div className="flex flex-col items-start justify-start gap-2 w-3/5">
-                    <Input placeholder="勤務先名" value={workHistory.companyName} onChange={(e) => {updateWorkHistory("companyName", e.target.value)}}  className="p-2"/>
+                    <Input placeholder="勤務先名" value={workHistory?.companyName} onChange={(e) => {updateWorkHistory("companyName", e.target.value)}}  className="p-2"/>
                 </div>
             </div>
             <div className="flex items-start justify-center w-full mt-4">
@@ -230,10 +217,11 @@ const WorkHistoryEditEntry = ({workHistory, workHistories, setWorkHistories, ind
                 </div>
                 <div className="flex flex-col items-start justify-start gap-2 w-3/5">
                     <p className="lg:text-sm md:text-xs text-xs text-[#343434]">異動などの記載は、備考欄を使用してください</p>
-                    {workHistory.notes.map((note, noteIndex) => {
+                    {workHistory?.notes?.map((note, noteIndex) => {
                         return (
                                     <>
-                                            <Input placeholder="備考欄"  key={noteIndex} value={note} onChange={(e) => {
+                                    <div key={noteIndex}>
+                                            <Input placeholder="備考欄" value={note} onChange={(e) => {
                                                 const newWorkHistories = [...workHistories];
                                                 newWorkHistories[index].notes[noteIndex] = e.target.value;
                                                 setWorkHistories(newWorkHistories);
@@ -248,10 +236,18 @@ const WorkHistoryEditEntry = ({workHistory, workHistories, setWorkHistories, ind
                                             >
                                                 この備考欄を削除する
                                             </button>
+
+                                    </div>
                                     </>
                                 )
                     })}
-                    <button className="lg:text-sm md:text-xs text-xs text-[#343434] p-1 bg-[#e7e7e7] rounded-lg hover:text-white hover:bg-[#343434] duration-300">備考欄を一行追加する</button>
+                    <button className="lg:text-sm md:text-xs text-xs text-[#343434] p-1 bg-[#e7e7e7] rounded-lg hover:text-white hover:bg-[#343434] duration-300" 
+                            onClick={() => {
+                                const newWorkHistories = [...workHistories];
+                                newWorkHistories[index].notes = [...workHistory.notes, ""];
+                                setWorkHistories(newWorkHistories);
+                            }}
+                        >備考欄を一行追加する</button>
                 </div>
             </div>
             <div className="flex items-start justify-center w-full mt-6">
@@ -259,8 +255,8 @@ const WorkHistoryEditEntry = ({workHistory, workHistories, setWorkHistories, ind
                     <span className="lg:text-base md:text-sm text-xs text-[#343434]">勤務開始年月</span>
                 </div>
                 <div className="flex items-start justify-start gap-2 w-3/5">
-                    <Select options={yearsOptions} value={workHistory.startYear} onChange={(value) => {updateWorkHistory("startYear", value)}}  className="w-1/3"/>
-                    <Select options={monthsOptions} value={workHistory.startMonth} onChange={(value) => {updateWorkHistory("startMonth", value)}}  className="w-1/3"/>
+                    <Select options={yearsOptions} value={workHistory?.startYear} onChange={(value) => {updateWorkHistory("startYear", value)}}  className="w-1/3"/>
+                    <Select options={monthsOptions} value={workHistory?.startMonth} onChange={(value) => {updateWorkHistory("startMonth", value)}}  className="w-1/3"/>
                 </div>
             </div>
             <div className="flex items-start justify-center w-full mt-6">
@@ -268,9 +264,9 @@ const WorkHistoryEditEntry = ({workHistory, workHistories, setWorkHistories, ind
                     <span className="lg:text-base md:text-sm text-xs text-[#343434]">勤務終了年月</span>
                 </div>
                 <div className="flex items-start justify-start gap-2 w-3/5">
-                    <Select options={yearsOptions} value={workHistory.endYear} onChange={(value) => {updateWorkHistory("endYear", value)}}  className="w-1/3"/>
-                    <Select options={monthsOptions} value={workHistory.endMonth} onChange={(value) => {updateWorkHistory("endMonth", value)}}  className="w-1/3"/>
-                    <Select options={endStatusOptions} value={workHistory.endStatus} onChange={(value) => {updateWorkHistory("endStatus", value)}}  className="w-1/3"/>
+                    <Select options={yearsOptions} value={workHistory?.endYear} onChange={(value) => {updateWorkHistory("endYear", value)}}  className="w-1/3"/>
+                    <Select options={monthsOptions} value={workHistory?.endMonth} onChange={(value) => {updateWorkHistory("endMonth", value)}}  className="w-1/3"/>
+                    <Select options={endStatusOptions} value={workHistory?.endStatus} onChange={(value) => {updateWorkHistory("endStatus", value)}}  className="w-1/3"/>
                 </div>
             </div>
             <div className="flex items-start justify-center w-full mt-6">
@@ -278,7 +274,7 @@ const WorkHistoryEditEntry = ({workHistory, workHistories, setWorkHistories, ind
                     <span className="lg:text-base md:text-sm text-xs text-[#343434]">退職理由</span>
                 </div>
                 <div className="flex items-start justify-start gap-2 w-3/5">
-                    <Select options={resignationReasonOptions} value={workHistory.resignationReason} onChange={(value) => {updateWorkHistory("resignationReason", value)}}  className="w-2/3"/>
+                    <Select options={resignationReasonOptions} value={workHistory?.resignationReason} onChange={(value) => {updateWorkHistory("resignationReason", value)}}  className="w-2/3"/>
                 </div>
             </div>
         </div>

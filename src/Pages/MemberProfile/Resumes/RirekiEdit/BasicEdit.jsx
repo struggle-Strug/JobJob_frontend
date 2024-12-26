@@ -120,7 +120,7 @@ const BasicEdit = ({rireki}) => {
             prefecture: prefecture,
             phoneNumber: phoneNumber,
             email: email,
-            photo: photo,
+            photo: photoUrl,
             otherPhone: otherContacts ? otherContactsDetail.phoneNumber : "同上",
             otherEmail: otherContacts ? otherContactsDetail.email : "同上",
             otherPrefecture: otherContacts ? otherContactsDetail.prefecture : "同上",

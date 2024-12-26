@@ -203,7 +203,6 @@ const Desire = () => {
         setUser(res.data.user);
         navigate("/members/profile");
     }
-console.log(prefectures);
 
     useEffect(() => {
         setJobTypes(user?.jobType);

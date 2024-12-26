@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { PDFViewer } from "@react-pdf/renderer";
+import ReactDOM from 'react-dom/client';
+import Preview from "../preview";
 
 const RirekiDetail = ({rireki}) => {
     const [isBasicOpen, setIsBasicOpen] = useState(false);
@@ -13,6 +16,33 @@ const RirekiDetail = ({rireki}) => {
     const birthday = `${new Date(rireki?.basic?.birthday).getFullYear()}年${new Date(rireki?.basic?.birthday).getMonth() + 1}月${new Date(rireki?.basic?.birthday).getDate()}日`;
     const age = new Date().getFullYear() - new Date(rireki?.basic?.birthday).getFullYear();
 
+    const openPdf = () => {
+        // Create a new window
+        const newTab = window.open('', '_blank');
+    
+        // Check if the new window was created
+        if (newTab) {
+          // Create a container div in the new tab
+          const container = newTab.document.createElement('div');
+          container.style.width = '100%';
+          container.style.height = '100vh';
+          newTab.document.body.appendChild(container);
+    
+          // Render the PDFViewer in the new tab using createRoot
+          const root = ReactDOM.createRoot(container);
+          const education = rireki?.education?.map(edu => ([{year: edu.admissionDate.split("-")[0], month: edu.admissionDate.split("-")[1], contents: `${edu.schoolName_department_major}${edu.admission}`}, ...edu.notes?.map(note => ({year: "", month: "", contents: note})), {year: edu.graduationDate.split("-")[0], month: edu.graduationDate.split("-")[1], contents: `${edu.schoolName_department_major}${edu.graduation}`}]))
+          const work = rireki?.workhistory?.map(work => ([{year: work.startDate.split("-")[0], month: work.startDate.split("-")[1], contents: `${work.companyName} 入職`}, ...work.notes?.map(note => ({year: "", month: "", contents: note})), {year: work.endDate.split("-")[0], month: work.endDate.split("-")[1], contents: `${work.resignationReason}${work.endStatus}`}]))
+          const qualification = rireki?.qualification?.map(qul => ({year: qul.year, month:qul.month, contents: qul.qualification}))
+          const datas = [{year: "", month: "", contents: "学歴", title: true}, ...education[0], ...education[1], {year: "", month: "", contents: "以上", end: true}, {year: "", month: "", contents: "職歴", title: true}, ...work[0], ...work[1], {year: "", month: "", contents: "以上", end: true}, {year: "", month: "", contents: "免許・資格", title: true}, ...qualification, {year: "", month: "", contents: "以上", end: true }]
+          root.render(
+              <PDFViewer style={{ width: '100vw', height: '100vh' }}>
+              <Preview rireki={rireki} datas={datas}/>
+            </PDFViewer>
+          );
+        } else {
+            alert('Unable to open a new tab. Please check your browser settings.');
+        }
+    };
     
     return (
         <>
@@ -182,43 +212,16 @@ const RirekiDetail = ({rireki}) => {
                     </button>
                     <div className={`duration-300 overflow-hidden w-full ${isEducationOpen ? "opacity-100" : "max-h-0 opacity-0"}`}>
                         <div className="mt-2 px-4">
-                            {rireki?.education.length > 0 && rireki?.education.map((education) => {
+                            {rireki?.education.length > 0 && rireki?.education.map((education, index) => {
                                 return (
-                                    <>
-                                        <p className="lg:text-sm md:text-xs text-xs font-bold text-[#343434] pb-2">学歴1</p>
-                                        <Link to={`/members/resumes/rireki/edit/education/${rireki?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
-                                            <div className="flex items-center justify-start gap-2 w-2/5">
-                                                <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">学校・学部・学科・専攻名</span>
-                                            </div>
-                                            <div className="flex items-center justify-start w-3/5">
-                                                <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{education?.schoolName_department_major}</p>
-                                            </div>
-                                            <img 
-                                                src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                                alt="arrow" 
-                                                className="duration-300 h-4"
-                                            />
-                                        </Link>
-                                        <Link to={`/members/resumes/rireki/edit/education/${rireki?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
-                                            <div className="flex items-center justify-start gap-2 w-2/5">
-                                                <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">入学年月</span>
-                                            </div>
-                                            <div className="flex items-center justify-start w-3/5">
-                                                <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{education?.admissionDate === "" ? "未登録" : education?.admissionDate}</p>
-                                            </div>
-                                            <img 
-                                                src={'/assets/images/top/ep_arrow-right_red.png'} 
-                                                alt="arrow" 
-                                                className="duration-300 h-4"
-                                            />
-                                        </Link>
-                                        {education?.graduationDate !== undefined &&
-                                            <Link to={`/members/resumes/rireki/edit/education/${rireki?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                    <div key={index}>
+                                        <p className="lg:text-sm md:text-xs text-xs font-bold text-[#343434] pb-2">学歴{index + 1}</p>
+                                            <Link to={`/members/resumes/rireki/edit/education/${rireki?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
                                                 <div className="flex items-center justify-start gap-2 w-2/5">
-                                                    <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">卒業年月</span>
+                                                    <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">学校・学部・学科・専攻名</span>
                                                 </div>
                                                 <div className="flex items-center justify-start w-3/5">
-                                                    <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{education?.graduationDate}</p>
+                                                    <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{education?.schoolName_department_major}</p>
                                                 </div>
                                                 <img 
                                                     src={'/assets/images/top/ep_arrow-right_red.png'} 
@@ -226,8 +229,35 @@ const RirekiDetail = ({rireki}) => {
                                                     className="duration-300 h-4"
                                                 />
                                             </Link>
-                                        }
-                                    </>
+                                            <Link to={`/members/resumes/rireki/edit/education/${rireki?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                                <div className="flex items-center justify-start gap-2 w-2/5">
+                                                    <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">入学年月</span>
+                                                </div>
+                                                <div className="flex items-center justify-start w-3/5">
+                                                    <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{education?.admissionDate === "" ? "未登録" : education?.admissionDate}</p>
+                                                </div>
+                                                <img 
+                                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                                    alt="arrow" 
+                                                    className="duration-300 h-4"
+                                                />
+                                            </Link>
+                                            {education?.graduationDate !== undefined &&
+                                                <Link to={`/members/resumes/rireki/edit/education/${rireki?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                                    <div className="flex items-center justify-start gap-2 w-2/5">
+                                                        <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">卒業年月</span>
+                                                    </div>
+                                                    <div className="flex items-center justify-start w-3/5">
+                                                        <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{education?.graduationDate}</p>
+                                                    </div>
+                                                    <img 
+                                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                                        alt="arrow" 
+                                                        className="duration-300 h-4"
+                                                    />
+                                                </Link>
+                                            }
+                                        </div>
                                 )
                             })}
                             {rireki?.education.length === 0 &&
@@ -262,7 +292,7 @@ const RirekiDetail = ({rireki}) => {
                         <div className="mt-2 px-4">
                             {rireki?.workhistory?.length > 0 && rireki?.workhistory?.map((workhistory, index) => {
                                 return (
-                                    <>
+                                    <div key={index}>
                                         <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] pb-2">職歴{index + 1}</p>
                                         <Link to={`/members/resumes/rireki/edit/work_history/${rireki?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
                                             <div className="flex items-center justify-start gap-2 w-2/5">
@@ -303,7 +333,7 @@ const RirekiDetail = ({rireki}) => {
                                                 className="duration-300 h-4"
                                             />
                                         </Link>
-                                    </>
+                                    </div>
                                 )
                             })}
                             {rireki?.workhistory?.length === 0 &&
@@ -341,8 +371,8 @@ const RirekiDetail = ({rireki}) => {
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">資格/取得年月</span>
                                 </div>
                                 <div className="flex flex-col items-center justify-start w-full">
-                                    {rireki?.qualification?.map(qualification => (
-                                    <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">
+                                    {rireki?.qualification?.map((qualification, index) => (
+                                    <p key={index} className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">
                                         {qualification.qualification}{" "}({"取得年月:" + qualification.year + "/" + qualification.month})
                                     </p>
                                     ))}
@@ -445,7 +475,7 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                                 <div className="flex flex-col items-center justify-start w-full">
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">
-                                        {rireki?.desire?.applyreason === "" ? "未登録" : rireki?.desire?.applyreason}
+                                        {rireki?.desire?.applyReason === "" ? "未登録" : rireki?.desire?.applyReason}
                                     </p>
                                 </div>
                                 <div className="flex items-center">
@@ -507,6 +537,10 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                             </Link>
                         </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full mt-8 gap-4">
+                        <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300" onClick={openPdf}>プレビュー</button>
+                        <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300">履歴書を保存する</button>
                     </div>
                 </div>
             </div>

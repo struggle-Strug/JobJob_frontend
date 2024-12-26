@@ -5,6 +5,7 @@ import Rireki from "./Rireki";
 import RirekiEdit from "./RirekiEdit";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
+import RirekiPreview from "./preview";
 
 const Resumes = () => {
     const { user } = useAuth();
@@ -57,6 +58,7 @@ const Resumes = () => {
                     notes: "",
                     startDate: workHistory.startDate,
                     endDate: workHistory.endDate,
+                    endStatus: "",
                     resignationReason: ""
                 }
             }),
