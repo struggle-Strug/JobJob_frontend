@@ -5,7 +5,7 @@ const LandingPage = () => {
     return (
         <>
             <section className="bg-[#F1F1F1] w-full md:h-8 2xs:h-4 px-4">
-                <p className='max-w-[1440px] mx-auto md:text-lg 2sx:text-[0.5rem]'>求人掲載・採用が完全無料 医療・歯科・介護・保育・美容{" "}総合求人サイト</p>
+                <p className='max-w-[1440px] mx-auto lg:text-lg md:text-base text-sm 2sx:text-[0.5rem]'>求人掲載・採用が完全無料 医療・歯科・介護・保育・美容{" "}総合求人サイト</p>
             </section>
             <section className="flex justify-between items-center max-w-[1440px] mx-auto h-12 px-4">
                 <Avatar />
@@ -15,7 +15,7 @@ const LandingPage = () => {
                 <Link to={'/members/register'} className='text-[#F53544] font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2'>新規登録</Link>
                 </div>
             </section>
-            <section className='relative max-w-[1440px] mx-auto text-center px-4'>
+            <section className='relative max-w-[1440px] mx-auto text-center'>
                 <img src="/assets/images/top/fv.png" alt="fv"/>
                 <div className='absolute top-0 w-full h-full lg:px-52 lg:py-16 md:px-12 md:py-8'>
                     <div className='bg-[#ffffffed] shadow-lg rounded-lg h-full flex flex-col items-center lg:gap-12 sm:gap-6'>
@@ -30,55 +30,55 @@ const LandingPage = () => {
                 </div>
             </section>
             <section>
-                <div className="bg-red-500 text-white py-12">
+                <div className="bg-red-500 text-white lg:py-12 md:py-8 sm:py-4 py-2">
                 <div className="max-w-[1440px] mx-auto text-center">
-                    <p className="text-xl mb-4 font-bold">医療や福祉の現場をなんとかしたい</p>
-                    <p className="text-xl mb-4 font-bold">そのために人材採用が重要であると考えます</p>
-                    <p className="text-xl mb-4 font-bold">最適な人材をコストをかけずに採用できる</p>
-                    <p className="text-xl font-bold">そんな世界を実現するためにJobJobは進化し続けます</p>
+                    <p className="lg:text-xl md:text-lg text-base mb-4 font-bold">医療や福祉の現場をなんとかしたい</p>
+                    <p className="lg:text-xl md:text-lg text-base mb-4 font-bold">そのために人材採用が重要であると考えます</p>
+                    <p className="lg:text-xl md:text-lg text-base mb-4 font-bold">最適な人材をコストをかけずに採用できる</p>
+                    <p className="lg:text-xl md:text-lg text-base font-bold">そんな世界を実現するためにJobJobは進化し続けます</p>
                 </div>
                 </div>
             </section>
             <section className='max-w-[1440px] mx-auto flex flex-col justify-center py-20 gap-20 px-4'>
                 <div className='flex flex-col items-center'>
-                <h1 className='text-2xl font-bold'>JobJobの求人採用</h1>
+                <h1 className='lg:text-2xl md:text-xl text-base font-bold'>JobJobの求人採用</h1>
                 <img src="/assets/images/top/Rectangle_13.png" alt="jobjob" className='mt-4'/>
                 </div>
                 <div className='flex flex-col items-center gap-12 max-w-[1000px] mx-auto'>
                 <div className='flex items-center gap-4 w-full'>
                     <div className='flex flex-col items-center'>
                     <img src="/assets/images/top/Group 11.png" alt="group" className='w-full'/>
-                    <p className='text-xl font-bold mt-4'>求人掲載から採用まで完全無料!</p>
+                    <p className='lg:text-xl md:text-lg text-base font-bold mt-4'>求人掲載から採用まで完全無料!</p>
                     </div>
                     <div className='flex flex-col items-center'>
                     <img src="/assets/images/top/Group 12.png" alt="group" className='w-full'/>
-                    <p className='text-xl font-bold mt-4'>掲載期間は無制限!</p>
+                    <p className='lg:text-xl md:text-lg text-base font-bold mt-4'>掲載期間は無制限!</p>
                     </div>
                     <div className='flex flex-col items-center'>
                     <img src="/assets/images/top/Group 13.png" alt="group" className='w-full'/>
-                    <p className='text-xl font-bold mt-4'>求人掲載から採用まで完全無料!</p>
+                    <p className='lg:text-xl md:text-lg text-base font-bold mt-4'>求人掲載から採用まで完全無料!</p>
                     </div>
                 </div>
                 <div className='flex items-center border-b-2 border-[#FF6B56]'>
-                    <p className='text-[1.75rem] font-bold text-[#FF6B56]'>じっくりと最適な人材を探せて、すぐに採用できます</p>
+                    <p className='lg:text-[1.75rem] md:text-lg text-base font-bold text-[#FF6B56]'>じっくりと最適な人材を探せて、すぐに採用できます</p>
                 </div>
                 </div>
             </section>
             <section className='bg-[#F8F8F8] mt-12 flex flex-col justify-center py-20 gap-20 px-4'>
             <div className='flex flex-col items-center max-w-[1440px] mx-auto'>
-                <h1 className='text-2xl font-bold'>求人掲載から採用まで完全無料!</h1>
+                <h1 className='lg:text-2xl md:text-xl text-base font-bold'>求人掲載から採用まで完全無料!</h1>
                 <img src="/assets/images/top/Rectangle_13.png" alt="jobjob" className='mt-4'/>
                 </div>
                 <div className='flex flex-col items-center gap-12 mx-auto w-full'>
-                <div className='flex items-center justify-between max-w-[670px] w-full xl:gap-8'>
-                    <div>
-                    <img src="/assets/images/top/image 12.png" alt="" />
+                <div className='grid grid-cols-3 max-w-[670px] w-full xl:gap-8'>
+                    <div className='grid grid-cols-1'>
+                    <img src="/assets/images/top/image 12.png" alt="" className='lg:w-full md:w-3/4 mx-auto'/>
                     </div>
-                    <div>
-                    <img src="/assets/images/top/image 12.png" alt="" />
+                    <div className='grid grid-cols-1'>
+                    <img src="/assets/images/top/image 13.png" alt="" className='lg:w-full md:w-3/4 mx-auto'/>
                     </div> 
-                    <div>
-                    <img src="/assets/images/top/image 12.png" alt="" />
+                    <div className='grid grid-cols-1'>
+                    <img src="/assets/images/top/image 14.png" alt="" className='lg:w-full md:w-3/4 mx-auto'/>
                     </div>
                 </div>
                 <div className="max-w-[600px] mx-auto border-2 border-red-500 rounded-lg p-6 md:p-8">
@@ -86,10 +86,10 @@ const LandingPage = () => {
                     <span className="text-red-500">
                     <img src="/assets/images/top/Vector.png" alt="vector" className='border-none'/>
                     </span>
-                    <span className="font-bold text-xl">無料で掲載・利用できる理由</span>
+                    <span className="font-bold lg:text-xl md:text-lg text-base">無料で掲載・利用できる理由</span>
                     </h3>
                     <div className="space-y-4 text-center">
-                    <p className='text-[0.75rem] font-semibold leading-5'>
+                    <p className='lg:text-[0.75rem] md:text-sm text-xs font-semibold leading-5'>
                         JobJobは全国の医療・介護・保育・美容の業界での様々な働き方に対応した求人検索サイトです。
                         <br />
                         多くの求人情報が集まることで、求職者の条件に合う求人をお届けすることができ、
@@ -124,12 +124,12 @@ const LandingPage = () => {
             </section>
             <section className='mt-[-1rem] flex flex-col justify-center py-20 gap-20 bg-[#F8F8F8] px-4'>
                 <div className='max-w-[1440px] mx-auto flex flex-col items-center'>
-                <h1 className='text-2xl font-bold'>無料で求人掲載!カンタン3ステップで掲載!</h1>
+                <h1 className='lg:text-2xl md:text-xl text-base font-bold'>無料で求人掲載!カンタン3ステップで掲載!</h1>
                 <img src="/assets/images/top/Rectangle_13.png" alt="jobjob" className='mt-4'/>
                 </div>
                 <div className='flex flex-col items-center gap-12 max-w-[1000px] mx-auto'>
                 <div className='flex items-center'>
-                    <p className='text-[1rem] font-bold leading-7 text-center'>
+                    <p className='lg:text-[1rem] md:text-lg text-base font-bold leading-7 text-center'>
                         JobJobは、募集したい求人内容をフォーマットの項目に従い入力するだけで、
                         <br />
                         簡単に求人ページが作成できます。
@@ -140,24 +140,24 @@ const LandingPage = () => {
                 <div className='flex items-center gap-4 w-full'>
                     <div className='flex flex-col items-center bg-white shadow-xl rounded-lg p-4 flex-1 h-[420px]'>
                     <img src="/assets/images/top/image 16.png" alt="group" className='w-full'/>
-                    <p className='text-lg font-bold mt-4 text-[#FF6B56] text-center'>
+                    <p className='lg:text-lg md:text-base text-sm font-bold mt-4 text-[#FF6B56] text-center'>
                         アカウント作成と
                         <br />
                         施設情報・求人票を入稿 (約5分)
                     </p>
-                    <p className='text-md mt-4'>
+                    <p className='lg:text-md md:text-sm text-xs mt-4'>
                     「今すぐ掲載をはじめる」ボタンからアカウント登録後、案内にしたがって簡単操作で求人投稿ができます。
                     </p>
                     </div>
                     <img src="/assets/images/top/Polygon 1.png" alt="triangle" className='mx-[-2rem] mt-[-6rem]'/>
                     <div className='flex flex-col items-center bg-white shadow-xl rounded-lg p-4 flex-1 h-[420px]'>
                     <img src="/assets/images/top/image 15_1.png" alt="group" className='w-full'/>
-                    <p className='text-lg font-bold mt-4 text-[#FF6B56] text-center'>
+                    <p className='lg:text-lg md:text-base text-sm font-bold mt-4 text-[#FF6B56] text-center'>
                         JobJobに掲載
                         <br />
                         (最短当日)
                     </p>
-                    <p className='text-md mt-4'>
+                    <p className='lg:text-md md:text-sm text-xs mt-4'>
                         投稿された求人は、求人審査の後JobJobに掲載されます。
                         掲載開始後も、求人の内容は何度でも編集できます。
                     </p>
@@ -165,10 +165,10 @@ const LandingPage = () => {
                     <img src="/assets/images/top/Polygon 1.png" alt="triangle" className='mx-[-2rem] mt-[-6rem]'/>
                     <div className='flex flex-col items-center bg-white shadow-xl rounded-lg p-4 flex-1 h-[420px]'>
                     <img src="/assets/images/top/image 15.png" alt="group" className='w-full'/>
-                    <p className='text-lg font-bold mt-4 text-[#FF6B56]'>
+                    <p className='lg:text-lg md:text-base text-sm font-bold mt-4 text-[#FF6B56]'>
                         応募者管理
                     </p>
-                    <p className='text-md mt-4'>
+                    <p className='lg:text-md md:text-sm text-xs mt-4'>
                         応募があったらメールでお知らせします。管理画面内で応募者の情報・連絡先を確認し、個別に面談・採否をやり取りしていただけます。
                     </p>
                     </div>
@@ -182,16 +182,16 @@ const LandingPage = () => {
                 </div>
                 <div className='flex items-center max-w-[1000px] mx-auto'>
                 <div className='flex flex-col'>
-                    <p className='flex justify-start text-lg font-bold mt-4 text-[#FF6B56] text-center leading-4'>
+                    <p className='lg:text-lg md:text-base text-sm font-bold mt-4 text-[#FF6B56] text-center leading-4'>
                     多くの求職者様にご利用いただいております。
                     </p>
                     <p className='flex justify-start text-lg font-bold mt-4 text-[#FF6B56] text-center leading-4'>
                     だから採用条件の人が見つかります。
                     </p>
-                    <p className='text-md mt-8'>
+                    <p className='lg:text-md md:text-sm text-xs mt-8'>
                     採用したいニーズは事業所によって多種多様です。JobJobでは多くの求職者に登録いただいており、さまざまな採用条件に 合う求職者を見つけることができます。
                     </p>
-                    <p className='text-md'>
+                    <p className='lg:text-md md:text-sm text-xs'>
                     求職者の登録数が多いのでJobJobは採用できる確率が格段に高まります。
                     </p>
                 </div>
@@ -200,16 +200,16 @@ const LandingPage = () => {
                 <div className='flex items-center max-w-[1000px] mx-auto'>
                 <img src="/assets/images/top/image 19.png" alt=""/>
                 <div className='flex flex-col'>
-                    <p className='flex justify-start text-lg font-bold mt-4 text-[#FF6B56] text-center leading-4'>
+                    <p className='lg:text-lg md:text-base text-sm font-bold mt-4 text-[#FF6B56] text-center leading-4'>
                     職種が57職種と豊富にあるから
                     </p>
-                    <p className='flex justify-start text-lg font-bold mt-4 text-[#FF6B56] text-center leading-4'>
+                    <p className='lg:text-lg md:text-base text-sm font-bold mt-4 text-[#FF6B56] text-center leading-4'>
                     手間なく採用できます。
                     </p>
-                    <p className='text-md mt-8'>
+                    <p className='lg:text-md md:text-sm text-xs mt-8'>
                     事業所の運営はさまざまな職種で支えています。となれば、求人は事業所に関わる職種の数が必要です。しかし、職種ごとに求人サービスを利用していては採用活動に負担がかかります。
                     </p>
-                    <p className='text-md'>
+                    <p className='lg:text-md md:text-sm text-xs'>
                     JobJobは医科・歯科・介護・保育・美容など57の職種に対応しているため、あらゆる職種を1つの求人サービスで完結できます。
                     </p>
                 </div>
@@ -222,7 +222,7 @@ const LandingPage = () => {
                 </div>
                 <div className='flex flex-col items-center max-w-[1000px] mx-auto mt-12'>
                 <div className='flex items-center'>
-                    <p className='text-[1rem] font-bold leading-7 text-center'>
+                    <p className='lg:text-[1rem] md:text-lg text-base font-bold leading-7 text-center'>
                         採用のタイミングを逃さない「採用管理画面」
                         <br />
                         さまざまな機能でサポートいたします。
@@ -233,10 +233,10 @@ const LandingPage = () => {
                     <div className='flex items-center justify-between gap-4'>
                     <div className='flex items-center gap-2'>
                         <div className='flex flex-col justify-start'>
-                        <p className='flex justify-start text-lg font-bold mt-4 text-center leading-3'>
+                        <p className='lg:text-lg md:text-base text-sm font-bold mt-4 text-center leading-3'>
                             求人の複製
                         </p>
-                        <p className='text-sm mt-8'>
+                        <p className='lg:text-md md:text-sm text-xs mt-8'>
                             たくさんの求人票を用意しなければならない時も安心！
                             既に作成済みの求人票を複製して使用することが出来るので求人票作成の時間を短縮できます。
                         </p>
@@ -245,10 +245,10 @@ const LandingPage = () => {
                     </div>
                     <div className='flex items-center gap-2'>
                         <div className='flex flex-col justify-start'>
-                        <p className='flex justify-start text-lg font-bold mt-4 text-center leading-3'>
+                        <p className='flex justify-start lg:text-lg md:text-base text-sm font-bold mt-4 text-center leading-3'>
                             写真の掲載
                         </p>
-                        <p className='text-sm mt-8'>
+                        <p className='lg:text-md md:text-sm text-xs mt-8'>
                             求人票の上部に写真を掲載することができます。一緒に働くメンバーや、会社・店舗の外観・内観など職場の様子がよく分かる写真を掲載すると効果的です。
                         </p>
                         </div>
@@ -258,10 +258,10 @@ const LandingPage = () => {
                     <div className='flex items-center justify-between'>
                     <div className='flex items-center gap-2'>
                         <div className='flex flex-col justify-start'>
-                        <p className='flex justify-start text-lg font-bold mt-4 text-center leading-3'>
+                        <p className='flex justify-start lg:text-lg md:text-base text-sm font-bold mt-4 text-center leading-3'>
                             求人タグ機能
                         </p>
-                        <p className='text-sm mt-8'>
+                        <p className='lg:text-md md:text-sm text-xs mt-8'>
                             求人入稿時には、診療科目や仕事内容、サービス内容、特徴などを誤解なく適格に伝えるために、タグ機能で選択す るだけで簡単に登録できます。
                         </p>
                         </div>
@@ -269,10 +269,10 @@ const LandingPage = () => {
                     </div>
                     <div className='flex items-center gap-2'>
                         <div className='flex flex-col justify-start ml-5'>
-                        <p className='flex justify-start text-lg font-bold mt-4 text-center leading-3'>
+                        <p className='flex justify-start lg:text-lg md:text-base text-sm font-bold mt-4 text-center leading-3'>
                             選考管理
                         </p>
-                        <p className='text-sm mt-8'>
+                        <p className='lg:text-md md:text-sm text-xs mt-8'>
                             採用活動を続けていると求職者の選考状況がわかりづらくなります。ひと目で選考状況が把握できるように作られています。で求人票作成の時間を短縮できます。
                         </p>
                         </div>
