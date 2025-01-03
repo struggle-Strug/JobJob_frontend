@@ -1,10 +1,9 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import './index.css';
-import LandingPage from './components/LandingPage';
+import { useEffect } from 'react';
 import Layout from './components/Layout';
 import Register from './Pages/Auth/Register';
 import Login from './Pages/Auth/Login';
-import { useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from './context/AuthContext';
 import checkAuth from './utils/checkAuth';
@@ -18,6 +17,9 @@ import Favorites from './Pages/MemberProfile/Favorites';
 import Recent from './Pages/MemberProfile/Recent';
 import Resumes from './Pages/MemberProfile/Resumes';
 import Edit from './Pages/MemberProfile/ProfileEdit';
+import CompanyLandingPage from './Pages/CompanyLandingPage';
+import Top from './Pages/Top';
+import CertainJobList from './Pages/CertainJobList';
 function App() {
   const { setIsAuthenticated, setUser } = useAuth();
   const token = localStorage.getItem('token')
@@ -40,16 +42,17 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path='/' element={<LandingPage />} />
         <Route element={<Layout />}>
-          <Route path='/members/register' element={<Register />} />
-          <Route path='/members/login' element={<Login />} />
-          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/company' element={<CompanyLandingPage />} />
+          <Route path='/' element={<Top />} />
+          <Route path='/members/sign_up' element={<Register />} />
+          <Route path='/members/sign_in' element={<Login />} />
+          <Route path='/*' element={<CertainJobList />} />
           {token ? (
             <Route element={<MyPageLayout />}>
               <Route path='/members/mypage' element={<MyPage />} />
-              <Route path='/members/profile' element={<Profile />} />
-              <Route path='/members/profile/edit/*' element={<Edit />} />
+              <Route path='/members/profiles' element={<Profile />} />
+              <Route path='/members/profiles/edit/*' element={<Edit />} />
               <Route path='/members/message' element={<Message />} />
               <Route path='/members/job_offers/apply' element={<Applied />} />
               <Route path='/members/job_offers/favorite' element={<Favorites />} />

@@ -15,7 +15,7 @@ const MyPageLayout = () => {
                             マイページ
                         </p>
                     </Link>
-                    <Link to={"/members/profile"} className="flex justify-start items-center gap-2 mt-4">
+                    <Link to={"/members/profiles"} className="flex justify-start items-center gap-2 mt-4">
                         <p className={`flex justify-start text-black lg:text-lg md:text-base text-sm font-bold px-2
                             hover:text-red-500 hover:border-l-4 hover:border-red-500 hover:font-medium hover:pl-2 hover:duration-300
                             ${isSelected("/members/profile") ? 'text-red-500 border-l-4 border-red-500 font-medium pl-2 duration-300' : 'text-gray-700'}`}>

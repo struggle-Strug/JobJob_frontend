@@ -19,7 +19,7 @@ const Profile = () => {
             <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 mt-4 shadow-xl">
                 <div className="flex items-center justify-between w-full">
                     <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">基本情報</p>
-                    <Link to="/members/profile/edit/basic" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
+                    <Link to="/members/profiles/edit/basic" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
                 </div>
                 <div className="flex flex-col w-full mt-6">
                     <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
@@ -166,7 +166,7 @@ const Profile = () => {
             <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 mt-4 shadow-xl">
                     <div className="flex items-center justify-between w-full">
                     <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">学歴</p>
-                    <Link to="/members/profile/edit/education" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
+                    <Link to="/members/profiles/edit/education" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
                 </div>
                 <div className="flex flex-col w-full mt-6">
                     {user?.lastEducation !== undefined &&
@@ -235,7 +235,7 @@ const Profile = () => {
             <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 mt-4 shadow-xl">
                 <div className="flex items-center justify-between w-full mt-2">
                     <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">職務経歴</p>
-                    <Link to="/members/profile/edit/work_history" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
+                    <Link to="/members/profiles/edit/work_history" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
                 </div>
                 <div className="flex flex-col w-full mt-6">
                     {user?.workHistories.map((workHistory, index) => {
@@ -327,7 +327,7 @@ const Profile = () => {
             <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 mt-4 shadow-xl">
                 <div className="flex items-center justify-between w-full">
                     <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">希望条件</p>
-                    <Link to="/members/profile/edit/desire" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
+                    <Link to="/members/profiles/edit/desire" className="bg-[#FF2A3B] lg:text-lg md:text-sm text-xs hover:shadow-[0_4px_10px_rgba(255,42,59,0.5)] duration-500 text-white px-2 py-1 rounded-lg">編集</Link>
                 </div>
                 <div className="flex flex-col w-full mt-6">
                     <div className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
