@@ -135,21 +135,21 @@ const RirekiDetail = ({rireki}) => {
                 <div className="flex items-center justify-center w-full mt-2">
                     <button className="lg:text-lg md:text-base text-sm bg-[#f7f6f2] hover:bg-white text-[#FF2A3B] hover:text-black hover:shadow-2xl font-bold rounded-lg px-6 py-3 duration-300" onClick={handleInit}>プロフィールの情報を読み込む</button>
                 </div>
-                <div className="flex flex-col items-start justify-start w-full">
+                <div className="flex flex-col items-start justify-start w-full hover:px-4 duration-300">
                     <button className="flex items-center justify-between w-full mt-4 border-t-[1px] border-[#c2c2c2] p-4 px-2" onClick={() => setIsBasicOpen(!isBasicOpen)}>
                         <button className="flex flex-col items-start justify-start gap-1 w-2/5">
                             <span className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-black">基本情報</span>
                             <span className="lg:text-sm md:text-xs text-xs text-[#343434]">氏名・生年月日・連絡先など</span>
                         </button>
                         <img 
-                            src={'/assets/images/top/ep_arrow-right_red.png'} 
+                            src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                             alt="arrow" 
                             className={`duration-300 ${!isBasicOpen ? "rotate-90" : "-rotate-90"}`}
                         />
                     </button>
                     <div className={`duration-300 w-full px-4 overflow-hidden ${isBasicOpen ? "opacity-100" : "max-h-0 opacity-0"}`}>
                         <div className="mt-4">
-                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-1/3">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">氏名</span>
                                 </div>
@@ -157,12 +157,12 @@ const RirekiDetail = ({rireki}) => {
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{rirekiData?.basic?.name}</p>
                                 </div>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 h-4"
                                 />
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-1/3">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">ふりがな</span>
                                 </div>
@@ -170,12 +170,12 @@ const RirekiDetail = ({rireki}) => {
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{rirekiData?.basic?.hiraganaName}</p>
                                 </div>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 h-4"
                                 />
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-1/3">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">生年月日</span>
                                 </div>
@@ -183,12 +183,12 @@ const RirekiDetail = ({rireki}) => {
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{birthday}</p>
                                 </div>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 h-4"
                                 />
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-1/3">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">年齢</span>
                                 </div>
@@ -196,12 +196,12 @@ const RirekiDetail = ({rireki}) => {
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{`${age}歳`}</p>
                                 </div>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 h-4"
                                 />
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-1/3">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">性別</span>
                                 </div>
@@ -209,12 +209,12 @@ const RirekiDetail = ({rireki}) => {
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{rirekiData?.basic?.gender}</p>
                                 </div>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 h-4"
                                 />
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-1/3">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">都道府県</span>
                                 </div>
@@ -222,12 +222,12 @@ const RirekiDetail = ({rireki}) => {
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{rirekiData?.basic?.prefecture}</p>
                                 </div>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 h-4"
                                 />
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-1/3">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">電話番号</span>
                                 </div>
@@ -235,12 +235,12 @@ const RirekiDetail = ({rireki}) => {
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{rirekiData?.basic?.phoneNumber}</p>
                                 </div>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 h-4"
                                 />
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                            <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-1/3">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">メールアドレス</span>
                                 </div>
@@ -248,13 +248,13 @@ const RirekiDetail = ({rireki}) => {
                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{rirekiData?.basic?.email}</p>
                                 </div>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 h-4"
                                 />
                             </Link>
                             { rirekiData?.basic?.photo !== undefined &&
-                                <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                <Link to={`/members/resumes/rireki/edit/basic/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                     <div className="flex items-center justify-start gap-2 w-1/3">
                                         <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">顔写真</span>
                                     </div>
@@ -263,7 +263,7 @@ const RirekiDetail = ({rireki}) => {
                                     </div>
                                     <div className="flex items-center h-56">
                                         <img 
-                                            src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                            src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                             alt="arrow" 
                                             className="duration-300 h-4"
                                         />
@@ -273,13 +273,13 @@ const RirekiDetail = ({rireki}) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col items-start justify-start w-full">
+                <div className="flex flex-col items-start justify-start w-full hover:px-4 duration-300">
                     <button className="flex items-center justify-between w-full border-t-[1px] border-[#c2c2c2] p-4 px-2" onClick={() => setIsEducationOpen(!isEducationOpen)}>
                         <button className="flex flex-col items-start justify-start gap-2 w-2/5">
                             <span className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-black">学歴</span>
                         </button>
                         <img 
-                            src={'/assets/images/top/ep_arrow-right_red.png'} 
+                            src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                             alt="arrow" 
                             className={`duration-300 ${!isEducationOpen ? "rotate-90" : "-rotate-90"}`}
                         />
@@ -290,7 +290,7 @@ const RirekiDetail = ({rireki}) => {
                                 return (
                                     <div key={index}>
                                         <p className="lg:text-sm md:text-xs text-xs font-bold text-[#343434] pb-2">学歴{index + 1}</p>
-                                            <Link to={`/members/resumes/rireki/edit/education/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                            <Link to={`/members/resumes/rireki/edit/education/${rirekiData?._id}`}  className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                                 <div className="flex items-center justify-start gap-2 w-2/5">
                                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">学校・学部・学科・専攻名</span>
                                                 </div>
@@ -298,12 +298,12 @@ const RirekiDetail = ({rireki}) => {
                                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{education?.schoolName_department_major}</p>
                                                 </div>
                                                 <img 
-                                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                                     alt="arrow" 
                                                     className="duration-300 h-4"
                                                 />
                                             </Link>
-                                            <Link to={`/members/resumes/rireki/edit/education/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                            <Link to={`/members/resumes/rireki/edit/education/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                                 <div className="flex items-center justify-start gap-2 w-2/5">
                                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">入学年月</span>
                                                 </div>
@@ -311,13 +311,13 @@ const RirekiDetail = ({rireki}) => {
                                                     <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{education?.admissionDate === "" ? "未登録" : education?.admissionDate}</p>
                                                 </div>
                                                 <img 
-                                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                                     alt="arrow" 
                                                     className="duration-300 h-4"
                                                 />
                                             </Link>
                                             {education?.graduationDate !== undefined &&
-                                                <Link to={`/members/resumes/rireki/edit/education/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                                <Link to={`/members/resumes/rireki/edit/education/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                                     <div className="flex items-center justify-start gap-2 w-2/5">
                                                         <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">卒業年月</span>
                                                     </div>
@@ -325,7 +325,7 @@ const RirekiDetail = ({rireki}) => {
                                                         <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{education?.graduationDate}</p>
                                                     </div>
                                                     <img 
-                                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                                         alt="arrow" 
                                                         className="duration-300 h-4"
                                                     />
@@ -335,14 +335,14 @@ const RirekiDetail = ({rireki}) => {
                                 )
                             })}
                             {rirekiData?.education.length === 0 &&
-                                <Link to={`/members/resumes/rireki/edit/education/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                <Link to={`/members/resumes/rireki/edit/education/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                     <div className="flex items-center justify-start gap-2 w-2/5 px-2">
                                         <span className="lg:text-sm md:text-xs text-xs text-[#343434]">学歴なし</span>
                                     </div>
                                     <div className="flex items-center justify-start w-3/5">
                                     </div>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className="duration-300 h-4"
                                     />
@@ -351,13 +351,13 @@ const RirekiDetail = ({rireki}) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col items-start justify-start w-full">
+                <div className="flex flex-col items-start justify-start w-full hover:px-4 duration-300">
                     <button className="flex items-center justify-between w-full border-t-[1px] border-[#c2c2c2] p-4 px-2" onClick={() => setIsCareerOpen(!isCareerOpen)}>
                         <button className="flex flex-col items-start justify-start gap-2 w-2/5">
                             <span className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-black">職歴</span>
                         </button>
                         <img 
-                            src={'/assets/images/top/ep_arrow-right_red.png'} 
+                            src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                             alt="arrow" 
                             className={`duration-300 ${!isCareerOpen ? "rotate-90" : "-rotate-90"}`}
                         />
@@ -368,7 +368,7 @@ const RirekiDetail = ({rireki}) => {
                                 return (
                                     <div key={index}>
                                         <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] pb-2">職歴{index + 1}</p>
-                                        <Link to={`/members/resumes/rireki/edit/work_history/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                        <Link to={`/members/resumes/rireki/edit/work_history/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                             <div className="flex items-center justify-start gap-2 w-2/5">
                                                 <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">勤務先名</span>
                                             </div>
@@ -376,12 +376,12 @@ const RirekiDetail = ({rireki}) => {
                                                 <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{workhistory.companyName}</p>
                                             </div>
                                             <img 
-                                                src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                                src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                                 alt="arrow" 
                                                 className="duration-300 h-4"
                                             />
                                         </Link>
-                                        <Link to={`/members/resumes/rireki/edit/work_history/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                        <Link to={`/members/resumes/rireki/edit/work_history/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                             <div className="flex items-center justify-start gap-2 w-2/5">
                                                 <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">業務開始年月</span>
                                             </div>
@@ -389,12 +389,12 @@ const RirekiDetail = ({rireki}) => {
                                                 <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{workhistory.startDate.split('-')[0] + "年" + workhistory.startDate.split('-')[1] + "月"}入職</p>
                                             </div>
                                             <img 
-                                                src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                                src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                                 alt="arrow" 
                                                 className="duration-300 h-4"
                                             />
                                         </Link>
-                                        <Link to={`/members/resumes/rireki/edit/work_history/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                        <Link to={`/members/resumes/rireki/edit/work_history/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                             <div className="flex items-center justify-start gap-2 w-2/5">
                                                 <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">勤務終了年月</span>
                                             </div>
@@ -402,7 +402,7 @@ const RirekiDetail = ({rireki}) => {
                                                 <p className="lg:text-[1rem] md:text-[0.8rem] text-sm text-[#343434] lg:pl-10 md:pl-6 pl-2">{workhistory.endDate.split('-')[0] + "年" + workhistory.endDate.split('-')[1] + "月"}退職</p>
                                             </div>
                                             <img 
-                                                src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                                src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                                 alt="arrow" 
                                                 className="duration-300 h-4"
                                             />
@@ -411,14 +411,14 @@ const RirekiDetail = ({rireki}) => {
                                 )
                             })}
                             {rirekiData?.workhistory?.length === 0 &&
-                                <Link to={`/members/resumes/rireki/edit/work_history/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3">
+                                <Link to={`/members/resumes/rireki/edit/work_history/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 hover:px-4 duration-300">
                                     <div className="flex items-center justify-start gap-2 w-2/5 px-2">
                                         <span className="lg:text-sm md:text-xs text-xs text-[#343434]">職歴なし</span>
                                     </div>
                                     <div className="flex items-center justify-start w-3/5">
                                     </div>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className="duration-300 h-4"
                                     />
@@ -427,20 +427,20 @@ const RirekiDetail = ({rireki}) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col items-start justify-start w-full">
+                <div className="flex flex-col items-start justify-start w-full hover:px-4 duration-300">
                     <button className="flex items-center justify-between w-full border-t-[1px] border-[#c2c2c2] p-4 px-2" onClick={() => setIsQualificationOpen(!isQualificationOpen)}>
                         <button className="flex flex-col items-start justify-start gap-2 w-2/5">
                             <span className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-black">免許・資格</span>
                         </button>
                         <img 
-                            src={'/assets/images/top/ep_arrow-right_red.png'} 
+                            src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                             alt="arrow" 
                             className={`duration-300 ${!isQualificationOpen ? "rotate-90" : "-rotate-90"}`}
                         />
                     </button>
                     <div className={`duration-300 overflow-hidden w-full ${isQualificationOpen ? "opacity-100" : "max-h-0 opacity-0"}`}>
                         <div className="mt-2 px-4">
-                            <Link to={`/members/resumes/rireki/edit/qualification/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center">
+                            <Link to={`/members/resumes/rireki/edit/qualification/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-2/5">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">資格/取得年月</span>
                                 </div>
@@ -453,7 +453,7 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                                 <div className="flex items-center">
                                     <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 w-6"
                                     />
@@ -462,21 +462,21 @@ const RirekiDetail = ({rireki}) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col items-start justify-start w-full">
+                <div className="flex flex-col items-start justify-start w-full hover:px-4 duration-300">
                     <button className="flex items-center justify-between w-full border-t-[1px] border-[#c2c2c2] p-4 px-2" onClick={() => setIsOtherOpen(!isOtherOpen)}>
                         <button className="flex flex-col items-start justify-start gap-1 w-2/5">
                             <span className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-black">その他</span>
                             <span className="lg:text-sm md:text-xs text-xs text-[#343434]">通勤時間・扶養家族数・配偶者</span>
                         </button>
                         <img 
-                            src={'/assets/images/top/ep_arrow-right_red.png'} 
+                            src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                             alt="arrow" 
                             className={`duration-300 ${!isOtherOpen ? "rotate-90" : "-rotate-90"}`}
                         />
                     </button>
                     <div className={`duration-300 overflow-hidden w-full ${isOtherOpen ? "opacity-100" : "max-h-0 opacity-0"}`}>
                         <div className="mt-2 px-4">
-                            <Link to={`/members/resumes/rireki/edit/other/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center">
+                            <Link to={`/members/resumes/rireki/edit/other/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-2/5">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">通勤時間</span>
                                 </div>
@@ -487,13 +487,13 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                                 <div className="flex items-center">
                                     <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 w-6"
                                     />
                                 </div>
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/other/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center">
+                            <Link to={`/members/resumes/rireki/edit/other/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-2/5">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">扶養家族数</span>
                                 </div>
@@ -504,13 +504,13 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                                 <div className="flex items-center">
                                     <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 w-6"
                                     />
                                 </div>
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/other/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center">
+                            <Link to={`/members/resumes/rireki/edit/other/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-2/5">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">配偶者</span>
                                 </div>
@@ -521,7 +521,7 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                                 <div className="flex items-center">
                                     <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 w-6"
                                     />
@@ -530,20 +530,20 @@ const RirekiDetail = ({rireki}) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col items-start justify-start w-full">
+                <div className="flex flex-col items-start justify-start w-full hover:px-4 duration-300">
                     <button className="flex items-center justify-between w-full border-t-[1px] border-[#c2c2c2] p-4 px-2" onClick={() => setIsMotivationOpen(!isMotivationOpen)}>
                         <div className="flex flex-col items-start justify-start gap-2 w-2/5">
                             <span className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-black">志望動機・本人希望</span>
                         </div>
                         <img 
-                            src={'/assets/images/top/ep_arrow-right_red.png'} 
+                            src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                             alt="arrow" 
                             className={`duration-300 ${!isMotivationOpen ? "rotate-90" : "-rotate-90"}`}
                         />
                     </button>
                     <div className={`duration-300 overflow-hidden w-full ${isMotivationOpen ? "opacity-100" : "max-h-0 opacity-0"}`}>
                         <div className="mt-2 px-4">
-                            <Link to={`/members/resumes/rireki/edit/desire/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center">
+                            <Link to={`/members/resumes/rireki/edit/desire/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-2/5">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">志望動機</span>
                                 </div>
@@ -554,13 +554,13 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                                 <div className="flex items-center">
                                     <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 w-6"
                                     />
                                 </div>
                             </Link>
-                            <Link to={`/members/resumes/rireki/edit/desire/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center">
+                            <Link to={`/members/resumes/rireki/edit/desire/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-2/5">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">本人希望</span>
                                 </div>
@@ -571,7 +571,7 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                                 <div className="flex items-center">
                                     <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 w-6"
                                     />
@@ -580,20 +580,20 @@ const RirekiDetail = ({rireki}) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col items-start justify-start w-full">
+                <div className="flex flex-col items-start justify-start w-full hover:px-4 duration-300">
                     <button className="flex items-center justify-between w-full border-t-[1px] border-[#c2c2c2] p-4 px-2" onClick={() => setIsDateOpen(!isDateOpen)}>
                         <button className="flex flex-col items-start justify-start gap-2 w-2/5">
                             <span className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-black">履歴書の作成日</span>
                         </button>
                         <img 
-                            src={'/assets/images/top/ep_arrow-right_red.png'} 
+                            src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                             alt="arrow" 
                             className={`duration-300 ${!isDateOpen ? "rotate-90" : "-rotate-90"}`}
                         />
                     </button>
                     <div className={`duration-300 overflow-hidden w-full ${isDateOpen ? "opacity-100" : "max-h-0 opacity-0"}`}>
                         <div className="mt-2 px-4">
-                            <Link to={`/members/resumes/rireki/edit/date/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center">
+                            <Link to={`/members/resumes/rireki/edit/date/${rirekiData?._id}`} className="flex w-full border-t-[1px] border-[#e7e7e7] py-3 items-center hover:px-4 duration-300">
                                 <div className="flex items-center justify-start gap-2 w-2/5">
                                     <span className="lg:text-sm md:text-xs text-xs font-bold text-[#343434]">履歴書の作成日</span>
                                 </div>
@@ -604,7 +604,7 @@ const RirekiDetail = ({rireki}) => {
                                 </div>
                                 <div className="flex items-center">
                                     <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className="duration-300 w-6"
                                     />
