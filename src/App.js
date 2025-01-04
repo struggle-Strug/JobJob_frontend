@@ -7,7 +7,6 @@ import Login from './Pages/Auth/Login';
 import axios from 'axios';
 import { useAuth } from './context/AuthContext';
 import checkAuth from './utils/checkAuth';
-import Dashboard from './Pages/Dashboard';
 import MyPageLayout from './components/MyPageLayout';
 import MyPage from './Pages/MemberProfile/MyPage';
 import Profile from './Pages/MemberProfile/Profile';

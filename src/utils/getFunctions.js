@@ -1,4 +1,4 @@
-import { Prefectures } from "./constants/categories";
+import { Features, Prefectures } from "./constants/categories";
 import { JobType as jobTypes } from "./constants/categories";
 import { EmploymentType as employmentTypes } from './constants/categories/employmenttype';
 import { Qualifications as qualifications } from './constants/categories/qualifications';
@@ -39,6 +39,17 @@ export const getQualificationKeyByValue = (value) => {
         for (const qualification in qualifications[category]) {
             if (qualifications[category][qualification] === value) {
                 return qualification; // Return the qualification key if the value matches
+            }
+        }
+    }
+    return null; // Return null if no match is found
+}
+
+export const getFeatureKeyByValue = (value) => {
+    for (const category in Features) {
+        for (const feature in Features[category]) {
+            if (Features[category][feature] === value) {
+                return feature; // Return the feature key if the value matches
             }
         }
     }
