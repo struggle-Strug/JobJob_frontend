@@ -1,7 +1,8 @@
 import { Input } from "antd";
 import { Link } from "react-router-dom";
+import { getJobTypeKeyByValue, getPrefectureKeyByValue } from "../../utils/getFunctions";
 
-const Dashboard = () => {
+const JobDetail = ({pref, employmentType, feature, JobType}) => {
     return (
         <>
            <div className="flex w-full h-auto px-4 bg-[#EFEFEF]">
@@ -11,8 +12,8 @@ const Dashboard = () => {
                             <p className="text-lg font-bold text-gray-500">求人・転職・アルバイト情報</p>
                             <div className="flex items-center justify-between mt-4">
                                 <div className="flex items-center">
-                                    <p className="lg:text-xl md:text-sm font-bold text-[#FF6B56]">東京都</p>
-                                    <p className="lg:text-xl md:text-sm font-bold text-[#343434]">の介護職/ヘルパー</p>
+                                    <p className="lg:text-xl md:text-sm font-bold text-[#FF6B56]">{getPrefectureKeyByValue(pref)}</p>
+                                    <p className="lg:text-xl md:text-sm font-bold text-[#343434]">の{JobType}</p>
                                 </div>
                                 <div className="flex items-center">
                                     <p className="lg:text-xl md:text-sm font-bold text-[#343434] ">該当件数</p>
@@ -544,4 +545,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard;
+export default JobDetail;

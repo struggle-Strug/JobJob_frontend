@@ -25,7 +25,7 @@ const Top = () => {
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/dr/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/dr"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         医師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -37,7 +37,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/ph/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/ph"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         薬剤師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -49,7 +49,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/nan/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/nan"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         看護師/准看護師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -61,7 +61,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/mw/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/mw"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         助産師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -75,7 +75,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/phn/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/phn"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         保健師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -87,7 +87,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/nuas/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/nuas"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         看護助手<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -99,7 +99,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/nan/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/nan"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         看護師/准看護師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -111,7 +111,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/mrt/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/mrt"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         診療放射線技師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -125,7 +125,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/clt/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/clt"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         臨床検査技師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -137,7 +137,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/rdn/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/rdn"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         管理栄養士/栄養士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -149,7 +149,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/cp/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/cp"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         公認心理師/臨床心理士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -161,7 +161,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/msw/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/msw"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         医療ソーシャルワーカー<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -175,7 +175,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/rs/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/rs"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         登録販売者<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -187,7 +187,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/mor/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/mor"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         医療事務/受付<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -199,7 +199,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/ctc/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/ctc"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         治験コーディネーター<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -211,7 +211,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/sad/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/sad"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         営業/管理部門/その他<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -225,7 +225,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/diaf/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/diaf"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         調剤事務<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -237,7 +237,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/cdm/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/cdm"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         臨床開発モニター<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -249,7 +249,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/mr/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/mr"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         MR<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -261,7 +261,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/mrp/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/mrp"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         MS（医薬品卸）<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -286,7 +286,7 @@ const Top = () => {
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/de/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/de"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         歯科医師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -298,7 +298,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/dh/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/dh"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         歯科衛生士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -310,7 +310,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/dt/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/dt"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         歯科技工士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -350,7 +350,7 @@ const Top = () => {
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/cwh/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/cwh"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         介護職/ヘルパー<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -362,7 +362,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/lc/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/lc"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         生活相談員<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -374,7 +374,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/cm/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/cm"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         ケアマネジャー<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -386,7 +386,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/mp/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/mp"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         管理職（介護）<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -400,7 +400,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/sp/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/sp"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         サービス提供責任者<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -412,7 +412,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/lsw/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/lsw"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         生活支援員<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -424,7 +424,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/wesc/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/wesc"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         福祉用具専門相談員<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -436,7 +436,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/cdsm/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/cdsm"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         児童発達支援管理責任者<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -450,7 +450,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/smm/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/smm"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         サービス管理責任者<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -462,7 +462,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/cii/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/cii"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         児童指導員/指導員<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -474,7 +474,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/nan/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/nan"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         看護師/准看護師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -486,7 +486,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/rdn/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/rdn"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         管理栄養士/栄養士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -500,7 +500,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/ccs/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/ccs"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         調理師/調理スタッフ<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -512,7 +512,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/nctd/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/nctd"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         介護タクシー/ドライバー<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -524,7 +524,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/mor/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/mor"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         医療事務/受付<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -536,7 +536,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/sado/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/sado"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         営業/管理部門/その他<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -550,7 +550,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/nca/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/nca"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         介護事務<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -562,7 +562,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/css/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/css"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         相談支援専門員<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -587,7 +587,7 @@ const Top = () => {
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/chil/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/chil"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         保育士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -599,7 +599,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/kt/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/kt"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         幼稚園教諭<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -611,7 +611,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/ca/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/ca"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         保育補助<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -623,7 +623,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/cii/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/cii"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         児童指導員/指導員<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -637,7 +637,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/cdsm/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/cdsm"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         児童発達支援管理責任者<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -649,7 +649,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/nan/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/nan"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         看護師/准看護師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -661,7 +661,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/rdn/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/rdn"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         管理栄養士/栄養士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -673,7 +673,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/ccs/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/ccs"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         調理師/調理スタッフ<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -687,7 +687,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/acsw/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/acsw"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         放課後児童支援員/学童指導員<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -712,7 +712,7 @@ const Top = () => {
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/pt/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/pt"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         理学療法士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -724,7 +724,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/st/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/st"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         言語聴覚士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -736,7 +736,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/ot/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/ot"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         作業療法士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -748,7 +748,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/ort/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/ort"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         視能訓練士<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -762,7 +762,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/jt/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/jt"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         柔道整復師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -774,7 +774,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/amst/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/amst"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         あん摩マッサージ指圧師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -786,7 +786,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/acu/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/acu"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         鍼灸師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -798,7 +798,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/chir/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/chir"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         整体師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -823,7 +823,7 @@ const Top = () => {
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6 pb-10">
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/hai/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/hai"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         美容師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -835,7 +835,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/bar/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/bar"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         理容師<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -847,7 +847,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/naar/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/naar"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         ネイリスト<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -859,7 +859,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/el/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/el"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         アイリスト<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -873,7 +873,7 @@ const Top = () => {
                                 </Link>
                             </div>
                             <div className="grid grid-cols-4 gap-2">
-                                <Link to={"/et/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/et"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         エステティシャン/セラピスト<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -885,7 +885,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/bcm/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/bcm"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         美容部員<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -897,7 +897,7 @@ const Top = () => {
                                         />
                                     </div>
                                 </Link>
-                                <Link to={"/ins/?type=1"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                                <Link to={"/ins"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         インストラクター<span className="text-[#343434] text-xs">(123)</span>
                                     </p>
@@ -1037,7 +1037,7 @@ const Top = () => {
                     <p className="lg:text-xl md:text-lg text-base font-bold">施設ジャンルから探す</p>
                     <div className="grid grid-cols-3 gap-2 pt-4">
                         <div className="col-span-1 flex flex-col">
-                            <Link to={"/hospital/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/hospital"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     病院
                                 </p>
@@ -1049,7 +1049,7 @@ const Top = () => {
                                     />
                                 </div>
                             </Link>
-                            <Link to={"/relaxation/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/relaxation"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     代替医療・リラクゼーション
                                 </p>
@@ -1061,7 +1061,7 @@ const Top = () => {
                                     />
                                 </div>
                             </Link>
-                            <Link to={"/nursing-station/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/nursing-station"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     訪問看護ステーション
                                 </p>
@@ -1073,7 +1073,7 @@ const Top = () => {
                                     />
                                 </div>
                             </Link>
-                            <Link to={"/Others/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/Others"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     その他（企業・学校等）
                                 </p>
@@ -1087,7 +1087,7 @@ const Top = () => {
                             </Link>
                         </div>
                         <div className="col-span-1 flex flex-col">
-                            <Link to={"/Clinic/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/Clinic"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     診療所
                                 </p>
@@ -1099,7 +1099,7 @@ const Top = () => {
                                     />
                                 </div>
                             </Link>
-                            <Link to={"/welfare/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/welfare"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     介護・福祉事業所
                                 </p>
@@ -1111,7 +1111,7 @@ const Top = () => {
                                     />
                                 </div>
                             </Link>
-                            <Link to={"/nursery/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/nursery"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     保育園・幼稚園
                                 </p>
@@ -1125,7 +1125,7 @@ const Top = () => {
                             </Link>
                         </div>
                         <div className="col-span-1 flex flex-col">
-                            <Link to={"/dental/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/dental"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     歯科診療所・技工所
                                 </p>
@@ -1137,7 +1137,7 @@ const Top = () => {
                                     />
                                 </div>
                             </Link>
-                            <Link to={"/pharmacy/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/pharmacy"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     薬局・ドラッグストア
                                 </p>
@@ -1149,7 +1149,7 @@ const Top = () => {
                                     />
                                 </div>
                             </Link>
-                            <Link to={"/Beauty/?type=1"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
+                            <Link to={"/Beauty"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
                                     美容・サロン・ジム
                                 </p>
