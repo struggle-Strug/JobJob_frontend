@@ -1,8 +1,17 @@
-import { Input } from "antd";
+import { Checkbox, Input, Modal, Select } from "antd";
 import { Link } from "react-router-dom";
-import { getJobTypeKeyByValue, getPrefectureKeyByValue } from "../../utils/getFunctions";
+import { getPrefectureKeyByValue } from "../../../utils/getFunctions";
+import { useState } from "react";
+import { EmploymentType, Features, Prefectures } from "../../../utils/constants/categories";
 
-const JobDetail = ({pref, employmentType, feature, JobType}) => {
+const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentType, setFeature, setPref, monthlySalary, setMonthlySalary, monthlySalaryOptions, hourlySalary, setHourlySalary, hourlySalaryOptions}) => {
+    const [prefectureModalOpen, setPrefectureModalOpen] = useState(false);
+    const [employmentTypeModalOpen, setEmploymentTypeModalOpen] = useState(false);
+    const [featureModalOpen, setFeatureModalOpen] = useState(false);
+    const onClickPref = (pref) => {
+        setPref(pref);
+        setPrefectureModalOpen(false);
+    }
     return (
         <>
            <div className="flex w-full h-auto px-4 bg-[#EFEFEF]">
@@ -21,7 +30,7 @@ const JobDetail = ({pref, employmentType, feature, JobType}) => {
                                     <p className="lg:text-xl md:text-sm font-bold text-[#343434]">件</p>
                                 </div>
                                 <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
-                                    <button className="lg:text-[1rem] md:text-sm font-bold text-[#FF2A3B] hover:underline">都道府県を変更</button>
+                                    <button className="lg:text-[1rem] md:text-sm font-bold text-[#FF2A3B] hover:underline" onClick={() => setPrefectureModalOpen(true)}>都道府県を変更</button>
                                     <img src="/assets/images/dashboard/ep_arrow-right.png" alt="chevron-right" className="w-4" />
                                 </div>
                             </div>
@@ -30,28 +39,28 @@ const JobDetail = ({pref, employmentType, feature, JobType}) => {
                             <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">求人検索</p>
                         </div>
                         <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl mt-8">
-                            <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg ">
-                                <div className="flex items-center justify-between gap-1 ">
+                            <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg hover:px-12 duration-300 cursor-pointer">
+                                <div className="flex items-center justify-between gap-1">
                                     <img src="/assets/images/dashboard/gg_pin.png" alt="map" className="w-5 pt-0.5" />
                                     <p className="lg:text-md md:text-sm font-bold text-[#343434]">市区町村から選択</p>
                                 </div>
                                 <img src="/assets/images/dashboard/ep_arrow-right_black.png" alt="arrow-down" className="w-4" />
                             </div>
-                            <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4">
+                            <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer">
                                 <div className="flex items-center justify-between gap-1 ">
                                     <img src="/assets/images/dashboard/ph_train-simple.png" alt="map" className="w-5 pt-0.5" />
                                     <p className="lg:text-md md:text-sm font-bold text-[#343434]">沿線から選択</p>
                                 </div>
                                 <img src="/assets/images/dashboard/ep_arrow-right_black.png" alt="arrow-down" className="w-4" />
                             </div>
-                            <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4">
+                            <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer" onClick={() => setEmploymentTypeModalOpen(true)}>
                                 <div className="flex items-center justify-between gap-1 ">
                                     <img src="/assets/images/dashboard/material-symbols_check-box-outline.png" alt="map" className="w-5 pt-0.5" />
                                     <p className="lg:text-md md:text-sm font-bold text-[#343434]">雇用形態・給与から選択</p>
                                 </div>
                                 <img src="/assets/images/dashboard/ep_arrow-right_black.png" alt="arrow-down" className="w-4" />
                             </div>
-                            <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4">
+                            <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer" onClick={() => setFeatureModalOpen(true)}>
                                 <div className="flex items-center justify-between gap-1 ">
                                     <img src="/assets/images/dashboard/mdi_tag-outline.png" alt="map" className="w-5 pt-0.5" />
                                     <p className="lg:text-md md:text-sm font-bold text-[#343434]">特徴から選択</p>
@@ -60,7 +69,7 @@ const JobDetail = ({pref, employmentType, feature, JobType}) => {
                             </div>
                         </div>
                         <div className="flex items-center justify-start w-full mt-8">
-                            <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">東京都の介護職/ヘルパーの求人</p>
+                            <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">{getPrefectureKeyByValue(pref)}の{JobType}の求人</p>
                         </div>
                         <div className="flex items-center justify-start w-full mt-8">
                             <img src="/assets/images/dashboard/flowbite_sort-outline.png" alt="map" className="w-5 pt-0.5" />
@@ -114,7 +123,7 @@ const JobDetail = ({pref, employmentType, feature, JobType}) => {
                                     <img src="/assets/images/dashboard/AdobeStock_569015666 1.png" alt="arrow-down" className="lg:w-full md:w-1/2"/>
                                     <div className="flex flex-col items-center justify-between p-4 w-full gap-8">
                                         <p className="lg:text-xl md:text-sm font-bold text-[#343434]">求人タイトルダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">求人内容ダミーテキストダミーテキストダミーテキストダミーテキ���トダミーテキスト</p>
+                                        <p className="lg:text-sm md:text-xs text-[#343434]">求人内容ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center justify-start w-full gap-4 px-2">
@@ -541,8 +550,338 @@ const JobDetail = ({pref, employmentType, feature, JobType}) => {
                     </div>
                 </div>
            </div>
+           {
+                <Modal
+                    open={prefectureModalOpen}
+                    onCancel={() => setPrefectureModalOpen(false)}
+                    footer={null}
+                    width={1000}
+                    height={800}
+                    className="modal"
+                >
+                    <div className="grid grid-cols-7 w-full py-3">
+                        <div className="col-span-1 flex flex-col justify-start items-center">
+                            <div className="w-full px-4">
+                                <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] border-b-[1px] border-[#bdbdbd] w-full text-center py-3">関東</p>
+                            </div>
+                            <div className="flex flex-col w-full px-4">
+                                {Object.keys(Prefectures.KANTO).map((prefecture, index) => {
+                                    return (
+                                        <>
+                                            <Link 
+                                                key={index} 
+                                                to={
+                                                    `/${path}/${Prefectures.KANTO[prefecture]}`
+                                                    + (employmentType !== "" ? `/${employmentType}` : "")
+                                                    + (feature !== "" ? `/${feature}` : "")
+                                                    } 
+                                                className="lg:text-md md:text-sm text-sm text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-[0.5rem] duration-300"
+                                                onClick={() => onClickPref(Prefectures.KANTO[prefecture])}
+                                            >
+                                                {prefecture}
+                                            </Link>
+                                        </>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="col-span-1 flex flex-col justify-start items-center">
+                            <div className="w-full px-4">
+                                <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] border-b-[1px] border-[#bdbdbd] w-full text-center py-3">関西</p>
+                            </div>
+                            <div className="flex flex-col w-full px-4">
+                                {Object.keys(Prefectures.KANSAI).map((prefecture, index) => {
+                                    return (
+                                        <>
+                                            <Link 
+                                                key={index} 
+                                                to={
+                                                    `/${path}/${Prefectures.KANSAI[prefecture]}`
+                                                    + (employmentType !== "" ? `/${employmentType}` : "")
+                                                    + (feature !== "" ? `/${feature}` : "")
+                                                    } 
+                                                className="lg:text-md md:text-sm text-sm text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-[0.5rem] duration-300"
+                                                onClick={() => onClickPref(Prefectures.KANSAI[prefecture])}
+                                            >
+                                                {prefecture}
+                                            </Link>
+                                        </>
+                                    )
+                                })} 
+                            </div>
+                        </div>
+                        <div className="col-span-1 flex flex-col justify-start items-cente4">
+                            <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] border-b-[1px] border-[#bdbdbd] w-full text-center py-3">東海</p>
+                            <div className="flex flex-col w-full px-4">
+                                {Object.keys(Prefectures.TOKAI).map((prefecture, index) => {
+                                    return (
+                                        <>
+                                            <Link 
+                                                key={index} 
+                                                to={
+                                                    `/${path}/${Prefectures.TOKAI[prefecture]}`
+                                                    + (employmentType !== "" ? `/${employmentType}` : "")
+                                                    + (feature !== "" ? `/${feature}` : "")
+                                                    } 
+                                                className="lg:text-md md:text-sm text-sm text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-[0.5rem] duration-300"
+                                                onClick={() => onClickPref(Prefectures.TOKAI[prefecture])}
+                                            >
+                                                {prefecture}
+                                            </Link>
+                                        </>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="col-span-1 flex flex-col justify-start items-center">
+                            <div className="w-full px-4">
+                                <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] border-b-[1px] border-[#bdbdbd] w-full text-center py-3">北海道・東北</p>
+                            </div>
+                            <div className="flex flex-col w-full px-4">
+                                {Object.keys(Prefectures.HOKKAIDO_TOHOKU).map((prefecture, index) => {
+                                    return (
+                                        <>
+                                            <Link 
+                                                key={index} 
+                                                to={
+                                                    `/${path}/${Prefectures.HOKKAIDO_TOHOKU[prefecture]}`
+                                                    + (employmentType !== "" ? `/${employmentType}` : "")
+                                                    + (feature !== "" ? `/${feature}` : "")
+                                                    } 
+                                                className="lg:text-md md:text-sm text-sm text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-[0.5rem] duration-300"
+                                                onClick={() => onClickPref(Prefectures.HOKKAIDO_TOHOKU[prefecture])}
+                                            >
+                                                {prefecture}
+                                            </Link>
+                                        </>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="col-span-1 flex flex-col justify-start items-center">
+                            <div className="w-full px-4">
+                                <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] border-b-[1px] border-[#bdbdbd] w-full text-center py-3">甲信越・北陸</p>
+                            </div>
+                            <div className="flex flex-col w-full px-4">
+                                {Object.keys(Prefectures.KOSHINETSU_HOKURIKU).map((prefecture, index) => {
+                                    return (
+                                        <>
+                                            <Link 
+                                                key={index} 
+                                                to={
+                                                    `/${path}/${Prefectures.KOSHINETSU_HOKURIKU[prefecture]}`
+                                                    + (employmentType !== "" ? `/${employmentType}` : "")
+                                                    + (feature !== "" ? `/${feature}` : "")
+                                                    } 
+                                                className="lg:text-md md:text-sm text-sm text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-[0.5rem] duration-300"
+                                                onClick={() => onClickPref(Prefectures.KOSHINETSU_HOKURIKU[prefecture])}
+                                            >
+                                                {prefecture}
+                                            </Link>
+                                        </>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="col-span-1 flex flex-col justify-start items-center">
+                            <div className="w-full px-4">
+                                <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] border-b-[1px] border-[#bdbdbd] w-full text-center py-3">中部・近畿</p>
+                            </div>
+                            <div className="flex flex-col w-full px-4">
+                                {Object.keys(Prefectures.CHUGOKU_SHIKOKU).map((prefecture, index) => {
+                                    return (
+                                        <>
+                                            <Link 
+                                                key={index} 
+                                                to={
+                                                    `/${path}/${Prefectures.CHUGOKU_SHIKOKU[prefecture]}`
+                                                    + (employmentType !== "" ? `/${employmentType}` : "")
+                                                    + (feature !== "" ? `/${feature}` : "")
+                                                    } 
+                                                className="lg:text-md md:text-sm text-sm text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-[0.5rem] duration-300"
+                                                onClick={() => onClickPref(Prefectures.CHUGOKU_SHIKOKU[prefecture])}
+                                            >
+                                                {prefecture}
+                                            </Link>
+                                        </>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="col-span-1 flex flex-col justify-start items-center">
+                            <div className="w-full px-4">
+                                <p className="lg:text-base md:text-sm text-xs font-bold text-[#343434] border-b-[1px] border-[#bdbdbd] w-full text-center py-3">九州・沖縄</p>
+                            </div>
+                            <div className="flex flex-col w-full px-4">
+                                {Object.keys(Prefectures.KYUSHU_OKINAWA).map((prefecture, index) => {
+                                    return (
+                                        <>
+                                            <Link 
+                                                key={index} 
+                                                to={
+                                                    `/${path}/${Prefectures.KYUSHU_OKINAWA[prefecture]}`
+                                                    + (employmentType !== "" ? `/${employmentType}` : "")
+                                                    + (feature !== "" ? `/${feature}` : "")
+                                                    } 
+                                                className="lg:text-md md:text-sm text-sm text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-[0.5rem] duration-300"
+                                                onClick={() => onClickPref(Prefectures.KYUSHU_OKINAWA[prefecture])}
+                                            >
+                                                {prefecture}
+                                            </Link>
+                                        </>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div> 
+                </Modal>
+           }
+           {
+                <Modal
+                    open={employmentTypeModalOpen}
+                    onCancel={() => setEmploymentTypeModalOpen(false)}
+                    footer={null}
+                    width={1000}
+                    height={800}
+                    className="modal"
+                >
+                    <div className="w-full">
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">雇用形態</p>
+                            <div className="flex items-center justify-start desire gap-4 mt-4">
+                                {Object.keys(EmploymentType).map((employmentTypeKey, index) => {
+                                    return (
+                                        <Checkbox key={index} onChange={() => setEmploymentType(EmploymentType[employmentTypeKey])} checked={employmentType === EmploymentType[employmentTypeKey]}>{employmentTypeKey}</Checkbox>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">給与</p>
+                            <div className="flex items-center justify-start desire gap-2 mt-4">
+                                <span className="lg:text-base md:text-sm text-xs font-bold text-[#343434]">月給</span>
+                                <div className="flex items-end w-1/4 gap-2">
+                                    <Select
+                                        options={monthlySalaryOptions}
+                                        onChange={(value) => setMonthlySalary(value)}
+                                        value={monthlySalary}
+                                        className="h-10"
+                                    />
+                                    <span className="lg:text-base md:text-sm text-xs text-[#343434]">万円以上</span>
+                                </div>
+                                <span className="lg:text-base md:text-sm text-xs font-bold text-[#343434]">時給</span>
+                                <div className="flex items-end w-1/4 gap-2">
+                                    <Select
+                                        options={hourlySalaryOptions}
+                                        onChange={(value) => setHourlySalary(value)}
+                                        value={hourlySalary}
+                                        className="h-10"
+                                    />
+                                    <span className="lg:text-base md:text-sm text-xs text-[#343434]">円以上</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-center w-full">
+                            <button className="bg-[#e9e9e9] hover:shadow-xl text-center font-bold lg:text-lg md:text-sm text-xs duration-500 text-[#FF2A3B] hover:text-[#343434] lg:px-12 md:px-8 px-4 lg:py-4 md:py-2 py-1 rounded-lg my-6">検索する</button>
+                        </div>
+                    </div>
+                </Modal>
+           }
+           {
+                <Modal
+                    open={featureModalOpen}
+                    onCancel={() => setFeatureModalOpen(false)}
+                    footer={null}
+                    width={1000}
+                    height={800}
+                    className="modal"
+                >
+                    <div className="w-full">
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">休日の特徴</p>
+                            <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
+                                {Object.keys(Features.HOLIDAY).map((featureKey, index) => {
+                                    return (
+                                        <Checkbox key={index} onChange={() => setFeature(Features.HOLIDAY[featureKey])} checked={feature === Features.HOLIDAY[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">勤務時間の特徴</p>
+                            <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
+                                {Object.keys(Features.WORKING_HOURS).map((featureKey, index) => {
+                                    return (
+                                        <Checkbox key={index} onChange={() => setFeature(Features.WORKING_HOURS[featureKey])} checked={feature === Features.WORKING_HOURS[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">アクセスの特徴</p>
+                            <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
+                                {Object.keys(Features.ACCESS).map((featureKey, index) => {
+                                    return (
+                                        <Checkbox key={index} onChange={() => setFeature(Features.ACCESS[featureKey])} checked={feature === Features.ACCESS[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">仕事内容の特徴</p>
+                            <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
+                                {Object.keys(Features.DESCRIPTION).map((featureKey, index) => {
+                                    return (
+                                        <Checkbox key={index} onChange={() => setFeature(Features.DESCRIPTION[featureKey])} checked={feature === Features.DESCRIPTION[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">給与・待遇・福利厚生の特徴</p>
+                            <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
+                                {Object.keys(Features.SALARY_BENEFITS_WELFARE).map((featureKey, index) => {
+                                    return (
+                                        <Checkbox key={index} onChange={() => setFeature(Features.SALARY_BENEFITS_WELFARE[featureKey])} checked={feature === Features.SALARY_BENEFITS_WELFARE[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">サービス形態の特徴</p>
+                            <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
+                                {Object.keys(Features.SERVICE_TYPES).map((featureKey, index) => {
+                                    return (
+                                        <Checkbox key={index} onChange={() => setFeature(Features.SERVICE_TYPES[featureKey])} checked={feature === Features.SERVICE_TYPES[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">教育体制・教育の特徴</p>
+                            <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
+                                {Object.keys(Features.EDUCATION).map((featureKey, index) => {
+                                    return (
+                                        <Checkbox key={index} onChange={() => setFeature(Features.EDUCATION[featureKey])} checked={feature === Features.EDUCATION[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="w-full p-6">
+                            <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">診療科目の特徴</p>
+                            <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
+                                {Object.keys(Features.MEDICAL_DEPARTMENT).map((featureKey, index) => {
+                                    return (
+                                        <Checkbox key={index} onChange={() => setFeature(Features.MEDICAL_DEPARTMENT[featureKey])} checked={feature === Features.MEDICAL_DEPARTMENT[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
+           }
         </>
     )
 }
 
-export default JobDetail;
+export default JobLists;

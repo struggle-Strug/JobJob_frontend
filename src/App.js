@@ -18,7 +18,9 @@ import Resumes from './Pages/MemberProfile/Resumes';
 import Edit from './Pages/MemberProfile/ProfileEdit';
 import CompanyLandingPage from './Pages/CompanyLandingPage';
 import Top from './Pages/Top';
-import CertainJobList from './Pages/CertainJobList';
+import CertainJob from './Pages/CertainJob';
+import JobDetails from './Pages/CertainJob/JobDetails';
+import JobOffer from './Pages/CertainJob/JobOffer';
 function App() {
   const { setIsAuthenticated, setUser } = useAuth();
   const token = localStorage.getItem('token')
@@ -46,7 +48,9 @@ function App() {
           <Route path='/' element={<Top />} />
           <Route path='/members/sign_up' element={<Register />} />
           <Route path='/members/sign_in' element={<Login />} />
-          <Route path='/*' element={<CertainJobList />} />
+          <Route path='/:jobtype/:pref?/:employmentType?/:feature?' element={<CertainJob />} />
+          <Route path='/:jobtype/details/:id/' element={<JobDetails />} />
+          <Route path='/:jobtype/details/apply/:id' element={<JobOffer />} />
           {token ? (
             <Route element={<MyPageLayout />}>
               <Route path='/members/mypage' element={<MyPage />} />

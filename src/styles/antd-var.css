@@ -27,3 +27,11 @@
     font-family: 'Noto Sans JP', sans-serif;
 }
 
+.ant-input, .ant-input * {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.ant-select, .ant-select * {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+

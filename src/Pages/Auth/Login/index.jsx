@@ -30,7 +30,7 @@ const Login = () => {
         setIsAuthenticated(true)
         setUser(res.data.user)
         setTimeout(() => {
-            navigate("/dashboard");
+            navigate("/members/mypage");
         }, 1000);
     }
 
