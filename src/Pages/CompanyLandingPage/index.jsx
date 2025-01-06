@@ -5,17 +5,17 @@ const CompanyLandingPage = () => {
     return (
         <>
             <section className="bg-[#F1F1F1] w-full md:h-8 2xs:h-4 px-4">
-                <p className='max-w-[1440px] mx-auto lg:text-lg md:text-base text-sm 2sx:text-[0.5rem]'>求人掲載・採用が完全無料 医療・歯科・介護・保育・美容{" "}総合求人サイト</p>
+                <p className='max-w-[1000px] mx-auto lg:text-lg md:text-base text-sm 2sx:text-[0.5rem]'>求人掲載・採用が完全無料 医療・歯科・介護・保育・美容{" "}総合求人サイト</p>
             </section>
-            <section className="flex justify-between items-center max-w-[1440px] mx-auto h-12 px-4">
+            <section className="flex justify-between items-center max-w-[1000px] mx-auto h-12">
                 <Avatar />
                 <div className='flex items-center gap-8'>
-                <p className='text-[#F53544] font-semibold'>求人検索</p>
-                <Link to={'/customers/sign_in'} className='text-[#F53544] font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2'>ログイン</Link>
-                <Link to={'/customers/new'} className='text-[#F53544] font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2'>新規登録</Link>
+                <p className='lg:text-base md:text-sm text-xs text-[#F53544] font-semibold'>求人検索</p>
+                <Link to={'/customers/sign_in'} className='lg:text-base md:text-sm text-xs text-[#F53544] font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2'>ログイン</Link>
+                <Link to={'/customers/new'} className='lg:text-base md:text-sm text-xs text-[#F53544] font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2'>新規登録</Link>
                 </div>
             </section>
-            <section className='relative max-w-[1440px] mx-auto text-center'>
+            <section className='relative max-w-[1200px] mx-auto text-center'>
                 <img src="/assets/images/companytop/fv.png" alt="fv"/>
                 <div className='absolute top-0 w-full h-full lg:px-52 lg:py-16 md:px-12 md:py-8'>
                     <div className='bg-[#ffffffed] shadow-lg rounded-lg h-full flex flex-col items-center lg:gap-12 sm:gap-6'>

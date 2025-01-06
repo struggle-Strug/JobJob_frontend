@@ -3,9 +3,9 @@ import { getEmploymentTypeKeyByValue, getFeatureKeyByValue, getJobTypeKeyByValue
 import { EmploymentType, Features, Prefectures } from "../../utils/constants/categories";
 import { Checkbox, Select } from "antd";
 import { useEffect, useState } from "react";
-import JobDetail from "../JobDetail";
+import JobLists from "./JobLists";
 
-const CertainJobList = () => {
+const CertainJob = () => {
     const { pathname } = useLocation();
     const [type, setType] = useState("1");
     const [pref, setPref] = useState("");
@@ -49,14 +49,21 @@ const CertainJobList = () => {
     ]
 
     useEffect(() => {
-        employmentType !== "" && navigate(`/${path}/${employmentType}`);
-        setFeature("");
+        pref == "" && feature == "" && navigate(`/${path}/${employmentType}`);
+        pref !== "" && navigate(`/${feature ? `${path}/${pref}/${employmentType}/${feature}` : `${path}/${pref}/${employmentType}`}`);
+        pref == "" && setFeature("");
         setType("1");
     },[employmentType])
     
     useEffect(() => {
-        employmentType !== "" && navigate(`/${path}/${employmentType}/${feature}`)
-        employmentType == "" && navigate(`/${path}/${feature}`)
+        if(pref == ""){
+            employmentType !== "" && navigate(`/${path}/${employmentType}/${feature}`)
+            employmentType == "" && navigate(`/${path}/${feature}`)
+        }
+        if(pref !== ""){
+            employmentType !== "" && navigate(`/${path}/${pref}/${employmentType}/${feature}`)
+            employmentType == "" && navigate(`/${path}/${pref}/${feature}`)
+        }
         setType("1");
     },[feature])
     
@@ -407,10 +414,25 @@ const CertainJobList = () => {
             }
             {
                 pathname.includes("pref") &&
-                <JobDetail employmentType={employmentType} feature={feature} pref={pref} JobType={JobType}/>
+                <JobLists 
+                    path={path}  
+                    employmentType={employmentType} 
+                    setEmploymentType={setEmploymentType} 
+                    feature={feature} 
+                    setFeature={setFeature} 
+                    pref={pref} 
+                    setPref={setPref} 
+                    JobType={JobType} 
+                    monthlySalary={monthlySalary} 
+                    setMonthlySalary={setMonthlySalary}
+                    monthlySalaryOptions={monthlySalaryOptions}
+                    hourlySalary={hourlySalary}
+                    setHourlySalary={setHourlySalary}
+                    hourlySalaryOptions={hourlySalaryOptions}
+                />
             }
         </>
     )
 }
 
-export default CertainJobList;
+export default CertainJob;
