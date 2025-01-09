@@ -121,14 +121,14 @@ const Register = () => {
         if(res.data.error) return message.error(res.data.message);
         message.success(res.data.message);
         setTimeout(() => {
-            navigate("/members/login");
+            window.location.href = "/members/sign_in";
         }, 1000);
     }
     useEffect(() => {
         if(user){
-            navigate("/members/mypage")
+            window.location.href = "/members/mypage"
         }
-    },[])
+    },[user])
     return (
         <section className="flex flex-col justify-center bg-[#EFEFEF] px-4">
             <div className="container">

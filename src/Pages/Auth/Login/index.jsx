@@ -31,14 +31,14 @@ const Login = () => {
         setIsAuthenticated(true)
         setUser(res.data.user)
         setTimeout(() => {
-            navigate("/members/mypage");
+            window.location.href = "/members/mypage";
         }, 1000);
     }
     useEffect(() => {
         if(user){
-            navigate("/members/mypage")
+            window.location.href = "/members/mypage"
         }
-    },[])
+    },[user])
     return (
         <div className="flex flex-col justify-center bg-[#EFEFEF] px-4">
             <div className="container">
