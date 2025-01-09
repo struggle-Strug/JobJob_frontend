@@ -82,7 +82,7 @@ const Step3 = ({setPrefecture}) => {
                                 関東
                                 </p>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!togglePrefecture_1 ? "rotate-90" : "-rotate-90"}`}
                                 />
@@ -105,7 +105,7 @@ const Step3 = ({setPrefecture}) => {
                                 関西
                                 </p>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!togglePrefecture_2 ? "rotate-90" : "-rotate-90"}`}
                                 />
@@ -128,7 +128,7 @@ const Step3 = ({setPrefecture}) => {
                                 東海
                                 </p>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!togglePrefecture_3 ? "rotate-90" : "-rotate-90"}`}
                                 />
@@ -151,7 +151,7 @@ const Step3 = ({setPrefecture}) => {
                                 北海道・東北
                                 </p>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!togglePrefecture_4 ? "rotate-90" : "-rotate-90"}`}
                                 />
@@ -174,7 +174,7 @@ const Step3 = ({setPrefecture}) => {
                                 甲信越・北陸
                                 </p>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!togglePrefecture_5 ? "rotate-90" : "-rotate-90"}`}
                                 />
@@ -197,7 +197,7 @@ const Step3 = ({setPrefecture}) => {
                                 中国・四国
                                 </p>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!togglePrefecture_6 ? "rotate-90" : "-rotate-90"}`}
                                 />
@@ -220,7 +220,7 @@ const Step3 = ({setPrefecture}) => {
                                 九州・沖縄
                                 </p>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!togglePrefecture_7 ? "rotate-90" : "-rotate-90"}`}
                                 />

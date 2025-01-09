@@ -45,7 +45,7 @@ const Login = () => {
                 <div className="flex items-center justify-between border-[1.5px] border-[#a7a3a3] rounded-lg p-4 bg-white px-8">
                     <p className="text-2xl font-bold">ログイン</p>
                     <div className="border-[1.5px] border-[#a7a3a3] rounded-lg px-4 py-2">
-                        <Link to={'/members/register'} className="text-lg text-[#FF2A3B] hover:underline">無料で会員登録する</Link>
+                        <Link to={'/members/sign_up'} className="text-lg text-[#FF2A3B] hover:underline">無料で会員登録する</Link>
                     </div>
                 </div>
                 <div className="flex flex-col items-center justify-between mt-12 border-[1.5px] border-[#a7a3a3] rounded-lg p-4 bg-white px-8">

@@ -93,7 +93,7 @@ const Step2 = ({ setEmploymentType, setQualification, setFeature, setErrorMessag
                                onClick={() => setToggleEmployment(!toggleEmployment)}>
                                 <span>形態</span>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!toggleEmployment ? "rotate-90" : "-rotate-90"}`}
                                 />
@@ -119,7 +119,7 @@ const Step2 = ({ setEmploymentType, setQualification, setFeature, setErrorMessag
                                onClick={() => setToggleQualification_required(!toggleQualification_required)}>
                                 <span>応募要件（資格）</span>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!toggleQualification_required ? "rotate-90" : "-rotate-90"}`}
                                 />
@@ -137,7 +137,7 @@ const Step2 = ({ setEmploymentType, setQualification, setFeature, setErrorMessag
                                onClick={() => setToggleQualification_other(!toggleQualification_other)}>
                                 <span>応募要件（その他）</span>
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${!toggleQualification_other ? "rotate-90" : "-rotate-90"}`}
                                 />
@@ -173,7 +173,7 @@ const Step2 = ({ setEmploymentType, setQualification, setFeature, setErrorMessag
                                    onClick={() => feature.setToggle(!feature.toggle)}>
                                     <span>{feature.title}</span>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className={`duration-300 ${!feature.toggle ? "rotate-90" : "-rotate-90"}`}
                                     />
