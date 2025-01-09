@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -10,8 +10,10 @@ import Step4 from "./Step4";
 import Step5 from "./Step5";
 import Step6 from "./Step6";
 import { message } from "antd";
+import { useAuth } from "../../../context/AuthContext";
 
 const Register = () => {
+    const { user } = useAuth();
     const [step, setStep] = useState(1);
     const [jobType, setJobType] = useState([]);
     const [employmentType, setEmploymentType] = useState([]);
@@ -122,6 +124,11 @@ const Register = () => {
             navigate("/members/login");
         }, 1000);
     }
+    useEffect(() => {
+        if(user){
+            navigate("/members/mypage")
+        }
+    },[])
     return (
         <section className="flex flex-col justify-center bg-[#EFEFEF] px-4">
             <div className="container">

@@ -23,7 +23,7 @@ const Footer = () => {
                         <div className="grid col-span-2">
                             <div className="flex flex-col justify-start">
                                 <p className="lg:text-lg md:text-sm font-bold">採用担当者様へ</p>
-                                <p className="lg:text-lg md:text-sm mt-4 py-1">求人掲載をお考えの方へ</p>
+                                <Link to={"/company"}><p className="lg:text-lg md:text-sm mt-4 py-1">求人掲載をお考えの方へ</p></Link>
                                 <p className="lg:text-lg md:text-sm py-1">リンク掲載について</p>
                                 <p className="lg:text-lg md:text-sm py-1">採用担当者ログイン</p>
                             </div>

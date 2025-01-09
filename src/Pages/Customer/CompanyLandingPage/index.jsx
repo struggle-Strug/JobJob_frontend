@@ -1,30 +1,36 @@
-import { ReactComponent as Avatar } from '../../avatar.svg'
+import { ReactComponent as Avatar } from '../../../avatar.svg'
 import { Link } from 'react-router-dom';
 
 const CompanyLandingPage = () => {
     return (
         <>
             <section className="bg-[#F1F1F1] w-full md:h-8 2xs:h-4 px-4">
-                <p className='max-w-[1000px] mx-auto lg:text-lg md:text-base text-sm 2sx:text-[0.5rem]'>求人掲載・採用が完全無料 医療・歯科・介護・保育・美容{" "}総合求人サイト</p>
+                <p className='max-w-[1200px] mx-auto lg:text-base md:text-md text-sm 2sx:text-[0.5rem]'>求人掲載・採用が完全無料 医療・歯科・介護・保育・美容{" "}総合求人サイト</p>
             </section>
-            <section className="flex justify-between items-center max-w-[1000px] mx-auto h-12">
-                <Avatar />
+            <section className="flex justify-between items-center max-w-[1200px] mx-auto h-12">
+                <Link to={'/'}>
+                    <Avatar />
+                </Link>
                 <div className='flex items-center gap-8'>
                 <p className='lg:text-base md:text-sm text-xs text-[#F53544] font-semibold'>求人検索</p>
-                <Link to={'/customers/sign_in'} className='lg:text-base md:text-sm text-xs text-[#F53544] font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2'>ログイン</Link>
-                <Link to={'/customers/new'} className='lg:text-base md:text-sm text-xs text-[#F53544] font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2'>新規登録</Link>
+                <Link to={'/customers/sign_in'} className='lg:text-base md:text-sm text-xs text-[#F53544] hover:text-[#343434] hover:shadow-lg font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2 duration-300'>ログイン</Link>
+                <Link to={'/customers/new'} className='lg:text-base md:text-sm text-xs text-[#F53544] hover:text-[#343434] hover:shadow-lg font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2 duration-300'>新規登録</Link>
                 </div>
             </section>
             <section className='relative max-w-[1200px] mx-auto text-center'>
-                <img src="/assets/images/companytop/fv.png" alt="fv"/>
+                <img
+                    src="/assets/images/companytop/fv.png"
+                    alt="fv"
+                    className="w-screen object-cover"
+                />
                 <div className='absolute top-0 w-full h-full lg:px-52 lg:py-16 md:px-12 md:py-8'>
                     <div className='bg-[#ffffffed] shadow-lg rounded-lg h-full flex flex-col items-center lg:gap-12 sm:gap-6'>
                     <img src="/assets/images/companytop/fv_1.png" alt="fv" className='md:w-4/5 xl:w-full'/>
-                    <Link to={'/#'} className='flex items-center gap-4 xl:px-12 xl:py-4 md:px-8 md:py-2 rounded-lg 
-                                                bg-gradient-to-tr from-[#FF1610] to-[#FF5B01] 
-                                                text-center text-white xl:text-lg   font-bold'>
+                    <Link to={'/customers/new'} className='flex items-center gap-4 xl:px-12 xl:py-4 md:px-8 md:py-2 rounded-lg 
+                                                bg-gradient-to-tr from-[#FF1610] to-[#FF5B01]
+                                                text-center text-white hover:shadow-2xl hover:scale-105 xl:text-lg font-bold duration-300'>
                         今すぐ掲載をはじめる
-                        <img src='/assets/images/companytop/ep_arrow-right-bold.png' alt='' />
+                        <img src='/assets/images/companytop/ep_arrow-right-bold.png' alt=''/>
                     </Link>
                     </div>
                 </div>
@@ -112,11 +118,11 @@ const CompanyLandingPage = () => {
                 <div className='absolute top-0 w-full h-full xl:px-52 xl:py-16 lg:px-36 lg:py-8 md:px-12 md:py-8 sm:px-4 sm:py-2'>
                     <div className='bg-[#ffffffed] max-w-[1000px] mx-auto shadow-lg rounded-lg h-full flex items-center justify-center lg:gap-8 md:gap-6'>
                     <img src="/assets/images/companytop/image 6.png" alt="fv" className='lg:w-[50%] sm:w-[45%]'/>
-                    <Link to={'/#'} className='flex items-center gap-4 xl:px-12 xl:py-4 md:px-8 md:py-2 rounded-lg 
-                                                bg-gradient-to-tr from-[#FF1610] to-[#FF5B01] 
-                                                text-center text-white xl:text-lg   font-bold'>
+                    <Link to={'/customers/new'} className='flex items-center gap-4 xl:px-12 xl:py-4 md:px-8 md:py-2 rounded-lg 
+                                                bg-gradient-to-tr from-[#FF1610] to-[#FF5B01]
+                                                text-center text-white hover:shadow-2xl hover:scale-105 xl:text-lg font-bold duration-300'>
                         今すぐ掲載をはじめる
-                        <img src='assets/images/companytop/ep_arrow-right-bold.png' alt='' />
+                        <img src='/assets/images/companytop/ep_arrow-right-bold.png' alt=''/>
                     </Link>
                     </div>
                 </div>
@@ -288,11 +294,11 @@ const CompanyLandingPage = () => {
                 <div className='absolute top-0 w-full h-full xl:px-52 xl:py-16 lg:px-36 lg:py-8 md:px-12 md:py-8 sm:px-4 sm:py-2'>
                     <div className='bg-[#ffffffed] max-w-[1000px] mx-auto shadow-lg rounded-lg h-full flex items-center justify-center lg:gap-8 md:gap-6'>
                     <img src="/assets/images/companytop/image 6.png" alt="fv" className='lg:w-[50%] sm:w-[45%]'/>
-                    <Link to={'/#'} className='flex items-center gap-4 xl:px-12 xl:py-4 md:px-8 md:py-2 rounded-lg 
-                                                bg-gradient-to-tr from-[#FF1610] to-[#FF5B01] 
-                                                text-center text-white xl:text-lg   font-bold'>
+                    <Link to={'/customers/new'} className='flex items-center gap-4 xl:px-12 xl:py-4 md:px-8 md:py-2 rounded-lg 
+                                                bg-gradient-to-tr from-[#FF1610] to-[#FF5B01]
+                                                text-center text-white hover:shadow-2xl hover:scale-105 xl:text-lg font-bold duration-300'>
                         今すぐ掲載をはじめる
-                        <img src='assets/images/companytop/ep_arrow-right-bold.png' alt='' />
+                        <img src='/assets/images/companytop/ep_arrow-right-bold.png' alt=''/>
                     </Link>
                     </div>
                 </div>
@@ -375,11 +381,11 @@ const CompanyLandingPage = () => {
                 <div className='relative w-full h-full xl:px-52 xl:py-16 lg:px-36 lg:py-8 md:px-12 md:py-8 sm:px-4 sm:py-2'>
                     <div className='bg-[#ffffffed] max-w-[1000px] mx-auto shadow-lg rounded-lg h-full flex items-center justify-center lg:gap-8 md:gap-6'>
                     <img src="/assets/images/companytop/image 6.png" alt="fv" className='lg:w-[50%] sm:w-[45%]'/>
-                    <Link to={'/#'} className='flex items-center gap-4 xl:px-12 xl:py-4 md:px-8 md:py-2 rounded-lg 
-                                                bg-gradient-to-tr from-[#FF1610] to-[#FF5B01] 
-                                                text-center text-white xl:text-lg font-bold'>
-                        今すぐ掲載をはじめる
-                        <img src='assets/images/companytop/ep_arrow-right-bold.png' alt='' />
+                    <Link to={'/customers/new'} className='flex items-center gap-4 xl:px-12 xl:py-4 md:px-8 md:py-2 rounded-lg 
+                                                bg-gradient-to-tr from-[#FF1610] to-[#FF5B01]
+                                                text-center text-white hover:shadow-2xl hover:scale-105 xl:text-lg font-bold duration-300'>
+                        今すぐ掲載をはじめる
+                        <img src='/assets/images/companytop/ep_arrow-right-bold.png' alt=''/>
                     </Link>
                     </div>
                 </div>
@@ -387,9 +393,11 @@ const CompanyLandingPage = () => {
             </section>
             <section className='bg-[#343434] w-full h-20 flex items-center px-4'>
                 <div className='max-w-[1000px] mx-auto flex items-center justify-start w-full gap-4'>
-                <img src="/assets/images/companytop/logo_negative_horizontal00 1.png" alt="logo" className=''/>
-                <Link to={"/#"} className='text-white text-sm'>利用規約</Link>
-                <Link to={"/#"} className='text-white text-sm'>ログイン</Link>
+                <Link to={"/company"}>
+                    <img src="/assets/images/companytop/logo_negative_horizontal00 1.png" alt="logo" className=''/>
+                </Link>
+                <Link to={"/customer/sign_in"} className='text-white text-sm hover:text-[#7a7a7a] duration-200'>利用規約</Link>
+                <Link to={"/customer/sign_in"} className='text-white text-sm hover:text-[#7a7a7a] duration-200'>ログイン</Link>
                 </div>
             </section>
         </>

@@ -3,7 +3,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import { useAuth } from "../../context/AuthContext";
 
-const Layout = () => {
+const CSLayout = () => {
     const {isAuthenticated, user} = useAuth();
 
     return (
@@ -17,4 +17,4 @@ const Layout = () => {
     )
 }
 
-export default Layout;
+export default CSLayout;

@@ -1,14 +1,15 @@
 import { Input } from "antd";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 const Login = () => {
+    const { setIsAuthenticated, setUser, user } = useAuth();
     const [ email, setEmail ] = useState    ("");
     const [ password, setPassword ] = useState("");
     const [ errorMessage, setErrorMessage ] = useState("");
-    const { setIsAuthenticated, setUser } = useAuth();
     const navigate = useNavigate();
+    
     const onChangeEmail = (e) => {
         setEmail(e.target.value)
     }
@@ -33,7 +34,11 @@ const Login = () => {
             navigate("/members/mypage");
         }, 1000);
     }
-
+    useEffect(() => {
+        if(user){
+            navigate("/members/mypage")
+        }
+    },[])
     return (
         <div className="flex flex-col justify-center bg-[#EFEFEF] px-4">
             <div className="container">

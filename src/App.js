@@ -1,7 +1,6 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import './index.css';
 import { useEffect } from 'react';
-import Layout from './components/Layout';
 import Register from './Pages/Auth/Register';
 import Login from './Pages/Auth/Login';
 import axios from 'axios';
@@ -16,11 +15,15 @@ import Favorites from './Pages/MemberProfile/Favorites';
 import Recent from './Pages/MemberProfile/Recent';
 import Resumes from './Pages/MemberProfile/Resumes';
 import Edit from './Pages/MemberProfile/ProfileEdit';
-import CompanyLandingPage from './Pages/CompanyLandingPage';
+import CompanyLandingPage from './Pages/Customer/CompanyLandingPage';
 import Top from './Pages/Top';
 import CertainJob from './Pages/CertainJob';
 import JobDetails from './Pages/CertainJob/JobDetails';
 import JobOffer from './Pages/CertainJob/JobOffer';
+import CSLayout from './components/CSLayout';
+import CLLayout from './components/CLLayout';
+import CustomerSignUp from './Pages/Customer/CustomerAuth/CustomerSingUp';
+import CustomerSignIn from './Pages/Customer/CustomerAuth/CustomerSignIn';
 function App() {
   const { setIsAuthenticated, setUser } = useAuth();
   const token = localStorage.getItem('token')
@@ -43,8 +46,12 @@ function App() {
   return (
     <>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path='/company' element={<CompanyLandingPage />} />
+        <Route path='/company' element={<CompanyLandingPage />} />
+        <Route element={<CLLayout />}>
+          <Route path='/customers/new' element={<CustomerSignUp />} />
+          <Route path='/customers/sign_in' element={<CustomerSignIn />} />
+        </Route>
+        <Route element={<CSLayout />}>
           <Route path='/' element={<Top />} />
           <Route path='/members/sign_up' element={<Register />} />
           <Route path='/members/sign_in' element={<Login />} />
