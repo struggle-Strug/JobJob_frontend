@@ -121,7 +121,7 @@ const Register = () => {
         if(res.data.error) return message.error(res.data.message);
         message.success(res.data.message);
         setTimeout(() => {
-            navigate("/members/login");
+            navigate("/members/sign_in");
         }, 1000);
     }
     useEffect(() => {
