@@ -164,7 +164,7 @@ const Basic = () => {
         if(resData.data.error) return message.error(resData.data.message);
         setUser(resData.data.user);
         message.success(resData.data.message);
-        navigate("/members/profile");
+        navigate("/members/profiles");
 
     }
 

@@ -201,7 +201,7 @@ const Desire = () => {
         if(res.data.error) return message.error(res.data.message);
         message.success(res.data.message);
         setUser(res.data.user);
-        navigate("/members/profile");
+        navigate("/members/profiles");
     }
 
     useEffect(() => {
@@ -261,7 +261,7 @@ const Desire = () => {
                                         医科
                                     </p>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className={`duration-300 ${!toggleMedical ? "rotate-90" : "-rotate-90"}`}
                                     />
@@ -281,7 +281,7 @@ const Desire = () => {
                                         歯科
                                     </p>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className={`duration-300 ${!toggleDentist ? "rotate-90" : "-rotate-90"}`}
                                     />
@@ -301,7 +301,7 @@ const Desire = () => {
                                         介護
                                     </p>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className={`duration-300 ${!toggleNursing ? "rotate-90" : "-rotate-90"}`}
                                     />
@@ -321,7 +321,7 @@ const Desire = () => {
                                         保育
                                     </p>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className={`duration-300 ${!toggleChildcare ? "rotate-90" : "-rotate-90"}`}
                                     />
@@ -341,7 +341,7 @@ const Desire = () => {
                                         リハビリ／代替医療
                                     </p>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className={`duration-300 ${!toggleRehabilitation ? "rotate-90" : "-rotate-90"}`}
                                     />
@@ -361,7 +361,7 @@ const Desire = () => {
                                         その他
                                     </p>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className={`duration-300 ${!toggleOther ? "rotate-90" : "-rotate-90"}`}
                                     />
@@ -381,7 +381,7 @@ const Desire = () => {
                                         ヘルスケア／美容
                                     </p>
                                     <img 
-                                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                         alt="arrow" 
                                         className={`duration-300 ${!toggleHealthcare ? "rotate-90" : "-rotate-90"}`}
                                     />
@@ -465,7 +465,7 @@ const Desire = () => {
                                     onClick={() => feature.setToggle(!feature.toggle)}>
                                         <span>{feature.title}</span>
                                         <img 
-                                            src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                            src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                             alt="arrow" 
                                             className={`duration-300 ${!feature.toggle ? "rotate-90" : "-rotate-90"}`}
                                         />

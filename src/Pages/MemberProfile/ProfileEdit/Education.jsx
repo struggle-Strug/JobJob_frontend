@@ -53,7 +53,7 @@ const Education = () => {
         if(res.data.error) return message.error(res.data.message);
         setUser(res.data.user);
         message.success(res.data.message);
-        navigate("/members/profile");
+        navigate("/members/profiles");
     }
 
     useEffect(() => {

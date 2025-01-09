@@ -10,8 +10,8 @@ import Careersheets from "./CareerSheets";
 const Resumes = () => {
     const { user } = useAuth();
     const [rirekis, setRirekis] = useState([]);
-    const initialDate = `${new Date().getFullYear()}年${new Date().getMonth() + 1}月${new Date().getDate()}日`;
-    const [resumeTitle, setResumeTitle] = useState(initialDate);
+    const initialDate = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
+    const [resumeTitle, setResumeTitle] = useState(`${initialDate.split("-")[0]}年${initialDate.split("-")[1]}月${initialDate.split("-")[2]}日`);
     const [titleModalOpen, setTitleModalOpen] = useState(false);
     const [careerSheets, setCareerSheets] = useState([]);
 

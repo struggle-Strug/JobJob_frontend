@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 
 const MyPageLayout = () => {
     const location = useLocation();
-    const isSelected = (path) => location.pathname === path;
+    const isSelected = (path) => location.pathname.includes(path);
 
     return (
         <div className="flex w-full bg-[#EFEFEF]">
@@ -18,7 +18,7 @@ const MyPageLayout = () => {
                     <Link to={"/members/profiles"} className="flex justify-start items-center gap-2 mt-4">
                         <p className={`flex justify-start text-black lg:text-lg md:text-base text-sm font-bold px-2
                             hover:text-red-500 hover:border-l-4 hover:border-red-500 hover:font-medium hover:pl-2 hover:duration-300
-                            ${isSelected("/members/profile") ? 'text-red-500 border-l-4 border-red-500 font-medium pl-2 duration-300' : 'text-gray-700'}`}>
+                            ${isSelected("/members/profiles") ? 'text-red-500 border-l-4 border-red-500 font-medium pl-2 duration-300' : 'text-gray-700'}`}>
                             プロフィール
                         </p>
                     </Link>
