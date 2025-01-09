@@ -172,7 +172,7 @@ const WorkHistory = () => {
         if(res.data.error) return message.error(res.data.message);
         setUser(res.data.user);
         message.success(res.data.message);
-        navigate("/members/profile");
+        navigate("/members/profiles");
     }
 
     useEffect(() => {
@@ -336,7 +336,7 @@ const WorkHistoryEntry = ({ history, index, updateHistory, handleDeleteWorkHisto
         <div className="flex justify-start w-full mt-4">
             <div className="flex items-start justify-start gap-2 w-2/5">
                 <span className="lg:text-base md:text-sm text-xs text-[#343434] font-bold">仕事内容</span>
-                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg">非公開</span>
+                <span className="lg:text-[0.6rem] md:text-[0.5rem] text-xs text-center text-[#FF2A3B] px-1 border-[1.5px] border-[#FF2A3B] bg-red-100 rounded-lg mt-1">非公開</span>
             </div>
             <div className="flex flex-col items-start justify-start gap-2 w-full textarea">
                 <p className="lg:text-sm md:text-xs text-xs text-[#343434] w-4/5">配属部署、担当業務、リーダー・プリセプター経験の有無など</p>

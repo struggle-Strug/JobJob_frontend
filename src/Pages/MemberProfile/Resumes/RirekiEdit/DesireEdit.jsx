@@ -164,13 +164,13 @@ const ApplyReasonModal = ({ isOpen, onClose, desire, setDesire }) => {
                             <h3 className="text-lg font-medium text-gray-900">{template.title}</h3>
                             {expandedSection === template.title ? (
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${"-rotate-90"}`}
                                 />
                             ) : (
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${"rotate-90"}`}
                                 />
@@ -255,13 +255,13 @@ const HopeModal = ({ isOpen, onClose, desire, setDesire }) => {
                             <h3 className="text-lg font-medium text-gray-900">{template.title}</h3>
                             {expandedSection === template.title ? (
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${"-rotate-90"}`}
                                 />
                             ) : (
                                 <img 
-                                    src={'/assets/images/top/ep_arrow-right_red.png'} 
+                                    src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                                     alt="arrow" 
                                     className={`duration-300 ${"rotate-90"}`}
                                 />
