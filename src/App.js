@@ -24,6 +24,7 @@ import CSLayout from './components/CSLayout';
 import CLLayout from './components/CLLayout';
 import CustomerSignUp from './Pages/Customer/CustomerAuth/CustomerSingUp';
 import CustomerSignIn from './Pages/Customer/CustomerAuth/CustomerSignIn';
+import Setting from './Pages/MemberProfile/Setting';
 function App() {
   const { setIsAuthenticated, setUser } = useAuth();
   const token = localStorage.getItem('token')
@@ -68,6 +69,7 @@ function App() {
               <Route path='/members/job_offers/favorite' element={<Favorites />} />
               <Route path='/members/job_offers/recent' element={<Recent />} />
               <Route path='/members/resumes/*' element={<Resumes />} />
+              <Route path='/members/settings' element={<Setting />} />
             </Route>
           ) : (
             <Route path='/*' element={<Navigate to="/members/login" />} />

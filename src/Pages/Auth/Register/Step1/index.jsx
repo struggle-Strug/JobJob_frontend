@@ -47,7 +47,7 @@ const Step1 = ({ jobType, setJobType }) => {
                    onClick={() => setToggle(!toggle)}>
                     <span>{category}</span>
                     <img 
-                        src={'/assets/images/top/ep_arrow-right_red.png'} 
+                        src={'/assets/images/companytop/ep_arrow-right_red.png'} 
                         alt="arrow" 
                         className={`duration-300 ${!toggle ? "rotate-90" : "-rotate-90"}`}
                     />
