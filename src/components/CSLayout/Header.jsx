@@ -14,10 +14,20 @@ const Header = ({ user, isAuthenticated }) => {
                                 </Link>
                                 <p className="lg:text-md md:text-sm text-xs font-bold text-[#188CE0]">求人広告掲載（無料）</p>
                             </div>
-                            <Link to={"/members/mypage"} className="flex flex-col items-center bg-gradient-to-tr from-[#FF1610] to-[#FF5B01] rounded-full px-3 py-[0.45rem] hover:scale-105 hover:shadow-2xl duration-300">
-                                <LiaUserCircleSolid className="w-8 h-8 text-white"/>
-                                <p className="lg:text-[0.8rem] md:text-[0.7rem] text-xs font-bold text-white ">{user.name}</p>
-                            </Link>
+                            <div className="flex items-center justify-between gap-4">
+                                <div className="flex flex-col items-center bg-white rounded-lg px-5 py-2">
+                                    <img src={"/assets/images/header/mdi_heart-outline.png"} alt="気になる" className="w-6"/>
+                                    <p className="text-sm font-bold text-[#FF2A3B]">気になる</p>
+                                </div>
+                                <div className="flex flex-col items-center bg-white rounded-lg p-2">
+                                    <img src={"/assets/images/header/mingcute_time-line.png"} alt="最近見た求人" className="w-6"/>
+                                    <p className="lg:text-sm md:text-xs text-xs font-bold text-[#FF2A3B]">最近見た求人</p>
+                                </div>
+                                <Link to={"/members/mypage"} className="flex flex-col items-center bg-gradient-to-tr from-[#FF1610] to-[#FF5B01] rounded-full px-3 py-[0.45rem] hover:scale-105 hover:shadow-2xl duration-300">
+                                    <LiaUserCircleSolid className="w-8 h-8 text-white"/>
+                                    <p className="lg:text-[0.8rem] md:text-[0.7rem] text-xs font-bold text-white ">{user.name}</p>
+                                </Link>
+                            </div>
                         </div>
                     </>
                     ) : (
