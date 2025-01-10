@@ -6,9 +6,9 @@ const checkAuth = () => {
   const TOKEN = localStorage.getItem("token");
   const PUBLIC_ROUTES = [
     "/",
-    "/login",
-    "/forgot-password",
-    "/register",
+    "/members/sign_in",
+    "/members/forgot-password",
+    "/members/sign_up",
   ];
   
   const isPublicPage = PUBLIC_ROUTES.includes(window.location.pathname);
@@ -34,7 +34,7 @@ const checkAuth = () => {
       // document.body.classList.remove("loading-indicator");
       if (error.response?.status === 401) {
         delete axios.defaults.headers.common["Authorization"];
-        window.location.href = "/members/login";
+        window.location.href = "/members/sign_in";
         }
       return Promise.reject(error);
     }
