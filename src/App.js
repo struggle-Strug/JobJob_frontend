@@ -25,8 +25,9 @@ import CLLayout from './components/CLLayout';
 import CustomerSignUp from './Pages/Customer/CustomerAuth/CustomerSingUp';
 import CustomerSignIn from './Pages/Customer/CustomerAuth/CustomerSignIn';
 import Setting from './Pages/MemberProfile/Setting';
+import NotFound from './Pages/NotFound';
 function App() {
-  const { setIsAuthenticated, setUser } = useAuth();
+  const { setIsAuthenticated, setUser, user } = useAuth();
   const token = localStorage.getItem('token')
 
   checkAuth();
@@ -56,7 +57,7 @@ function App() {
           <Route path='/' element={<Top />} />
           <Route path='/members/sign_up' element={<Register />} />
           <Route path='/members/sign_in' element={<Login />} />
-          <Route path='/:jobtype/:pref?/:employmentType?/:feature?' element={<CertainJob />} />
+          <Route path='/:jobtype/:sth' element={<CertainJob />} />
           <Route path='/:jobtype/details/:id/' element={<JobDetails />} />
           <Route path='/:jobtype/details/apply/:id' element={<JobOffer />} />
           {token ? (
@@ -74,6 +75,8 @@ function App() {
           ) : (
             <Route path='/*' element={<Navigate to="/members/login" />} />
           )}
+          {/* 404 Page for Undefined Routes */}
+          <Route path='*' element={<NotFound />} />
         </Route>
       </Routes>
     </>
