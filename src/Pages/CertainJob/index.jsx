@@ -19,6 +19,11 @@ const CertainJob = () => {
     const JobType = getJobTypeKeyByValue(path);
     const isSelected = (v) => v === type;
 
+    // Redirect if none of the parameters are provided
+    if (pathname.split('/')[1] == "" || pathname.split('/')[2] == "") {
+        navigate("/404");
+    }
+
     const monthlySalaryOptions = [
         { value: "", label: "指定なし" },
         { value: "180000", label: "18" },
@@ -56,6 +61,7 @@ const CertainJob = () => {
     },[employmentType])
     
     useEffect(() => {
+        
         if(pref == ""){
             employmentType !== "" && navigate(`/${path}/${employmentType}/${feature}`)
             employmentType == "" && navigate(`/${path}/${feature}`)
