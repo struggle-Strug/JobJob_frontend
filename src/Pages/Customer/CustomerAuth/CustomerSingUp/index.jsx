@@ -1,7 +1,8 @@
-import { Input } from "antd";
+import { Input, message } from "antd";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GoLink } from "react-icons/go";
+import axios from "axios";
 
 const CustomerSignUp = () => {
     const [companyName, setCompanyName] = useState("");
@@ -12,6 +13,31 @@ const CustomerSignUp = () => {
     const [huriganaContactPersonMei, setHuriganaContactPersonMei] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [email, setEmail] = useState("");
+    const navigate = useNavigate();
+
+    const handleSubmit = async () => {
+        if(companyName == "" || contactPersonSei == "" || contactPersonMei == "" || phoneNumber == "" || email == "") {
+            message.error("全ての項目を入力してください。")
+        }
+        if(email.includes("@") == false) {
+            message.error("メールアドレスの形式が正しくありません。");
+            return;
+        }
+        
+        const newCustomer = {
+            companyName: companyName,
+            huriganaCompanyName: huriganaCompanyName,
+            contactPerson: `${contactPersonSei} ${contactPersonMei}`,
+            huriganaContactPerson: `${huriganaContactPersonSei} ${huriganaContactPersonMei}`,
+            phoneNumber: phoneNumber,
+            email: email
+        }
+
+        const resData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/customers/signup`, newCustomer)
+        if(resData.data.error) message.error(resData.data.message);
+        message.success(resData.data.message);
+        navigate("/customers/sign_in");
+    }
 
     useEffect (() => {
         document.title = "求人掲載のお申し込み | JobJob";
@@ -122,7 +148,7 @@ const CustomerSignUp = () => {
                     </div>
                 </div>
                 <div className="flex items-center justify-center px-8 py-4">
-                    <button className="bg-red-600 hover:bg-red-200 text-white hover:text-red-500 rounded-sm lg:text-lg md:text-base text-sm lg:px-12 md:px-8 px-4 py-2 duration-300">利用規約に同意して申し込む</button>
+                    <button className="bg-red-600 hover:bg-red-200 text-white hover:text-red-500 rounded-sm lg:text-lg md:text-base text-sm lg:px-12 md:px-8 px-4 py-2 duration-300" onClick={handleSubmit}>利用規約に同意して申し込む</button>
                 </div>
                 <div className="flex items-center justify-center gap-4 px-8 pb-4">
                     <Link to={"/customers/rule"} className="lg:text-base md:text-sm text-xs text-blue-500 flex items-center gap-1 hover:underline">利用規約はこちら<GoLink className="text-blue-500"/></Link>

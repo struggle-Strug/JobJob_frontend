@@ -6,7 +6,7 @@ const Footer = () => {
             <div className="bg-[#EFEFEF] w-full h-auto flex items-center px-4">
                 <div className="flex flex-col justify-center container py-12">
                     <Link to={"/"}  className="lg:w-1/6 md:w-1/6 w-1/3">
-                        <img src={"/assets/images/header/jobjob_logo 1.png"} alt="logo"/>
+                        <img src={"/assets/images/header/jobjob_logo 1.png"} alt="logo" className="hover:scale-105 duration-300"/>
                     </Link>
                     <p className="lg:text-lg md:text-sm mt-8 text-[#999999]">あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。 またそのなかでいっしょになったたくさんのひとたち、ファゼーロとロザー</p>
                     <div className="mt-12 grid grid-cols-10 gap-4">

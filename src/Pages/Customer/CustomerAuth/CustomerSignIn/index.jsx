@@ -1,7 +1,28 @@
-import { Input } from "antd";
-import { Link } from "react-router-dom";
+import { Input, message } from "antd";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const CustomerSignIn = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const signInData = {
+            email: email,
+            password: password
+        }
+        const resData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/customers/signin`, signInData);
+        if(resData.data.error) message.error(resData.data.message);
+        message.success(resData.data.message);
+        navigate("/customers");
+    }
+
+    useEffect(() => {
+        document.title = "採用管理画面ログイン | JobJob";
+    },[])
     return (
         <div className="pt-16 pb-8 bg-[#EFEFEF] h-screen">
             <div className="max-w-[700px] mx-auto bg-white shadow-lg">
@@ -18,7 +39,7 @@ const CustomerSignIn = () => {
                 </div>
                 <p className="lg:text-base md:text-sm text-xs text-[#FF2A3B] text-right hover:underline cursor-pointer px-8 mt-2">パスワードを設定していない、またはお忘れの方はこちら</p>
                 <div className="flex items-center justify-center px-8 py-4 mt-4">
-                    <button className="bg-red-600 hover:bg-red-200 text-white hover:text-red-500 rounded-sm lg:text-lg md:text-base text-sm lg:px-12 md:px-8 px-4 py-2 duration-300">ログイン</button>
+                    <button className="bg-red-600 hover:bg-red-200 text-white hover:text-red-500 rounded-sm lg:text-lg md:text-base text-sm lg:px-12 md:px-8 px-4 py-2 duration-300" onClick={handleSubmit}>ログイン</button>
                 </div>
                 <div className="text-center mt-4">
                     <p className="lg:text-base md:text-sm text-xs text-[#343434] pt-4">メールアドレスをお忘れの場合やログインができない場合は、</p>

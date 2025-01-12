@@ -10,7 +10,7 @@ const Header = ({ user, isAuthenticated }) => {
                         <div className="flex items-center justify-between container h-full">
                             <div className="flex items-center gap-4 justify-between">
                                 <Link to={"/"}>
-                                    <img src={"/assets/images/header/jobjob_logo 1.png"} alt="logo" />
+                                    <img src={"/assets/images/header/jobjob_logo 1.png"} alt="logo" className="hover:scale-105 duration-300"/>
                                 </Link>
                                 <p className="lg:text-md md:text-sm text-xs font-bold text-[#188CE0]">求人広告掲載（無料）</p>
                             </div>
