@@ -1,4 +1,9 @@
+import { useEffect } from "react";
+
 const Rule = () => {
+    useEffect(() => {
+        document.title = "ジョブジョブー利用規約 | JobJob"
+    },[])
     return (
         <div className="pt-16 pb-8 bg-[#EFEFEF] h-full">
             <div className="max-w-[1000px] mx-auto bg-white shadow-lg">
