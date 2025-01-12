@@ -26,6 +26,9 @@ import CustomerSignUp from './Pages/Customer/CustomerAuth/CustomerSingUp';
 import CustomerSignIn from './Pages/Customer/CustomerAuth/CustomerSignIn';
 import Setting from './Pages/MemberProfile/Setting';
 import NotFound from './Pages/NotFound';
+import { getAllJobTypeValues } from './utils/getFunctions';
+import { JobType } from './utils/constants/categories';
+import Rule from './Pages/Customer/CustomerRule';
 function App() {
   const { setIsAuthenticated, setUser, user } = useAuth();
   const token = localStorage.getItem('token')
@@ -52,14 +55,19 @@ function App() {
         <Route element={<CLLayout />}>
           <Route path='/customers/new' element={<CustomerSignUp />} />
           <Route path='/customers/sign_in' element={<CustomerSignIn />} />
+          <Route path='/customers/rule' element={<Rule />} />
         </Route>
         <Route element={<CSLayout />}>
           <Route path='/' element={<Top />} />
           <Route path='/members/sign_up' element={<Register />} />
           <Route path='/members/sign_in' element={<Login />} />
-          <Route path='/:jobtype/:sth' element={<CertainJob />} />
-          <Route path='/:jobtype/details/:id/' element={<JobDetails />} />
-          <Route path='/:jobtype/details/apply/:id' element={<JobOffer />} />
+          {getAllJobTypeValues(JobType).map((jobType) => (
+            <>
+              <Route path={`/${jobType}/:pref?/:employmentType?/:feature?`} element={<CertainJob />} />
+              <Route path={`/${jobType}/details/:id/`} element={<JobDetails />} />
+              <Route path={`/${jobType}/details/apply/:id`} element={<JobOffer />} />
+            </>
+          ))}
           {token ? (
             <Route element={<MyPageLayout />}>
               <Route path='/members/mypage' element={<MyPage />} />

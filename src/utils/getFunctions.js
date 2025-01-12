@@ -56,3 +56,13 @@ export const getFeatureKeyByValue = (value) => {
     return null; // Return null if no match is found
 }
 
+export const getAllJobTypeValues = (jobTypeObject) => {
+    const values = [];
+    for (const category in jobTypeObject) {
+        if (Object.hasOwnProperty.call(jobTypeObject, category)) {
+        values.push(...Object.values(jobTypeObject[category]));
+        }
+    }
+    return values;
+};
+

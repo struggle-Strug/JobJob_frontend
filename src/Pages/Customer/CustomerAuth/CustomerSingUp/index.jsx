@@ -125,7 +125,7 @@ const CustomerSignUp = () => {
                     <button className="bg-red-600 hover:bg-red-200 text-white hover:text-red-500 rounded-sm lg:text-lg md:text-base text-sm lg:px-12 md:px-8 px-4 py-2 duration-300">利用規約に同意して申し込む</button>
                 </div>
                 <div className="flex items-center justify-center gap-4 px-8 pb-4">
-                    <Link to={"/rule"} className="lg:text-base md:text-sm text-xs text-blue-500 flex items-center gap-1 hover:underline">利用規約はこちら<GoLink className="text-blue-500"/></Link>
+                    <Link to={"/customers/rule"} className="lg:text-base md:text-sm text-xs text-blue-500 flex items-center gap-1 hover:underline">利用規約はこちら<GoLink className="text-blue-500"/></Link>
                     <Link to={"#"} className="lg:text-base md:text-sm text-xs text-blue-500 flex items-center gap-1 hover:underline">外部送信ポリシー<GoLink className="text-blue-500"/></Link>
                 </div>
             </div>

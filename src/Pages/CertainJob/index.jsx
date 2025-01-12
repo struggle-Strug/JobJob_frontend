@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getEmploymentTypeKeyByValue, getFeatureKeyByValue, getJobTypeKeyByValue } from "../../utils/getFunctions";
-import { EmploymentType, Features, Prefectures } from "../../utils/constants/categories";
+import { getPrefectureKeyByValue, getEmploymentTypeKeyByValue, getFeatureKeyByValue, getJobTypeKeyByValue } from "../../utils/getFunctions";
+import { EmploymentType, Features, Prefectures, JobType as jobType } from "../../utils/constants/categories";
 import { Checkbox, Select } from "antd";
 import { useEffect, useState } from "react";
 import JobLists from "./JobLists";
@@ -19,10 +19,7 @@ const CertainJob = () => {
     const JobType = getJobTypeKeyByValue(path);
     const isSelected = (v) => v === type;
 
-    // Redirect if none of the parameters are provided
-    if (pathname.split('/')[1] == "" || pathname.split('/')[2] == "") {
-        navigate("/404");
-    }
+    const notFound = pathname.split("/").filter((item) => item !== "").some((item) => getJobTypeKeyByValue(item) === null && getPrefectureKeyByValue(item) === null && getEmploymentTypeKeyByValue(item) === null && getFeatureKeyByValue(item) === null)
 
     const monthlySalaryOptions = [
         { value: "", label: "指定なし" },
@@ -72,6 +69,12 @@ const CertainJob = () => {
         }
         setType("1");
     },[feature])
+
+    useEffect(() => {
+        if(notFound){
+            navigate("/404");
+        }
+    },[])
     
     return (
         <>
