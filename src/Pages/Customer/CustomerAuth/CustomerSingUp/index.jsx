@@ -16,13 +16,11 @@ const CustomerSignUp = () => {
     const navigate = useNavigate();
 
     const handleSubmit = async () => {
-        if(companyName == "" || contactPersonSei == "" || contactPersonMei == "" || phoneNumber == "" || email == "") {
-            message.error("全ての項目を入力してください。")
-        }
-        if(email.includes("@") == false) {
-            message.error("メールアドレスの形式が正しくありません。");
-            return;
-        }
+        if(companyName === "") return message.error("法人名を入力してください。");
+        if(contactPersonSei === "" || contactPersonMei === "") return message.error("担当者氏名を入力してください。");
+        if(phoneNumber === "") return message.error("電話番号を入力してください。");
+        if(email === "") return message.error("メールアドレスを入力してください。");
+        if(email.includes("@") === false) return message.error("メールアドレスの形式が正しくありません。");
         
         const newCustomer = {
             companyName: companyName,

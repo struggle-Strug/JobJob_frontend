@@ -29,6 +29,8 @@ import NotFound from './Pages/NotFound';
 import { getAllJobTypeValues } from './utils/getFunctions';
 import { JobType } from './utils/constants/categories';
 import Rule from './Pages/Customer/CustomerRule';
+import CLMainLayout from './components/CLMainLayout';
+import CLTop from './Pages/Customer/TopPage';
 function App() {
   const { setIsAuthenticated, setUser, user } = useAuth();
   const token = localStorage.getItem('token')
@@ -56,6 +58,9 @@ function App() {
           <Route path='/customers/new' element={<CustomerSignUp />} />
           <Route path='/customers/sign_in' element={<CustomerSignIn />} />
           <Route path='/customers/rule' element={<Rule />} />
+          <Route path='/customers' element={<CLMainLayout />}>
+            <Route path='/customers' element={<CLTop />} />
+          </Route>
         </Route>
         <Route element={<CSLayout />}>
           <Route path='/' element={<Top />} />
