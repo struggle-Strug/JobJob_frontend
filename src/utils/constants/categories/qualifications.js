@@ -94,8 +94,8 @@ export const Qualifications = {
         WEB面接可: "condition90",
         マネージャー採用: "condition91",
         フリーターOK: "condition92",
-        主夫・主婦OK: "condition93",
-        外国人材・留学生活躍中: "condition94",
+        "主夫・主婦OK": "condition93",
+        "外国人材・留学生活躍中": "condition94",
         "LGBTQ+フレンドリー": "condition95",
     },
 }
