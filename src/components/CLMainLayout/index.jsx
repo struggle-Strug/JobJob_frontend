@@ -2,23 +2,23 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 
 const CLMainLayout = () => {
     const location = useLocation();
-    const isSelected = (path) => location.pathname.includes(path);
+    const isSelected = (path) => location.pathname == path;
 
     return (
         <div className="flex w-full bg-[#EFEFEF] pt-16">
             <div className="flex justify-center gap-4 w-full h-full rounded-lg container">
                 <div className="flex flex-col h-full bg-white rounded-lg w-1/4 py-2 px-4">
-                    <Link to={"/members/mypage"} className="flex justify-start items-center gap-2 mt-4">
+                    <Link to={"/customers"} className="flex justify-start items-center gap-2 mt-4">
                         <p className={`flex justify-start text-black lg:text-lg md:text-base text-sm font-bold px-2
                             hover:text-red-500 hover:border-l-4 hover:border-red-500 hover:font-medium hover:pl-2 duration-300
                             ${isSelected("/customers") ? 'text-red-500 border-l-4 border-red-500 font-medium pl-2 duration-300' : 'text-gray-700'}`}>
                             トップページ
                         </p>
                     </Link>
-                    <Link to={"customers/facility"} className="flex justify-start items-center gap-2 mt-4">
+                    <Link to={"/customers/facility"} className="flex justify-start items-center gap-2 mt-4">
                         <p className={`flex justify-start text-black lg:text-lg md:text-base text-sm font-bold px-2
                             hover:text-red-500 hover:border-l-4 hover:border-red-500 hover:font-medium hover:pl-2 hover:duration-300
-                            ${isSelected("customers/facility") ? 'text-red-500 border-l-4 border-red-500 font-medium pl-2 duration-300' : 'text-gray-700'}`}>
+                            ${isSelected("/customers/facility") ? 'text-red-500 border-l-4 border-red-500 font-medium pl-2 duration-300' : 'text-gray-700'}`}>
                             施設・求人管理
                         </p>
                     </Link>
