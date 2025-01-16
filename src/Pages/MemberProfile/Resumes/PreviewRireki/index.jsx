@@ -60,7 +60,7 @@ const PreviewRireki = ({ rireki, datas }) => {
         <View style={{display: 'flex', flexDirection: 'row', gap: 50, width: '100%'}}>
           <View style={[{display: 'flex', flexDirection: 'column'}, styles.section_1]}>
             {/* Date */}
-            <Text style={[{ textAlign: 'right', letterSpacing: 1, color: '#343434'}, styles.date]}>{rireki?.creationDate}現在</Text>
+            <Text style={[{ textAlign: 'right', letterSpacing: 1, color: '#343434'}, styles.date]}>{rireki?.creationDate.split("-")[0] + "年" + rireki?.creationDate.split("-")[1] + "月" + rireki?.creationDate.split("-")[2] + "日"}現在</Text>
             {/* Name */}
             <View style={{display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'flex-start', padding: 8, border: '1px solid black', borderBottom: '1px dotted black'}}>
               <Text style={[styles.text, {fontWeight: 'bold', width: '15%', color: '#343434'}]}>ふりがな</Text>
@@ -110,8 +110,8 @@ const PreviewRireki = ({ rireki, datas }) => {
               </View>
             </View>
           </View>
-          <View style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-start'}}>
-            <Image src={rireki.basic.photo} style={styles.image} />
+          <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+              <Image src={rireki.basic.photo} style={styles.image} />
           </View>
         </View>
         <View style={{display: 'flex', flexDirection: 'column', width: '100%', border: '1px solid black'}}>

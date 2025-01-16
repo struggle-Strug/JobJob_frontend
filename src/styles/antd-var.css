@@ -18,6 +18,11 @@
     @apply bg-[#ffe3e3] lg:text-base md:text-sm text-xs p-2 rounded-lg mt-0.5 border-none;
 }
 
+.ant-radio-wrapper {
+    font-family: 'Noto Sans JP', sans-serif;
+    @apply bg-[#ffe3e3] lg:text-base md:text-sm text-xs p-2 rounded-lg mt-0.5 border-none;
+}
+
 .textarea textarea {
     font-family: 'Noto Sans JP', sans-serif;
     @apply h-40;
@@ -32,6 +37,10 @@
 }
 
 .ant-select, .ant-select * {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.ant-radio-wrapper, .ant-radio-wrapper * {
     font-family: 'Noto Sans JP', sans-serif;
 }
 

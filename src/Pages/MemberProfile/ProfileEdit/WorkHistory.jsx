@@ -330,7 +330,6 @@ const WorkHistoryEntry = ({ history, index, updateHistory, handleDeleteWorkHisto
             <div className="flex items-center justify-start gap-2 w-full">
                 <Select placeholder="職種" options={jobTypesOptions} value={history.jobType} onChange={(value) => updateHistory('jobType', value)} className="w-1/2"/>
                 {history.jobType && <Select placeholder="職種" options={jobTypeDetailOptions(history.jobType)} value={history.jobTypeDetail} onChange={(value) => updateHistory('jobTypeDetail', value)} className="w-1/2"/>}
-
             </div>
         </div>
         <div className="flex justify-start w-full mt-4">

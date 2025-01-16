@@ -120,12 +120,13 @@ const BasicEdit = ({rireki}) => {
             prefecture: prefecture,
             phoneNumber: phoneNumber,
             email: email,
-            photo: photoUrl,
+            photo: photoUrl ? photoUrl : photo,
             otherPhone: otherContacts ? otherContactsDetail.phoneNumber : "同上",
             otherEmail: otherContacts ? otherContactsDetail.email : "同上",
             otherPrefecture: otherContacts ? otherContactsDetail.prefecture : "同上",
         }
-
+        console.log(rirekiData);
+        
 
         const resData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/rireki/update/basic/${rireki._id}`, rirekiData);
         if(resData.data.error) return message.error(resData.data.message);
@@ -258,8 +259,8 @@ const BasicEdit = ({rireki}) => {
                             <span className="lg:text-base md:text-sm text-xs text-[#343434]">連絡先</span>
                         </div>
                         <div className="flex items-center justify-start gap-2 w-3/5 desire duration-300">
-                            <Checkbox checked={!otherContacts} onChange={() => setOtherContacts(true)}>同上</Checkbox>
-                            <Checkbox checked={otherContacts} onChange={() => setOtherContacts(false)}>その他連絡先</Checkbox>
+                            <Checkbox checked={!otherContacts} onChange={() => setOtherContacts(false)}>同上</Checkbox>
+                            <Checkbox checked={otherContacts} onChange={() => setOtherContacts(true)}>その他連絡先</Checkbox>
                         </div>
                     </div>
                     {otherContacts &&
