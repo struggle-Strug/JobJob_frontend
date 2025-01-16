@@ -16,15 +16,15 @@ const Top = () => {
                 </section>
                 <section className='max-w-[1100px] mx-auto mt-3 px-4 bg-white rounded-md'>
                     <div className="flex flex-col w-full">
-                        <div className="flex items-center justify-start px-6 pt-10 text-[#FF2A3B] gap-2">
-                            <PiStethoscope   className="h-12 w-12" />
+                        <div className="flex items-center justify-start lg:px-6 md:px-4 px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
+                            <PiStethoscope   className="lg:h-12 lg:w-12 md:h-10 md:w-10 h-8 w-8" />
                             <div className="flex flex-col text-[#343434]">
                                 <p className="lg:text-xl md:text-lg text-base font-bold">医科</p>
                                 <p className="lg:text-sm md:text-xs text-xs">看護師/准看護師・薬剤師・看護助手・臨床検査技師　他13職種</p>
                             </div>
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/dr"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         医師<span className="text-[#343434] text-xs">(123)</span>
@@ -74,7 +74,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/phn"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         保健師<span className="text-[#343434] text-xs">(123)</span>
@@ -124,7 +124,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/clt"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         臨床検査技師<span className="text-[#343434] text-xs">(123)</span>
@@ -174,7 +174,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/rs"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         登録販売者<span className="text-[#343434] text-xs">(123)</span>
@@ -224,7 +224,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/diaf"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         調剤事務<span className="text-[#343434] text-xs">(123)</span>
@@ -277,15 +277,15 @@ const Top = () => {
                         </div>
                     </div>
                     <div className="flex flex-col w-full">
-                        <div className="flex items-center justify-start px-6 pt-10 text-[#FF2A3B] gap-2">
-                            <LiaToothSolid className="h-12 w-12" />
+                        <div className="flex items-center justify-start lg:px-6 md:px-4 px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
+                            <LiaToothSolid className="lg:h-12 lg:w-12 md:h-10 md:w-10 h-8 w-8" />
                             <div className="flex flex-col text-[#343434]">
                                 <p className="lg:text-xl md:text-lg text-base font-bold">歯科</p>
                                 <p className="lg:text-sm md:text-xs text-xs">歯科医師・歯科衛生士・歯科技工士・歯科助手</p>
                             </div>
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/de"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         歯科医師<span className="text-[#343434] text-xs">(123)</span>
@@ -341,15 +341,15 @@ const Top = () => {
                         </div>
                     </div>
                     <div className="flex flex-col w-full">
-                        <div className="flex items-center justify-start px-6 pt-10 text-[#FF2A3B] gap-2">
-                            <MdWheelchairPickup className="h-12 w-12" />
+                        <div className="flex items-center justify-start lg:px-6 md:px-4 px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
+                            <MdWheelchairPickup className="lg:h-12 lg:w-12 md:h-10 md:w-10 h-8 w-8" />
                             <div className="flex flex-col text-[#343434]">
                                 <p className="lg:text-xl md:text-lg text-base font-bold">介護</p>
                                 <p className="lg:text-sm md:text-xs text-xs">介護職/ヘルパー・生活相談員・サービス提供責任者・ケアマネジャー　他14職種</p>
                             </div>
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/cwh"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         介護職/ヘルパー<span className="text-[#343434] text-xs">(123)</span>
@@ -399,7 +399,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/sp"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         サービス提供責任者<span className="text-[#343434] text-xs">(123)</span>
@@ -449,7 +449,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/smm"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         サービス管理責任者<span className="text-[#343434] text-xs">(123)</span>
@@ -499,7 +499,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/ccs"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         調理師/調理スタッフ<span className="text-[#343434] text-xs">(123)</span>
@@ -549,7 +549,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/nca"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         介護事務<span className="text-[#343434] text-xs">(123)</span>
@@ -578,15 +578,15 @@ const Top = () => {
                         </div>
                     </div>
                     <div className="flex flex-col w-full">
-                        <div className="flex items-center justify-start px-6 pt-10 text-[#FF2A3B] gap-2">
-                            <FaHandsHoldingChild className="h-10 w-10" />
+                        <div className="flex items-center justify-start lg:px-6 md:px-4 px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
+                            <FaHandsHoldingChild className="lg:h-12 lg:w-12 md:h-10 md:w-10 h-8 w-8" />
                             <div className="flex flex-col text-[#343434]">
                                 <p className="lg:text-xl md:text-lg text-base font-bold">保育</p>
                                 <p className="lg:text-sm md:text-xs text-xs">保育士・幼稚園教諭・児童発達支援管理責任者・保育補助　他5職種</p>
                             </div>
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/chil"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         保育士<span className="text-[#343434] text-xs">(123)</span>
@@ -636,7 +636,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/cdsm"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         児童発達支援管理責任者<span className="text-[#343434] text-xs">(123)</span>
@@ -686,7 +686,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/acsw"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         放課後児童支援員/学童指導員<span className="text-[#343434] text-xs">(123)</span>
@@ -703,15 +703,15 @@ const Top = () => {
                         </div>
                     </div>
                     <div className="flex flex-col w-full">
-                        <div className="flex items-center justify-start px-6 pt-10 text-[#FF2A3B] gap-2">
-                            <FaChildReaching className="h-10 w-10" />
+                        <div className="flex items-center justify-start lg:px-6 md:px-4 px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
+                            <FaChildReaching className="lg:h-12 lg:w-12 md:h-10 md:w-10 h-8 w-8" />
                             <div className="flex flex-col text-[#343434]">
                                 <p className="lg:text-xl md:text-lg text-base font-bold">リハビリ／代替医療</p>
                                 <p className="lg:text-sm md:text-xs text-xs">理学療法士・作業療法士・柔道整復師・鍼灸師　他4職種</p>
                             </div>
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6">
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/pt"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         理学療法士<span className="text-[#343434] text-xs">(123)</span>
@@ -761,7 +761,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/jt"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         柔道整復師<span className="text-[#343434] text-xs">(123)</span>
@@ -814,15 +814,15 @@ const Top = () => {
                         </div>
                     </div>
                     <div className="flex flex-col w-full">
-                        <div className="flex items-center justify-start px-6 pt-10 text-[#FF2A3B] gap-2">
-                            <GiHairStrands className="h-10 w-10" />
+                        <div className="flex items-center justify-start lg:px-6 md:px-4 px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
+                            <GiHairStrands className="lg:h-12 lg:w-12 md:h-10 md:w-10 h-8 w-8" />
                             <div className="flex flex-col text-[#343434]">
                                 <p className="lg:text-xl md:text-lg text-base font-bold">ヘルスケア／美容</p>
                                 <p className="lg:text-sm md:text-xs text-xs">美容師・理容師・エステティシャン/セラピスト・インストラクター　他3職種</p>
                             </div>
                         </div>
                         <div className="flex flex-col w-full pt-6 px-6 pb-10">
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/hai"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         美容師<span className="text-[#343434] text-xs">(123)</span>
@@ -872,7 +872,7 @@ const Top = () => {
                                     </div>
                                 </Link>
                             </div>
-                            <div className="grid grid-cols-4 gap-2">
+                            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
                                 <Link to={"/et"} className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                     <p>
                                         エステティシャン/セラピスト<span className="text-[#343434] text-xs">(123)</span>
@@ -913,9 +913,9 @@ const Top = () => {
                         </div>
                     </div>
                 </section>
-                <section className='max-w-[1100px] mx-auto mt-3 px-10 bg-white rounded-md pt-8 pb-8'>
+                <section className='max-w-[1100px] mx-auto lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8 pb-8'>
                     <p className="lg:text-xl md:text-lg text-base font-bold">注目職種を人気エリアから探す</p>
-                    <div className="grid grid-cols-5 gap-2">
+                    <div className="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-2">
                         <div className="col-span-1 flex flex-col justify-center items-start">
                             <p className="lg:text-lg md:text-base text-sm w-full font-semibold border-b-[1px] border-[#e7e7e7] py-2">看護師/准看護師</p>
                             <div className="flex flex-col mt-2">
@@ -1033,9 +1033,9 @@ const Top = () => {
                         </div>
                     </div>
                 </section>
-                <section className='max-w-[1100px] mx-auto mt-3 px-10 bg-white rounded-md pt-8'>
+                <section className='max-w-[1100px] mx-auto lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8'>
                     <p className="lg:text-xl md:text-lg text-base font-bold">施設ジャンルから探す</p>
-                    <div className="grid grid-cols-3 gap-2 pt-4">
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-2 pt-4">
                         <div className="col-span-1 flex flex-col">
                             <Link to={"/hospital"} className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#FF2A3B] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
                                 <p>
@@ -1164,7 +1164,7 @@ const Top = () => {
                         </div>
                     </div>
                 </section>
-                <section className='max-w-[1100px] mx-auto mt-3 px-10 bg-white rounded-md pt-8'>
+                <section className='max-w-[1100px] mx-auto lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8'>
                     <p className="lg:text-xl md:text-lg text-base font-bold">キーワードから探す</p>
                     <div className="flex justify-center w-full">
                         <Link to={"#"} className="bg-[#e9e9e9] hover:shadow-xl text-center font-bold lg:text-lg md:text-sm text-xs duration-500 text-[#FF2A3B] hover:text-[#343434] lg:px-12 md:px-8 px-4 lg:py-4 md:py-2 py-1 rounded-lg my-6">キーワードをもっと見る</Link>
@@ -1176,3 +1176,4 @@ const Top = () => {
 }
 
 export default Top;
+

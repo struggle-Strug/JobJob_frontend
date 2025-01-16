@@ -99,7 +99,7 @@ const Step2 = ({ setEmploymentType, setQualification, setFeature, setErrorMessag
                                 />
                             </p>
                         </div>
-                        <div className={`duration-300 overflow-hidden ${toggleEmployment ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                        <div className={`duration-300 overflow-hidden ${toggleEmployment ? "opacity-100" : "max-h-0 opacity-0"}`}>
                             <div className="mt-4">
                                 {renderCheckboxGroup(employmentOptions, onChangeEmployment, selectedEmploymentTypes)}
                             </div>
@@ -125,7 +125,7 @@ const Step2 = ({ setEmploymentType, setQualification, setFeature, setErrorMessag
                                 />
                             </p>
                         </div>
-                        <div className={`duration-300 overflow-hidden ${toggleQualification_required ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                        <div className={`duration-300 overflow-hidden ${toggleQualification_required ? "opacity-100" : "max-h-0 opacity-0"}`}>
                             <div className="mt-4">
                                 {renderCheckboxGroup(qualificationOptions_required, onChangeQualification, selectedQualifications, 'REQUIRED')}
                             </div>
@@ -143,7 +143,7 @@ const Step2 = ({ setEmploymentType, setQualification, setFeature, setErrorMessag
                                 />
                             </p>
                         </div>
-                        <div className={`duration-300 overflow-hidden ${toggleQualification_other ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                        <div className={`duration-300 overflow-hidden ${toggleQualification_other ? "opacity-100" : "max-h-0 opacity-0"}`}>
                             <div className="mt-4">
                                 {renderCheckboxGroup(qualificationOptions_other, onChangeQualification, selectedQualifications, 'OTHERS')}
                             </div>
@@ -179,7 +179,7 @@ const Step2 = ({ setEmploymentType, setQualification, setFeature, setErrorMessag
                                     />
                                 </p>
                             </div>
-                            <div className={`duration-300 overflow-hidden ${feature.toggle ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                            <div className={`duration-300 overflow-hidden ${feature.toggle ? "opacity-100" : "max-h-0 opacity-0"}`}>
                                 <div className="mt-4">
                                     {renderCheckboxGroup(feature.options, onChangeFeature, selectedFeatures, feature.category)}
                                 </div>

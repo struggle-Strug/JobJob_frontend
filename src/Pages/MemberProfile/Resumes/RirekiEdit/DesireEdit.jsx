@@ -24,8 +24,8 @@ const DesireEdit = ({rireki}) => {
 
     useEffect(() => {
         setDesire({
-            applyReason: rireki?.desire?.applyReason,
-            hope: rireki?.desire?.hope,
+            applyReason: rireki?.desire?.applyReason || "",
+            hope: rireki?.desire?.hope || "",
         })
     },[])
     return (
