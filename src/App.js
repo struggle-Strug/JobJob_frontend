@@ -1,6 +1,6 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import './index.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Register from './Pages/Auth/Register';
 import Login from './Pages/Auth/Login';
 import axios from 'axios';
@@ -32,69 +32,75 @@ import Rule from './Pages/Customer/CustomerRule';
 import CLMainLayout from './components/CLMainLayout';
 import CLTop from './Pages/Customer/TopPage';
 import FacilityPage from './Pages/Customer/FacilityPage';
+
 function App() {
   const { setIsAuthenticated, setUser, user } = useAuth();
-  const token = localStorage.getItem('token')
-
-  checkAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const token = localStorage.getItem('token');
 
   const getUserData = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/user/tokenlogin`);
-    setUser(res.data.user)
-    setIsAuthenticated(true)
-  }
-  
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/user/tokenlogin`);
+      setUser(res.data.user);
+      setIsAuthenticated(true);
+    } catch (err) {
+      console.error("Failed to fetch user data:", err);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false); // Ensure loading state is updated
+    }
+  };
+
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = token;
-      getUserData()
+      getUserData();
+    } else {
+      setIsLoading(false); // No token, skip loading
     }
-  },[])
-  
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Show a spinner or loading indicator
+  }
+
   return (
-    <>
-      <Routes>
-        <Route path='/company' element={<CompanyLandingPage />} />
-        <Route element={<CLLayout />}>
-          <Route path='/customers/new' element={<CustomerSignUp />} />
-          <Route path='/customers/sign_in' element={<CustomerSignIn />} />
-          <Route path='/customers/rule' element={<Rule />} />
-          <Route path='/customers' element={<CLMainLayout />}>
-            <Route path='/customers' element={<CLTop />} />
-            <Route path='/customers/facility' element={<FacilityPage />} />
+    <Routes>
+      <Route path='/company' element={<CompanyLandingPage />} />
+      <Route element={<CLLayout />}>
+        <Route path='/customers/new' element={<CustomerSignUp />} />
+        <Route path='/customers/sign_in' element={<CustomerSignIn />} />
+        <Route path='/customers/rule' element={<Rule />} />
+        <Route path='/customers' element={<CLMainLayout />}>
+          <Route path='/customers' element={<CLTop />} />
+          <Route path='/customers/facility' element={<FacilityPage />} />
+        </Route>
+      </Route>
+      <Route element={<CSLayout />}>
+        <Route path='/' element={<Top />} />
+        <Route path='/members/sign_up' element={<Register />} />
+        <Route path='/members/sign_in' element={<Login />} />
+        {getAllJobTypeValues(JobType).map((jobType) => (
+          <Route key={jobType} path={`/${jobType}/:pref?/:employmentType?/:feature?`} element={<CertainJob />} />
+        ))}
+        {token && user?.role === "member" ? (
+          <Route element={<MyPageLayout />}>
+            <Route path='/members/mypage' element={<MyPage />} />
+            <Route path='/members/profiles' element={<Profile />} />
+            <Route path='/members/profiles/edit/*' element={<Edit />} />
+            <Route path='/members/message' element={<Message />} />
+            <Route path='/members/job_offers/apply' element={<Applied />} />
+            <Route path='/members/job_offers/favorite' element={<Favorites />} />
+            <Route path='/members/job_offers/recent' element={<Recent />} />
+            <Route path='/members/resumes/*' element={<Resumes />} />
+            <Route path='/members/settings' element={<Setting />} />
           </Route>
-        </Route>
-        <Route element={<CSLayout />}>
-          <Route path='/' element={<Top />} />
-          <Route path='/members/sign_up' element={<Register />} />
-          <Route path='/members/sign_in' element={<Login />} />
-          {getAllJobTypeValues(JobType).map((jobType) => (
-            <>
-              <Route path={`/${jobType}/:pref?/:employmentType?/:feature?`} element={<CertainJob />} />
-              <Route path={`/${jobType}/details/:id/`} element={<JobDetails />} />
-              <Route path={`/${jobType}/details/apply/:id`} element={<JobOffer />} />
-            </>
-          ))}
-          {token ? (
-            <Route element={<MyPageLayout />}>
-              <Route path='/members/mypage' element={<MyPage />} />
-              <Route path='/members/profiles' element={<Profile />} />
-              <Route path='/members/profiles/edit/*' element={<Edit />} />
-              <Route path='/members/message' element={<Message />} />
-              <Route path='/members/job_offers/apply' element={<Applied />} />
-              <Route path='/members/job_offers/favorite' element={<Favorites />} />
-              <Route path='/members/job_offers/recent' element={<Recent />} />
-              <Route path='/members/resumes/*' element={<Resumes />} />
-              <Route path='/members/settings' element={<Setting />} />
-            </Route>
-          ) : (
-            <Route path='/*' element={<Navigate to="/members/login" />} />
-          )}
-          {/* 404 Page for Undefined Routes */}
-          <Route path='*' element={<NotFound />} />
-        </Route>
-      </Routes>
-    </>
+        ) : (
+          <Route path='/*' element={<Navigate to="/members/sign_in" />} />
+        )}
+        <Route path='*' element={<NotFound />} />
+      </Route>
+    </Routes>
   );
 }
 

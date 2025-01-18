@@ -272,7 +272,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                         <div key={index} className="flex items-center justify-start gap-2 p-2">
                             <div className="flex flex-col gap-1 w-1/6">
                                 <img src={jobPost?.picture} alt={jobPost?.sub_title} className="w-full object-cover rounded-lg" />
-                                <p className="lg:text-sm text-[0.5rem] p-2 bg-[#FF2A3B] text-white rounded-lg">ステータス</p>
+                                <p className="lg:text-xs text-[0.5rem] p-2 bg-[#FF2A3B] text-white rounded-lg">ステータス</p>
                             </div>
                             <div className="flex flex-col gap-1 w-4/5">
                                 <div className="flex justify-start w-full gap-2">
