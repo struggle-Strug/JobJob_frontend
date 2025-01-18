@@ -29,7 +29,7 @@ const Login = () => {
         setErrorMessage(res.data.message);
         localStorage.setItem("token", res.data.token)
         setIsAuthenticated(true)
-        setUser(res.data.user)
+        await setUser(res.data.user)
         setTimeout(() => {
             window.location.href = "/members/mypage";
         }, 1000);
