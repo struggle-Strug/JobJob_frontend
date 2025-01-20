@@ -35,6 +35,7 @@ const FacilityPage = () => {
     const [facilityServiceTime, setFacilityServiceTime] = useState("");
     const [facilityRestDay, setFacilityRestDay] = useState("");
     const [jobPosts, setJobPosts] = useState([]);
+    const [successModalOpen, setSuccessModalOpen] = useState(false);
 
     const allPrefectureKeys = [
         ...Object.keys(Prefectures.KANTO),
@@ -153,7 +154,8 @@ const FacilityPage = () => {
         const photoUrl = await handleUpload();
 
         const facilityData = {
-            user_id: user._id,
+            // customer_id: customer._id,
+            customer_id: user._id,
             name: facilityName,
             postal_code: facilityPostalCode,
             prefecture: facilityPrefecture,
@@ -172,9 +174,9 @@ const FacilityPage = () => {
         }
 
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/facility`, facilityData);
-        if(response.data.error) message.error(response.data.error);
-        message.success("施設登録成功");
-        setFacilities([...facilities, response.data.facility]);
+        if (response.data.error) message.error(response.data.error);
+        setIsFacilityAddModalOpen(false);
+        setSuccessModalOpen(true);
         
         setFacilityName("");
         setFacilityPostalCode("");
@@ -346,6 +348,17 @@ const FacilityPage = () => {
                     <div className="flex items-center justify-center w-full mt-8 gap-4 border-t-[1px] border-[#e7e7e7] pt-4">
                         <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300" onClick={handleSave}>施設を登録する</button>
                     </div>
+                </Modal>
+            }
+            {
+                <Modal
+                    open={successModalOpen}
+                    onCancel={() => setSuccessModalOpen(false)}
+                    footer={null}
+                    width={600}
+                    className="modal"
+                >
+                    <p className="text-center text-lg font-bold text-[#343434]">施設登録申請を完了しました。</p>
                 </Modal>
             }
         </>
