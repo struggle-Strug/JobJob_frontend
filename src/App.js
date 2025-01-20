@@ -34,7 +34,7 @@ import CLTop from './Pages/Customer/TopPage';
 import FacilityPage from './Pages/Customer/FacilityPage';
 
 function App() {
-  const { setIsAuthenticated, setUser, user } = useAuth();
+  const { setIsAuthenticated, setUser, user, setCustomer, customer } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem('token');
 
@@ -51,10 +51,24 @@ function App() {
     }
   };
 
+  const getCustomerData = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/customer/tokenlogin`);
+      setCustomer(res.data.customer);
+      setIsAuthenticated(true);
+    } catch (err) {
+      console.error("Failed to fetch customer data:", err);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false); // Ensure loading state is updated
+    }
+  };
+
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = token;
       getUserData();
+      getCustomerData();
     } else {
       setIsLoading(false); // No token, skip loading
     }
