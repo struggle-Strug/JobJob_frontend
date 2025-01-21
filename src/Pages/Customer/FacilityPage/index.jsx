@@ -1,4 +1,4 @@
-import { Checkbox, Input, message, Modal, Radio, Select, Upload } from "antd";
+import { Checkbox, Input, message, Modal, Radio, Select, Upload, Pagination } from "antd";
 import { useCallback, useEffect, useState } from "react";
 import { Facilities, Features, JobType, Prefectures } from "../../../utils/constants/categories";
 import { getBase64 } from "../../../utils/getBase64";
@@ -36,6 +36,8 @@ const FacilityPage = () => {
     const [facilityRestDay, setFacilityRestDay] = useState("");
     const [jobPosts, setJobPosts] = useState([]);
     const [successModalOpen, setSuccessModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 11; // Number of facilities to show per page
 
     const allPrefectureKeys = [
         ...Object.keys(Prefectures.KANTO),
@@ -45,8 +47,8 @@ const FacilityPage = () => {
         ...Object.keys(Prefectures.KOSHINETSU_HOKURIKU),
         ...Object.keys(Prefectures.CHUGOKU_SHIKOKU),
         ...Object.keys(Prefectures.KYUSHU_OKINAWA),
-      ];
-      
+    ];
+
     const allPrefectureOptions = allPrefectureKeys.map((item) => ({
         label: item,
         value: item,
@@ -61,7 +63,7 @@ const FacilityPage = () => {
             value: type,
             label: type
         }))
-    ]
+    ];
 
     const jobTypeDetailOptions = (jobType) => {
         return ([
@@ -73,54 +75,52 @@ const FacilityPage = () => {
                 value: type,
                 label: type
             }))
-        ])
-    }
+        ]);
+    };
 
     const accessOptions = [
         ...Object.keys(Features.ACCESS).map(station => ({
             value: station,
             label: station
         }))
-    ]
+    ];
 
     const facilityGenreOptions = [
         ...Object.keys(Facilities).map(genre => ({
             value: genre,
             label: genre
         }))
-    ]
+    ];
 
     const serviceTypeOptions = [
         ...Object.keys(Features.SERVICE_TYPES).map(type => ({
             value: type,
             label: type
         }))
-    ]
+    ];
 
     const beforeUpload = () => {
-        return false
-    }
+        return false;
+    };
 
     const handlePreview = async (file) => {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj);
         }
-        
-            setPreviewImage(file.url || file.preview);
-            setPreviewOpen(true);
-        };
+
+        setPreviewImage(file.url || file.preview);
+        setPreviewOpen(true);
+    };
 
     const handleChange = (info) => {
         let updatedFileList = [...info.fileList];
 
-        // Limit the number of files to 1
         if (updatedFileList.length > 1) {
             updatedFileList = updatedFileList.slice(-1);
         }
 
         setFacilityPhoto(updatedFileList);
 
-        // Provide feedback on upload status
         if (info.file.status === 'done') {
             message.success(`${info.file.name} file uploaded successfully`);
         } else if (info.file.status === 'error') {
@@ -134,7 +134,7 @@ const FacilityPage = () => {
         }
 
         const formData = new FormData();
-        formData.append('file', facilityPhoto[0].originFileObj); // Use the correct file object
+        formData.append('file', facilityPhoto[0].originFileObj);
 
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/file`, formData, {
@@ -150,11 +150,9 @@ const FacilityPage = () => {
     };
 
     const handleSave = async () => {
-
         const photoUrl = await handleUpload();
 
         const facilityData = {
-            // customer_id: customer._id,
             customer_id: user._id,
             name: facilityName,
             postal_code: facilityPostalCode,
@@ -171,45 +169,26 @@ const FacilityPage = () => {
             establishment_date: facilityEstablishmentDateYear,
             service_time: facilityServiceTime,
             rest_day: facilityRestDay,
-        }
+        };
 
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/facility`, facilityData);
         if (response.data.error) message.error(response.data.error);
         setIsFacilityAddModalOpen(false);
         setSuccessModalOpen(true);
-        
-        setFacilityName("");
-        setFacilityPostalCode("");
-        setFacilityPrefecture("");
-        setFacilityCity("");
-        setFacilityVillage("");
-        setFacilityBuilding("");
-        setFacilityPhoto([]);
-        setPreviewImage("");
-        setPreviewOpen(false);
-        setFacilityIntroduction("");
-        setFacilityJobType("");
-        setFacilityJobTypeDetail("");
-        setFacilityAccess("");
-        setFacilityAccessStation("");
-        setFacilityAccessText("");
-        setFacilityGenre("");
-        setFacilityServiceType([]);
-        setFacilityEstablishmentDateYear("");
-        setFacilityEstablishmentDateMonth("");
-        setFacilityServiceTime("");
-        setFacilityRestDay("");
-        setIsFacilityAddModalOpen(false);
-    }
+    };
 
     const getFacilities = useCallback(async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/facility`);
         setFacilities(response.data.facility);
     }, []);
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
     const getJobPosts = useCallback(async (id) => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/jobpost/${id}`);
-        setJobPosts(response.data.jobpost);
+        setJobPosts(response.data.jobpost.filter(jobPost => jobPost.allowed === true));
     }, []);
     
     const getFacility = useCallback(async (id) => {
@@ -226,29 +205,73 @@ const FacilityPage = () => {
         getFacilities();
     }, []);
 
+
+    const paginatedFacilities = facilities.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
     return (
-        <>
-            <div className="w-full h-screen">
-                <div className="grid grid-cols-4 w-full bg-white rounded-lg shadow-xl h-screen">
-                    <div className="col-span-1 border-r-[1px] border-[#e7e7e7] p-4 flex flex-col">
-                        <div className="flex justify-center">
-                            <button onClick={() => setIsFacilityAddModalOpen(true)} className="bg-[#e9e9e9] hover:shadow-xl text-center font-bold lg:text-sm text-xs duration-500 text-[#FF2A3B] hover:text-[#343434] px-2 lg:py-4 md:py-2 py-1 rounded-lg">
-                                施設を新規登録
-                            </button>
+        <div className="w-full min-h-screen">
+            <div className="grid grid-cols-4 w-full bg-white rounded-lg shadow-xl min-h-screen">
+                <div className="col-span-1 border-r-[1px] border-[#e7e7e7] p-4 flex flex-col">
+                    <button
+                        onClick={() => setIsFacilityAddModalOpen(true)}
+                        className="bg-[#e9e9e9] hover:shadow-xl text-center font-bold lg:text-sm text-xs duration-500 text-[#FF2A3B] hover:text-[#343434] px-2 lg:py-4 md:py-2 py-1 rounded-lg"
+                    >
+                        施設を新規登録
+                    </button>
+                    {paginatedFacilities.map((facility) => (
+                        <div
+                            key={facility._id}
+                            className="flex w-full justify-start mt-3 gap-4 cursor-pointer hover:bg-[#e9e9e9] rounded-lg p-2 duration-300"
+                            onClick={() => onClick(facility._id)}
+                        >
+                            <img
+                                src={facility.photo}
+                                alt={facility.name}
+                                className="w-1/3 object-cover rounded-lg"
+                            />
+                            <p className="lg:text-sm text-xs">{facility.name}</p>
                         </div>
-                        {facilities.map((facility, index) => (
-                            <div key={index} className="flex w-full justify-start mt-3 gap-4 cursor-pointer hover:bg-[#e9e9e9] rounded-lg p-2 duration-300" onClick={() => onClick(facility._id)}>
-                                <img src={facility.photo} alt={facility.name} className=" w-1/3 object-cover rounded-lg" />
-                                <p className="lg:text-sm text-xs">{facility.name}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="col-span-3">
-                       {facility ? <FacilityDetail facility={facility} jobPosts={jobPosts} setJobPosts={setJobPosts}/> : (<p className="text-left text-lg font-bold text-[#343434] p-4">施設を選択してください。</p>)}
-                    </div>
+                    ))}
+                    <Pagination
+                        current={currentPage}
+                        total={facilities.length}
+                        pageSize={itemsPerPage}
+                        onChange={handlePageChange}
+                        itemRender={(page, type, originalElement) => {
+                            if (type === "prev") {
+                                return <a>&lt;</a>;
+                            }
+                            if (type === "next") {
+                                return <a>&gt;</a>;
+                            }
+                            if (page === 1 || page === Math.ceil(facilities.length / itemsPerPage)) {
+                                return <a>{page}</a>; // Show first and last pages
+                            }
+                            if (page >= currentPage - 1 && page <= currentPage + 1) {
+                                return <a>{page}</a>; // Show current and neighboring pages
+                            }
+                            if (page === currentPage - 2 || page === currentPage + 2) {
+                                return <span>...</span>; // Show "..." around skipped pages
+                            }
+                            return null;
+                        }}
+                        className="mt-4 w-32 overflow-x-scroll"
+                    />
+                </div>
+                <div className="col-span-3">
+                    {facility ? (
+                        <FacilityDetail facility={facility} jobPosts={jobPosts} setJobPosts={setJobPosts}/>
+                    ) : (
+                        <p className="text-left text-lg font-bold text-[#343434] p-4">
+                            施設を選択してください。
+                        </p>
+                    )}
                 </div>
             </div>
-            {
+                        {
                 <Modal
                     open={isFacilityAddModalOpen}
                     onCancel={() => setIsFacilityAddModalOpen(false)}
@@ -352,17 +375,19 @@ const FacilityPage = () => {
             }
             {
                 <Modal
-                    open={successModalOpen}
-                    onCancel={() => setSuccessModalOpen(false)}
-                    footer={null}
-                    width={600}
-                    className="modal"
+                open={successModalOpen}
+                onCancel={() => setSuccessModalOpen(false)}
+                footer={null}
+                width={600}
+                className="modal"
                 >
-                    <p className="text-center text-lg font-bold text-[#343434]">施設登録申請を完了しました。</p>
+                <p className="text-center text-lg font-bold text-[#343434]">
+                    施設登録申請を完了しました。
+                </p>
                 </Modal>
             }
-        </>
-    )
-}
+        </div>
+    );
+};
 
 export default FacilityPage;
