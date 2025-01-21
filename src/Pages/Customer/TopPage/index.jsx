@@ -1,6 +1,6 @@
 const CLTop = () => {
     return (
-        <div className="w-full h-screen">
+        <div className="w-full min-h-screen">
             <div className="flex flex-col items-start justify-start gap-4 w-full bg-white rounded-lg py-4 px-8 shadow-xl">
                 <div className="w-full bg-[#a5a5a5] h-20">
                 </div>

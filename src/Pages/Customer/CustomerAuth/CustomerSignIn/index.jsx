@@ -30,7 +30,7 @@ const CustomerSignIn = () => {
         document.title = "採用管理画面ログイン | JobJob";
     },[])
     return (
-        <div className="pt-16 pb-8 bg-[#EFEFEF] h-screen">
+        <div className="pt-16 pb-8 bg-[#EFEFEF] min-h-screen">
             <div className="max-w-[700px] mx-auto bg-white shadow-lg">
                 <div className="text-center mt-4">
                     <h1 className="lg:text-xl md:text-lg text-base font-bold text-[#343434] pt-4">採用管理画面ログイン</h1>

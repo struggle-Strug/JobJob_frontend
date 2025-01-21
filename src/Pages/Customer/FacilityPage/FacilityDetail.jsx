@@ -8,7 +8,6 @@ import TextArea from "antd/es/input/TextArea";
 import axios from "axios";
 
 const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
-    const [jobPost, setJobPost] = useState([]);
     const [newJobPostModal, setNewJobPostModal] = useState(false);
     const [jobPostType, setJobPostType] = useState("");
     const [jobPostTypeDetail, setJobPostTypeDetail] = useState("");
@@ -210,7 +209,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/jobpost`, JobPostData);
         if(response.data.error) message.error(response.data.error);
         message.success("求人を登録しました");
-        setJobPosts([...jobPosts, response.data.jobPost]);
+        setJobPosts([...jobPosts, response.data.jobpost]);
         setNewJobPostModal(false);
         setJobPostType("");
         setJobPostTypeDetail("");
