@@ -32,6 +32,7 @@ import Rule from './Pages/Customer/CustomerRule';
 import CLMainLayout from './components/CLMainLayout';
 import CLTop from './Pages/Customer/TopPage';
 import FacilityPage from './Pages/Customer/FacilityPage';
+import FacilityEdit from './Pages/Customer/FacilityPage/FacilityEdit';
 
 function App() {
   const { setIsAuthenticated, setUser, user, setCustomer, customer } = useAuth();
@@ -41,23 +42,11 @@ function App() {
   const getUserData = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/user/tokenlogin`);
-      setUser(res.data.user);
-      setIsAuthenticated(true);
+      res.data.user.type === "member" && setUser(res.data.user.data);
+      res.data.user.type === "member" && setIsAuthenticated(true);
+      res.data.user.type === "customer" && setCustomer(res.data.user.data);
     } catch (err) {
       console.error("Failed to fetch user data:", err);
-      setIsAuthenticated(false);
-    } finally {
-      setIsLoading(false); // Ensure loading state is updated
-    }
-  };
-
-  const getCustomerData = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/customer/tokenlogin`);
-      setCustomer(res.data.customer);
-      setIsAuthenticated(true);
-    } catch (err) {
-      console.error("Failed to fetch customer data:", err);
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false); // Ensure loading state is updated
@@ -68,11 +57,10 @@ function App() {
     if (token) {
       axios.defaults.headers.common["Authorization"] = token;
       getUserData();
-      getCustomerData();
     } else {
       setIsLoading(false); // No token, skip loading
     }
-  }, []);
+  }, [token]);
 
   if (isLoading) {
     return <div>Loading...</div>; // Show a spinner or loading indicator
@@ -88,6 +76,7 @@ function App() {
         <Route path='/customers' element={<CLMainLayout />}>
           <Route path='/customers' element={<CLTop />} />
           <Route path='/customers/facility' element={<FacilityPage />} />
+          <Route path='/customers/facility/edit/:facility_id' element={<FacilityEdit />} />
         </Route>
       </Route>
       <Route element={<CSLayout />}>
