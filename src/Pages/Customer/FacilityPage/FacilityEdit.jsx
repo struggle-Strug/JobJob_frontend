@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Checkbox, Input, Radio, Select, Upload, message } from "antd";
+import { Link } from "react-router-dom";
+import { Checkbox, Input, Radio, Select, Upload, message, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -7,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Facilities, Features, JobType, Prefectures } from "../../../utils/constants/categories";
 import { getBase64 } from "../../../utils/getBase64";
 import { useAuth } from "../../../context/AuthContext";
+import EditorComponent from "../../../components/EditorComponent";
 
 const FacilityEdit = () => {
     const { customer } = useAuth();
@@ -39,6 +41,10 @@ const FacilityEdit = () => {
     const location = useLocation();
     const id = location.pathname.split("/").pop();
     const navigate = useNavigate();
+
+    const editorStyle = {
+        width: "80%",
+    }
 
     const allPrefectureKeys = [
         ...Object.keys(Prefectures.KANTO),
@@ -226,7 +232,14 @@ const FacilityEdit = () => {
         navigate(`/customers/facility`);
     }
 
+    const handleRequestAllow = async () => {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/facility/pending/${id}`);
+        if (response.data.error) message.error(response.data.error);
+        setSuccessModalOpen(true);
+    }
+
     useEffect(() => {
+        document.title = "施設編集";
         getFacility();
     }, []);
 
@@ -235,103 +248,126 @@ const FacilityEdit = () => {
     }
 
     return (
-        <div className="w-full min-h-screen flex flex-col p-4 bg-white rounded-lg mb-8">
-            <h1 className="lg:text-2xl md:text-base text-sm font-bold">施設編集</h1>
-            <div className="flex items-center mt-4">
-                <p className="lg:text-sm text-xs w-1/5">施設名</p>
-                <Input value={facility.name} onChange={(e) => setFacilityName(e.target.value)} className="w-1/4" />
-            </div>
-            <div className="flex items-center mt-4">
-                <p className="lg:text-sm text-xs w-1/5">郵便番号</p>
-                <Input value={facility.postal_code} onChange={(e) => setFacilityPostalCode(e.target.value)} className="w-1/4" />
-            </div>
-            <div className="flex items-center mt-4">
-                <p className="lg:text-sm text-xs w-1/5">都道府県</p>
-                <Select options={allPrefectureOptions} value={facilityPrefecture} onChange={(e) => setFacilityPrefecture(e)} className="w-1/4" />
-            </div>
-            <div className="flex items-center mt-4">
-                <p className="lg:text-sm text-xs w-1/5">市区町村</p>
-                <Select value={facilityCity} onChange={(e) => setFacilityCity(e)} className="w-1/4" />
-            </div>
-            <div className="flex items-center mt-4">
-                <p className="lg:text-sm text-xs w-1/5">町名・番地</p>
-                <Input value={facilityVillage} onChange={(e) => setFacilityVillage(e.target.value)} className="w-1/4" />
-            </div>
-            <div className="flex items-center mt-4">
-                <p className="lg:text-sm text-xs w-1/5">建物名</p>
-                <Input value={facilityBuilding} onChange={(e) => setFacilityBuilding(e.target.value)} className="w-1/4" />
-            </div>
-            <div className="flex items-start mt-4">
-                <div className="flex items-center justify-start gap-1 w-1/5">
-                    <span className="lg:text-sm text-xs text-[#343434]">施設写真</span>
+        <>
+            <div className="w-full min-h-screen flex flex-col p-4 bg-white rounded-lg mb-8">
+                <h1 className="lg:text-2xl md:text-base text-sm font-bold">施設編集</h1>
+                <div className="flex items-center mt-4">
+                    <p className="lg:text-sm text-xs w-1/5">施設名</p>
+                    <Input value={facility.name} onChange={(e) => setFacilityName(e.target.value)} className="w-1/4" />
                 </div>
-                <div className="flex items-center justify-start gap-2">
-                    {facilityPhoto.length == 0 && <img src={facilityPhotoUrl} alt="施設写真" className="w-32 h-32 rounded-lg"/>}
-                    <Upload
-                        name="avatar"
-                        listType="picture-card"
-                        fileList={facilityPhoto}
-                        onPreview={handlePreview}
-                        beforeUpload={beforeUpload}
-                        onChange={handleChange}
-                    >
-                        <div className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3">
-                            <PlusOutlined />
-                            <div className="mt-4 text-center">Upload</div>
-                        </div>
-                    </Upload>
+                <div className="flex items-center mt-4">
+                    <p className="lg:text-sm text-xs w-1/5">郵便番号</p>
+                    <Input value={facility.postal_code} onChange={(e) => setFacilityPostalCode(e.target.value)} className="w-1/4" />
+                </div>
+                <div className="flex items-center mt-4">
+                    <p className="lg:text-sm text-xs w-1/5">都道府県</p>
+                    <Select options={allPrefectureOptions} value={facilityPrefecture} onChange={(e) => setFacilityPrefecture(e)} className="w-1/4" />
+                </div>
+                <div className="flex items-center mt-4">
+                    <p className="lg:text-sm text-xs w-1/5">市区町村</p>
+                    <Select value={facilityCity} onChange={(e) => setFacilityCity(e)} className="w-1/4" />
+                </div>
+                <div className="flex items-center mt-4">
+                    <p className="lg:text-sm text-xs w-1/5">町名・番地</p>
+                    <Input value={facilityVillage} onChange={(e) => setFacilityVillage(e.target.value)} className="w-1/4" />
+                </div>
+                <div className="flex items-center mt-4">
+                    <p className="lg:text-sm text-xs w-1/5">建物名</p>
+                    <Input value={facilityBuilding} onChange={(e) => setFacilityBuilding(e.target.value)} className="w-1/4" />
+                </div>
+                <div className="flex items-start mt-4">
+                    <div className="flex items-center justify-start gap-1 w-1/5">
+                        <span className="lg:text-sm text-xs text-[#343434]">施設写真</span>
+                    </div>
+                    <div className="flex items-center justify-start gap-2">
+                        {facilityPhoto.length == 0 && <img src={facilityPhotoUrl} alt="施設写真" className="w-32 h-32 rounded-lg"/>}
+                        <Upload
+                            name="avatar"
+                            listType="picture-card"
+                            fileList={facilityPhoto}
+                            onPreview={handlePreview}
+                            beforeUpload={beforeUpload}
+                            onChange={handleChange}
+                        >
+                            <div className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3">
+                                <PlusOutlined />
+                                <div className="mt-4 text-center">Upload</div>
+                            </div>
+                        </Upload>
+                    </div>
+                </div>
+                <div className="flex items-start mt-4 textarea">
+                    <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
+                    <EditorComponent editorValue={facilityIntroduction} onEditorChange={(value) => setFacilityIntroduction(value)} editorStyle={editorStyle} />
+                </div>
+                <div className="flex items-center mt-4">
+                    <p className="lg:text-sm text-xs w-1/5">募集職種</p>
+                    <div className="flex items-center justify-start gap-2 w-3/4">
+                        <Select placeholder="職種" options={jobTypesOptions} value={facilityJobType} onChange={(value) => setFacilityJobType(value)} className="w-1/2"/>
+                        {facilityJobType && <Select placeholder="職種" options={jobTypeDetailOptions(facilityJobType)} value={facilityJobTypeDetail} onChange={(value) => setFacilityJobTypeDetail(value)} className="w-1/2"/>}
+                    </div>
+                </div>
+                <div className="flex items-start mt-4 desireEmployment">
+                    <p className="lg:text-sm text-xs w-1/5">アクセス</p>
+                    <div className="flex flex-col w-3/4">
+                        <Checkbox.Group options={accessOptions} value={facilityAccess} onChange={(value) => setFacilityAccess(value)} />
+                        <Input value={facilityAccessStation} onChange={(e) => setFacilityAccessStation(e.target.value)} className="w-1/2 mt-4" />
+                        <Input value={facilityAccessText} onChange={(e) => setFacilityAccessText(e.target.value)} className="w-1/2 mt-4" />
+                    </div>
+                </div>
+                <div className="flex items-start mt-4 textarea">
+                    <p className="lg:text-sm text-xs w-1/5">施設ジャンル</p>
+                    <Radio.Group options={facilityGenreOptions} value={facilityGenre} onChange={(value) => setFacilityGenre(value.target.value)} className="w-4/5" />
+                </div>
+                <div className="flex items-start mt-4 desireEmployment">
+                    <p className="lg:text-sm text-xs w-1/5">サービス形態</p>
+                    <Checkbox.Group options={serviceTypeOptions} value={facilityServiceType} onChange={(value) => setFacilityServiceType(value)} className="w-4/5" />
+                </div>
+                <div className="flex items-start mt-4 textarea">
+                    <p className="lg:text-sm text-xs w-1/5">設立年月日</p>
+                    <div className="flex justify-start items-end w-4/5">
+                        <Input value={facilityEstablishmentDateYear} onChange={(e) => setFacilityEstablishmentDateYear(e.target.value)} className="w-1/4" />
+                        <span className="mx-2">年</span>
+                        <Input value={facilityEstablishmentDateMonth} onChange={(e) => setFacilityEstablishmentDateMonth(e.target.value)} className="w-1/4" />
+                        <span className="mx-2">月</span>
+                    </div>
+                </div>
+                <div className="flex items-start mt-4 textarea">
+                    <p className="lg:text-sm text-xs w-1/5">営業時間</p>
+                    <Input value={facilityServiceTime} onChange={(e) => setFacilityServiceTime(e.target.value)} className="w-1/2" />
+                </div>
+                <div className="flex items-start mt-4 textarea">
+                    <p className="lg:text-sm text-xs w-1/5">休日</p>
+                    <Input value={facilityRestDay} onChange={(e) => setFacilityRestDay(e.target.value)} className="w-1/2" />
+                </div>
+                <div className="flex items-center justify-center w-full mt-8 gap-4 border-t-[1px] border-[#e7e7e7] pt-4">
+                    <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">プレビュー</button>
+                    <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300" onClick={handleSave}>下書き保存</button>
+                    <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300" onClick={handleRequestAllow}>掲載を申請する</button>
                 </div>
             </div>
-            <div className="flex items-start mt-4 textarea">
-                <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
-                <TextArea value={facilityIntroduction} onChange={(e) => setFacilityIntroduction(e.target.value)} className="w-3/4 h-40" />
-            </div>
-            <div className="flex items-center mt-4">
-                <p className="lg:text-sm text-xs w-1/5">募集職種</p>
-                <div className="flex items-center justify-start gap-2 w-3/4">
-                    <Select placeholder="職種" options={jobTypesOptions} value={facilityJobType} onChange={(value) => setFacilityJobType(value)} className="w-1/2"/>
-                    {facilityJobType && <Select placeholder="職種" options={jobTypeDetailOptions(facilityJobType)} value={facilityJobTypeDetail} onChange={(value) => setFacilityJobTypeDetail(value)} className="w-1/2"/>}
+
+            <Modal
+                open={successModalOpen}
+                onCancel={() => setSuccessModalOpen(false)}
+                footer={null}
+                width={600}
+                className="modal"
+            >
+                <div className="flex flex-col">
+                    <p className="text-lg font-bold text-[#343434] pl-4">
+                        施設の掲載申請が完了しました。
+                    </p>
+                    <p className="text-sm text-[#343434] mt-4">
+                        ※内容の確認と公開までに即日～2営業日程度かかる場合がございます。
+                    </p>
+                    <p className="text-sm text-[#343434]">
+                        ※掲載された内容を事務局により修正される場合がございます。
+                    </p>
+                    <Link to="/customers/facility" className="text-center text-blue-500 mt-4">施設一覧へ戻る</Link>
                 </div>
-            </div>
-            <div className="flex items-start mt-4 desireEmployment">
-                <p className="lg:text-sm text-xs w-1/5">アクセス</p>
-                <div className="flex flex-col w-3/4">
-                    <Checkbox.Group options={accessOptions} value={facilityAccess} onChange={(value) => setFacilityAccess(value)} />
-                    <Input value={facilityAccessStation} onChange={(e) => setFacilityAccessStation(e.target.value)} className="w-1/2 mt-4" />
-                    <Input value={facilityAccessText} onChange={(e) => setFacilityAccessText(e.target.value)} className="w-1/2 mt-4" />
-                </div>
-            </div>
-            <div className="flex items-start mt-4 textarea">
-                <p className="lg:text-sm text-xs w-1/5">施設ジャンル</p>
-                <Radio.Group options={facilityGenreOptions} value={facilityGenre} onChange={(value) => setFacilityGenre(value.target.value)} className="w-4/5" />
-            </div>
-            <div className="flex items-start mt-4 desireEmployment">
-                <p className="lg:text-sm text-xs w-1/5">サービス形態</p>
-                <Checkbox.Group options={serviceTypeOptions} value={facilityServiceType} onChange={(value) => setFacilityServiceType(value)} className="w-4/5" />
-            </div>
-            <div className="flex items-start mt-4 textarea">
-                <p className="lg:text-sm text-xs w-1/5">設立年月日</p>
-                <div className="flex justify-start items-end w-4/5">
-                    <Input value={facilityEstablishmentDateYear} onChange={(e) => setFacilityEstablishmentDateYear(e.target.value)} className="w-1/4" />
-                    <span className="mx-2">年</span>
-                    <Input value={facilityEstablishmentDateMonth} onChange={(e) => setFacilityEstablishmentDateMonth(e.target.value)} className="w-1/4" />
-                    <span className="mx-2">月</span>
-                </div>
-            </div>
-            <div className="flex items-start mt-4 textarea">
-                <p className="lg:text-sm text-xs w-1/5">営業時間</p>
-                <Input value={facilityServiceTime} onChange={(e) => setFacilityServiceTime(e.target.value)} className="w-1/2" />
-            </div>
-            <div className="flex items-start mt-4 textarea">
-                <p className="lg:text-sm text-xs w-1/5">休日</p>
-                <Input value={facilityRestDay} onChange={(e) => setFacilityRestDay(e.target.value)} className="w-1/2" />
-            </div>
-            <div className="flex items-center justify-center w-full mt-8 gap-4 border-t-[1px] border-[#e7e7e7] pt-4">
-                <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">プレビュー</button>
-                <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300" onClick={handleSave}>下書き保存</button>
-                <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">掲載を申請する</button>
-            </div>
-        </div>
+            </Modal>
+        </>
     );
 };
 

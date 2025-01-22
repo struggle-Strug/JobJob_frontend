@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const NotFound = () => {
     return (
-        <div className="bg-[#EFEFEF]">
+        <div className="bg-[#EFEFEF] min-h-screen pt-16">
             <section className='max-w-[1100px] mx-auto bg-white rounded-lg lg:px-12 md:px-8 py-12'>
                 <div className="flex flex-col items-center justify-center">
                     <FaFrownOpen className="w-12 h-12 text-[#FF2A3B]" />

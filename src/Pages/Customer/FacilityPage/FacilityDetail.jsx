@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Checkbox, Input, message, Modal, Radio, Select, Upload } from 'antd';
 import { EmploymentType, Features, JobType, Paysystems, Qualifications } from "../../../utils/constants/categories";
@@ -39,7 +39,20 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
     const [jobPostQualificationOther, setJobPostQualificationOther] = useState("");
     const [jobPostQualificationContent, setJobPostQualificationContent] = useState("");
     const [jobPostQualificationWelcome, setJobPostQualificationWelcome] = useState("");
-    const [jobPostProcess, setJobPostProcess] = useState("");
+    const [jobPostProcess, setJobPostProcess] = useState(`
+        1：応募フォームよりご応募ください
+        ↓
+        2：採用担当より面接日程の調整などの連絡をさせていただきます
+        ↓
+        3：面接実施
+        ↓
+        4：採用決定のご連絡
+        ↓
+        5：入職手続きを進めます
+
+        ※応募から内定までは平均1週間～1か月ほどになります。
+        ※在職中で今すぐ転職が難しい方も調整のご相談が可能です。
+    `);
 
     const [previewImage, setPreviewImage] = useState("");
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -245,6 +258,10 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
         setJobPostProcess("");
     }
 
+    useEffect(() => {
+        document.title = "施設詳細";
+    },[])
+
     return (
         <>
             <div className="flex flex-col p-4">
@@ -259,7 +276,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                                 <span>
                                     <Link
                                         to={`/customers/facility/edit/${facility.facility_id}`}
-                                        className="text-[#FF2A3B] hover:scale-105 duration-300"
+                                        className="text-[#FF2A3B] hover:underline duration-300"
                                     >
                                         編集
                                     </Link>
@@ -283,22 +300,36 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                     <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">受付終了：{jobPosts.filter(jobpost => jobpost.allowed === "ended").length}件</span>
                 </div>
                 <div className="flex items-center justify-center w-full gap-4 py-2 mt-2 border-t-[1px] border-[#e7e7e7]">
-                    <button onClick={() => setNewJobPostModal(true)} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-2 duration-300">求人を新規登録</button>
-                    <button className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-2 hover:bg-[#ffe4e4] hover:text-red-500 duration-300">求人をコピーして登録</button>
+                    <button onClick={() => setNewJobPostModal(true)} className={`lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-2 duration-300 ${facility.allowed !== "allowed" ? "cursor-not-allowed" : ""}`} disabled={facility.allowed !== "allowed"}>求人を新規登録</button>
+                    <button className={`lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-2 hover:bg-[#ffe4e4] hover:text-red-500 duration-300 ${facility.allowed !== "allowed" ? "cursor-not-allowed" : ""}`} disabled={facility.allowed !== "allowed"}>求人をコピーして登録</button>
                 </div>
                 <div className="w-full flex flex-col border-t-[1px] border-[#e7e7e7]">
                     {jobPosts?.map((jobPost, index) => (
                         <div key={index} className="flex items-center justify-start gap-2 p-2">
                             <div className="flex flex-col gap-1 w-1/6">
                                 <img src={jobPost?.picture} alt={jobPost?.sub_title} className="w-full object-cover rounded-lg" />
-                                <p className="lg:text-xs text-[0.5rem] p-2 bg-[#FF2A3B] text-white rounded-lg text-center">
-                                    {jobPost?.allowed === "draft" ? "下書き" : jobPost?.allowed === "pending" ? "掲載申請中" : jobPost?.allowed === "allowed" ? "掲載中" : jobPost?.allowed === "ended" ? "受付終了" : ""}
-                                </p>
+                                    <p className="lg:text-xs text-[0.5rem] p-2 bg-[#FF2A3B] text-white rounded-lg text-center">
+                                        {jobPost?.allowed === "draft" ? "下書き" : jobPost?.allowed === "pending" ? "掲載申請中" : jobPost?.allowed === "allowed" ? "掲載中" : jobPost?.allowed === "ended" ? "受付終了" : ""}
+                                    </p>
                             </div>
                             <div className="flex flex-col gap-1 w-4/5">
-                                <div className="flex justify-start w-full gap-2">
-                                    <p className="lg:text-sm text-xs text-[#343434]">職種名:</p>
-                                    <p className="lg:text-sm text-xs text-[#343434]">{jobPost?.type}</p>
+                                
+                                <div className="flex justify-between w-full gap-2">
+                                    <div className="flex items-center justify-start gap-2">
+                                        <p className="lg:text-sm text-xs text-[#343434]">職種名:</p>
+                                        <p className="lg:text-sm text-xs text-[#343434]">{jobPost?.type}</p>
+                                    </div>
+                                    <p className="lg:text-xs text-[0.5rem] rounded-lg text-right">
+                                        <span>
+                                            <Link
+                                                to={`/customers/jobpost/edit/${jobPost.jobpost_id}`}
+                                                className="text-[#FF2A3B] hover:underline duration-300"
+                                            >
+                                                編集
+                                            </Link>
+                                        </span>
+                                        <span className="text-[#FF2A3B] ml-4">プレビュー</span>
+                                    </p>
                                 </div>
                                 <div className="flex justify-start w-full gap-2">
                                     <p className="lg:text-sm text-xs text-[#343434]">求人ID:</p>
@@ -324,7 +355,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                 >
                     <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">求人を新規登録</p>
                     <div className="flex items-center mt-4">
-                        <p className="lg:text-sm text-xs w-1/5">募集職種<span className="text-[0.6rem] text-[#FF2A3B]">必須</span></p>
+                        <p className="lg:text-sm text-xs w-1/5">募集職種<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <div className="flex items-center justify-start gap-2 w-3/4">
                             <Select placeholder="職種" options={jobTypesOptions} value={jobPostType} onChange={(value) => setJobPostType(value)} className="w-1/3"/>
                             {jobPostType && <Select placeholder="職種" options={jobTypeDetailOptions(jobPostType)} value={jobPostTypeDetail} onChange={(value) => setJobPostTypeDetail(value)} className="w-1/3"/>}
@@ -351,19 +382,19 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                         </div>
                     </div>
                     <div className="flex items-center mt-4">
-                        <p className="lg:text-sm text-xs w-1/5">訴求文タイトル</p>
+                        <p className="lg:text-sm text-xs w-1/5">訴求文タイトル<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <Input value={jobPostSubTitle} onChange={(e) => setJobPostSubTitle(e.target.value)} className="w-1/2" />
                     </div>
                     <div className="flex items-start mt-4 textarea">
-                        <p className="lg:text-sm text-xs w-1/5">訴求文</p>
+                        <p className="lg:text-sm text-xs w-1/5">訴求文<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <TextArea value={jobPostSubDescription} onChange={(e) => setJobPostSubDescription(e.target.value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 desireEmployment">
-                        <p className="lg:text-sm text-xs w-1/5">仕事内容（選択）</p>
+                        <p className="lg:text-sm text-xs w-1/5">仕事内容（選択）<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <Checkbox.Group options={workItemOptions} onChange={(value) => setJobPostWorkItem(value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 textarea">
-                        <p className="lg:text-sm text-xs w-1/5">仕事内容</p>
+                        <p className="lg:text-sm text-xs w-1/5">仕事内容<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <TextArea value={jobPostWorkContent} onChange={(e) => setJobPostWorkContent(e.target.value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 desireEmployment">
@@ -375,23 +406,29 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                         <Checkbox.Group options={serviceTypeOptions} value={jobPostServiceType} onChange={(value) => setJobPostServiceType(value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4">
-                        <p className="lg:text-sm text-xs w-1/5">雇用形態</p>
+                        <p className="lg:text-sm text-xs w-1/5">雇用形態<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <div className="flex items-center justify-start gap-2 w-4/5">
                             <Radio.Group options={employmentTypeOptions} value={jobPostEmploymentType} onChange={(e) => setJobPostEmploymentType(e.target.value)} className="w-full"/>
                         </div>
                     </div>
                     <div className="flex items-center mt-4">
-                        <p className="lg:text-sm text-xs w-1/5">給与体系</p>
+                        <p className="lg:text-sm text-xs w-1/5">給与体系<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <div className="flex items-center justify-start gap-2 w-4/5">
                             <Radio.Group options={salaryTypeOptions} value={jobPostSalaryType} onChange={(e) => setJobPostSalaryType(e.target.value)} className="w-full"/>
                         </div>
                     </div>
                     <div className="flex items-center mt-4">
-                        <p className="lg:text-sm text-xs w-1/5">給与下限・上限</p>
+                        <p className="lg:text-sm text-xs w-1/5">給与下限・上限<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <div className="flex items-center justify-start w-4/5">
                             <Input value={jobPostSalaryMin} onChange={(e) => setJobPostSalaryMin(e.target.value)} className="w-1/4" />
                             <span className="mx-2">~</span>
                             <Input value={jobPostSalaryMax} onChange={(e) => setJobPostSalaryMax(e.target.value)} className="w-1/4" />
+                        </div>
+                    </div>
+                    <div className="flex items-start mt-4 textarea">
+                        <p className="lg:text-sm text-xs w-1/5">給与備考</p>
+                        <div className="flex items-center justify-start w-4/5">
+                            <TextArea value={jobPostSalaryRemarks} onChange={(e) => setJobPostSalaryRemarks(e.target.value)} className="w-full" />
                         </div>
                     </div>
                     <div className="flex items-start mt-4 desireEmployment">
@@ -411,7 +448,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                         <Checkbox.Group options={jobPostWorkTimeTypeOptions} value={jobPostWorkTimeType} onChange={(value) => setJobPostWorkTimeType(value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 textarea">
-                        <p className="lg:text-sm text-xs w-1/5">勤務時間・休憩時間</p>
+                        <p className="lg:text-sm text-xs w-1/5">勤務時間・休憩時間<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <TextArea value={jobPostWorkTimeContent} onChange={(e) => setJobPostWorkTimeContent(e.target.value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 desireEmployment">
@@ -419,7 +456,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                         <Checkbox.Group options={jobPostRestTypeOptions} value={jobPostRestType} onChange={(value) => setJobPostRestType(value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 textarea">
-                        <p className="lg:text-sm text-xs w-1/5">休日</p>
+                        <p className="lg:text-sm text-xs w-1/5">休日<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <TextArea value={jobPostRestContent} onChange={(e) => setJobPostRestContent(e.target.value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 textarea">
@@ -431,7 +468,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                         <Checkbox.Group options={jobPostEducationTypeOptions} value={jobPostEducationContent} onChange={(value) => setJobPostEducationContent(value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 desireEmployment">
-                        <p className="lg:text-sm text-xs w-1/5">応募要件（資格）</p>
+                        <p className="lg:text-sm text-xs w-1/5">応募要件（資格）<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <Checkbox.Group options={jobPostQualificationTypeOptions} value={jobPostQualificationType} onChange={(value) => setJobPostQualificationType(value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 desireEmployment">
@@ -447,7 +484,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                         <TextArea value={jobPostQualificationWelcome} onChange={(e) => setJobPostQualificationWelcome(e.target.value)} className="w-4/5" />
                     </div>
                     <div className="flex items-start mt-4 textarea">
-                        <p className="lg:text-sm text-xs w-1/5">選考プロセス</p>
+                        <p className="lg:text-sm text-xs w-1/5">選考プロセス<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
                         <TextArea value={jobPostProcess} onChange={(e) => setJobPostProcess(e.target.value)} className="w-4/5" />
                     </div>
                     <div className="flex items-center justify-center w-full mt-8 gap-4 border-t-[1px] border-[#e7e7e7] pt-4">
