@@ -1,13 +1,16 @@
 import moment from "moment";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Checkbox, Input, message, Modal, Radio, Select, Upload } from 'antd';
 import { EmploymentType, Features, JobType, Paysystems, Qualifications } from "../../../utils/constants/categories";
 import { getBase64 } from "../../../utils/getBase64";
 import { PlusOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import axios from "axios";
+import { useAuth } from "../../../context/AuthContext";
 
 const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
+    const { customer } = useAuth();
     const [newJobPostModal, setNewJobPostModal] = useState(false);
     const [jobPostType, setJobPostType] = useState("");
     const [jobPostTypeDetail, setJobPostTypeDetail] = useState("");
@@ -176,7 +179,8 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
         const pictureUrl = await handleUpload();
 
         const JobPostData = {
-            facility_id: facility._id,
+            facility_id: facility.facility_id,
+            customer_id: customer.customer_id,
             type: jobPostTypeDetail,
             picture: pictureUrl,
             sub_title: jobPostSubTitle,
@@ -246,7 +250,23 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
             <div className="flex flex-col p-4">
                 <div className="flex items-start justify-start gap-4">
                     <img src={facility.photo} alt={facility.name} className="w-1/5 object-cover rounded-lg" />
-                    <div className="flex flex-col items-start lg:gap-2 gap-1">
+                    <div className="flex flex-col items-start w-4/5">
+                        <div className="flex justify-between w-full">
+                            <p className="lg:text-xs text-[0.5rem] py-1 px-2 bg-[#FF2A3B] text-white rounded-lg">
+                                {facility.allowed === "draft" ? "下書き" : facility.allowed === "pending" ? "掲載申請中" : facility.allowed === "allowed" ? "掲載中" : facility.allowed === "ended" ? "受付終了" : ""}
+                            </p>
+                            <p className="lg:text-xs text-[0.5rem] py-1 px-2 rounded-lg">
+                                <span>
+                                    <Link
+                                        to={`/customers/facility/edit/${facility.facility_id}`}
+                                        className="text-[#FF2A3B] hover:scale-105 duration-300"
+                                    >
+                                        編集
+                                    </Link>
+                                </span>
+                                <span className="text-[#FF2A3B] ml-4">プレビュー</span>
+                            </p>
+                        </div>
                         <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">{facility.name}</p>
                         <p className="lg:text-sm text-xs text-[#343434]">{facility.prefecture} {facility.facility_genre}</p>
                         <div className="flex items-center justify-start gap-2">
@@ -256,11 +276,11 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                     </div>
                 </div>
                 <div className="flex items-start justify-start mt-2 gap-2">
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">すべて：NN件</span>
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">下書き：NN件</span>
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">掲載申請中：NN件</span>
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">掲載中：NN件</span>
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">受付終了：NN件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">すべて：{jobPosts.length}件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">下書き：{jobPosts.filter(jobpost => jobpost.allowed === "draft").length}件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">掲載申請中：{jobPosts.filter(jobpost => jobpost.allowed === "pending").length}件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">掲載中：{jobPosts.filter(jobpost => jobpost.allowed === "allowed").length}件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">受付終了：{jobPosts.filter(jobpost => jobpost.allowed === "ended").length}件</span>
                 </div>
                 <div className="flex items-center justify-center w-full gap-4 py-2 mt-2 border-t-[1px] border-[#e7e7e7]">
                     <button onClick={() => setNewJobPostModal(true)} className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-2 duration-300">求人を新規登録</button>
@@ -271,7 +291,9 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                         <div key={index} className="flex items-center justify-start gap-2 p-2">
                             <div className="flex flex-col gap-1 w-1/6">
                                 <img src={jobPost?.picture} alt={jobPost?.sub_title} className="w-full object-cover rounded-lg" />
-                                <p className="lg:text-xs text-[0.5rem] p-2 bg-[#FF2A3B] text-white rounded-lg">ステータス</p>
+                                <p className="lg:text-xs text-[0.5rem] p-2 bg-[#FF2A3B] text-white rounded-lg text-center">
+                                    {jobPost?.allowed === "draft" ? "下書き" : jobPost?.allowed === "pending" ? "掲載申請中" : jobPost?.allowed === "allowed" ? "掲載中" : jobPost?.allowed === "ended" ? "受付終了" : ""}
+                                </p>
                             </div>
                             <div className="flex flex-col gap-1 w-4/5">
                                 <div className="flex justify-start w-full gap-2">
@@ -280,7 +302,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                                 </div>
                                 <div className="flex justify-start w-full gap-2">
                                     <p className="lg:text-sm text-xs text-[#343434]">求人ID:</p>
-                                    <p className="lg:text-sm text-xs text-[#343434]">{jobPost?._id}</p>
+                                    <p className="lg:text-sm text-xs text-[#343434]">{jobPost?.jobpost_id}</p>
                                 </div>
                                 <p className="lg:text-sm text-xs font-bold text-[#343434]">{jobPost?.sub_title}</p>
                                 <div className="flex items-center justify-start gap-2">

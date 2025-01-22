@@ -125,8 +125,6 @@ const BasicEdit = ({rireki}) => {
             otherEmail: otherContacts ? otherContactsDetail.email : "同上",
             otherPrefecture: otherContacts ? otherContactsDetail.prefecture : "同上",
         }
-        console.log(rirekiData);
-        
 
         const resData = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/rireki/update/basic/${rireki._id}`, rirekiData);
         if(resData.data.error) return message.error(resData.data.message);

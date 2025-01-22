@@ -8,6 +8,7 @@ import QualificationEdit from "./QualificationEdit";
 import OtherEdit from "./OtherEdit";
 import DesireEdit from "./DesireEdit";
 import DateEdit from "./DateEdit";
+import { useCallback } from "react";
 
 const RirekiEdit = () => {
     const [rireki, setRireki] = useState(null);
@@ -16,10 +17,10 @@ const RirekiEdit = () => {
     const path = pathname.split('/').pop();
     const type = pathname.split('/').slice(-2)[0];
 
-    const getRireki = async () => {
+    const getRireki = useCallback(async () => {
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/rireki/${path}`);
         setRireki(res.data.rireki);
-    }
+    }, []);
     useEffect(() => {
         getRireki()
     },[]);

@@ -6,6 +6,7 @@ import RirekiEdit from "./RirekiEdit";
 import { useAuth } from "../../../context/AuthContext";
 import axios from "axios";
 import Careersheets from "./CareerSheets";
+import { useCallback } from "react";
 
 const Resumes = () => {
     const { user } = useAuth();
@@ -23,15 +24,15 @@ const Resumes = () => {
     const handleTitleModalOpen = () => {
         setTitleModalOpen(true);
     }
-    const getAllRirekis = async () => {
+    const getAllRirekis = useCallback(async () => {
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/rireki/all/${user?._id}`);
         setRirekis(res.data.rirekis);
-    }
+    }, []);
 
-    const getAllCareerSheets = async () => {
+    const getAllCareerSheets = useCallback(async () => {
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/career/all/${user?._id}`);
         setCareerSheets(res.data.careerSheets);
-    }
+    }, []);
 
     const handleRireki = async () => {
         const newRireki = {

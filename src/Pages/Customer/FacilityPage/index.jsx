@@ -9,7 +9,7 @@ import FacilityDetail from "./FacilityDetail";
 import { useAuth } from "../../../context/AuthContext";
 
 const FacilityPage = () => {
-    const { user } = useAuth();
+    const { customer } = useAuth();
     const [facilities, setFacilities] = useState([]);
     const [facility, setFacility] = useState(null);
     const [isFacilityAddModalOpen, setIsFacilityAddModalOpen] = useState(false);
@@ -152,8 +152,15 @@ const FacilityPage = () => {
     const handleSave = async () => {
         const photoUrl = await handleUpload();
 
+        if(facilityName === "") return message.error("施設名を入力してください。");
+        if(facilityPostalCode === "") return message.error("郵便番号を入力してください。");
+        if (facilityPrefecture === "") return message.error("都道府県を選択してください。");
+        // if (facilityCity === "") return message.error("市区町村を入力してください。");
+        if (facilityVillage === "") return message.error("町名・番地を入力してください。");
+        if (facilityBuilding === "") return message.error("建物名を入力してください。");
+
         const facilityData = {
-            customer_id: user._id,
+            customer_id: customer.customer_id,
             name: facilityName,
             postal_code: facilityPostalCode,
             prefecture: facilityPrefecture,
@@ -163,18 +170,20 @@ const FacilityPage = () => {
             photo: photoUrl || facilityPhoto,
             introduction: facilityIntroduction,
             job_type: facilityJobTypeDetail,
+            access: facilityAccess,
             access_station: facilityAccessStation,
+            access_text: facilityAccessText,
             facility_genre: facilityGenre,
             service_type: facilityServiceType,
-            establishment_date: facilityEstablishmentDateYear,
+            establishment_date: `${facilityEstablishmentDateYear}-${facilityEstablishmentDateMonth}`,
             service_time: facilityServiceTime,
             rest_day: facilityRestDay,
         };
 
         const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/facility`, facilityData);
         if (response.data.error) message.error(response.data.error);
+        message.success(response.data.message);
         setIsFacilityAddModalOpen(false);
-        setSuccessModalOpen(true);
     };
 
     const getFacilities = useCallback(async () => {
@@ -187,8 +196,8 @@ const FacilityPage = () => {
     };
 
     const getJobPosts = useCallback(async (id) => {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/jobpost/${id}`);
-        setJobPosts(response.data.jobpost.filter(jobPost => jobPost.allowed === true));
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/jobpost/facility/${id}`);
+        setJobPosts(response.data.jobpost)
     }, []);
     
     const getFacility = useCallback(async (id) => {
@@ -202,6 +211,7 @@ const FacilityPage = () => {
     }
 
     useEffect(() => {
+        document.title = "施設管理";
         getFacilities();
     }, []);
 
@@ -225,7 +235,7 @@ const FacilityPage = () => {
                         <div
                             key={facility._id}
                             className="flex w-full justify-start mt-3 gap-4 cursor-pointer hover:bg-[#e9e9e9] rounded-lg p-2 duration-300"
-                            onClick={() => onClick(facility._id)}
+                            onClick={() => onClick(facility.facility_id)}
                         >
                             <img
                                 src={facility.photo}
@@ -235,7 +245,7 @@ const FacilityPage = () => {
                             <p className="lg:text-sm text-xs">{facility.name}</p>
                         </div>
                     ))}
-                    <Pagination
+                    {facilities.length > 0 && <Pagination
                         current={currentPage}
                         total={facilities.length}
                         pageSize={itemsPerPage}
@@ -259,7 +269,7 @@ const FacilityPage = () => {
                             return null;
                         }}
                         className="mt-4 w-32 overflow-x-scroll"
-                    />
+                    />}
                 </div>
                 <div className="col-span-3">
                     {facility ? (
