@@ -33,6 +33,7 @@ import CLMainLayout from './components/CLMainLayout';
 import CLTop from './Pages/Customer/TopPage';
 import FacilityPage from './Pages/Customer/FacilityPage';
 import FacilityEdit from './Pages/Customer/FacilityPage/FacilityEdit';
+import JobPostEdit from './Pages/Customer/FacilityPage/JobPostEdit';
 
 function App() {
   const { setIsAuthenticated, setUser, user, setCustomer, customer } = useAuth();
@@ -77,7 +78,9 @@ function App() {
           <Route path='/customers' element={<CLTop />} />
           <Route path='/customers/facility' element={<FacilityPage />} />
           <Route path='/customers/facility/edit/:facility_id' element={<FacilityEdit />} />
+          <Route path='/customers/jobpost/edit/:jobpost_id' element={<JobPostEdit />} />
         </Route>
+        <Route path='*' element={<NotFound />} />
       </Route>
       <Route element={<CSLayout />}>
         <Route path='/' element={<Top />} />

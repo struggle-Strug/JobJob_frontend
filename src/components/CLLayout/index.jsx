@@ -1,6 +1,8 @@
 import { Link, Outlet } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const CLLayout = () => {
+    const { customer } = useAuth();
     return (
       <div>
         {/* Fixed Header Bar */}
@@ -10,7 +12,7 @@ const CLLayout = () => {
               <Link to={"/company"}>
                   <img src="/assets/images/companytop/logo_negative_horizontal00 1.png" alt="logo" className='w-24 hover:scale-105 duration-300'/>
               </Link>
-              <p className="lg:text-base text-sm font-bold">facesmile277@gmail.com</p>
+              <p className="lg:text-base text-sm font-bold">{ customer?.email ? customer?.email : ""}</p>
             </div>
             <Link to={"#"} className="lg:text-base text-sm font-bold">ヘルプ</Link>
           </div>

@@ -19,7 +19,7 @@ code {
 }
 
 .container {
-  @apply max-w-[1018px] mx-auto;
+  @apply max-w-[1110px] mx-auto;
 }
 
 .number {

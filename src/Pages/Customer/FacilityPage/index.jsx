@@ -35,7 +35,6 @@ const FacilityPage = () => {
     const [facilityServiceTime, setFacilityServiceTime] = useState("");
     const [facilityRestDay, setFacilityRestDay] = useState("");
     const [jobPosts, setJobPosts] = useState([]);
-    const [successModalOpen, setSuccessModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 11; // Number of facilities to show per page
 
@@ -211,7 +210,7 @@ const FacilityPage = () => {
     }
 
     useEffect(() => {
-        document.title = "施設管理";
+        document.title = "施設・求人管理";
         getFacilities();
     }, []);
 
@@ -245,7 +244,7 @@ const FacilityPage = () => {
                             <p className="lg:text-sm text-xs">{facility.name}</p>
                         </div>
                     ))}
-                    {facilities.length > 0 && <Pagination
+                    {facilities.length > 11 && <Pagination
                         current={currentPage}
                         total={facilities.length}
                         pageSize={itemsPerPage}
@@ -381,19 +380,6 @@ const FacilityPage = () => {
                     <div className="flex items-center justify-center w-full mt-8 gap-4 border-t-[1px] border-[#e7e7e7] pt-4">
                         <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300" onClick={handleSave}>施設を登録する</button>
                     </div>
-                </Modal>
-            }
-            {
-                <Modal
-                open={successModalOpen}
-                onCancel={() => setSuccessModalOpen(false)}
-                footer={null}
-                width={600}
-                className="modal"
-                >
-                <p className="text-center text-lg font-bold text-[#343434]">
-                    施設登録申請を完了しました。
-                </p>
                 </Modal>
             }
         </div>

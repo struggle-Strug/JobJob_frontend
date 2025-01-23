@@ -1,7 +1,17 @@
 import { ReactComponent as Avatar } from '../../../avatar.svg'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
+import { useEffect } from 'react';
 
 const CompanyLandingPage = () => {
+    const { customer } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (customer) {
+            navigate('/customers');
+        }
+    }, [customer]);
     return (
         <>
             <section className="bg-[#F1F1F1] w-full md:h-8 2xs:h-4 px-4">

@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
+    "@ckeditor/ckeditor5-build-classic": "^41.0.0",
+    "@ckeditor/ckeditor5-react": "^6.2.0",
     "@fontsource/noto-sans-jp": "^5.1.0",
     "@react-pdf/renderer": "^4.1.5",
     "@testing-library/jest-dom": "^5.17.0",
@@ -12,6 +14,7 @@
     "antd": "^5.22.3",
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
+    "html-to-draftjs": "^1.5.0",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
     "moment": "^2.30.1",
