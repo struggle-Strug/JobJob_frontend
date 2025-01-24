@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Checkbox, Input, Radio, Select, Upload, message, Modal } from "antd";
+import { Checkbox, Input, Radio, Select, Upload, message, Modal, Spin } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -27,7 +27,6 @@ const FacilityEdit = () => {
     const [facilityJobType, setFacilityJobType] = useState("");
     const [facilityJobTypeDetail, setFacilityJobTypeDetail] = useState("");
     const [facilityAccess, setFacilityAccess] = useState("");
-    const [facilityAccessStation, setFacilityAccessStation] = useState("");
     const [facilityAccessText, setFacilityAccessText] = useState("");
     const [facilityGenre, setFacilityGenre] = useState("");
     const [facilityServiceType, setFacilityServiceType] = useState([]);
@@ -180,7 +179,6 @@ const FacilityEdit = () => {
             );
             setFacilityJobTypeDetail(response.data.facility.job_type[0]);
             setFacilityAccess(response.data.facility.access);
-            setFacilityAccessStation(response.data.facility.access_station);
             setFacilityAccessText(response.data.facility.access_text);
             setFacilityGenre(response.data.facility.facility_genre);
             setFacilityServiceType(response.data.facility.service_type);
@@ -217,7 +215,6 @@ const FacilityEdit = () => {
             introduction: facilityIntroduction,
             job_type: facilityJobTypeDetail,
             access: facilityAccess,
-            access_station: facilityAccessStation,
             access_text: facilityAccessText,
             facility_genre: facilityGenre,
             service_type: facilityServiceType,
@@ -244,7 +241,11 @@ const FacilityEdit = () => {
     }, []);
 
     if(loading) {
-        return <div>Loading...</div>
+        return (
+            <div className='flex justify-center items-center h-screen w-full'>
+                <Spin size='large' />
+            </div>
+        )
     }
 
     return (
@@ -298,7 +299,7 @@ const FacilityEdit = () => {
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
-                    <EditorComponent editorValue={facilityIntroduction} onEditorChange={(value) => setFacilityIntroduction(value)} editorStyle={editorStyle} />
+                    <TextArea value={facilityIntroduction} onChange={(e) => setFacilityIntroduction(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-center mt-4">
                     <p className="lg:text-sm text-xs w-1/5">募集職種</p>
@@ -309,11 +310,11 @@ const FacilityEdit = () => {
                 </div>
                 <div className="flex items-start mt-4 desireEmployment">
                     <p className="lg:text-sm text-xs w-1/5">アクセス</p>
-                    <div className="flex flex-col w-3/4">
-                        <Checkbox.Group options={accessOptions} value={facilityAccess} onChange={(value) => setFacilityAccess(value)} />
-                        <Input value={facilityAccessStation} onChange={(e) => setFacilityAccessStation(e.target.value)} className="w-1/2 mt-4" />
-                        <Input value={facilityAccessText} onChange={(e) => setFacilityAccessText(e.target.value)} className="w-1/2 mt-4" />
-                    </div>
+                    <Checkbox.Group options={accessOptions} value={facilityAccess} onChange={(value) => setFacilityAccess(value)} className="w-4/5" />
+                </div>
+                <div className="flex items-start mt-4">
+                    <p className="lg:text-sm text-xs w-1/5">アクセス(住所)</p>
+                    <Input value={facilityAccessText} onChange={(e) => setFacilityAccessText(e.target.value)} className="w-1/2" />
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">施設ジャンル</p>

@@ -9,6 +9,7 @@ import { getBase64 } from "../../../utils/getBase64";
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useEffect } from "react";
 import EditorComponent from "../../../components/EditorComponent";
+import Loading from "../../../components/Loading";
 
 const JobPostEdit = () => {
     const { customer } = useAuth();
@@ -234,12 +235,14 @@ const JobPostEdit = () => {
             setLoading(false); // Set loading to false after fetching
         }
     }
+        
+console.log(jobPost);
 
     const handleSave = async () => {
         const pictureUrl = await handleUpload();
         const JobPostData = {
-            facility_id: jobPost.facility_id,
-            customer_id: customer.customer_id,
+            facility_id: jobPost.facility_id.facility_id,
+            customer_id: jobPost.customer_id.customer_id,
             type: jobPostTypeDetail,
             picture: pictureUrl ? pictureUrl : jobPostPictureUrl,
             sub_title: jobPostSubTitle,
@@ -287,7 +290,9 @@ const JobPostEdit = () => {
     }, []);
 
     if(loading) {
-        return <div>Loading...</div>
+        return (
+            <Loading />
+        )
     }
 
     return (
@@ -336,7 +341,7 @@ const JobPostEdit = () => {
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">仕事内容<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
-                    <EditorComponent editorValue={jobPostWorkContent}  onEditorChange={(value) => setJobPostWorkContent(value)} editorStyle={editorStyle} />
+                    <TextArea value={jobPostWorkContent} onChange={(e) => setJobPostWorkContent(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-start mt-4 desireEmployment">
                     <p className="lg:text-sm text-xs w-1/5">診療科目</p>
@@ -368,9 +373,7 @@ const JobPostEdit = () => {
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">給与備考</p>
-                    <div className="flex items-center justify-start w-4/5">
-                        <EditorComponent editorValue={jobPostSalaryRemarks} onEditorChange={(value) => setJobPostSalaryRemarks(value)} editorStyle={editorStyle} />
-                    </div>
+                    <TextArea value={jobPostSalaryRemarks} onChange={(e) => setJobPostSalaryRemarks(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-start mt-4 desireEmployment">
                     <p className="lg:text-sm text-xs w-1/5">想定年収</p>
@@ -382,7 +385,7 @@ const JobPostEdit = () => {
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">待遇</p>
-                    <EditorComponent editorValue={jobPostTreatmentContent} onEditorChange={(value) => setJobPostTreatmentContent(value)} editorStyle={editorStyle} />
+                    <TextArea value={jobPostTreatmentContent} onChange={(e) => setJobPostTreatmentContent(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-start mt-4 desireEmployment">
                     <p className="lg:text-sm text-xs w-1/5">勤務時間・休憩時間（選択）</p>
@@ -390,7 +393,7 @@ const JobPostEdit = () => {
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">勤務時間・休憩時間<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
-                    <EditorComponent editorValue={jobPostWorkTimeContent} onEditorChange={(value) => setJobPostWorkTimeContent(value)} editorStyle={editorStyle} />
+                    <TextArea value={jobPostWorkTimeContent} onChange={(e) => setJobPostWorkTimeContent(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-start mt-4 desireEmployment">
                     <p className="lg:text-sm text-xs w-1/5">休日（選択）</p>
@@ -398,11 +401,11 @@ const JobPostEdit = () => {
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">休日<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
-                    <EditorComponent editorValue={jobPostRestContent} onEditorChange={(value) => setJobPostRestContent(value)} editorStyle={editorStyle} />
+                    <TextArea value={jobPostRestContent} onChange={(e) => setJobPostRestContent(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">長期休暇・特別休暇</p>
-                    <EditorComponent editorValue={jobPostSpecialContent} onEditorChange={(value) => setJobPostSpecialContent(value)} editorStyle={editorStyle} />
+                    <TextArea value={jobPostSpecialContent} onChange={(e) => setJobPostSpecialContent(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-start mt-4 desireEmployment">
                     <p className="lg:text-sm text-xs w-1/5">教育体制・教育</p>
@@ -418,15 +421,15 @@ const JobPostEdit = () => {
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">応募要件（テキスト）</p>
-                    <EditorComponent editorValue={jobPostQualificationContent} onEditorChange={(value) => setJobPostQualificationContent(value)} editorStyle={editorStyle} />
+                    <TextArea value={jobPostQualificationContent} onChange={(e) => setJobPostQualificationContent(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">歓迎要件</p>
-                    <EditorComponent editorValue={jobPostQualificationWelcome} onEditorChange={(value) => setJobPostQualificationWelcome(value)} editorStyle={editorStyle} />
+                    <TextArea value={jobPostQualificationWelcome} onChange={(e) => setJobPostQualificationWelcome(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-start mt-4 textarea">
                     <p className="lg:text-sm text-xs w-1/5">選考プロセス<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span></p>
-                    <EditorComponent editorValue={jobPostProcess} onEditorChange={(value) => setJobPostProcess(value)} editorStyle={editorStyle} />
+                    <TextArea value={jobPostProcess} onChange={(e) => setJobPostProcess(e.target.value)} className="w-4/5" />
                 </div>
                 <div className="flex items-center justify-center w-full mt-8 gap-4 border-t-[1px] border-[#e7e7e7] pt-4">
                     <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">プレビュー</button>

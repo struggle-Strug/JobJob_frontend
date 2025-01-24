@@ -1,20 +1,134 @@
 import { Checkbox, Input, Modal, Select } from "antd";
-import { Link } from "react-router-dom";
-import { getPrefectureKeyByValue } from "../../../utils/getFunctions";
-import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getEmploymentTypeKeyByValue, getFeatureKeyByValue, getJobTypeKeyByValue, getPrefectureKeyByValue } from "../../../utils/getFunctions";
+import { useEffect, useState } from "react";
 import { EmploymentType, Features, Prefectures } from "../../../utils/constants/categories";
+import axios from 'axios';
+import { useAuth } from "../../../context/AuthContext";
+import Loading from "../../../components/Loading";
 
-const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentType, setFeature, setPref, monthlySalary, setMonthlySalary, monthlySalaryOptions, hourlySalary, setHourlySalary, hourlySalaryOptions}) => {
+const JobLists = () => {
+    const { user } = useAuth();
+    const { pathname } = useLocation();
+    const [pref, setPref] = useState(pathname.split('/')[2]);
+    const [employmentType, setEmploymentType] = useState("");
+    const [monthlySalary, setMonthlySalary] = useState("");
+    const [hourlySalary, setHourlySalary] = useState("");
+    const [feature, setFeature] = useState("");
     const [prefectureModalOpen, setPrefectureModalOpen] = useState(false);
     const [employmentTypeModalOpen, setEmploymentTypeModalOpen] = useState(false);
     const [featureModalOpen, setFeatureModalOpen] = useState(false);
+    const [jobPosts, setJobPosts] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    
+    const path = pathname.split('/')[1];
+    const JobType = getJobTypeKeyByValue(path);
     const onClickPref = (pref) => {
         setPref(pref);
         setPrefectureModalOpen(false);
     }
+    const monthlySalaryOptions = [
+        { value: "", label: "指定なし" },
+        { value: "180000", label: "18" },
+        { value: "200000", label: "20" },
+        { value: "250000", label: "25" },
+        { value: "300000", label: "30" },
+        { value: "1600", label: "40" },
+        { value: "500000", label: "50" },
+        { value: "600000", label: "60" },
+        { value: "700000", label: "70" },
+        { value: "800000", label: "80" },
+        { value: "900000", label: "90" },
+        { value: "1000000", label: "100" },
+    ];
+
+    const hourlySalaryOptions = [
+        { value: "", label: "指定なし" },
+        { value: "800", label: "800" },
+        { value: "1000", label: "1000" },
+        { value: "1200", label: "1200" },
+        { value: "1400", label: "1400" },
+        { value: "1600", label: "1600" },
+        { value: "1800", label: "1800" },
+        { value: "2000", label: "2000" },
+        { value: "3000", label: "3000" },
+        { value: "4000", label: "4000" },
+        { value: "5000", label: "5000" },
+    ];
+    const prefecture = getPrefectureKeyByValue(pref);
+    const employment_type = getEmploymentTypeKeyByValue(employmentType);
+    const feature_1 = getFeatureKeyByValue(feature);
+    const getJobPosts = async () => {
+        try {
+            setIsLoading(true);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/jobpost`);
+            
+            setJobPosts(
+                response.data.jobposts
+                    .filter(jobpost => jobpost.allowed === "allowed")
+                    .filter(jobpost => jobpost.type === JobType) // Filter by job type
+                    .filter(jobpost => jobpost.facility_id.prefecture === prefecture) // Filter by prefecture
+                    .filter(jobpost => 
+                        employment_type !== null 
+                            ? jobpost.employment_type[0] === employment_type 
+                            : true // Include all if employment_type is null
+                    )
+                    .filter(jobpost => {
+                        if (feature_1 !== null) { // Check if feature_1 is not null
+                            const jobPostFeatures = [
+                                ...jobpost.work_item,
+                                ...jobpost.service_subject,
+                                ...jobpost.service_type,
+                                ...jobpost.treatment_type,
+                                ...jobpost.rest_type,
+                                ...jobpost.work_time_type,
+                                ...jobpost.education_content,
+                            ];
+                            return jobPostFeatures.includes(feature_1); // Filter if feature_1 matches
+                        }
+                        return true; // Include all if feature_1 is null
+                    })
+            );
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    
+    useEffect(() => {
+        document.title = "求人一覧";
+        getJobPosts();
+    }, [employmentType, feature, pref]);
+
+    useEffect(() => {
+        pref == "" && feature == "" && navigate(`/${path}/${employmentType}`);
+        pref !== "" && navigate(`/${feature ? `${path}/${pref}/${employmentType}/${feature}` : `${path}/${pref}/${employmentType}`}`);
+        pref == "" && setFeature("");
+    },[employmentType]);
+    
+    useEffect(() => {
+        if(pref == ""){
+            employmentType !== "" && navigate(`/${path}/${employmentType}/${feature}`);
+            employmentType == "" && navigate(`/${path}/${feature}`);
+        }
+        if(pref !== ""){
+            employmentType !== "" && navigate(`/${path}/${pref}/${employmentType}/${feature}`);
+            employmentType == "" && navigate(`/${path}/${pref}/${feature}`);
+        }
+    },[feature]);
+
+    if (isLoading) {
+        return (
+            <Loading />
+        )
+    }
+
     return (
         <>
-           <div className="flex w-full h-auto px-4 bg-[#EFEFEF]">
+           <div className="flex w-full px-4 bg-[#EFEFEF]">
                 <div className="container flex items-center justify-between gap-8">
                     <div className="flex flex-col items-center justify-center w-2/3">
                         <div className="flex flex-col justify-center bg-white rounded-lg p-4 w-full shadow-xl">
@@ -26,7 +140,7 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                                 </div>
                                 <div className="flex items-center">
                                     <p className="lg:text-xl md:text-sm font-bold text-[#343434] ">該当件数</p>
-                                    <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">1234</p>
+                                    <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">{jobPosts?.length}</p>
                                     <p className="lg:text-xl md:text-sm font-bold text-[#343434]">件</p>
                                 </div>
                                 <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
@@ -84,7 +198,7 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-start w-full mt-8 ">
-                            <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl border-4 border-[#FF6B56]">
+                            {/* <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl border-4 border-[#FF6B56]">
                                 <div className="absolute top-0 left-0 bg-[#FF6B56] rounded-tl-2xl px-4 py-2 ml-[-0.25rem] mt-[-0.25rem]">
                                     <p className="text-sm font-bold text-white">注目求人</p>
                                 </div>
@@ -277,70 +391,7 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                                         <p className="text-sm font-bold text-white">求人を見る</p>
                                     </button>
                                 </div>
-                            </div>
-                            <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8">
-                                <div className="flex items-center justify-between w-full">
-                                    <img src="/assets/images/dashboard/AdobeStock_569015666 1.png" alt="arrow-down" className="lg:w-full md:w-1/2"/>
-                                    <div className="flex flex-col items-center justify-between p-4 w-full gap-8">
-                                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">求人タイトルダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">求人内容ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between w-full gap-4 px-2">
-                                    <div className="flex gap-4 h-full">
-                                        <div className="flex flex-col justify-center w-2/3 h-full">
-                                            <div className="flex items-center justify-start">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">給与</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">正職員 222,000円〜283,800円</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">仕事内容</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">一般民家を使用したデイサービスにて一般介護全般、清掃業務、記録、運営に関わる業務</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">応募要件</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">※運転免許必須　未経験・無資格可　安心して勤務することが出来る教育体制が整っております。（初期教育もあり）</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">住所</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">新宿区下落合四丁目9番15号</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#FF2A3B]">勤続支援金{" "}&nbsp;&nbsp;正職員12,500円 ~ 16,000円</p>
-                                            </div>
-                                        </div>
-                                        <div className="inline-block items-start justify-start gap-2 w-1/3 h-full">
-                                            <div className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">職場の環境</p>
-                                            </div>
-                                            <div className="inline-block text-center bg-[#F5BD2E] text-white m-1  px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">未経験可</p>
-                                            </div>
-                                            <div className="inline-block text-center bg-[#F5BD2E] text-white m-1  px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">通所介護・デイサービス</p>
-                                            </div>
-                                            <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">社会保険完備</p>
-                                            </div>
-                                            <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">ボーナス賞与あり</p>
-                                            </div>
-                                            <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">交通費支給</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
-                                    <button className="flex items-center justify-center gap-2 bg-whtie rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
-                                        <img src="/assets/images/dashboard/Vector.png" alt="eye" className="w-4 pt-0.5" />
-                                        <p className="text-sm font-bold text-[#FF6B56]">気になる</p>
-                                    </button>
-                                    <button className="flex items-center justify-center bg-[#FF6B56] rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
-                                        <p className="text-sm font-bold text-white">求人を見る</p>
-                                    </button>
-                                </div>
-                            </div>
+                            </div> */}
                             <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8">
                                 <div className="flex items-center justify-between w-full">
                                     <img src="/assets/images/dashboard/AdobeStock_569015666 1.png" alt="arrow-down" className="lg:w-full md:w-1/2"/>
@@ -404,6 +455,70 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                                     </button>
                                 </div>
                             </div>
+                            {jobPosts?.map((jobpost, index) => {
+                                return (
+                                    <div key={index} className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8">
+                                        <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
+                                            <img src={`${jobpost.picture}`} alt="arrow-down" className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"/>
+                                            <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
+                                                <p className="lg:text-xl md:text-sm font-bold text-[#343434]">{jobpost.facility_id.name}の{jobpost.type}求人</p>
+                                                <p className="lg:text-sm md:text-xs text-[#343434]">{jobpost.sub_title}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between w-full gap-4 px-2 mt-2">
+                                            <div className="flex gap-4 h-full">
+                                                <div className="flex flex-col justify-center w-2/3 h-full">
+                                                    <div className="flex items-center justify-start">
+                                                        <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">給与</p>
+                                                        <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">{jobpost.employment_type} {jobpost.salary_type} {jobpost.salary_min}円〜{jobpost.salary_max}円</p>
+                                                    </div>
+                                                    <div className="flex items-start justify-start mt-4" >
+                                                        <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">仕事内容</p>
+                                                        <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-4"><pre>{jobpost.work_content}</pre></p>
+                                                    </div>
+                                                    <div className="flex items-start justify-start mt-4">
+                                                        <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">応募要件</p>
+                                                        <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">{jobpost.qualification_content} {jobpost.qualification_welcome}</p>
+                                                    </div>
+                                                    <div className="flex items-start justify-start mt-4">
+                                                        <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">住所</p>
+                                                        <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">{jobpost.facility_id.access_text}</p>
+                                                    </div>
+                                                    <div className="flex items-start justify-start mt-4">
+                                                        <p className="lg:text-sm md:text-xs font-bold text-[#FF2A3B]">勤続支援金{" "}&nbsp;&nbsp;正職員12,500円 ~ 16,000円</p>
+                                                    </div>
+                                                </div>
+                                                <div className="inline-block items-start justify-start gap-2 w-1/3 h-full">
+                                                    {[
+                                                        ...jobpost.work_item,
+                                                        ...jobpost.service_subject,
+                                                        ...jobpost.service_type,
+                                                        ...jobpost.treatment_type,
+                                                        ...jobpost.work_time_type,
+                                                        ...jobpost.rest_type
+                                                    ].map((item, index) => {
+                                                        return (
+                                                            <div key={index} className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
+                                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">{item}</p>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
+                                            <button className="flex items-center justify-center gap-2 bg-whtie rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2 hover:bg-[#FF6B56]/20 hover:scale-105 duration-300">
+                                                <img src="/assets/images/dashboard/Vector.png" alt="eye" className="w-4 pt-0.5" />
+                                                <p className="text-sm font-bold text-[#FF6B56]">気になる</p>
+                                            </button>
+                                            <Link to={`/${path}/details/${jobpost.jobpost_id}`} className="flex items-center justify-center bg-[#FF6B56] hover:bg-[#FF5B02] hover:scale-105 duration-300 rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
+                                                <p className="text-sm font-bold text-white">求人を見る</p>
+                                            </Link>
+                                        </div>
+                                    </div>
+
+                                )
+                            })}
                         </div>
                         <div className="flex flex-col bg-white rounded-lg px-4 py-2 w-full mt-8 shadow-xl">
                             <div className="flex items-center justify-center w-full gap-20 mt-8">
@@ -512,27 +627,31 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                                     </Link>
                                 </div>
                             </div>
-                            <div className="flex items-center justify-start w-full mt-8">
-                                <p className="lg:text-lg md:text-sm text-[#343434] font-bold">会員登録がまだの方</p>
-                            </div>
-                            <div className="flex flex-col items-center bg-white rounded-lg py-6 w-full mt-8 shadow-xl">
-                                <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] pb-2">
-                                    <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">1.</p>
-                                    <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">事務所からスカウトが届く</p>
-                                </div>
-                                <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
-                                    <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">2.</p>
-                                    <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">希望にあった求人が届く</p>
-                                </div>
-                                <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
-                                    <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">3.</p>
-                                    <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">会員限定機能が利用できる</p>
-                                </div>
-                                <Link to={"/members/register"} className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] rounded-lg px-6 py-2">
-                                    <img src="/assets/images/dashboard/mdi_account.png" alt="register" className="pt-0.5" />
-                                    <p className="lg:text-lg md:text-sm text-white font-bold">無料で会員登録する</p>
-                                </Link>
-                            </div>
+                            {user == null && (
+                                <>
+                                    <div className="flex items-center justify-start w-full mt-8">
+                                        <p className="lg:text-lg md:text-sm text-[#343434] font-bold">会員登録がまだの方</p>
+                                    </div>
+                                    <div className="flex flex-col items-center bg-white rounded-lg py-6 w-full mt-8 shadow-xl">
+                                        <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] pb-2">
+                                            <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">1.</p>
+                                            <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">事務所からスカウトが届く</p>
+                                        </div>
+                                        <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
+                                            <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">2.</p>
+                                            <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">希望にあった求人が届く</p>
+                                        </div>
+                                        <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
+                                            <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">3.</p>
+                                            <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">会員限定機能が利用できる</p>
+                                        </div>
+                                        <Link to={"/members/sign_up"} className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] rounded-lg px-6 py-2 hover:scale-105 duration-300">
+                                            <img src="/assets/images/dashboard/mdi_account.png" alt="register" className="pt-0.5" />
+                                            <p className="lg:text-lg md:text-sm text-white font-bold">無料で会員登録する</p>
+                                        </Link>
+                                    </div>
+                                </>
+                            )}
                             <div className="flex items-center justify-start w-full mt-8">
                                 <p className="lg:text-lg md:text-sm text-[#343434] font-bold">LINEでお問い合わせOK</p>
                             </div>
@@ -751,7 +870,10 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             <div className="flex items-center justify-start desire gap-4 mt-4">
                                 {Object.keys(EmploymentType).map((employmentTypeKey, index) => {
                                     return (
-                                        <Checkbox key={index} onChange={() => setEmploymentType(EmploymentType[employmentTypeKey])} checked={employmentType === EmploymentType[employmentTypeKey]}>{employmentTypeKey}</Checkbox>
+                                        <Checkbox key={index} onChange={() => {
+                                            setEmploymentType(EmploymentType[employmentTypeKey])
+                                            setEmploymentTypeModalOpen(false)    
+                                        }} checked={employmentType === EmploymentType[employmentTypeKey]}>{employmentTypeKey}</Checkbox>
                                     )
                                 })}
                             </div>
@@ -802,7 +924,11 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
                                 {Object.keys(Features.HOLIDAY).map((featureKey, index) => {
                                     return (
-                                        <Checkbox key={index} onChange={() => setFeature(Features.HOLIDAY[featureKey])} checked={feature === Features.HOLIDAY[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                        <Checkbox key={index} onChange={() => {
+                                            setFeature(Features.HOLIDAY[featureKey])
+                                            setFeatureModalOpen(false)    
+                                        }}
+                                            checked={feature === Features.HOLIDAY[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
                                     )
                                 })}
                             </div>
@@ -812,7 +938,10 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
                                 {Object.keys(Features.WORKING_HOURS).map((featureKey, index) => {
                                     return (
-                                        <Checkbox key={index} onChange={() => setFeature(Features.WORKING_HOURS[featureKey])} checked={feature === Features.WORKING_HOURS[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                        <Checkbox key={index} onChange={() => {
+                                            setFeature(Features.WORKING_HOURS[featureKey])
+                                            setFeatureModalOpen(false)    
+                                        }} checked={feature === Features.WORKING_HOURS[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
                                     )
                                 })}
                             </div>
@@ -822,7 +951,10 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
                                 {Object.keys(Features.ACCESS).map((featureKey, index) => {
                                     return (
-                                        <Checkbox key={index} onChange={() => setFeature(Features.ACCESS[featureKey])} checked={feature === Features.ACCESS[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                        <Checkbox key={index} onChange={() => {
+                                            setFeature(Features.ACCESS[featureKey])
+                                            setFeatureModalOpen(false)    
+                                        }} checked={feature === Features.ACCESS[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
                                     )
                                 })}
                             </div>
@@ -832,7 +964,10 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
                                 {Object.keys(Features.DESCRIPTION).map((featureKey, index) => {
                                     return (
-                                        <Checkbox key={index} onChange={() => setFeature(Features.DESCRIPTION[featureKey])} checked={feature === Features.DESCRIPTION[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                        <Checkbox key={index} onChange={() => {
+                                            setFeature(Features.DESCRIPTION[featureKey])
+                                            setFeatureModalOpen(false)    
+                                        }} checked={feature === Features.DESCRIPTION[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
                                     )
                                 })}
                             </div>
@@ -842,7 +977,10 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
                                 {Object.keys(Features.SALARY_BENEFITS_WELFARE).map((featureKey, index) => {
                                     return (
-                                        <Checkbox key={index} onChange={() => setFeature(Features.SALARY_BENEFITS_WELFARE[featureKey])} checked={feature === Features.SALARY_BENEFITS_WELFARE[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                        <Checkbox key={index} onChange={() => {
+                                            setFeature(Features.SALARY_BENEFITS_WELFARE[featureKey])
+                                            setFeatureModalOpen(false)    
+                                        }} checked={feature === Features.SALARY_BENEFITS_WELFARE[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
                                     )
                                 })}
                             </div>
@@ -852,7 +990,10 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
                                 {Object.keys(Features.SERVICE_TYPES).map((featureKey, index) => {
                                     return (
-                                        <Checkbox key={index} onChange={() => setFeature(Features.SERVICE_TYPES[featureKey])} checked={feature === Features.SERVICE_TYPES[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                        <Checkbox key={index} onChange={() => {
+                                            setFeature(Features.SERVICE_TYPES[featureKey])
+                                            setFeatureModalOpen(false)    
+                                        }} checked={feature === Features.SERVICE_TYPES[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
                                     )
                                 })}
                             </div>
@@ -862,7 +1003,10 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
                                 {Object.keys(Features.EDUCATION).map((featureKey, index) => {
                                     return (
-                                        <Checkbox key={index} onChange={() => setFeature(Features.EDUCATION[featureKey])} checked={feature === Features.EDUCATION[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                        <Checkbox key={index} onChange={() => {
+                                            setFeature(Features.EDUCATION[featureKey])
+                                            setFeatureModalOpen(false)    
+                                        }} checked={feature === Features.EDUCATION[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
                                     )
                                 })}
                             </div>
@@ -872,7 +1016,10 @@ const JobLists = ({path, pref, employmentType, feature, JobType, setEmploymentTy
                             <div className="w-full desireEmployment flex flex-wrap gap-2 mt-4 justify-start">
                                 {Object.keys(Features.MEDICAL_DEPARTMENT).map((featureKey, index) => {
                                     return (
-                                        <Checkbox key={index} onChange={() => setFeature(Features.MEDICAL_DEPARTMENT[featureKey])} checked={feature === Features.MEDICAL_DEPARTMENT[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
+                                        <Checkbox key={index} onChange={() => {
+                                            setFeature(Features.MEDICAL_DEPARTMENT[featureKey])
+                                            setFeatureModalOpen(false)    
+                                        }} checked={feature === Features.MEDICAL_DEPARTMENT[featureKey]} className="w-[calc(33.33%-0.5rem)]">{featureKey}</Checkbox>
                                     )
                                 })}
                             </div>

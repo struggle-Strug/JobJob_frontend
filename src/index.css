@@ -18,6 +18,11 @@ code {
     monospace;
 }
 
+pre {
+  white-space: pre-wrap;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
 .container {
   @apply max-w-[1110px] mx-auto;
 }
