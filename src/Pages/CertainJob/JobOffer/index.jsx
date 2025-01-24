@@ -1,13 +1,15 @@
 import { useLocation } from "react-router-dom";
 import { getJobTypeKeyByValue } from "../../../utils/getFunctions";
 import { useAuth } from "../../../context/AuthContext";
-import { Input, Select } from "antd";
+import { Checkbox, Input, Select } from "antd";
 import { getDateOptions } from "../../../utils/date";
 import { useEffect, useState } from "react";
 import { Prefectures } from "../../../utils/constants/categories";
+import axios from "axios";
 
 const JobOffer = () => {
     const { user } = useAuth();
+    const [jobPost, setJobPost] = useState(null);
     const [sei, setSei] = useState('');
     const [mei, setMei] = useState('');
     const [hiraganaSei, setHiraganaSei] = useState('');
@@ -20,6 +22,7 @@ const JobOffer = () => {
     const [prefecture, setPrefecture] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [qualification, setQualification] = useState([]);
     const [period, setPeriod] = useState('');
     const [meetingDate, setMeetingDate] = useState([
         {
@@ -31,7 +34,8 @@ const JobOffer = () => {
     ]);
 
     const {pathname} = useLocation();
-    const JobType = pathname.split('/')[1];
+    const jobType = pathname.split('/')[1];
+    const jobpost_id = pathname.split('/').pop();
 
     const { yearsOptions, monthsOptions, daysOptions } = getDateOptions();
     const prefecturesOptions = Object.entries(Prefectures).flatMap(([region, prefs]) => 
@@ -56,6 +60,13 @@ const JobOffer = () => {
         { label: "男性", value: "男性" },
         { label: "女性", value: "女性" },
     ]
+
+    const requiredQualificationsOptions = jobPost?.qualification_type.map(qualification => ({
+        label: qualification,
+        value: qualification
+    }))
+
+    const userQualifications = user?.qualification.map(qualificationObject => qualificationObject.qualification)
 
     const generateDateOptions = () => {
         const today = new Date();
@@ -144,7 +155,16 @@ const JobOffer = () => {
         setMeetingDate(newMeetingDates);
     };
 
-
+    const getJobPost = async () => {
+        try {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobpost_id}`);
+            setJobPost(res.data.jobpost);
+            setQualification(user?.qualification?.map(q => q.qualification));
+        } catch (err) {
+            console.error("Failed to fetch user data:", err);
+        }
+    }
+    
     useEffect(() => {
         if(user !== null) {
             setSei(user?.name.split(' ')[0]);
@@ -159,14 +179,17 @@ const JobOffer = () => {
             setPrefecture(user?.prefecture);
             setEmail(user?.email);
         }
+        getJobPost();
     },[user])
+    console.log(qualification);
+        
     return (
         <div>
             <div className="flex w-full h-auto px-4 bg-[#EFEFEF]">
                 <div className="container flex items-center justify-between gap-8">
                     <div className="flex flex-col items-center justify-center w-full">
                         <div className="flex justify-start bg-white rounded-lg px-6 py-6 w-full shadow-xl">
-                            <p className="lg:text-lg md:text-base text-sm text-[#343434]"><span className="font-bold">増田クリニック</span>の<span className="font-bold">{getJobTypeKeyByValue(JobType)}求人</span>に応募する</p>
+                            <p className="lg:text-lg md:text-base text-sm text-[#343434]"><span className="font-bold">{jobPost?.facility_id.name}</span>の<span className="font-bold">{getJobTypeKeyByValue(jobType)}求人</span>に応募する</p>
                         </div>
                         <div className="flex flex-col justify-center bg-white rounded-lg px-6 py-6 w-full shadow-xl mt-4">
                             <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">基本情報</p>
@@ -304,12 +327,8 @@ const JobOffer = () => {
                                 <div className="flex items-start gap-2 justify-end">
                                     <p>応募職種</p>
                                 </div>
-                                <div className="flex flex-col w-4/5">
-                                    <div className="flex flex-col px-2">
-                                        <div className="duration-300 overflow-hidden">
-                                            <p>{getJobTypeKeyByValue(JobType)}</p>
-                                        </div>
-                                    </div>
+                                <div className="flex items-start justify-start w-4/5">
+                                    {getJobTypeKeyByValue(jobType)}
                                 </div>
                             </div>
                             <div className="flex justify-between w-full mt-6">
@@ -334,11 +353,11 @@ const JobOffer = () => {
                                 <div className="flex items-start gap-2 justify-end">
                                     <p>保有資格・免許</p>
                                 </div>
-                                <div className="flex flex-col w-4/5">
-                                    <div className="flex flex-col px-2">
-                                        <div className="duration-300 overflow-hidden">
-                                        </div>
-                                    </div>
+                                <div className="flex flex-col items-start justify-start desireEmployment w-4/5">
+                                    {!jobPost?.qualification_type?.every(q => qualification.includes(q)) && 
+                                        <p className="text-xs text-[#FF2A3B]">応募条件を満たす資格/免許が選択されていません。お持ちの場合はチェックしてください。</p>
+                                    }
+                                    <Checkbox.Group options={requiredQualificationsOptions} value={qualification} onChange={(value) => setQualification(value)}/>
                                 </div>
                             </div>
                             <div className="flex justify-between w-full mt-6">
@@ -351,7 +370,7 @@ const JobOffer = () => {
                                             <p className="lg:text-sm text-xs">日程調整をスムーズにするポイント</p>
                                             <p className="lg:text-sm text-xs">・本日から7日前後の日程を選択する</p>
                                             <p className="lg:text-sm text-xs">・複数の日程を選択する</p>
-                                            <p className="lg:text-sm text-xs">※選択した時間から1時間以内を希望時間とします。時間を選択しない場合は「終日可」と伝えます。面接の実施や日程は確定ではありません。</p>
+                                            <p className="lg:text-sm text-xs">※選択した時間から1時間以内を希望時間とします。面接の実施や日程は確定ではありません。</p>
                                             {meetingDate.map((meeting, dateIndex) => {
                                                 return (
                                                     <>
