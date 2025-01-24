@@ -3,7 +3,6 @@ import { getPrefectureKeyByValue, getEmploymentTypeKeyByValue, getFeatureKeyByVa
 import { EmploymentType, Features, Prefectures, JobType as jobType } from "../../utils/constants/categories";
 import { Checkbox, Select } from "antd";
 import { useEffect, useState } from "react";
-import JobLists from "./JobLists";
 
 const CertainJob = () => {
     const { pathname } = useLocation();
@@ -13,13 +12,11 @@ const CertainJob = () => {
     const [monthlySalary, setMonthlySalary] = useState("");
     const [hourlySalary, setHourlySalary] = useState("");
     const [feature, setFeature] = useState("");
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const navigate = useNavigate();
     const path = pathname.split('/')[1];
     const JobType = getJobTypeKeyByValue(path);
     const isSelected = (v) => v === type;
-
     const notFound = pathname.split("/").filter((item) => item !== "").some((item) => 
         getJobTypeKeyByValue(item) === null && 
         getPrefectureKeyByValue(item) === null && 
@@ -249,25 +246,6 @@ const CertainJob = () => {
                     </section>
                 </div>
             }
-
-            {pathname.includes("pref") && (
-                <JobLists 
-                    path={path}  
-                    employmentType={employmentType} 
-                    setEmploymentType={setEmploymentType} 
-                    feature={feature} 
-                    setFeature={setFeature} 
-                    pref={pref} 
-                    setPref={setPref} 
-                    JobType={JobType} 
-                    monthlySalary={monthlySalary} 
-                    setMonthlySalary={setMonthlySalary}
-                    monthlySalaryOptions={monthlySalaryOptions}
-                    hourlySalary={hourlySalary}
-                    setHourlySalary={setHourlySalary}
-                    hourlySalaryOptions={hourlySalaryOptions}
-                />
-            )}
         </>
     );
 };

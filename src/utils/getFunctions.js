@@ -66,3 +66,14 @@ export const getAllJobTypeValues = (jobTypeObject) => {
     return values;
 };
 
+export const getAllPrefectureValues = (prefectureObject) => {
+    const values = [];
+    for (const category in prefectureObject) {
+        if (Object.hasOwnProperty.call(prefectureObject, category)) {
+            values.push(...Object.values(prefectureObject[category]));
+        }
+    }
+    return values;
+};
+
+

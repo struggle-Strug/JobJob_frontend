@@ -14,7 +14,7 @@ const Header = ({ user, isAuthenticated }) => {
                                     <img 
                                         src={"/assets/images/header/jobjob_logo 1.png"} 
                                         alt="logo" 
-                                        className="hover:scale-105 duration-300 max-w-[120px] md:max-w-full"
+                                        className="hover:scale-105 duration-300"
                                     />
                                 </Link>
                                 <p className="lg:text-md md:text-sm text-xs font-bold text-[#188CE0] whitespace-nowrap">求人広告掲載（無料）</p>
@@ -45,7 +45,7 @@ const Header = ({ user, isAuthenticated }) => {
                                 <img 
                                     src={"/assets/images/header/jobjob_logo 1.png"} 
                                     alt="logo" 
-                                    className="max-w-[120px] md:max-w-full"
+                                    className="max-w-[120px] md:max-w-full hover:scale-105 duration-300"
                                 />
                             </Link>
                             <p className="lg:text-md md:text-sm text-xs font-bold text-[#188CE0] whitespace-nowrap">求人広告掲載（無料）</p>

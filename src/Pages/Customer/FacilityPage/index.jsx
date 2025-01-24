@@ -26,7 +26,6 @@ const FacilityPage = () => {
     const [facilityJobType, setFacilityJobType] = useState("");
     const [facilityJobTypeDetail, setFacilityJobTypeDetail] = useState("");
     const [facilityAccess, setFacilityAccess] = useState("");
-    const [facilityAccessStation, setFacilityAccessStation] = useState("");
     const [facilityAccessText, setFacilityAccessText] = useState("");
     const [facilityGenre, setFacilityGenre] = useState("");
     const [facilityServiceType, setFacilityServiceType] = useState([]);
@@ -170,7 +169,6 @@ const FacilityPage = () => {
             introduction: facilityIntroduction,
             job_type: facilityJobTypeDetail,
             access: facilityAccess,
-            access_station: facilityAccessStation,
             access_text: facilityAccessText,
             facility_genre: facilityGenre,
             service_type: facilityServiceType,
@@ -346,11 +344,11 @@ const FacilityPage = () => {
                     </div>
                     <div className="flex items-start mt-4 desireEmployment">
                         <p className="lg:text-sm text-xs w-1/5">アクセス</p>
-                        <div className="flex flex-col w-3/4">
-                            <Checkbox.Group options={accessOptions} value={facilityAccess} onChange={(value) => setFacilityAccess(value)} />
-                            <Input value={facilityAccessStation} onChange={(e) => setFacilityAccessStation(e.target.value)} className="w-1/2 mt-4" />
-                            <Input value={facilityAccessText} onChange={(e) => setFacilityAccessText(e.target.value)} className="w-1/2 mt-4" />
-                        </div>
+                        <Checkbox.Group options={accessOptions} value={facilityAccess} onChange={(value) => setFacilityAccess(value)} className="w-4/5" />
+                    </div>
+                    <div className="flex items-start mt-4">
+                        <p className="lg:text-sm text-xs w-1/5">アクセス(住所)</p>
+                        <Input value={facilityAccessText} onChange={(e) => setFacilityAccessText(e.target.value)} className="w-1/2" />
                     </div>
                     <div className="flex items-start mt-4 textarea">
                         <p className="lg:text-sm text-xs w-1/5">施設ジャンル</p>
