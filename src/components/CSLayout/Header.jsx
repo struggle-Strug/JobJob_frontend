@@ -33,7 +33,7 @@ const Header = ({ user, isAuthenticated }) => {
                                     className="flex flex-col items-center bg-gradient-to-tr from-[#FF1610] to-[#FF5B01] rounded-full px-2 lg:px-3 py-[0.45rem] hover:scale-105 hover:shadow-2xl duration-300"
                                 >
                                     <LiaUserCircleSolid className="w-6 h-6 lg:w-8 lg:h-8 text-white"/>
-                                    <p className="text-xs lg:text-[0.8rem] font-bold text-white whitespace-nowrap">{user.name}</p>
+                                    <p className="text-xs lg:text-[0.8rem] font-bold text-white whitespace-nowrap">マイページ</p>
                                 </Link>
                             </div>
                         </div>

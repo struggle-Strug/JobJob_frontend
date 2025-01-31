@@ -25,6 +25,15 @@ export const getJobTypeKeyByValue = (value) => {
     return null; // Return null if no match is found
 }
 
+export const getJobTypeValue = (jobType, key) => {
+    for (const category in jobType) {
+      if (jobType[category][key]) {
+        return jobType[category][key];
+      }
+    }
+    return null; // Return null if the key is not found
+}
+
 export const getEmploymentTypeKeyByValue = (value) => {
     for (const type in employmentTypes) {
         if (employmentTypes[type] === value) {

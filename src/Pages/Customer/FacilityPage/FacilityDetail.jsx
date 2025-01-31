@@ -293,11 +293,11 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                     </div>
                 </div>
                 <div className="flex items-start justify-start mt-2 gap-2">
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">すべて：{jobPosts.length}件</span>
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">下書き：{jobPosts.filter(jobpost => jobpost.allowed === "draft").length}件</span>
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">掲載申請中：{jobPosts.filter(jobpost => jobpost.allowed === "pending").length}件</span>
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">掲載中：{jobPosts.filter(jobpost => jobpost.allowed === "allowed").length}件</span>
-                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">受付終了：{jobPosts.filter(jobpost => jobpost.allowed === "ended").length}件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">すべて：{jobPosts?.length}件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">下書き：{jobPosts?.filter(jobpost => jobpost.allowed === "draft")?.length}件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">掲載申請中：{jobPosts?.filter(jobpost => jobpost.allowed === "pending")?.length}件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">掲載中：{jobPosts?.filter(jobpost => jobpost.allowed === "allowed")?.length}件</span>
+                    <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">受付終了：{jobPosts?.filter(jobpost => jobpost.allowed === "ended")?.length}件</span>
                 </div>
                 <div className="flex items-center justify-center w-full gap-4 py-2 mt-2 border-t-[1px] border-[#e7e7e7]">
                     <button onClick={() => setNewJobPostModal(true)} className={`lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-2 duration-300 ${facility.allowed !== "allowed" ? "cursor-not-allowed" : ""}`} disabled={facility.allowed !== "allowed"}>求人を新規登録</button>
