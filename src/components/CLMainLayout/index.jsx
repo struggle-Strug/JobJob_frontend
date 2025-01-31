@@ -6,8 +6,8 @@ const CLMainLayout = () => {
 
     return (
         <div className="flex w-full bg-[#EFEFEF] pt-16">
-            <div className="flex justify-center gap-4 w-full h-full rounded-lg container">
-                <div className="flex flex-col h-full bg-white rounded-lg w-1/4 py-2 px-4">
+            <div className="flex justify-center gap-4 w-full h-full rounded-lg clcontainer">
+                <div className="flex flex-col h-full bg-white rounded-lg w-1/6 py-2 px-4">
                     <Link to={"/customers"} className="flex justify-start items-center gap-2 mt-4">
                         <p className={`flex justify-start text-black lg:text-lg md:text-base text-sm font-bold px-2
                             hover:text-red-500 hover:border-l-4 hover:border-red-500 hover:font-medium hover:pl-2 duration-300
@@ -48,7 +48,7 @@ const CLMainLayout = () => {
                     <img src="/assets/images/dashboard/Group 16.png" alt="banner" className="w-full mt-8" />
                     <img src="/assets/images/dashboard/Group 16.png" alt="banner" className="w-full mt-8" />
                 </div>
-                <div className="flex h-full w-2/3">
+                <div className="flex h-full w-5/6">
                     <div className="h-full w-full">
                         <Outlet />
                     </div>

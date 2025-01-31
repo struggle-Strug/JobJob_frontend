@@ -8,6 +8,8 @@ import { JobType } from './utils/constants/categories';
 import { Prefectures } from './utils/constants/categories/prefectures';
 import { Spin } from 'antd';
 import Loading from './components/Loading';
+import MessageDetail from './Pages/MemberProfile/Message/MessageDetail';
+import ProcessManagementPage from './Pages/Customer/ProcessManagementPage';
 
 // Lazy load components
 const Register = lazy(() => import('./Pages/Auth/Register'));
@@ -88,6 +90,7 @@ function App() {
               <Route path='/customers/facility' element={<FacilityPage />} />
               <Route path='/customers/facility/edit/:facility_id' element={<FacilityEdit />} />
               <Route path='/customers/jobpost/edit/:jobpost_id' element={<JobPostEdit />} />
+              <Route path='/customers/recruit/edit/' element={<ProcessManagementPage />} />
             </Route>
             <Route path='*' element={<NotFound />} />
           </Route>
@@ -122,6 +125,7 @@ function App() {
               <Route path='/members/profiles' element={<Profile />} />
               <Route path='/members/profiles/edit/*' element={<Edit />} />
               <Route path='/members/message' element={<Message />} />
+              <Route path='/members/message/:id' element={<MessageDetail />} />
               <Route path='/members/job_offers/apply' element={<Applied />} />
               <Route path='/members/job_offers/favorite' element={<Favorites />} />
               <Route path='/members/job_offers/recent' element={<Recent />} />

@@ -23,9 +23,9 @@ const JobDetails = () => {
 
     useEffect(() => {
         document.title= "求人詳細"
-        getJobPost();
         getFacilityJobPosts();
-    }, []);
+        getJobPost();
+    }, [allFacilityJobPosts]);
 
     return (
         <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
@@ -177,7 +177,7 @@ const JobDetails = () => {
                                 {
                                     allFacilityJobPosts?.map((jobPost, index) => {
                                         return (
-                                            <Link key={index} to={`/facility/${jobPost.facility_id}`} className="lg:text-base text-sm text-[#FF2A3B] hover:underline">{jobPost.type}({jobPost.employment_type})</Link>
+                                            <Link key={index} to={`/facility/${jobPost?.facility_id}`} className="lg:text-base text-sm text-[#FF2A3B] hover:underline">{jobPost?.type}({jobPost?.employment_type})</Link>
                                         )
                                     })
                                 }

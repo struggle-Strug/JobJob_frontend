@@ -11,6 +11,7 @@ import { useAuth } from "../../../context/AuthContext";
 const FacilityPage = () => {
     const { customer } = useAuth();
     const [facilities, setFacilities] = useState([]);
+    const [jobPosts, setJobPosts] = useState([]);
     const [facility, setFacility] = useState(null);
     const [isFacilityAddModalOpen, setIsFacilityAddModalOpen] = useState(false);
     const [facilityName, setFacilityName] = useState("");
@@ -33,7 +34,6 @@ const FacilityPage = () => {
     const [facilityEstablishmentDateMonth, setFacilityEstablishmentDateMonth] = useState("");
     const [facilityServiceTime, setFacilityServiceTime] = useState("");
     const [facilityRestDay, setFacilityRestDay] = useState("");
-    const [jobPosts, setJobPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 11; // Number of facilities to show per page
 
@@ -193,8 +193,9 @@ const FacilityPage = () => {
     };
 
     const getJobPosts = useCallback(async (id) => {
+        
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/jobpost/facility/${id}`);
-        setJobPosts(response.data.jobpost)
+        setJobPosts(response.data.jobposts)
     }, []);
     
     const getFacility = useCallback(async (id) => {
@@ -203,8 +204,8 @@ const FacilityPage = () => {
     }, []);
 
     const onClick = (id) => {
-        getFacility(id);
         getJobPosts(id);
+        getFacility(id);
     }
 
     useEffect(() => {
@@ -228,7 +229,7 @@ const FacilityPage = () => {
                     >
                         施設を新規登録
                     </button>
-                    {paginatedFacilities.map((facility) => (
+                    {paginatedFacilities?.map((facility) => (
                         <div
                             key={facility._id}
                             className="flex w-full justify-start mt-3 gap-4 cursor-pointer hover:bg-[#e9e9e9] rounded-lg p-2 duration-300"
@@ -242,9 +243,9 @@ const FacilityPage = () => {
                             <p className="lg:text-sm text-xs">{facility.name}</p>
                         </div>
                     ))}
-                    {facilities.length > 11 && <Pagination
+                    {facilities?.length > 11 && <Pagination
                         current={currentPage}
-                        total={facilities.length}
+                        total={facilities?.length}
                         pageSize={itemsPerPage}
                         onChange={handlePageChange}
                         itemRender={(page, type, originalElement) => {
