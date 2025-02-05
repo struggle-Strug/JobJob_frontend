@@ -10,6 +10,7 @@ import { Spin } from 'antd';
 import Loading from './components/Loading';
 import MessageDetail from './Pages/MemberProfile/Message/MessageDetail';
 import ProcessManagementPage from './Pages/Customer/ProcessManagementPage';
+import PhotoManagement from './Pages/Customer/PhotoManagement';
 
 // Lazy load components
 const Register = lazy(() => import('./Pages/Auth/Register'));
@@ -91,6 +92,7 @@ function App() {
               <Route path='/customers/facility/edit/:facility_id' element={<FacilityEdit />} />
               <Route path='/customers/jobpost/edit/:jobpost_id' element={<JobPostEdit />} />
               <Route path='/customers/recruit/edit/' element={<ProcessManagementPage />} />
+              <Route path='/customers/picture/' element={<PhotoManagement />} />
             </Route>
             <Route path='*' element={<NotFound />} />
           </Route>
