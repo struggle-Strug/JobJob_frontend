@@ -99,17 +99,17 @@ const PhotoManagement = () => {
     <>
       <div className="w-full min-h-screen">
         <div className="flex flex-col w-full bg-white rounded-lg shadow-xl min-h-screen">
-          <p className="text-left text-xl font-bold text-[#343434] p-4">
+          <p className="text-left lg:text-xl md:text-base text-sm font-bold text-[#343434] p-4">
             写真管理
           </p>
-          <p className="text-left text-lg font-bold text-[#343434] p-4">
+          <p className="text-left lg:text-xl md:text-base text-sm font-bold text-[#343434] p-4">
             新規アップロード
           </p>
           <div className="flex flex-col px-8">
-            <p className="text-left text-sm text-[#343434]">
+            <p className="text-left lg:text-sm text-xs text-[#343434]">
               JPG・PNG・GIF形式の画像ファイルをアップロードしてください。
             </p>
-            <p className="text-left text-sm text-[#343434]">
+            <p className="text-left lg:text-sm text-xs text-[#343434]">
               1ファイルあたりnnMBのファイルが登録可能です。
             </p>
             <div className="w-2/3 mt-4 min-h-80">
