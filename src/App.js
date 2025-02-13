@@ -4,12 +4,11 @@ import { Suspense, lazy, useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "./context/AuthContext";
 import {
+  getAllFacilityValues,
   getAllJobTypeValues,
   getAllPrefectureValues,
 } from "./utils/getFunctions";
-import { JobType } from "./utils/constants/categories";
-import { Prefectures } from "./utils/constants/categories/prefectures";
-import { Spin } from "antd";
+import FacilityDetails from "./Pages/CertiainFacility/FacilityDetails";
 
 // Lazy load components
 const Register = lazy(() => import("./Pages/Auth/Register"));
@@ -75,13 +74,15 @@ const CoporateManagement = lazy(() =>
   import("./Pages/Customer/CustomerSettingPage/CoporateManagement")
 );
 
+const CertainFacility = lazy(() => import("./Pages/CertiainFacility"));
+
 function App() {
   const { setIsAuthenticated, setUser, user, setCustomer, customer } =
     useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("token");
   const { pathname } = useLocation();
-  const pref = pathname.split("/")[2];
+  const prefOrFacility = pathname.split("/")[2];
 
   const getUserData = async () => {
     try {
@@ -166,20 +167,46 @@ function App() {
           <Route path="/members/sign_in" element={<Login />} />
           <Route path="/:jobtype/details/:id" element={<JobDetails />} />
           <Route path="/:jobtype/apply/:id" element={<JobOffer />} />
-          {getAllJobTypeValues(JobType).map((jobType) => {
+          {getAllJobTypeValues().map((jobType) => {
             const hasPrefecture =
-              getAllPrefectureValues(Prefectures).includes(pref);
-            return hasPrefecture ? (
-              <Route
-                key={jobType}
-                path={`/${jobType}/${pref}/:employmentType?/:feature?`}
-                element={<JobLists />}
-              />
-            ) : (
+              getAllPrefectureValues().includes(prefOrFacility);
+            const hasFacility = getAllFacilityValues().includes(prefOrFacility);
+
+            if (hasPrefecture) {
+              return (
+                <Route
+                  key={jobType}
+                  path={`/${jobType}/${prefOrFacility}/:employmentType?/:feature?`}
+                  element={<JobLists />}
+                />
+              );
+            }
+
+            if (hasFacility) {
+              return (
+                <Route
+                  key={jobType}
+                  path={`/${jobType}/${prefOrFacility}/:employmentType?/:pref?`}
+                  element={<CertainFacility />}
+                />
+              );
+            }
+
+            return (
               <Route
                 key={jobType}
                 path={`/${jobType}/:employmentType?/:feature?`}
                 element={<CertainJob />}
+              />
+            );
+          })}
+          <Route path={"/facility/details/:id"} element={<FacilityDetails />} />
+          {getAllFacilityValues().map((facility) => {
+            return (
+              <Route
+                key={facility}
+                path={`/${facility}/:employmentType?/:pref?`}
+                element={<CertainFacility />}
               />
             );
           })}
