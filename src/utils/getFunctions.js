@@ -98,6 +98,12 @@ export const getAllFacilityValues = () => Object.values(Facilities);
 
 export const getAllEmploymentValues = () => Object.values(employmentTypes);
 
+export const getAllFeatureValues = () => {
+  return Object.values(Features).flatMap((value) =>
+    typeof value === "object" ? Object.values(value) : value
+  );
+};
+
 export const getFacilityKeyByValue = (value) => {
   for (const type in Facilities) {
     if (Facilities[type] === value) {

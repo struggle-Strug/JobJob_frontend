@@ -128,7 +128,7 @@ const CertaionFacility = () => {
     }
     if (getAllEmploymentValues().includes(prefOrEmploymentType)) {
       setEmploymentType(prefOrEmploymentType);
-      pathname.split("/").length === 5 && setPref(pathname.split("/")[3]);
+      pathname.split("/").length === 4 && setPref(pathname.split("/")[2]);
     }
   }, []);
 

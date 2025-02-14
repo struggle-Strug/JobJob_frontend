@@ -4,6 +4,8 @@ import {
   getEmploymentTypeKeyByValue,
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
+  getAllEmploymentValues,
+  getAllFeatureValues,
 } from "../../utils/getFunctions";
 import {
   EmploymentType,
@@ -68,46 +70,41 @@ const CertainJob = () => {
   ];
 
   useEffect(() => {
-    const linkArray = pathname.split("/");
-    linkArray.splice(2, 0, pref); // Insert `pref` at index 2
-    const link = linkArray.join("/"); // Join it back into a string
+    if (path !== "") {
+      const link =
+        `/${path}` +
+        (pref !== "" ? `/${pref}` : "") +
+        (employmentType !== "" ? `/${employmentType}` : "") +
+        (feature !== "" ? `/${feature}` : "");
 
-    navigate(`${link}`);
-  }, [pref]);
-
-  useEffect(() => {
-    pref == "" && feature == "" && navigate(`/${path}/${employmentType}`);
-    pref !== "" &&
-      navigate(
-        `/${
-          feature
-            ? `${path}/${pref}/${employmentType}/${feature}`
-            : `${path}/${pref}/${employmentType}`
-        }`
-      );
-    pref == "" && setFeature("");
-    setType("1");
-  }, [employmentType]);
-
-  useEffect(() => {
-    if (pref == "") {
-      employmentType !== "" &&
-        navigate(`/${path}/${employmentType}/${feature}`);
-      employmentType == "" && navigate(`/${path}/${feature}`);
+      // Only navigate if the link is different
+      if (window.location.pathname !== link) {
+        navigate(link);
+      }
+      console.log(link);
     }
-    if (pref !== "") {
-      employmentType !== "" &&
-        navigate(`/${path}/${pref}/${employmentType}/${feature}`);
-      employmentType == "" && navigate(`/${path}/${pref}/${feature}`);
-    }
-    setType("1");
-  }, [feature]);
+  }, [pref, employmentType, feature]);
 
   useEffect(() => {
-    if (notFound) {
-      navigate("/404");
+    const employmentTypeOrFeature =
+      pathname.split("/")[pathname.split("/").length - 1];
+
+    if (getAllEmploymentValues().includes(employmentTypeOrFeature)) {
+      setEmploymentType(employmentTypeOrFeature);
+    }
+    if (getAllFeatureValues().includes(employmentTypeOrFeature)) {
+      setFeature(employmentTypeOrFeature);
+      pathname.split("/").length === 4 &&
+        setEmploymentType(pathname.split("/")[2]);
     }
   }, []);
+
+  // useEffect(() => {
+  //   if (notFound) {
+  //     navigate("/404");
+  //   }
+
+  // }, []);
 
   const renderPrefectureSection = (region, prefectures) => (
     <div className="col-span-1 flex flex-col justify-start items-center">
