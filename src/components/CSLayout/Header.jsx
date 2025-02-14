@@ -53,7 +53,7 @@ const Header = ({ user, isAuthenticated }) => {
                   </p>
                 </Link>
                 <Link
-                  to={"/members/job_offers/favorite"}
+                  to={"/members/job_offers/recent"}
                   className="flex flex-col items-center bg-white rounded-lg p-2 hover:scale-[1.05] hover:shadow-xl duration-300"
                 >
                   <img
@@ -112,7 +112,7 @@ const Header = ({ user, isAuthenticated }) => {
                   </p>
                 </Link>
                 <Link
-                  to={"/members/job_offers/favorite"}
+                  to={"/members/job_offers/recent"}
                   className="flex flex-col items-center bg-white rounded-lg p-2 hover:scale-[1.05] hover:shadow-xl duration-300"
                 >
                   <img
