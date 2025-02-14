@@ -77,8 +77,15 @@ const CoporateManagement = lazy(() =>
 const CertainFacility = lazy(() => import("./Pages/CertiainFacility"));
 
 function App() {
-  const { setIsAuthenticated, setUser, user, setCustomer, customer } =
-    useAuth();
+  const {
+    setIsAuthenticated,
+    setUser,
+    user,
+    setCustomer,
+    customer,
+    admin,
+    setAdmin,
+  } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("token");
   const { pathname } = useLocation();
@@ -92,6 +99,7 @@ function App() {
       res.data.user.type === "member" && setUser(res.data.user.data);
       res.data.user.type === "member" && setIsAuthenticated(true);
       res.data.user.type === "customer" && setCustomer(res.data.user.data);
+      res.data.user.type === "admin" && setAdmin(res.data.user.data);
     } catch (err) {
       console.error("Failed to fetch user data:", err);
       setIsAuthenticated(false);
@@ -119,7 +127,7 @@ function App() {
         <Route path="/company" element={<CompanyLandingPage />} />
         <Route path="/customers/new" element={<CustomerSignUp />} />
         <Route path="/customers/sign_in" element={<CustomerSignIn />} />
-        {token && customer ? (
+        {token && (customer || admin) ? (
           <Route element={<CLLayout />}>
             <Route path="/customers/rule" element={<Rule />} />
             <Route path="/customers" element={<CLMainLayout />}>
