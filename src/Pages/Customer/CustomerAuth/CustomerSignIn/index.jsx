@@ -1,4 +1,6 @@
 import { Input, message } from "antd";
+import { useLocation } from "react-router-dom";
+
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,7 +10,11 @@ const CustomerSignIn = () => {
   const { setCustomer } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const navigate = useNavigate();
+
+  const token = queryParams.get("token");
 
   const handleSubmit = async (e) => {
     // if(email === "") return message.error("メールアドレスを入力してください。");
@@ -31,7 +37,11 @@ const CustomerSignIn = () => {
 
   useEffect(() => {
     document.title = "採用管理画面ログイン | JobJob";
-  }, []);
+    if (token) {
+      localStorage.setItem("token", token);
+      navigate("/customers");
+    }
+  }, [token]);
   return (
     <div className="pt-16 pb-8 bg-[#EFEFEF] min-h-screen">
       <div className="max-w-[700px] mx-auto bg-white shadow-lg">
