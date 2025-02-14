@@ -1,6 +1,8 @@
 import { Checkbox, Input, Modal, Select } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
+  getAllEmploymentValues,
+  getAllFeatureValues,
   getEmploymentTypeKeyByValue,
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
@@ -28,6 +30,7 @@ const JobLists = () => {
   const [employmentTypeModalOpen, setEmploymentTypeModalOpen] = useState(false);
   const [featureModalOpen, setFeatureModalOpen] = useState(false);
   const [jobPosts, setJobPosts] = useState([]);
+  const [likes, setLikes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -110,36 +113,66 @@ const JobLists = () => {
     }
   };
 
+  const handleLike = (id) => {
+    let newLikes = Array.isArray(likes) ? [...likes] : [];
+
+    if (newLikes.includes(id)) {
+      newLikes = newLikes.filter((like) => like !== id);
+    } else {
+      newLikes.push(id);
+    }
+
+    localStorage.setItem("likes", JSON.stringify(newLikes));
+    setLikes(newLikes);
+  };
+
+  useEffect(() => {
+    const storedLikes = localStorage.getItem("likes");
+    if (storedLikes) {
+      setLikes(JSON.parse(storedLikes)); // Ensure we parse it as an array
+    } else {
+      setLikes([]);
+      localStorage.setItem("likes", JSON.stringify([]));
+    }
+    const pathSegments = pathname.split("/").filter(Boolean);
+
+    if (pathSegments.length >= 2) {
+      setPref(pathSegments[1]); // Assign `pref` from the second segment
+    } else {
+      setPref(""); // Reset `pref` if not available
+    }
+
+    const lastSegment = pathSegments[pathSegments.length - 1];
+
+    if (getAllEmploymentValues().includes(lastSegment)) {
+      setEmploymentType(lastSegment);
+    }
+
+    if (getAllFeatureValues().includes(lastSegment)) {
+      setFeature(lastSegment);
+      if (pathSegments.length === 4) {
+        setEmploymentType(pathSegments[2]);
+      }
+    }
+  }, []);
+  // Ensure effect runs when pathname changes
+  useEffect(() => {
+    const link =
+      `/${path ?? ""}` + // Ensure path is never undefined/null
+      (pref ? `/${pref}` : "") +
+      (employmentType ? `/${employmentType}` : "") +
+      (feature ? `/${feature}` : "");
+
+    // Only navigate if the link is different
+    if (window.location.pathname !== link) {
+      navigate(link);
+    }
+    getJobPosts();
+  }, [employmentType, feature]);
+
   useEffect(() => {
     document.title = "求人一覧";
-    getJobPosts();
-  }, [employmentType, feature, pref]);
-
-  useEffect(() => {
-    pref == "" && feature == "" && navigate(`/${path}/${employmentType}`);
-    pref !== "" &&
-      navigate(
-        `/${
-          feature
-            ? `${path}/${pref}/${employmentType}/${feature}`
-            : `${path}/${pref}/${employmentType}`
-        }`
-      );
-    pref == "" && setFeature("");
-  }, [employmentType]);
-
-  useEffect(() => {
-    if (pref == "") {
-      employmentType !== "" &&
-        navigate(`/${path}/${employmentType}/${feature}`);
-      employmentType == "" && navigate(`/${path}/${feature}`);
-    }
-    if (pref !== "") {
-      employmentType !== "" &&
-        navigate(`/${path}/${pref}/${employmentType}/${feature}`);
-      employmentType == "" && navigate(`/${path}/${pref}/${feature}`);
-    }
-  }, [feature]);
+  }, []);
 
   if (isLoading) {
     return <Loading />;
@@ -298,311 +331,10 @@ const JobLists = () => {
               </div>
             </div>
             <div className="flex flex-col items-center justify-start w-full mt-8 ">
-              {/* <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl border-4 border-[#FF6B56]">
-                                <div className="absolute top-0 left-0 bg-[#FF6B56] rounded-tl-2xl px-4 py-2 ml-[-0.25rem] mt-[-0.25rem]">
-                                    <p className="text-sm font-bold text-white">注目求人</p>
-                                </div>
-                                <div className="flex items-center justify-between w-full">
-                                    <img src="/assets/images/dashboard/AdobeStock_569015666 1.png" alt="arrow-down" className="lg:w-full md:w-1/2"/>
-                                    <div className="flex flex-col items-center justify-between p-4 w-full gap-8">
-                                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">求人タイトルダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">求人内容ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-start w-full gap-4 px-2">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <p className="lg:text-sm md:text-xs font-bold text-[#343434]">給与</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">正職員 222,000円〜283,800円</p>
-                                    </div>
-                                    <div className="flex items-center justify-between gap-2">
-                                        <p className="lg:text-sm md:text-xs font-bold text-[#343434]">住所</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">新宿区下落合四丁目9番15号</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
-                                    <button className="flex items-center justify-center gap-2 bg-whtie rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
-                                        <img src="/assets/images/dashboard/Vector.png" alt="eye" className="w-4 pt-0.5" />
-                                        <p className="text-sm font-bold text-[#FF6B56]">気になる</p>
-                                    </button>
-                                    <Link to={`/${path}/details/6760bdf23744a91f6441ef2b`} className="flex items-center justify-center bg-[#FF6B56] rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
-                                        <p className="text-sm font-bold text-white">求人を見る</p>
-                                    </Link>
-                                </div>
-                            </div>
-                            <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl border-4 border-[#FF6B56] mt-8">
-                                <div className="absolute top-0 left-0 bg-[#FF6B56] rounded-tl-2xl px-4 py-2 ml-[-0.25rem] mt-[-0.25rem]">
-                                    <p className="text-sm font-bold text-white">注目求人</p>
-                                </div>
-                                <div className="flex items-center justify-between w-full">
-                                    <img src="/assets/images/dashboard/AdobeStock_569015666 1.png" alt="arrow-down" className="lg:w-full md:w-1/2"/>
-                                    <div className="flex flex-col items-center justify-between p-4 w-full gap-8">
-                                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">求人タイトルダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">求人内容ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-start w-full gap-4 px-2">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <p className="lg:text-sm md:text-xs font-bold text-[#343434]">給与</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">正職員 222,000円〜283,800円</p>
-                                    </div>
-                                    <div className="flex items-center justify-between gap-2">
-                                        <p className="lg:text-sm md:text-xs font-bold text-[#343434]">住所</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">新宿区下落合四丁目9番15号</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
-                                    <button className="flex items-center justify-center gap-2 bg-[#E7E7E7] rounded-lg py-2 text-white w-1/2">
-                                        <img src="/assets/images/dashboard/mdi_heart.png" alt="eye" className="w-4 pt-0.5" />
-                                        <p className="text-sm font-bold text-[#188CE0]">気になる済</p>
-                                    </button>
-                                    <button className="flex items-center justify-center bg-[#FF6B56] rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
-                                        <p className="text-sm font-bold text-white">求人を見る</p>
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8">
-                                <div className="absolute top-0 left-0 bg-[#FF6B56] rounded-tl-2xl px-4 py-2">
-                                    <p className="text-sm font-bold text-white">new</p>
-                                </div>
-                                <div className="flex items-center justify-between w-full">
-                                    <img src="/assets/images/dashboard/AdobeStock_569015666 1.png" alt="arrow-down" className="lg:w-full md:w-1/2"/>
-                                    <div className="flex flex-col items-center justify-between p-4 w-full gap-8">
-                                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">求人タイトルダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">求人内容ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between w-full gap-4 px-2">
-                                    <div className="flex gap-4 h-full">
-                                        <div className="flex flex-col justify-center w-2/3 h-full">
-                                            <div className="flex items-center justify-start">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">給与</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">正職員 222,000円〜283,800円</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">仕事内容</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">一般民家を使用したデイサービスにて一般介護全般、清掃業務、記録、運営に関わる業務</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">応募要件</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">※運転免許必須　未経験・無資格可　安心して勤務するこが出来る教育体制が整っております。（初期教育もあり）</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">住所</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">新宿区下落合四丁目9番15号</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#FF2A3B]">勤続支援金{" "}&nbsp;&nbsp;正職員12,500円 ~ 16,000円</p>
-                                            </div>
-                                        </div>
-                                        <div className="inline-block items-start justify-start gap-2 w-1/3 h-full">
-                                            <div className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">職場の環境</p>
-                                            </div>
-                                            <div className="inline-block text-center bg-[#F5BD2E] text-white m-1  px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">未経験可</p>
-                                            </div>
-                                            <div className="inline-block text-center bg-[#F5BD2E] text-white m-1  px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">通所介護・デイサービス</p>
-                                            </div>
-                                            <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">社会保険完備</p>
-                                            </div>
-                                            <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">ボーナス賞与あり</p>
-                                            </div>
-                                            <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">交通費支給</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
-                                    <button className="flex items-center justify-center gap-2 bg-whtie rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
-                                        <img src="/assets/images/dashboard/Vector.png" alt="eye" className="w-4 pt-0.5" />
-                                        <p className="text-sm font-bold text-[#FF6B56]">気になる</p>
-                                    </button>
-                                    <button className="flex items-center justify-center bg-[#FF6B56] rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
-                                        <p className="text-sm font-bold text-white">求人を見る</p>
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8">
-                                <div className="absolute top-0 left-0 bg-[#FF6B56] rounded-tl-2xl px-4 py-2">
-                                    <p className="text-sm font-bold text-white">new</p>
-                                </div>
-                                <div className="flex items-center justify-between w-full">
-                                    <img src="/assets/images/dashboard/AdobeStock_569015666 1.png" alt="arrow-down" className="lg:w-full md:w-1/2"/>
-                                    <div className="flex flex-col items-center justify-between p-4 w-full gap-8">
-                                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">求人タイトルダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                        <p className="lg:text-sm md:text-xs text-[#343434]">求人内容ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between w-full gap-4 px-2">
-                                    <div className="flex gap-4 h-full">
-                                        <div className="flex flex-col justify-center w-2/3 h-full">
-                                            <div className="flex items-center justify-start">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">給与</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">正職員 222,000円〜283,800円</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">仕事内容</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">一般民家を使用したデイサービスにて一般介護全般、清掃業務、記録、運営に関わる業務</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">応募要件</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">※運転免許必須　未経験・無資格可　安心して勤務することが出来る教育体制が整っております。（初期教育もあり）</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">住所</p>
-                                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">新宿区下落合四丁目9番15号</p>
-                                            </div>
-                                            <div className="flex items-start justify-start mt-4">
-                                                <p className="lg:text-sm md:text-xs font-bold text-[#FF2A3B]">勤続支援金{" "}&nbsp;&nbsp;正職員12,500円 ~ 16,000円</p>
-                                            </div>
-                                        </div>
-                                        <div className="inline-block items-start justify-start gap-2 w-1/3 h-full">
-                                            <div className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">職場の環境</p>
-                                            </div>
-                                            <div className="inline-block text-center bg-[#F5BD2E] text-white m-1  px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">未経験可</p>
-                                            </div>
-                                            <div className="inline-block text-center bg-[#F5BD2E] text-white m-1  px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">通所介護・デイサービス</p>
-                                            </div>
-                                            <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">社会保険完備</p>
-                                            </div>
-                                            <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6 rem] font-bold">ボーナス賞与あり</p>
-                                            </div>
-                                            <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">交通費支給</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
-                                    <button className="flex items-center justify-center gap-2 bg-[#E7E7E7] rounded-lg py-2 text-white w-1/2">
-                                        <img src="/assets/images/dashboard/mdi_heart.png" alt="eye" className="w-4 pt-0.5" />
-                                        <p className="text-sm font-bold text-[#188CE0]">気になる済</p>
-                                    </button>
-                                    <button className="flex items-center justify-center bg-[#FF6B56] rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
-                                        <p className="text-sm font-bold text-white">求人を見る</p>
-                                    </button>
-                                </div>
-                            </div> */}
-              <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8">
-                <div className="flex items-center justify-between w-full">
-                  <img
-                    src="/assets/images/dashboard/AdobeStock_569015666 1.png"
-                    alt="arrow-down"
-                    className="lg:w-full md:w-1/2"
-                  />
-                  <div className="flex flex-col items-center justify-between p-4 w-full gap-8">
-                    <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                      求人タイトルダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-                    </p>
-                    <p className="lg:text-sm md:text-xs text-[#343434]">
-                      求人内容ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between w-full gap-4 px-2">
-                  <div className="flex gap-4 h-full">
-                    <div className="flex flex-col justify-center w-2/3 h-full">
-                      <div className="flex items-center justify-start">
-                        <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                          給与
-                        </p>
-                        <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
-                          正職員 222,000円〜283,800円
-                        </p>
-                      </div>
-                      <div className="flex items-start justify-start mt-4">
-                        <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                          仕事内容
-                        </p>
-                        <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
-                          一般民家を使用したデイサービスにて一般介護全般、清掃業務、記録、運営に関わる業務
-                        </p>
-                      </div>
-                      <div className="flex items-start justify-start mt-4">
-                        <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                          応募要件
-                        </p>
-                        <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
-                          ※運転免許必須　未経験・無資格可　安心して勤務することが出来る教育体制が整っております。（初期教育もあり）
-                        </p>
-                      </div>
-                      <div className="flex items-start justify-start mt-4">
-                        <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                          住所
-                        </p>
-                        <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
-                          新宿区下落合四丁目9番15号
-                        </p>
-                      </div>
-                      <div className="flex items-start justify-start mt-4">
-                        <p className="lg:text-sm md:text-xs font-bold text-[#FF2A3B]">
-                          勤続支援金 &nbsp;&nbsp;正職員12,500円 ~ 16,000円
-                        </p>
-                      </div>
-                    </div>
-                    <div className="inline-block items-start justify-start gap-2 w-1/3 h-full">
-                      <div className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          職場の環境
-                        </p>
-                      </div>
-                      <div className="inline-block text-center bg-[#F5BD2E] text-white m-1  px-2 py-1 rounded-lg">
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          未経験可
-                        </p>
-                      </div>
-                      <div className="inline-block text-center bg-[#F5BD2E] text-white m-1  px-2 py-1 rounded-lg">
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          通所介護・デイサービス
-                        </p>
-                      </div>
-                      <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          社会保険完備
-                        </p>
-                      </div>
-                      <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          ボーナス賞与あり
-                        </p>
-                      </div>
-                      <div className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg">
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          交通費支給
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
-                  <button className="flex items-center justify-center gap-2 bg-[#E7E7E7] rounded-lg py-2 text-white w-1/2">
-                    <img
-                      src="/assets/images/dashboard/mdi_heart.png"
-                      alt="eye"
-                      className="w-4 pt-0.5"
-                    />
-                    <p className="text-sm font-bold text-[#188CE0]">
-                      気になる済
-                    </p>
-                  </button>
-                  <button className="flex items-center justify-center bg-[#FF6B56] rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2">
-                    <p className="text-sm font-bold text-white">求人を見る</p>
-                  </button>
-                </div>
-              </div>
-              {jobPosts?.map((jobpost, index) => {
+              {jobPosts?.map((jobpost) => {
                 return (
                   <div
-                    key={index}
+                    key={jobpost.jobpost_id}
                     className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8"
                   >
                     <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
@@ -687,14 +419,33 @@ const JobLists = () => {
                       </div>
                     </div>
                     <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
-                      <button className="flex items-center justify-center gap-2 bg-whtie rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2 hover:bg-[#FF6B56]/20 hover:scale-105 duration-300">
+                      <button
+                        className={`flex items-center justify-center gap-2 rounded-lg py-2 text-white ${
+                          likes.includes(jobpost.jobpost_id)
+                            ? "bg-[#E7E7E7]"
+                            : "border-2 border-[#FF6B56] bg-whtie"
+                        }  w-1/2 hover:bg-[#FF6B56]/20 hover:scale-105 duration-300`}
+                        onClick={() => handleLike(jobpost.jobpost_id)}
+                      >
                         <img
-                          src="/assets/images/dashboard/Vector.png"
+                          src={`${
+                            likes.includes(jobpost.jobpost_id)
+                              ? "/assets/images/dashboard/mdi_heart.png"
+                              : "/assets/images/dashboard/Vector.png"
+                          }`}
                           alt="eye"
                           className="w-4 pt-0.5"
                         />
-                        <p className="text-sm font-bold text-[#FF6B56]">
-                          気になる
+                        <p
+                          className={`text-sm font-bold ${
+                            likes.includes(jobpost.jobpost_id)
+                              ? "text-[#188CE0]"
+                              : "text-[#FF6B56]"
+                          }`}
+                        >
+                          {likes.includes(jobpost.jobpost_id)
+                            ? "気になる済"
+                            : "気になる"}
                         </p>
                       </button>
                       <Link
