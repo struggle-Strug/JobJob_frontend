@@ -21,6 +21,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import FacilityDetail from "./FacilityDetail";
 import { useAuth } from "../../../context/AuthContext";
+import { Municipalities } from "../../../utils/constants/categories/municipalities";
 
 const FacilityPage = () => {
   const { customer } = useAuth();
@@ -67,6 +68,19 @@ const FacilityPage = () => {
     label: item,
     value: item,
   }));
+
+  const cityOptions = (prefecture) => {
+    return [
+      {
+        label: "選択する",
+        value: "",
+      },
+      ...Municipalities[prefecture].map((type) => ({
+        value: type,
+        label: type,
+      })),
+    ];
+  };
 
   const jobTypesOptions = [
     {
@@ -354,10 +368,19 @@ const FacilityPage = () => {
               className="w-1/4"
             />
           </div>
-          <div className="flex items-center mt-4">
-            <p className="lg:text-sm text-xs w-1/5">市区町村</p>
-            <Select onChange={(e) => setFacilityCity(e)} className="w-1/4" />
-          </div>
+          {facilityPrefecture !== "" && (
+            <div
+              className="flex items-center mt-4"
+              disabled={facilityPrefecture !== "" ? true : false}
+            >
+              <p className="lg:text-sm text-xs w-1/5">市区町村</p>
+              <Select
+                options={cityOptions(facilityPrefecture)}
+                onChange={(e) => setFacilityCity(e)}
+                className="w-1/4"
+              />
+            </div>
+          )}
           <div className="flex items-center mt-4">
             <p className="lg:text-sm text-xs w-1/5">町名・番地</p>
             <Input
