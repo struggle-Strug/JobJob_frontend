@@ -29,9 +29,12 @@ const Header = ({ user, isAuthenticated }) => {
                     className="hover:scale-105 duration-300"
                   />
                 </Link>
-                <p className="lg:text-md md:text-sm text-xs font-bold text-[#188CE0] whitespace-nowrap">
+                <Link
+                  to={"/customers"}
+                  className="lg:text-md md:text-sm text-xs font-bold text-[#188CE0] whitespace-nowrap hover:scale-[1.02] duration-300"
+                >
                   求人広告掲載（無料）
-                </p>
+                </Link>
               </div>
               <div className="flex items-center justify-between gap-2 lg:gap-4">
                 <Link
@@ -87,9 +90,12 @@ const Header = ({ user, isAuthenticated }) => {
                   className="max-w-[120px] md:max-w-full hover:scale-105 duration-300"
                 />
               </Link>
-              <p className="lg:text-md md:text-sm text-xs font-bold text-[#188CE0] whitespace-nowrap">
+              <Link
+                to={"/customers"}
+                className="lg:text-md md:text-sm text-xs font-bold text-[#188CE0] whitespace-nowrap hover:scale-[1.02] duration-300"
+              >
                 求人広告掲載（無料）
-              </p>
+              </Link>
             </div>
             <div className="flex items-center gap-2 lg:gap-8 justify-between">
               <div className="hidden sm:flex items-center justify-between gap-2">
