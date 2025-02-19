@@ -25,9 +25,7 @@ const PasswordChange = () => {
     if (resData.data.error) {
       message.error(resData.data.message);
     } else {
-      localStorage.removeItem("token");
       message.success(resData.data.message);
-      navigate("/customers/sign_in");
     }
   };
 
