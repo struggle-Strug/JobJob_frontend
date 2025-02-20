@@ -181,8 +181,8 @@ const JobLists = () => {
   return (
     <>
       <div className="flex w-full px-4 bg-[#EFEFEF]">
-        <div className="container flex items-center justify-between gap-8">
-          <div className="flex flex-col items-center justify-center w-2/3">
+        <div className="container flex justify-between gap-8">
+          <div className="flex flex-col items-center justify-start w-2/3">
             <div className="flex flex-col justify-center bg-white rounded-lg p-4 w-full shadow-xl">
               <p className="text-lg font-bold text-gray-500">
                 求人・転職・アルバイト情報
