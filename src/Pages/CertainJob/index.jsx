@@ -15,6 +15,7 @@ import {
 } from "../../utils/constants/categories";
 import { Checkbox, Select } from "antd";
 import { useEffect, useState } from "react";
+import BreadCrumb from "../../components/BreadCrumb";
 
 const CertainJob = () => {
   const { pathname } = useLocation();
@@ -129,9 +130,10 @@ const CertainJob = () => {
 
   return (
     <>
+      <BreadCrumb />
       {!pathname.includes("pref") && (
         <div className="bg-[#EFEFEF]">
-          <section className="max-w-[1100px] mx-auto bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
+          <section className="container bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
             <p className="flex flex-wrap gap-1 items-end">
               {feature !== "" && (
                 <>
@@ -163,7 +165,7 @@ const CertainJob = () => {
             </p>
           </section>
 
-          <section className="max-w-[1100px] mx-auto bg-white rounded-lg mt-4">
+          <section className="container bg-white rounded-lg mt-4">
             <div className="grid grid-cols-3 w-full px-2">
               <button
                 onClick={() => setType("1")}
