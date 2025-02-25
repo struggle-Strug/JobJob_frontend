@@ -81,6 +81,8 @@ const Register = () => {
     }
 
     setStep((prev) => prev + 1);
+    // Scroll to top when moving to the next step
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const onChangeBefore = () => {
     setErrorMessage("");
