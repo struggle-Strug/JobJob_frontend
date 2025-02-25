@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
 import Loading from "../../../components/Loading";
+import BreadCrumb from "../../../components/BreadCrumb";
 
 const JobLists = () => {
   const { user } = useAuth();
@@ -180,6 +181,7 @@ const JobLists = () => {
 
   return (
     <>
+      <BreadCrumb />
       <div className="flex w-full px-4 bg-[#EFEFEF]">
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-center justify-start w-2/3">
