@@ -329,6 +329,7 @@ const Step3 = ({
         <div className="flex justify-between w-full mt-12">
           <div className="flex items-start gap-2 justify-end">
             <p>市区町村</p>
+            <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
           </div>
           <div className="flex flex-col w-4/5">
             <Select
