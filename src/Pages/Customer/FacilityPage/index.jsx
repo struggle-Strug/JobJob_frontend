@@ -9,6 +9,7 @@ import {
   Pagination,
 } from "antd";
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Facilities,
   Features,
@@ -268,12 +269,12 @@ const FacilityPage = () => {
     <div className="w-full min-h-screen">
       <div className="grid grid-cols-4 w-full bg-white rounded-lg shadow-xl min-h-screen">
         <div className="col-span-1 border-r-[1px] border-[#e7e7e7] p-4 flex flex-col">
-          <button
-            onClick={() => setIsFacilityAddModalOpen(true)}
+          <Link
+            to={"/customers/facility/add"}
             className="bg-[#e9e9e9] hover:shadow-xl text-center font-bold lg:text-sm text-xs duration-500 text-[#FF2A3B] hover:text-[#343434] px-2 lg:py-4 md:py-2 py-1 rounded-lg"
           >
             施設を新規登録
-          </button>
+          </Link>
           {paginatedFacilities?.map((facility) => (
             <div
               key={facility._id}
