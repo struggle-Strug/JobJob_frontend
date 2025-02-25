@@ -75,6 +75,9 @@ const CoporateManagement = lazy(() =>
 );
 
 const CertainFacility = lazy(() => import("./Pages/CertiainFacility"));
+const FacilityAdd = lazy(() =>
+  import("./Pages/Customer/FacilityPage/FacilityAdd")
+);
 
 function App() {
   const {
@@ -132,6 +135,7 @@ function App() {
             <Route path="/customers/rule" element={<Rule />} />
             <Route path="/customers" element={<CLMainLayout />}>
               <Route path="/customers" element={<CLTop />} />
+              <Route path="/customers/facility/add" element={<FacilityAdd />} />
               <Route path="/customers/facility" element={<FacilityPage />} />
               <Route
                 path="/customers/facility/edit/:facility_id"
