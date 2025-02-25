@@ -10,7 +10,7 @@ const Top = () => {
   return (
     <>
       <div className="bg-[#EFEFEF]">
-        <section className="max-w-[1100px] mx-auto pt-4 bg-white rounded-lg px-4">
+        <section className="container pt-4 bg-white rounded-lg px-4">
           <div className="grid grid-cols-2">
             <div className="col-span-1 flex flex-col justify-center items-center">
               <h1 className="text-[#343434] font-bold lg:text-xl md:text-base text-sm">
@@ -59,7 +59,7 @@ const Top = () => {
             </div>
           </div>
         </section>
-        <section className="max-w-[1100px] mx-auto mt-3 px-4 bg-white rounded-md">
+        <section className="container mt-3 px-4 bg-white rounded-md">
           <div className="flex flex-col w-full">
             <div className="flex items-center justify-start lg:px-6 md:px-4 px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
               <PiStethoscope className="lg:h-12 lg:w-12 md:h-10 md:w-10 h-8 w-8" />
@@ -1233,7 +1233,7 @@ const Top = () => {
             </div>
           </div>
         </section>
-        <section className="max-w-[1100px] mx-auto lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8 pb-8">
+        <section className="container lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8 pb-8">
           <p className="lg:text-xl md:text-lg text-base font-bold">
             注目職種を人気エリアから探す
           </p>
@@ -1690,7 +1690,7 @@ const Top = () => {
             </div>
           </div>
         </section>
-        <section className="max-w-[1100px] mx-auto lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8">
+        <section className="container lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8">
           <p className="lg:text-xl md:text-lg text-base font-bold">
             施設ジャンルから探す
           </p>
@@ -1833,7 +1833,7 @@ const Top = () => {
             </div>
           </div>
         </section>
-        <section className="max-w-[1100px] mx-auto lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8">
+        <section className="container lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8">
           <p className="lg:text-xl md:text-lg text-base font-bold">
             キーワードから探す
           </p>
