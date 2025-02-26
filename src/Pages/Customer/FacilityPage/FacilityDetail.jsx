@@ -14,6 +14,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
+import FacilityPreview from "./FacilityPreview";
+import JobPostPreview from "./JobPostPreview";
 
 const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
   const { customer } = useAuth();
@@ -70,6 +72,9 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [copyJobPost, setCopyJobPost] = useState(false);
+  const [facilityPreviewModal, setFacilityPreviewModal] = useState(false);
+  const [jobPostPreviewModal, setJobPostPreviewModal] = useState(false);
+  const [jobPostPreviewData, setJobPostPreviewData] = useState();
 
   const jobTypesOptions = [
     {
@@ -333,6 +338,16 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
     setJobPosts([...jobPosts, response.data.jobpost]);
   };
 
+  const onHandleJobPostPreview = (jobPost) => {
+    setJobPostPreviewModal(true);
+    setJobPostPreviewData(jobPost);
+  };
+
+  const onCancelJobPostPreview = () => {
+    setJobPostPreviewModal(false);
+    setJobPostPreviewData(null);
+  };
+
   useEffect(() => {
     document.title = "施設詳細";
   }, []);
@@ -376,7 +391,12 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                     編集
                   </Link>
                 </span>
-                <span className="text-[#FF2A3B] ml-4">プレビュー</span>
+                <button
+                  className="text-[#FF2A3B] ml-4"
+                  onClick={() => setFacilityPreviewModal(true)}
+                >
+                  プレビュー
+                </button>
               </p>
             </div>
             <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">
@@ -487,7 +507,12 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                         編集
                       </Link>
                     </span>
-                    <span className="text-[#FF2A3B] ml-4">プレビュー</span>
+                    <button
+                      className="text-[#FF2A3B] ml-4"
+                      onClick={() => onHandleJobPostPreview(jobPost)}
+                    >
+                      プレビュー
+                    </button>
                   </p>
                 </div>
                 <div className="flex justify-start w-full gap-2">
@@ -885,6 +910,20 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
           </div>
         </Modal>
       }
+      {facilityPreviewModal && (
+        <FacilityPreview
+          open={facilityPreviewModal}
+          onCancel={() => setFacilityPreviewModal(false)}
+          data={facility}
+        />
+      )}
+      {jobPostPreviewModal && (
+        <JobPostPreview
+          open={jobPostPreviewModal}
+          onCancel={() => onCancelJobPostPreview()}
+          data={jobPostPreviewData}
+        />
+      )}
     </>
   );
 };
