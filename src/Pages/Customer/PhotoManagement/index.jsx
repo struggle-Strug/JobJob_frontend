@@ -70,7 +70,7 @@ const PhotoManagement = () => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/v1/photo/`
     );
-    setPhotos(response.data.photos);
+    setPhotos(response.data.photos?.images);
   };
 
   const handleOpenDescriptionModal = (description, id) => {
