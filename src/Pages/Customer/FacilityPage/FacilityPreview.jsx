@@ -50,14 +50,6 @@ const FacilityPreview = ({ open, onCancel, data }) => {
           <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
           <p className="lg:text-sm text-xs w-4/5">{data?.introduction}</p>
         </div>
-        <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">募集職種</p>
-          <div className="flex items-center justify-start gap-2 w-3/4">
-            <p className="lg:text-sm text-xs w-1/5">
-              {data?.job_type.join(",")}
-            </p>
-          </div>
-        </div>
         <div className="flex items-start mt-4 desireEmployment">
           <p className="lg:text-sm text-xs w-1/5">アクセス</p>
           <p className="lg:text-sm text-xs w-4/5">{data?.access.join(",")}</p>
@@ -69,12 +61,6 @@ const FacilityPreview = ({ open, onCancel, data }) => {
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">施設ジャンル</p>
           <p className="lg:text-sm text-xs w-4/5">{data?.facility_genre}</p>
-        </div>
-        <div className="flex items-start mt-4 desireEmployment">
-          <p className="lg:text-sm text-xs w-1/5">サービス形態</p>
-          <p className="lg:text-sm text-xs w-4/5">
-            {data?.service_type.join(",")}
-          </p>
         </div>
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">設立年月日</p>

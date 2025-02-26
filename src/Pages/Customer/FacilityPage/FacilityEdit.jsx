@@ -37,12 +37,10 @@ const FacilityEdit = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [facilityIntroduction, setFacilityIntroduction] = useState("");
-  const [facilityJobType, setFacilityJobType] = useState("");
   const [facilityJobTypeDetail, setFacilityJobTypeDetail] = useState("");
   const [facilityAccess, setFacilityAccess] = useState("");
   const [facilityAccessText, setFacilityAccessText] = useState("");
   const [facilityGenre, setFacilityGenre] = useState("");
-  const [facilityServiceType, setFacilityServiceType] = useState([]);
   const [facilityEstablishmentDateYear, setFacilityEstablishmentDateYear] =
     useState("");
   const [facilityEstablishmentDateMonth, setFacilityEstablishmentDateMonth] =
@@ -110,13 +108,6 @@ const FacilityEdit = () => {
     ...Object.keys(Facilities).map((genre) => ({
       value: genre,
       label: genre,
-    })),
-  ];
-
-  const serviceTypeOptions = [
-    ...Object.keys(Features.SERVICE_TYPES).map((type) => ({
-      value: type,
-      label: type,
     })),
   ];
 
@@ -189,36 +180,10 @@ const FacilityEdit = () => {
       setFacilityBuilding(response.data.facility.building);
       setFacilityPhotoUrl(response.data.facility.photo);
       setFacilityIntroduction(response.data.facility.introduction);
-      setFacilityJobType(
-        Object.keys(JobType.医科).includes(response.data.facility.job_type[0])
-          ? "医科"
-          : Object.keys(JobType.歯科).includes(
-              response.data.facility.job_type[0]
-            )
-          ? "歯科"
-          : Object.keys(JobType.薬剤師).includes(
-              response.data.facility.job_type[0]
-            )
-          ? "薬剤師"
-          : Object.keys(JobType.看護婦).includes(
-              response.data.facility.job_type[0]
-            )
-          ? "看護婦"
-          : Object.keys(JobType.診療放射線技師).includes(
-              response.data.facility.job_type[0]
-            )
-          ? "診療放射線技師"
-          : Object.keys(JobType.診療放射線技師).includes(
-              response.data.facility.job_type[0]
-            )
-          ? "診療放射線技師"
-          : ""
-      );
       setFacilityJobTypeDetail(response.data.facility.job_type[0]);
       setFacilityAccess(response.data.facility.access);
       setFacilityAccessText(response.data.facility.access_text);
       setFacilityGenre(response.data.facility.facility_genre);
-      setFacilityServiceType(response.data.facility.service_type);
       setFacilityEstablishmentDateYear(
         response.data.facility.establishment_date.split("-")[0]
       );
@@ -258,11 +223,9 @@ const FacilityEdit = () => {
       building: facilityBuilding,
       photo: photoUrl ? photoUrl : facilityPhotoUrl,
       introduction: facilityIntroduction,
-      job_type: facilityJobTypeDetail,
       access: facilityAccess,
       access_text: facilityAccessText,
       facility_genre: facilityGenre,
-      service_type: facilityServiceType,
       establishment_date: `${facilityEstablishmentDateYear}-${facilityEstablishmentDateMonth}`,
       service_time: facilityServiceTime,
       rest_day: facilityRestDay,
@@ -386,27 +349,6 @@ const FacilityEdit = () => {
             className="w-4/5"
           />
         </div>
-        <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">募集職種</p>
-          <div className="flex items-center justify-start gap-2 w-3/4">
-            <Select
-              placeholder="職種"
-              options={jobTypesOptions}
-              value={facilityJobType}
-              onChange={(value) => setFacilityJobType(value)}
-              className="w-1/2"
-            />
-            {facilityJobType && (
-              <Select
-                placeholder="職種"
-                options={jobTypeDetailOptions(facilityJobType)}
-                value={facilityJobTypeDetail}
-                onChange={(value) => setFacilityJobTypeDetail(value)}
-                className="w-1/2"
-              />
-            )}
-          </div>
-        </div>
         <div className="flex items-start mt-4 desireEmployment">
           <p className="lg:text-sm text-xs w-1/5">アクセス</p>
           <Checkbox.Group
@@ -430,15 +372,6 @@ const FacilityEdit = () => {
             options={facilityGenreOptions}
             value={facilityGenre}
             onChange={(value) => setFacilityGenre(value.target.value)}
-            className="w-4/5"
-          />
-        </div>
-        <div className="flex items-start mt-4 desireEmployment">
-          <p className="lg:text-sm text-xs w-1/5">サービス形態</p>
-          <Checkbox.Group
-            options={serviceTypeOptions}
-            value={facilityServiceType}
-            onChange={(value) => setFacilityServiceType(value)}
             className="w-4/5"
           />
         </div>
