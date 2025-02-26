@@ -192,11 +192,9 @@ const FacilityAdd = () => {
       building: facilityBuilding,
       photo: photoUrl || facilityPhoto,
       introduction: facilityIntroduction,
-      job_type: facilityJobTypeDetail,
       access: facilityAccess,
       access_text: facilityAccessText,
       facility_genre: facilityGenre,
-      service_type: facilityServiceType,
       establishment_date: `${facilityEstablishmentDateYear}-${facilityEstablishmentDateMonth}`,
       service_time: facilityServiceTime,
       rest_day: facilityRestDay,
@@ -296,7 +294,7 @@ const FacilityAdd = () => {
           className="w-3/4 h-40"
         />
       </div>
-      <div className="flex items-center mt-4">
+      {/* <div className="flex items-center mt-4">
         <p className="lg:text-sm text-xs w-1/5">募集職種</p>
         <div className="flex items-center justify-start gap-2 w-3/4">
           <Select
@@ -316,7 +314,7 @@ const FacilityAdd = () => {
             />
           )}
         </div>
-      </div>
+      </div> */}
       <div className="flex items-start mt-4 desireEmployment">
         <p className="lg:text-sm text-xs w-1/5">アクセス</p>
         <Checkbox.Group
@@ -343,7 +341,7 @@ const FacilityAdd = () => {
           className="w-4/5"
         />
       </div>
-      <div className="flex items-start mt-4 desireEmployment">
+      {/* <div className="flex items-start mt-4 desireEmployment">
         <p className="lg:text-sm text-xs w-1/5">サービス形態</p>
         <Checkbox.Group
           options={serviceTypeOptions}
@@ -351,7 +349,7 @@ const FacilityAdd = () => {
           onChange={(value) => setFacilityServiceType(value)}
           className="w-4/5"
         />
-      </div>
+      </div> */}
       <div className="flex items-start mt-4 textarea">
         <p className="lg:text-sm text-xs w-1/5">設立年月日</p>
         <div className="flex justify-start items-end w-4/5">
