@@ -105,25 +105,16 @@ const Step2 = ({
         <div className="flex flex-col w-4/5">
           <div className="flex flex-col border-t-[0.1rem] border-b-[0.1rem] border-[#a7a3a3] py-4 px-2">
             <div className="w-full gap-2">
-              <p
-                className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300"
-                onClick={() => setToggleEmployment(!toggleEmployment)}
-              >
+              <p className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300">
                 <span>形態</span>
                 <img
                   src={"/assets/images/companytop/ep_arrow-right_red.png"}
                   alt="arrow"
-                  className={`duration-300 ${
-                    !toggleEmployment ? "rotate-90" : "-rotate-90"
-                  }`}
+                  className={`duration-300 rotate-90`}
                 />
               </p>
             </div>
-            <div
-              className={`duration-300 overflow-hidden ${
-                toggleEmployment ? "opacity-100" : "max-h-0 opacity-0"
-              }`}
-            >
+            <div className={`duration-300 overflow-hidden opacity-100`}>
               <div className="mt-4">
                 {renderCheckboxGroup(
                   employmentOptions,
