@@ -242,7 +242,7 @@ const FacilityEdit = () => {
 
   const handleRequestAllow = async () => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/facility/pending/${id}`
+      `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}/pending`
     );
     if (response.data.error) message.error(response.data.error);
     setSuccessModalOpen(true);
@@ -254,6 +254,15 @@ const FacilityEdit = () => {
     );
     if (response.data.error) return message.error(response.data.error);
     message.success("削除成功");
+    navigate("/customers/facility");
+  };
+
+  const handleRequestEnd = async () => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}/ended`
+    );
+    if (response.data.error) return message.error(response.data.error);
+    message.success("掲載終了成功");
     navigate("/customers/facility");
   };
 
@@ -446,12 +455,36 @@ const FacilityEdit = () => {
             </button>
           )}
           {facility?.allowed === "allowed" && (
-            <button
-              className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-              onClick={handleRequestAllow}
-            >
-              掲載を終了する
-            </button>
+            <>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleRequestEnd}
+              >
+                掲載を終了する
+              </button>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleDeleteFacility}
+              >
+                掲載を削除する
+              </button>
+            </>
+          )}
+          {facility?.allowed === "ended" && (
+            <>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleRequestAllow}
+              >
+                掲載を申請する
+              </button>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleDeleteFacility}
+              >
+                掲載を削除する
+              </button>
+            </>
           )}
         </div>
       </div>
