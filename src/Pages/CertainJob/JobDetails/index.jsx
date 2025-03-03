@@ -50,6 +50,10 @@ const JobDetails = () => {
     console.log(localStorage.getItem("recents"));
   }, [jobPost?.jobpost_id]); // Re-run when jobPost ID changes
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
       <div className="container flex items-start justify-between p-4 bg-white rounded-lg">

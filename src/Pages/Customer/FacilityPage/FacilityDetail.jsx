@@ -350,6 +350,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
 
   useEffect(() => {
     document.title = "施設詳細";
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   useEffect(() => {

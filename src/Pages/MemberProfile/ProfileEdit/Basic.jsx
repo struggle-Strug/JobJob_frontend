@@ -245,6 +245,7 @@ const Basic = () => {
         : []
     );
     setIsQualificationOpen(user?.qualification.length > 0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [user]);
   return (
     <>

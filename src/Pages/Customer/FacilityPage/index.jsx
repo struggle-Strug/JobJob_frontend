@@ -46,6 +46,7 @@ const FacilityPage = () => {
   useEffect(() => {
     document.title = "施設・求人管理";
     getFacilities();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const paginatedFacilities = facilities.slice(

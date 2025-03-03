@@ -269,6 +269,7 @@ const FacilityEdit = () => {
   useEffect(() => {
     document.title = "施設編集";
     getFacility();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   if (loading) {

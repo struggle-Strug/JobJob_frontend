@@ -14,6 +14,7 @@ const Header = ({ user, isAuthenticated }) => {
       setLikes([]);
       localStorage.setItem("likes", JSON.stringify([]));
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
     <header>

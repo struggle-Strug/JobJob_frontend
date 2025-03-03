@@ -3,6 +3,7 @@ import { useEffect } from "react";
 const Rule = () => {
   useEffect(() => {
     document.title = "ジョブジョブー利用規約 | JobJob";
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
     <div className="pt-16 pb-8 bg-[#EFEFEF] h-full">

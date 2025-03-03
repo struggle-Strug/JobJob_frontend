@@ -109,6 +109,7 @@ const CoporateManagement = () => {
   useEffect(() => {
     document.title = "ユーザー管理";
     getUsers();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
     <>

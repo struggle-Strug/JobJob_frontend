@@ -321,6 +321,7 @@ const JobOffer = () => {
       setEmail(user?.email);
     }
     getJobPost();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [user]);
 
   return (

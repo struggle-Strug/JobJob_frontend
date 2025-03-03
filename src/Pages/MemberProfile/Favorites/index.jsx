@@ -30,6 +30,7 @@ const Favorites = () => {
       setLikes([]);
       localStorage.setItem("likes", JSON.stringify([]));
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
     <div className="flex flex-col w-full h-full">

@@ -130,6 +130,7 @@ const CertaionFacility = () => {
       setEmploymentType(prefOrEmploymentType);
       pathname.split("/").length === 4 && setPref(pathname.split("/")[2]);
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   if (isLoading) {

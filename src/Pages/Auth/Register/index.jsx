@@ -155,6 +155,7 @@ const Register = () => {
     if (user) {
       window.location.href = "/members/mypage";
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [user]);
   return (
     <section className="flex flex-col justify-center bg-[#EFEFEF] px-4">
