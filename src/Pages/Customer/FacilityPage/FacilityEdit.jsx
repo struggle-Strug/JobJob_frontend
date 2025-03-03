@@ -248,6 +248,15 @@ const FacilityEdit = () => {
     setSuccessModalOpen(true);
   };
 
+  const handleDeleteFacility = async () => {
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}`
+    );
+    if (response.data.error) return message.error(response.data.error);
+    message.success("削除成功");
+    navigate("/customers/facility");
+  };
+
   useEffect(() => {
     document.title = "施設編集";
     getFacility();
@@ -420,12 +429,30 @@ const FacilityEdit = () => {
           >
             下書き保存
           </button>
-          <button
-            className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-            onClick={handleRequestAllow}
-          >
-            掲載を申請する
-          </button>
+          {facility?.allowed === "draft" && (
+            <button
+              className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+              onClick={handleRequestAllow}
+            >
+              掲載を申請する
+            </button>
+          )}
+          {facility?.allowed === "pending" && (
+            <button
+              className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+              onClick={handleDeleteFacility}
+            >
+              掲載を削除する
+            </button>
+          )}
+          {facility?.allowed === "allowed" && (
+            <button
+              className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+              onClick={handleRequestAllow}
+            >
+              掲載を終了する
+            </button>
+          )}
         </div>
       </div>
 
