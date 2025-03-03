@@ -13,8 +13,7 @@ const Footer = () => {
             />
           </Link>
           <p className="text-sm lg:text-lg mt-4 lg:mt-8 text-[#999999]">
-            あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。
-            またそのなかでいっしょになったたくさんのひとたち、ファゼーロとロザー
+            医療、介護、保育の求人を多数掲載中。ご希望の勤務地・職種や、正社員・アルバイト・パートなどの雇用形態、また年収・時給・月給や様々な特徴であなたに最適な求人を探すことができます。ジョブジョブはあなたにピッタリな求人探しを徹底サポート。
           </p>
           <div className="mt-8 lg:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-10 gap-8 lg:gap-4">
             <div className="sm:col-span-1 lg:col-span-2">
