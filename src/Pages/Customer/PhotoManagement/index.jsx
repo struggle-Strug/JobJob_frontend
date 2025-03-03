@@ -121,7 +121,9 @@ const PhotoManagement = () => {
                 <p className="ant-upload-drag-icon">
                   <InboxOutlined />
                 </p>
-                <p className="ant-upload-text">画像をドラッグアンドドロップ</p>
+                <p className="ant-upload-text">
+                  画像をドラッグアンドドロップ　または　ここをクリックして画像選択
+                </p>
               </Dragger>
               <Button className="primary mt-4" onClick={handleSave}>
                 アップロード
