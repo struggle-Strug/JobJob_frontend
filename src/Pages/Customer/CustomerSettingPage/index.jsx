@@ -1,6 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CustomerSetting = () => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/customers/sign_in");
+  };
   return (
     <div className="w-full min-h-screen">
       <div className="flex flex-col w-full bg-white rounded-lg shadow-xl min-h-screen">
@@ -42,6 +47,14 @@ const CustomerSetting = () => {
               ユーザー管理
             </Link>
           </div>
+        </div>
+        <div className="flex flex-col px-8 mt-8">
+          <button
+            className="text-left text-base font-bold text-[#343434] p-4 hover:text-[#FF2A3B] hover:underline duration-300"
+            onClick={handleLogout}
+          >
+            ログアウト
+          </button>
         </div>
       </div>
     </div>
