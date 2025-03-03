@@ -100,6 +100,7 @@ const MessageDetail = () => {
   useEffect(() => {
     document.title = "メッセージ詳細";
     getMessage();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
     <>

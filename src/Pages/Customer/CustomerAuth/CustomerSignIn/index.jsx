@@ -41,6 +41,7 @@ const CustomerSignIn = () => {
       localStorage.setItem("token", token);
       navigate("/customers");
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [token]);
   return (
     <div className="pt-16 pb-8 bg-[#EFEFEF] min-h-screen">

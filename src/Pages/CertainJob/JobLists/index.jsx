@@ -173,6 +173,7 @@ const JobLists = () => {
 
   useEffect(() => {
     document.title = "求人一覧";
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   if (isLoading) {

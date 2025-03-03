@@ -94,6 +94,7 @@ const PhotoManagement = () => {
   useEffect(() => {
     getPhotosByCustomerId();
     document.title = "写真管理";
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
     <>

@@ -46,6 +46,7 @@ const CustomerSignUp = () => {
 
   useEffect(() => {
     document.title = "求人掲載のお申し込み | JobJob";
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
     <div className="pt-16 pb-8 bg-[#EFEFEF] h-full">

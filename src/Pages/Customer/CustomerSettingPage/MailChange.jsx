@@ -23,6 +23,7 @@ const MailChange = () => {
 
   useEffect(() => {
     document.title = "メールアドレス変更";
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
     <>
