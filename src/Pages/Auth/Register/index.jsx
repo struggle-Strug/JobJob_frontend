@@ -157,6 +157,7 @@ const Register = () => {
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [user]);
+
   return (
     <section className="flex flex-col justify-center bg-[#EFEFEF] px-4">
       <div className="container">
