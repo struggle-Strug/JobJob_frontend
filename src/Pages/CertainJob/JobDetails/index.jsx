@@ -25,11 +25,15 @@ const JobDetails = () => {
       response.data.jobposts.filter((jobpost) => jobpost.allowed === "allowed")
     );
   };
+  useEffect(() => {
+    if (jobPost?.facility_id) {
+      getFacilityJobPosts();
+    }
+  }, [jobPost?.facility_id]);
 
   useEffect(() => {
     document.title = "求人詳細";
     if (jobpost_id !== undefined) {
-      getFacilityJobPosts();
       getJobPost();
     }
   }, []);
