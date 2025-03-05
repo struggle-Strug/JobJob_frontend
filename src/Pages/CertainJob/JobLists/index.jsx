@@ -161,6 +161,8 @@ const JobLists = () => {
       navigate(url);
       setPrefectureModalOpen(false);
     } else {
+      const updatedFilters = { ...filters, pref: p };
+      setFilters(updatedFilters);
       const url = `/${path}/${p}`;
       navigate(url);
     }
@@ -250,6 +252,7 @@ const JobLists = () => {
       }
     } else {
       setPref(pathname.split("/")[2]);
+      setFilters({ ...filters, pref: pathname.split("/")[2] });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
