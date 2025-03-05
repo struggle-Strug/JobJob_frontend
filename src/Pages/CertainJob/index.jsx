@@ -231,7 +231,7 @@ const CertainJob = () => {
                   className="w-4 lg:w-5 pt-0.5"
                 />
                 <p className="text-xs lg:text-md font-bold text-[#343434] duration-300 ml-1">
-                  市区町村から選択
+                  都道府県から選択
                 </p>
               </button>
               <button
