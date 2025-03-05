@@ -1,11 +1,8 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  getPrefectureKeyByValue,
   getEmploymentTypeKeyByValue,
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
-  getAllEmploymentValues,
-  getAllFeatureValues,
 } from "../../utils/getFunctions";
 import {
   EmploymentType,
@@ -21,25 +18,24 @@ const CertainJob = () => {
   const { pathname } = useLocation();
   const [type, setType] = useState("1");
   const [pref, setPref] = useState("");
-  const [employmentType, setEmploymentType] = useState("");
+  const [employmentType, setEmploymentType] = useState([]);
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
-  const [feature, setFeature] = useState("");
+  const [feature, setFeature] = useState([]);
+  const [filters, setFilters] = useState({
+    pref: "",
+    employmentType: [],
+    monthlySalary: "",
+    hourlySalary: "",
+    feature: [],
+  });
 
+  const location = useLocation();
   const navigate = useNavigate();
   const path = pathname.split("/")[1];
   const JobType = getJobTypeKeyByValue(path);
   const isSelected = (v) => v === type;
-  const notFound = pathname
-    .split("/")
-    .filter((item) => item !== "")
-    .some(
-      (item) =>
-        getJobTypeKeyByValue(item) === null &&
-        getPrefectureKeyByValue(item) === null &&
-        getEmploymentTypeKeyByValue(item) === null &&
-        getFeatureKeyByValue(item) === null
-    );
+  const params = new URLSearchParams(location.search);
 
   const monthlySalaryOptions = [
     { value: "", label: "指定なし" },
@@ -70,43 +66,95 @@ const CertainJob = () => {
     { value: "5000", label: "5000" },
   ];
 
-  useEffect(() => {
-    if (path !== "") {
-      const link =
-        `/${path}` +
-        (pref !== "" ? `/${pref}` : "") +
-        (employmentType !== "" ? `/${employmentType}` : "") +
-        (feature !== "" ? `/${feature}` : "");
-
-      // Only navigate if the link is different
-      if (window.location.pathname !== link) {
-        navigate(link);
-      }
-      console.log(link);
-    }
-  }, [pref, employmentType, feature]);
-
-  useEffect(() => {
-    const employmentTypeOrFeature =
-      pathname.split("/")[pathname.split("/").length - 1];
-
-    if (getAllEmploymentValues().includes(employmentTypeOrFeature)) {
-      setEmploymentType(employmentTypeOrFeature);
-    }
-    if (getAllFeatureValues().includes(employmentTypeOrFeature)) {
-      setFeature(employmentTypeOrFeature);
-      pathname.split("/").length === 4 &&
-        setEmploymentType(pathname.split("/")[2]);
-    }
+  const handleSearch = () => {
+    const url = `/${path}/search?filters=${encodeURIComponent(
+      JSON.stringify(filters)
+    )}`;
+    navigate(url);
+    setType("1");
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  };
 
-  // useEffect(() => {
-  //   if (notFound) {
-  //     navigate("/404");
-  //   }
+  const handleEmploymentTypeChange = (employmentTypeValue) => {
+    setEmploymentType(
+      (prev) =>
+        prev.includes(employmentTypeValue)
+          ? prev.filter((type) => type !== employmentTypeValue) // Remove if already selected
+          : [...prev, employmentTypeValue] // Add if not selected
+    );
+  };
 
-  // }, []);
+  const handleFeatureChange = (feature) => {
+    setFeature(
+      (prev) =>
+        prev.includes(getFeatureKeyByValue(feature))
+          ? prev.filter((type) => type !== getFeatureKeyByValue(feature)) // Remove if already selected
+          : [...prev, getFeatureKeyByValue(feature)] // Add if not selected
+    );
+  };
+
+  useEffect(() => {
+    setFilters({
+      employmentType: employmentType,
+      monthlySalary: monthlySalary,
+      hourlySalary: hourlySalary,
+      feature: feature,
+    });
+  }, [employmentType, feature, monthlySalary, hourlySalary]);
+
+  const handleOnChangePref = (p) => {
+    if (pathname.split("/")[2] === "search") {
+      // ✅ Update filters first
+      setFilters((prevFilters) => {
+        const updatedFilters = { ...prevFilters, pref: p };
+
+        // ✅ Navigate using the updated filters
+        const url = `/${path}/search?filters=${encodeURIComponent(
+          JSON.stringify(updatedFilters)
+        )}`;
+        navigate(url);
+      });
+    } else {
+      const url = `/${path}/${p}`;
+      navigate(url);
+    }
+  };
+  useEffect(() => {
+    const savedFilters = params.get("filters")
+      ? JSON.parse(decodeURIComponent(params.get("filters")))
+      : {
+          pref: "",
+          employmentType: [],
+          hourlySalary: "",
+          monthlySalary: "",
+          feature: [],
+        };
+
+    setFilters(savedFilters);
+
+    const isEmptyFilters =
+      savedFilters.pref === "" &&
+      savedFilters.employmentType.length === 0 &&
+      savedFilters.hourlySalary === "" &&
+      savedFilters.monthlySalary === "" &&
+      savedFilters.feature.length === 0;
+
+    if (isEmptyFilters) {
+      const url = `/${path}`;
+      if (window.location.pathname !== url) {
+        navigate(url);
+      }
+    } else {
+      const url = `/${path}/search?filters=${encodeURIComponent(
+        JSON.stringify(savedFilters)
+      )}`;
+      if (window.location.pathname !== url) {
+        navigate(url);
+      }
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []); // ✅ Make sure it runs when the search query updates
 
   const renderPrefectureSection = (region, prefectures) => (
     <div className="col-span-1 flex flex-col justify-start items-center">
@@ -120,7 +168,7 @@ const CertainJob = () => {
           <button
             key={index}
             className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
-            onClick={() => setPref(prefectures[prefecture])}
+            onClick={() => handleOnChangePref(prefectures[prefecture])}
           >
             {prefecture}
           </button>
@@ -134,37 +182,40 @@ const CertainJob = () => {
       <BreadCrumb />
       {!pathname.includes("pref") && (
         <div className="bg-[#EFEFEF]">
-          <section className="container bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
-            <p className="flex flex-wrap gap-1 items-end">
-              {feature !== "" && (
-                <>
-                  <span className="text-base lg:text-xl font-bold text-[#343434]">
-                    {getFeatureKeyByValue(feature)}
-                  </span>
-                  <span className="text-xs lg:text-base text-[#343434]">
-                    の
-                  </span>
-                </>
-              )}
-              {employmentType !== "" && (
-                <>
-                  <span className="text-base lg:text-xl font-bold text-[#343434]">
-                    {getEmploymentTypeKeyByValue(employmentType)}
-                  </span>
-                  <span className="text-xs lg:text-base text-[#343434]">
-                    の
-                  </span>
-                </>
-              )}
-              <span className="text-base lg:text-xl font-bold text-[#343434]">
-                {JobType}
-              </span>
-              <span className="text-xs lg:text-base text-[#343434]">の</span>
-            </p>
-            <p className="text-sm lg:text-lg text-[#343434]">
-              求人・転職・就職・アルバイト募集情報
-            </p>
-          </section>
+          {pathname.split("/")[2] === "search" ? (
+            <section className="container bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
+              <p className="text-sm font-bold lg:text-lg text-[#343434]">
+                <span className="lg:text-2xl text-base">{JobType}</span>
+                の検索結果 (
+                {filters?.feature.length > 0 && (
+                  <>
+                    <span className="text-base lg:text-xl font-bold text-[#343434]">
+                      {filters.feature.join("/")}/
+                    </span>
+                  </>
+                )}
+                {filters?.employmentType.length > 0 && (
+                  <>
+                    <span className="text-base lg:text-xl font-bold text-[#343434]">
+                      {filters.employmentType.join("/")})
+                    </span>
+                  </>
+                )}
+              </p>
+            </section>
+          ) : (
+            <section className="container bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
+              <p className="flex flex-wrap gap-1 items-end">
+                <span className="text-base lg:text-xl font-bold text-[#343434]">
+                  {JobType}
+                </span>
+                <span className="text-xs lg:text-base text-[#343434]">の</span>
+              </p>
+              <p className="text-sm lg:text-lg text-[#343434]">
+                求人・転職・就職・アルバイト募集情報
+              </p>
+            </section>
+          )}
 
           <section className="container bg-white rounded-lg mt-4">
             <div className="grid grid-cols-3 w-full px-2">
@@ -251,11 +302,9 @@ const CertainJob = () => {
                         <Checkbox
                           key={index}
                           onChange={() =>
-                            setEmploymentType(EmploymentType[employmentTypeKey])
+                            handleEmploymentTypeChange(employmentTypeKey)
                           }
-                          checked={
-                            employmentType === EmploymentType[employmentTypeKey]
-                          }
+                          checked={employmentType.includes(employmentTypeKey)}
                         >
                           <span className="text-xs lg:text-sm">
                             {employmentTypeKey}
@@ -303,7 +352,10 @@ const CertainJob = () => {
                 </div>
 
                 <div className="flex justify-center">
-                  <button className="bg-[#e9e9e9] hover:shadow-xl text-center font-bold text-xs lg:text-lg duration-500 text-[#FF2A3B] hover:text-[#343434] px-4 lg:px-12 py-2 lg:py-4 rounded-lg">
+                  <button
+                    className="bg-[#e9e9e9] hover:shadow-xl text-center font-bold text-xs lg:text-lg duration-500 text-[#FF2A3B] hover:text-[#343434] px-4 lg:px-12 py-2 lg:py-4 rounded-lg"
+                    onClick={handleSearch}
+                  >
                     検索する
                   </button>
                 </div>
@@ -343,9 +395,11 @@ const CertainJob = () => {
                         <Checkbox
                           key={idx}
                           onChange={() =>
-                            setFeature(section.features[featureKey])
+                            handleFeatureChange(section.features[featureKey])
                           }
-                          checked={feature === section.features[featureKey]}
+                          checked={feature.includes(
+                            getFeatureKeyByValue(section.features[featureKey])
+                          )}
                         >
                           <span className="text-xs lg:text-sm">
                             {featureKey}
@@ -355,6 +409,14 @@ const CertainJob = () => {
                     </div>
                   </div>
                 ))}
+                <div className="flex justify-center">
+                  <button
+                    className="bg-[#e9e9e9] hover:shadow-xl text-center font-bold text-xs lg:text-lg duration-500 text-[#FF2A3B] hover:text-[#343434] px-4 lg:px-12 py-2 lg:py-4 rounded-lg"
+                    onClick={handleSearch}
+                  >
+                    検索する
+                  </button>
+                </div>
               </div>
             )}
           </section>

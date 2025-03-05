@@ -94,6 +94,9 @@ function App() {
   const { pathname } = useLocation();
   const prefOrFacility = pathname.split("/")[2];
 
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
   const getUserData = async () => {
     try {
       const res = await axios.get(
@@ -188,7 +191,7 @@ function App() {
               return (
                 <Route
                   key={jobType}
-                  path={`/${jobType}/${prefOrFacility}/:employmentType?/:feature?`}
+                  path={`/${jobType}/${prefOrFacility}/`}
                   element={<JobLists />}
                 />
               );
@@ -204,12 +207,39 @@ function App() {
               );
             }
 
+            if (prefOrFacility === "search") {
+              const filters = params.get("filters")
+                ? JSON.parse(decodeURIComponent(params.get("filters")))
+                : {};
+
+              return (
+                <Route
+                  key={`${jobType}-search`}
+                  path={`/${jobType}/search`}
+                  element={
+                    filters.pref === undefined || filters.pref === "" ? (
+                      <CertainJob />
+                    ) : (
+                      <JobLists />
+                    )
+                  }
+                />
+              );
+            }
+
             return (
-              <Route
-                key={jobType}
-                path={`/${jobType}/:employmentType?/:feature?`}
-                element={<CertainJob />}
-              />
+              <>
+                <Route
+                  key={jobType}
+                  path={`/${jobType}`}
+                  element={<CertainJob />}
+                />
+                <Route
+                  key={jobType}
+                  path={`/${jobType}/search`}
+                  element={<CertainJob />}
+                />
+              </>
             );
           })}
           <Route path={"/facility/details/:id"} element={<FacilityDetails />} />
