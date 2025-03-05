@@ -28,9 +28,11 @@ const JobDetails = () => {
 
   useEffect(() => {
     document.title = "求人詳細";
-    getFacilityJobPosts();
-    getJobPost();
-  }, [allFacilityJobPosts]);
+    if (jobpost_id !== undefined) {
+      getFacilityJobPosts();
+      getJobPost();
+    }
+  }, []);
 
   useEffect(() => {
     if (!jobPost?.jobpost_id) return; // Prevent running if jobpost_id is undefined
@@ -46,13 +48,8 @@ const JobDetails = () => {
       }
       localStorage.setItem("recents", JSON.stringify(newRecents));
     }
-
-    console.log(localStorage.getItem("recents"));
-  }, [jobPost?.jobpost_id]); // Re-run when jobPost ID changes
-
-  useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  }, [jobPost?.jobpost_id]); // Re-run when jobPost ID changes
 
   return (
     <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">

@@ -34,6 +34,25 @@ const BreadCrumb = () => {
           )}
         {getAllJobTypeValues().includes(pathnames[1]) &&
           pathnames.length === 3 &&
+          pathnames[2] === "search" && (
+            <>
+              <li>
+                <Link
+                  to={`/${pathnames[1]}`}
+                  className="text-xs text-[#343434] hover:text-black hover:underline duration-300"
+                >
+                  {getJobTypeKeyByValue(pathnames[1])}の求人
+                </Link>
+              </li>
+              <IoIosArrowForward className="w-2" />
+
+              <li>
+                <span className="text-xs text-[#343434]">検索結果</span>
+              </li>
+            </>
+          )}
+        {getAllJobTypeValues().includes(pathnames[1]) &&
+          pathnames.length === 3 &&
           getAllPrefectureValues().includes(pathnames[2]) && (
             <>
               <li>
