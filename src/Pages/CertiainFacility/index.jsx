@@ -279,11 +279,6 @@ const CertaionFacility = () => {
                             {facility.access_station}
                           </p>
                         </div>
-                        <div>
-                          <p className="lg:text-sm md:text-xs text-[#343434]">
-                            {facility.service_type.join(",")}
-                          </p>
-                        </div>
                       </div>
                     </div>
                     <div className="flex items-center justify-between w-full gap-4 mt-6">

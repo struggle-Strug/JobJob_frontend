@@ -157,19 +157,22 @@ const Register = () => {
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [user]);
+
   return (
     <section className="flex flex-col justify-center bg-[#EFEFEF] px-4">
       <div className="container">
         <div className="flex items-center justify-between border-[1.5px] border-[#a7a3a3] rounded-lg p-4 bg-white px-8">
           <p className="text-2xl font-bold">新規会員登録</p>
-          <div className="border-[1.5px] border-[#a7a3a3] rounded-lg px-4 py-2">
-            <Link
-              to={"/members/sign_in"}
-              className="text-lg text-[#FF2A3B] hover:underline"
-            >
-              会員登録済みの方はこちら
-            </Link>
-          </div>
+          {step === 1 && (
+            <div className="border-[1.5px] border-[#a7a3a3] rounded-lg px-4 py-2">
+              <Link
+                to={"/members/sign_in"}
+                className="text-lg text-[#FF2A3B] hover:underline"
+              >
+                会員登録済みの方はこちら
+              </Link>
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-center justify-between mt-12 border-[1.5px] border-[#a7a3a3] rounded-lg p-4 bg-white px-8">
           <Step steps={5} currentStep={step} />
