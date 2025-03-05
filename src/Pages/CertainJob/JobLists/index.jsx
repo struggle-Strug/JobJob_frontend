@@ -116,9 +116,17 @@ const JobLists = () => {
         }
       );
 
+      console.log("API Response:", response.data);
+
+      if (!response.data || !response.data.jobposts) {
+        console.error("Job posts not found in response");
+        setJobPosts([]); // Set empty array if response is not valid
+        return;
+      }
+
       setJobPosts(response.data.jobposts);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching job posts:", error);
     } finally {
       setIsLoading(false);
     }
@@ -151,20 +159,24 @@ const JobLists = () => {
   const handleOnChangePref = (p) => {
     setPref(p);
     if (pathname.split("/")[2] === "search") {
-      // ✅ Update filters first
-      const updatedFilters = { ...filters, pref: p };
-      setFilters(updatedFilters);
+      setFilters((prevFilters) => {
+        const updatedFilters = { ...prevFilters, pref: p };
 
-      const url = `/${path}/search?filters=${encodeURIComponent(
-        JSON.stringify(updatedFilters)
-      )}`;
-      navigate(url);
+        // Navigate only after state update
+        navigate(
+          `/${path}/search?filters=${encodeURIComponent(
+            JSON.stringify(updatedFilters)
+          )}`
+        );
+        return updatedFilters;
+      });
       setPrefectureModalOpen(false);
     } else {
-      const updatedFilters = { ...filters, pref: p };
-      setFilters(updatedFilters);
-      const url = `/${path}/${p}`;
-      navigate(url);
+      setFilters((prevFilters) => {
+        const updatedFilters = { ...prevFilters, pref: p };
+        navigate(`/${path}/${p}`);
+        return updatedFilters;
+      });
     }
   };
 
