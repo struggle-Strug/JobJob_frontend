@@ -280,9 +280,6 @@ const FacilityDetails = () => {
                   >
                     {facility?.facility_genre}
                   </Link>
-                  <div className="inline-block items-start justify-start gap-2 mt-2">
-                    {facility?.service_type.join("、")}
-                  </div>
                 </div>
               </div>
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
