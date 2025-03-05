@@ -106,7 +106,7 @@ const JobLists = () => {
 
   const getJobPosts = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true); // Set loading before fetching data
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/filter`,
         {
@@ -116,19 +116,16 @@ const JobLists = () => {
         }
       );
 
-      console.log("API Response:", response.data);
-
       if (!response.data || !response.data.jobposts) {
         console.error("Job posts not found in response");
         setJobPosts([]); // Set empty array if response is not valid
-        return;
+      } else {
+        setJobPosts(response.data.jobposts);
       }
-
-      setJobPosts(response.data.jobposts);
     } catch (error) {
       console.error("Error fetching job posts:", error);
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Stop loading after fetching data
     }
   };
 
