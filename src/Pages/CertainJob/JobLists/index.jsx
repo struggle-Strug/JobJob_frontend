@@ -647,19 +647,6 @@ const JobLists = () => {
                   className="w-full"
                 />
               </div>
-              <Link
-                to={"/#"}
-                className="flex items-center justify-start mt-2 pl-2"
-              >
-                <p className="lg:text-sm md:text-xs font-bold">
-                  地図から求人を選択する
-                </p>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </Link>
             </div>
             <div className="flex items-center justify-start w-full mt-8">
               <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
@@ -723,23 +710,10 @@ const JobLists = () => {
           </div>
           <div className="flex h-full w-1/3">
             <div className="flex flex-col items-center justify-start h-full w-full">
-              <div className="flex items-center justify-between bg-white rounded-lg lg:px-8 md:px-4 py-4 w-full shadow-xl">
-                <Link
-                  to={"/#"}
-                  className="lg:text-lg md:text-sm font-bold text-[#343434]"
-                >
-                  地図から求人を選択する
-                </Link>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </div>
               <img
                 src="/assets/images/dashboard/Group 16.png"
                 alt="banner"
-                className="w-full mt-8"
+                className="w-full"
               />
               <div className="flex items-center justify-start w-full mt-8">
                 <p className="lg:text-lg md:text-sm font-bold text-[#343434]">
