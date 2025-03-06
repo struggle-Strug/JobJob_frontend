@@ -173,6 +173,9 @@ const JobLists = () => {
     setEmploymentTypeModalOpen(false);
     setFeatureModalOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Ensure job posts are fetched immediately
+    getJobPosts();
   };
 
   const handleOnChangePref = (p) => {
@@ -194,6 +197,8 @@ const JobLists = () => {
       setFilters((prevFilters) => {
         const updatedFilters = { ...prevFilters, pref: p };
         navigate(`/${path}/${p}`);
+        setPrefectureModalOpen(false);
+
         return updatedFilters;
       });
     }
@@ -247,7 +252,7 @@ const JobLists = () => {
   }, [pref, muni, employmentType, feature, monthlySalary, hourlySalary]);
 
   useEffect(() => {
-    if (updatedFilters.pref !== null || updatedFilters.pref !== "") {
+    if (filters.pref !== null || filters.pref !== "") {
       getJobPosts();
     }
   }, [filters]);
