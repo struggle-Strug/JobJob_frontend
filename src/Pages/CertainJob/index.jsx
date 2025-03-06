@@ -93,15 +93,6 @@ const CertainJob = () => {
     );
   };
 
-  useEffect(() => {
-    setFilters({
-      employmentType: employmentType,
-      monthlySalary: monthlySalary,
-      hourlySalary: hourlySalary,
-      feature: feature,
-    });
-  }, [employmentType, feature, monthlySalary, hourlySalary]);
-
   const handleOnChangePref = (p) => {
     if (pathname.split("/")[2] === "search") {
       // ✅ Update filters first
@@ -119,6 +110,16 @@ const CertainJob = () => {
       navigate(url);
     }
   };
+
+  useEffect(() => {
+    setFilters({
+      employmentType: employmentType,
+      monthlySalary: monthlySalary,
+      hourlySalary: hourlySalary,
+      feature: feature,
+    });
+  }, [employmentType, feature, monthlySalary, hourlySalary]);
+
   useEffect(() => {
     const savedFilters = params.get("filters")
       ? JSON.parse(decodeURIComponent(params.get("filters")))
@@ -186,11 +187,11 @@ const CertainJob = () => {
             <section className="container bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
               <p className="text-sm font-bold lg:text-lg text-[#343434]">
                 <span className="lg:text-2xl text-base">{JobType}</span>
-                の検索結果 (
+                の検索結果
                 {filters?.feature.length > 0 && (
                   <>
                     <span className="text-base lg:text-xl font-bold text-[#343434]">
-                      {filters.feature.join("/")}/
+                      ({filters.feature.join("/")}/
                     </span>
                   </>
                 )}
@@ -231,7 +232,7 @@ const CertainJob = () => {
                   className="w-4 lg:w-5 pt-0.5"
                 />
                 <p className="text-xs lg:text-md font-bold text-[#343434] duration-300 ml-1">
-                  市区町村から選択
+                  都道府県から選択
                 </p>
               </button>
               <button

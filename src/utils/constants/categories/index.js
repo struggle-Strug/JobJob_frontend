@@ -5,3 +5,4 @@ export * from "./features";
 export * from "./prefectures";
 export * from "./facilities";
 export * from "./paysystems";
+export * from "./municipalities";
