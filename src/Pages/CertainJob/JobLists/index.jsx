@@ -1,9 +1,6 @@
 import { Checkbox, Input, Modal, Select } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  getAllEmploymentValues,
-  getAllFeatureValues,
-  getEmploymentTypeKeyByValue,
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
   getPrefectureKeyByValue,
@@ -12,6 +9,7 @@ import { useEffect, useState } from "react";
 import {
   EmploymentType,
   Features,
+  Municipalities,
   Prefectures,
 } from "../../../utils/constants/categories";
 import axios from "axios";
@@ -23,11 +21,13 @@ const JobLists = () => {
   const { user } = useAuth();
   const { pathname } = useLocation();
   const [pref, setPref] = useState("");
+  const [muni, setMuni] = useState("");
   const [employmentType, setEmploymentType] = useState("");
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
   const [feature, setFeature] = useState("");
   const [prefectureModalOpen, setPrefectureModalOpen] = useState(false);
+  const [municipalitiesModal, setMunicipalitiesModal] = useState(false);
   const [employmentTypeModalOpen, setEmploymentTypeModalOpen] = useState(false);
   const [featureModalOpen, setFeatureModalOpen] = useState(false);
   const [jobPosts, setJobPosts] = useState([]);
@@ -35,6 +35,7 @@ const JobLists = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState({
     pref: "",
+    muni: "",
     employmentType: [],
     monthlySalary: "",
     hourlySalary: "",
@@ -42,6 +43,7 @@ const JobLists = () => {
   });
   const [updatedFilters, setUpdatedFilters] = useState({
     pref: "",
+    muni: "",
     employmentType: [],
     monthlySalary: "",
     hourlySalary: "",
@@ -104,6 +106,25 @@ const JobLists = () => {
     </div>
   );
 
+  const renderMunicipalitiesSection = (prefecture) => (
+    <>
+      <div className="flex flex-wrap w-full px-2 lg:px-4">
+        <p className="text-lg text-[#343434] font-bold">{prefecture}</p>
+        <div className=" border-t-[1px] border-[#bdbdbd] mt-4">
+          {Municipalities[prefecture].map((muni, index) => (
+            <button
+              key={index}
+              className="lg:w-1/4 sm:w-1/2 text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] text-center py-1 lg:py-[0.5rem] duration-300"
+              onClick={() => handleOnChangeMuni(muni)}
+            >
+              {muni}
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+
   const getJobPosts = async () => {
     try {
       setIsLoading(true); // Set loading before fetching data
@@ -113,6 +134,7 @@ const JobLists = () => {
           ...updatedFilters,
           JobType: JobType,
           pref: getPrefectureKeyByValue(pref),
+          muni: muni || "",
         }
       );
 
@@ -157,7 +179,7 @@ const JobLists = () => {
     setPref(p);
     if (pathname.split("/")[2] === "search") {
       setFilters((prevFilters) => {
-        const updatedFilters = { ...prevFilters, pref: p };
+        const updatedFilters = { ...prevFilters, pref: p, muni: "" };
 
         // Navigate only after state update
         navigate(
@@ -175,6 +197,22 @@ const JobLists = () => {
         return updatedFilters;
       });
     }
+  };
+
+  const handleOnChangeMuni = (m) => {
+    setMuni(m);
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters, muni: m };
+
+      // Navigate only after state update
+      navigate(
+        `/${path}/search?filters=${encodeURIComponent(
+          JSON.stringify(updatedFilters)
+        )}`
+      );
+      return updatedFilters;
+    });
+    setMunicipalitiesModal(false);
   };
 
   const handleEmploymentTypeChange = (employmentTypeValue) => {
@@ -196,14 +234,17 @@ const JobLists = () => {
   };
 
   useEffect(() => {
-    setUpdatedFilters({
+    const newFilters = {
       pref: pref,
+      muni: muni,
       employmentType: employmentType,
       monthlySalary: monthlySalary,
       hourlySalary: hourlySalary,
       feature: feature,
-    });
-  }, [pref, employmentType, feature, monthlySalary, hourlySalary]);
+    };
+
+    setUpdatedFilters(newFilters);
+  }, [pref, muni, employmentType, feature, monthlySalary, hourlySalary]);
 
   useEffect(() => {
     if (updatedFilters.pref !== null || updatedFilters.pref !== "") {
@@ -234,6 +275,7 @@ const JobLists = () => {
       setFilters(savedFilters);
       setUpdatedFilters(savedFilters);
       setPref(savedFilters?.pref);
+      setMuni(savedFilters?.muni);
       setEmploymentType(savedFilters?.employmentType);
       setFeature(savedFilters?.feature);
       setHourlySalary(savedFilters?.hourlySalary);
@@ -321,7 +363,10 @@ const JobLists = () => {
               </p>
             </div>
             <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl mt-8">
-              <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg hover:px-12 duration-300 cursor-pointer">
+              <div
+                className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg hover:px-12 duration-300 cursor-pointer"
+                onClick={() => setMunicipalitiesModal(true)}
+              >
                 <div className="flex items-center justify-between gap-1">
                   <img
                     src="/assets/images/dashboard/gg_pin.png"
@@ -1024,6 +1069,20 @@ const JobLists = () => {
                 検索する
               </button>
             </div>
+          </div>
+        </Modal>
+      }
+      {
+        <Modal
+          open={municipalitiesModal}
+          onCancel={() => setMunicipalitiesModal(false)}
+          footer={null}
+          width={1000}
+          height={800}
+          className="modal"
+        >
+          <div className="w-full py-3 gap-4 px-4">
+            {renderMunicipalitiesSection("大阪府")}
           </div>
         </Modal>
       }
