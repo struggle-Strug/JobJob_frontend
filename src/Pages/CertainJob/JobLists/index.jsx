@@ -249,18 +249,14 @@ const JobLists = () => {
     };
 
     setUpdatedFilters(newFilters);
+    setFilters(newFilters);
   }, [pref, muni, employmentType, feature, monthlySalary, hourlySalary]);
 
   useEffect(() => {
-    if (
-      filters.pref !== null ||
-      filters.pref !== "" ||
-      updatedFilters.pref !== "" ||
-      updatedFilters.pref !== null
-    ) {
+    if (updatedFilters?.pref && updatedFilters?.pref.trim() !== "") {
       getJobPosts();
     }
-  }, [filters]);
+  }, [filters]); // Depend on updatedFilters, not filters
 
   useEffect(() => {
     document.title = "求人一覧";
