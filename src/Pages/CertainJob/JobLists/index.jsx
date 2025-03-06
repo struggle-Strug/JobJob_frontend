@@ -250,7 +250,20 @@ const JobLists = () => {
 
     setUpdatedFilters(newFilters);
     setFilters(newFilters);
-  }, [pref, muni, employmentType, feature, monthlySalary, hourlySalary]);
+  }, [pref, muni]);
+
+  useEffect(() => {
+    const newFilters = {
+      pref: pref,
+      muni: muni,
+      employmentType: employmentType,
+      monthlySalary: monthlySalary,
+      hourlySalary: hourlySalary,
+      feature: feature,
+    };
+
+    setUpdatedFilters(newFilters);
+  }, [employmentType, feature, monthlySalary, hourlySalary]);
 
   useEffect(() => {
     if (updatedFilters?.pref && updatedFilters?.pref.trim() !== "") {
