@@ -252,7 +252,12 @@ const JobLists = () => {
   }, [pref, muni, employmentType, feature, monthlySalary, hourlySalary]);
 
   useEffect(() => {
-    if (filters.pref !== null || filters.pref !== "") {
+    if (
+      filters.pref !== null ||
+      filters.pref !== "" ||
+      updatedFilters.pref !== "" ||
+      updatedFilters.pref !== null
+    ) {
       getJobPosts();
     }
   }, [filters]);
