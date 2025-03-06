@@ -446,28 +446,6 @@ const JobLists = () => {
                 {getPrefectureKeyByValue(pref)}の{JobType}の求人
               </p>
             </div>
-            <div className="flex items-center justify-start w-full mt-8">
-              <img
-                src="/assets/images/dashboard/flowbite_sort-outline.png"
-                alt="map"
-                className="w-5 pt-0.5"
-              />
-              <div className="flex text-center py-2 px-8 bg-white rounded-lg ml-4">
-                <p className="lg:text-md md:text-sm bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] bg-clip-text text-transparent text-md font-bold">
-                  おすすめ
-                </p>
-              </div>
-              <div className="flex text-center py-2 px-8 bg-white rounded-lg ml-4">
-                <p className="lg:text-md md:text-sm text-[#343434] text-md font-bold">
-                  新着
-                </p>
-              </div>
-              <div className="flex text-center py-2 px-4 bg-white rounded-lg ml-4">
-                <p className="lg:text-md md:text-sm text-[#343434] text-md font-bold">
-                  自宅からの距離
-                </p>
-              </div>
-            </div>
             <div className="flex flex-col items-center justify-start w-full mt-8 ">
               {jobPosts?.map((jobpost) => {
                 return (
