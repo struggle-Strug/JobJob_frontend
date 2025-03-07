@@ -5,6 +5,7 @@ import {
   getJobTypeKeyByValue,
 } from "../../utils/getFunctions";
 import {
+  Descriptions,
   EmploymentType,
   Features,
   Prefectures,
@@ -421,6 +422,14 @@ const CertainJob = () => {
               </div>
             )}
           </section>
+          <div className="flex flex-col container bg-white rounded-lg px-12 py-6 w-full mt-8 shadow-xl">
+            <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+              {JobType}について
+            </p>
+            <pre className="lg:text-[1rem] md:text-[0.8rem] mt-4">
+              {Descriptions[JobType]}
+            </pre>
+          </div>
         </div>
       )}
     </>
