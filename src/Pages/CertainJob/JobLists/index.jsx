@@ -7,11 +7,11 @@ import {
 } from "../../../utils/getFunctions";
 import { useEffect, useState } from "react";
 import {
-  Descriptions,
   EmploymentType,
   Features,
   Municipalities,
   Prefectures,
+  SmallDescriptions,
 } from "../../../utils/constants/categories";
 import axios, { all } from "axios";
 import { useAuth } from "../../../context/AuthContext";
@@ -665,7 +665,7 @@ const JobLists = () => {
             </div>
             <div className="flex flex-col bg-white rounded-lg px-12 py-6 w-full mt-8 shadow-xl">
               <pre className="lg:text-[1rem] md:text-[0.8rem]">
-                {Descriptions[JobType]}
+                {SmallDescriptions[JobType]}
               </pre>
             </div>
           </div>

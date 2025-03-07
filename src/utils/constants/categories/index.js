@@ -7,3 +7,4 @@ export * from "./facilities";
 export * from "./paysystems";
 export * from "./municipalities";
 export * from "./descriptions";
+export * from "./smalldescriptions";
