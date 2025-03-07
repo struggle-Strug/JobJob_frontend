@@ -12,10 +12,11 @@ import {
   Municipalities,
   Prefectures,
 } from "../../../utils/constants/categories";
-import axios from "axios";
+import axios, { all } from "axios";
 import { useAuth } from "../../../context/AuthContext";
 import Loading from "../../../components/Loading";
 import BreadCrumb from "../../../components/BreadCrumb";
+import Pagination from "../../../components/Pagination";
 
 const JobLists = () => {
   const { user } = useAuth();
@@ -26,11 +27,14 @@ const JobLists = () => {
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
   const [feature, setFeature] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState();
   const [prefectureModalOpen, setPrefectureModalOpen] = useState(false);
   const [municipalitiesModal, setMunicipalitiesModal] = useState(false);
   const [employmentTypeModalOpen, setEmploymentTypeModalOpen] = useState(false);
   const [featureModalOpen, setFeatureModalOpen] = useState(false);
   const [jobPosts, setJobPosts] = useState([]);
+  const [allJobPostsNum, setAllJobPostsNum] = useState(0);
   const [likes, setLikes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -40,6 +44,7 @@ const JobLists = () => {
     monthlySalary: "",
     hourlySalary: "",
     feature: [],
+    page: 1,
   });
   const [updatedFilters, setUpdatedFilters] = useState({
     pref: "",
@@ -48,6 +53,7 @@ const JobLists = () => {
     monthlySalary: "",
     hourlySalary: "",
     feature: [],
+    page: 1,
   });
   const navigate = useNavigate();
 
@@ -143,6 +149,8 @@ const JobLists = () => {
         setJobPosts([]); // Set empty array if response is not valid
       } else {
         setJobPosts(response.data.jobposts);
+        setTotalPages(Math.ceil(response.data.allJobPostsNumbers / 30));
+        setAllJobPostsNum(response.data.allJobPostsNumbers);
       }
     } catch (error) {
       console.error("Error fetching job posts:", error);
@@ -220,6 +228,21 @@ const JobLists = () => {
     setMunicipalitiesModal(false);
   };
 
+  const handleOnChangePage = (p) => {
+    setPage(p);
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters, page: p };
+
+      // Navigate only after state update
+      navigate(
+        `/${path}/search?filters=${encodeURIComponent(
+          JSON.stringify(updatedFilters)
+        )}`
+      );
+      return updatedFilters;
+    });
+  };
+
   const handleEmploymentTypeChange = (employmentTypeValue) => {
     setEmploymentType(
       (prev) =>
@@ -246,11 +269,13 @@ const JobLists = () => {
       monthlySalary: monthlySalary,
       hourlySalary: hourlySalary,
       feature: feature,
+      page: page,
     };
 
     setUpdatedFilters(newFilters);
     setFilters(newFilters);
-  }, [pref, muni]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pref, muni, page]);
 
   useEffect(() => {
     const newFilters = {
@@ -260,6 +285,7 @@ const JobLists = () => {
       monthlySalary: monthlySalary,
       hourlySalary: hourlySalary,
       feature: feature,
+      page: page,
     };
 
     setUpdatedFilters(newFilters);
@@ -285,6 +311,8 @@ const JobLists = () => {
         ? JSON.parse(decodeURIComponent(params.get("filters")))
         : {
             pref: "",
+            muni: "",
+            page: 1,
             employmentType: [],
             hourlySalary: "",
             monthlySalary: "",
@@ -295,6 +323,7 @@ const JobLists = () => {
       setUpdatedFilters(savedFilters);
       setPref(savedFilters?.pref);
       setMuni(savedFilters?.muni);
+      setPage(savedFilters?.page);
       setEmploymentType(savedFilters?.employmentType);
       setFeature(savedFilters?.feature);
       setHourlySalary(savedFilters?.hourlySalary);
@@ -302,6 +331,8 @@ const JobLists = () => {
 
       const isEmptyFilters =
         savedFilters.pref === "" &&
+        savedFilters.muni === "" &&
+        savedFilters.page === 1 &&
         savedFilters.employmentType.length === 0 &&
         savedFilters.hourlySalary === "" &&
         savedFilters.monthlySalary === "" &&
@@ -355,7 +386,7 @@ const JobLists = () => {
                     該当件数
                   </p>
                   <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">
-                    {jobPosts?.length}
+                    {allJobPostsNum}
                   </p>
                   <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
                     件
@@ -622,6 +653,11 @@ const JobLists = () => {
                   className="w-4"
                 />
               </div>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={handleOnChangePage}
+              />
               <p className="lg:text-[1rem] md:text-[0.8rem] text-[#343434] text-center mt-2">
                 ご希望の条件の求人が登録されたときに、いち早くお知らせします。
               </p>
