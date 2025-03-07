@@ -12,10 +12,11 @@ import {
   Municipalities,
   Prefectures,
 } from "../../../utils/constants/categories";
-import axios from "axios";
+import axios, { all } from "axios";
 import { useAuth } from "../../../context/AuthContext";
 import Loading from "../../../components/Loading";
 import BreadCrumb from "../../../components/BreadCrumb";
+import Pagination from "../../../components/Pagination";
 
 const JobLists = () => {
   const { user } = useAuth();
@@ -26,11 +27,14 @@ const JobLists = () => {
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
   const [feature, setFeature] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState();
   const [prefectureModalOpen, setPrefectureModalOpen] = useState(false);
   const [municipalitiesModal, setMunicipalitiesModal] = useState(false);
   const [employmentTypeModalOpen, setEmploymentTypeModalOpen] = useState(false);
   const [featureModalOpen, setFeatureModalOpen] = useState(false);
   const [jobPosts, setJobPosts] = useState([]);
+  const [allJobPostsNum, setAllJobPostsNum] = useState(0);
   const [likes, setLikes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState({
@@ -40,6 +44,7 @@ const JobLists = () => {
     monthlySalary: "",
     hourlySalary: "",
     feature: [],
+    page: 1,
   });
   const [updatedFilters, setUpdatedFilters] = useState({
     pref: "",
@@ -48,6 +53,7 @@ const JobLists = () => {
     monthlySalary: "",
     hourlySalary: "",
     feature: [],
+    page: 1,
   });
   const navigate = useNavigate();
 
@@ -143,6 +149,8 @@ const JobLists = () => {
         setJobPosts([]); // Set empty array if response is not valid
       } else {
         setJobPosts(response.data.jobposts);
+        setTotalPages(Math.ceil(response.data.allJobPostsNumbers / 30));
+        setAllJobPostsNum(response.data.allJobPostsNumbers);
       }
     } catch (error) {
       console.error("Error fetching job posts:", error);
@@ -220,6 +228,21 @@ const JobLists = () => {
     setMunicipalitiesModal(false);
   };
 
+  const handleOnChangePage = (p) => {
+    setPage(p);
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters, page: p };
+
+      // Navigate only after state update
+      navigate(
+        `/${path}/search?filters=${encodeURIComponent(
+          JSON.stringify(updatedFilters)
+        )}`
+      );
+      return updatedFilters;
+    });
+  };
+
   const handleEmploymentTypeChange = (employmentTypeValue) => {
     setEmploymentType(
       (prev) =>
@@ -246,11 +269,13 @@ const JobLists = () => {
       monthlySalary: monthlySalary,
       hourlySalary: hourlySalary,
       feature: feature,
+      page: page,
     };
 
     setUpdatedFilters(newFilters);
     setFilters(newFilters);
-  }, [pref, muni]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pref, muni, page]);
 
   useEffect(() => {
     const newFilters = {
@@ -260,6 +285,7 @@ const JobLists = () => {
       monthlySalary: monthlySalary,
       hourlySalary: hourlySalary,
       feature: feature,
+      page: page,
     };
 
     setUpdatedFilters(newFilters);
@@ -285,6 +311,8 @@ const JobLists = () => {
         ? JSON.parse(decodeURIComponent(params.get("filters")))
         : {
             pref: "",
+            muni: "",
+            page: 1,
             employmentType: [],
             hourlySalary: "",
             monthlySalary: "",
@@ -295,6 +323,7 @@ const JobLists = () => {
       setUpdatedFilters(savedFilters);
       setPref(savedFilters?.pref);
       setMuni(savedFilters?.muni);
+      setPage(savedFilters?.page);
       setEmploymentType(savedFilters?.employmentType);
       setFeature(savedFilters?.feature);
       setHourlySalary(savedFilters?.hourlySalary);
@@ -302,6 +331,8 @@ const JobLists = () => {
 
       const isEmptyFilters =
         savedFilters.pref === "" &&
+        savedFilters.muni === "" &&
+        savedFilters.page === 1 &&
         savedFilters.employmentType.length === 0 &&
         savedFilters.hourlySalary === "" &&
         savedFilters.monthlySalary === "" &&
@@ -355,7 +386,7 @@ const JobLists = () => {
                     該当件数
                   </p>
                   <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">
-                    {jobPosts?.length}
+                    {allJobPostsNum}
                   </p>
                   <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
                     件
@@ -597,31 +628,11 @@ const JobLists = () => {
               })}
             </div>
             <div className="flex flex-col bg-white rounded-lg px-4 py-2 w-full mt-8 shadow-xl">
-              <div className="flex items-center justify-center w-full gap-20 mt-8">
-                <img
-                  src="/assets/images/dashboard/ep_arrow-left.png"
-                  alt="eye"
-                  className="w-4"
-                />
-                <div className="flex items-center justify-between gap-4">
-                  <p className="text-black text-[1rem] font-bold number">1</p>
-                  <p className="text-[#999999] text-[1rem] font-bold number">
-                    2
-                  </p>
-                  <p className="text-[#999999] text-[1rem] font-bold number">
-                    3
-                  </p>
-                  <p className="text-[#999999] text-sm font-bold number">...</p>
-                  <p className="text-[#999999] text-[1rem] font-bold number">
-                    100
-                  </p>
-                </div>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="eye"
-                  className="w-4"
-                />
-              </div>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={handleOnChangePage}
+              />
               <p className="lg:text-[1rem] md:text-[0.8rem] text-[#343434] text-center mt-2">
                 ご希望の条件の求人が登録されたときに、いち早くお知らせします。
               </p>
@@ -645,53 +656,7 @@ const JobLists = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-start w-full mt-8">
-              <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                介護職/ヘルパーの特集から探す
-              </p>
-            </div>
-            <div className="flex flex-col bg-white rounded-lg px-8 py-4 w-full mt-8 shadow-xl">
-              <div className="flex items-center justify-between w-full">
-                <p className="lg:text-[1rem] md:text-[0.8rem] font-bold">
-                  特集ダミーテキストダミーテキストダミーテキストの求人
-                </p>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </div>
-              <div className="flex items-center justify-between w-full mt-4">
-                <p className="text-[1rem] font-bold">
-                  特集ダミーテキストダミーテキストダミーテキストの求人
-                </p>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </div>
-              <div className="flex items-center justify-between w-full mt-4">
-                <p className="lg:text-[1rem] md:text-[0.8rem] font-bold">
-                  特集ダミーテキストダミーテキストダミーテキストの求人
-                </p>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </div>
-              <div className="flex items-center justify-between w-full mt-4">
-                <p className="lg:text-[1rem] md:text-[0.8rem] font-bold">
-                  特集ダミーテキストダミーテキストダミーテキストの求人
-                </p>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </div>
-            </div>
+
             <div className="flex items-center justify-start w-full mt-8">
               <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                 介護職/ヘルパーについて
