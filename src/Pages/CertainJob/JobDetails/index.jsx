@@ -384,7 +384,7 @@ const JobDetails = () => {
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                施設・サービス形態・診療科目
+                施設
               </p>
               <div className="flex flex-col items-start justify-start w-4/5">
                 <Link
@@ -393,9 +393,6 @@ const JobDetails = () => {
                 >
                   {jobPost?.facility_id.facility_genre}
                 </Link>
-                <div className="inline-block items-start justify-start gap-2 mt-2">
-                  {jobPost?.facility_id.service_type.join("、")}
-                </div>
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">

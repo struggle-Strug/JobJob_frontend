@@ -628,31 +628,6 @@ const JobLists = () => {
               })}
             </div>
             <div className="flex flex-col bg-white rounded-lg px-4 py-2 w-full mt-8 shadow-xl">
-              <div className="flex items-center justify-center w-full gap-20 mt-8">
-                <img
-                  src="/assets/images/dashboard/ep_arrow-left.png"
-                  alt="eye"
-                  className="w-4"
-                />
-                <div className="flex items-center justify-between gap-4">
-                  <p className="text-black text-[1rem] font-bold number">1</p>
-                  <p className="text-[#999999] text-[1rem] font-bold number">
-                    2
-                  </p>
-                  <p className="text-[#999999] text-[1rem] font-bold number">
-                    3
-                  </p>
-                  <p className="text-[#999999] text-sm font-bold number">...</p>
-                  <p className="text-[#999999] text-[1rem] font-bold number">
-                    100
-                  </p>
-                </div>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="eye"
-                  className="w-4"
-                />
-              </div>
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}
@@ -681,53 +656,7 @@ const JobLists = () => {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-start w-full mt-8">
-              <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                介護職/ヘルパーの特集から探す
-              </p>
-            </div>
-            <div className="flex flex-col bg-white rounded-lg px-8 py-4 w-full mt-8 shadow-xl">
-              <div className="flex items-center justify-between w-full">
-                <p className="lg:text-[1rem] md:text-[0.8rem] font-bold">
-                  特集ダミーテキストダミーテキストダミーテキストの求人
-                </p>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </div>
-              <div className="flex items-center justify-between w-full mt-4">
-                <p className="text-[1rem] font-bold">
-                  特集ダミーテキストダミーテキストダミーテキストの求人
-                </p>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </div>
-              <div className="flex items-center justify-between w-full mt-4">
-                <p className="lg:text-[1rem] md:text-[0.8rem] font-bold">
-                  特集ダミーテキストダミーテキストダミーテキストの求人
-                </p>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </div>
-              <div className="flex items-center justify-between w-full mt-4">
-                <p className="lg:text-[1rem] md:text-[0.8rem] font-bold">
-                  特集ダミーテキストダミーテキストダミーテキストの求人
-                </p>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-right"
-                  className="w-4 pt-0.5"
-                />
-              </div>
-            </div>
+
             <div className="flex items-center justify-start w-full mt-8">
               <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                 介護職/ヘルパーについて
