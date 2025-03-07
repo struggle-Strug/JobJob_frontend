@@ -6,3 +6,4 @@ export * from "./prefectures";
 export * from "./facilities";
 export * from "./paysystems";
 export * from "./municipalities";
+export * from "./descriptions";

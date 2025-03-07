@@ -7,6 +7,7 @@ import {
 } from "../../../utils/getFunctions";
 import { useEffect, useState } from "react";
 import {
+  Descriptions,
   EmploymentType,
   Features,
   Municipalities,
@@ -659,15 +660,13 @@ const JobLists = () => {
 
             <div className="flex items-center justify-start w-full mt-8">
               <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                介護職/ヘルパーについて
+                {JobType}について
               </p>
             </div>
             <div className="flex flex-col bg-white rounded-lg px-12 py-6 w-full mt-8 shadow-xl">
-              <p className="lg:text-[1rem] md:text-[0.8rem]">
-                あのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。
-                またそのなかでいっしょになったたくさんのひとたち、ファゼーロとロザーあのイーハトーヴォのすきとおった風、夏でも底に冷たさをもつ青いそら、うつくしい森で飾られたモリーオ市、郊外のぎらぎらひかる草の波。
-                またそのなかでいっしょになったたくさんのひとたち、ファゼーロとロザー
-              </p>
+              <pre className="lg:text-[1rem] md:text-[0.8rem]">
+                {Descriptions[JobType]}
+              </pre>
             </div>
           </div>
           <div className="flex h-full w-1/3">
