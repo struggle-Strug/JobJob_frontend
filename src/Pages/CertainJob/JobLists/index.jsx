@@ -813,30 +813,6 @@ const JobLists = () => {
                   </div>
                 </>
               )}
-              <div className="flex items-center justify-start w-full mt-8">
-                <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                  LINEでお問い合わせOK
-                </p>
-              </div>
-              <div className="flex flex-col items-center bg-white rounded-lg px-6 py-6 w-full mt-8 shadow-xl">
-                <img
-                  src="/assets/images/dashboard/Rectangle 11.png"
-                  alt="line"
-                  className="w-full"
-                />
-              </div>
-              <div className="flex items-center justify-start w-full mt-8">
-                <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                  JobJob公式SNS
-                </p>
-              </div>
-              <div className="flex flex-col items-center bg-white rounded-lg px-6 py-6 w-full mt-8 shadow-xl">
-                <img
-                  src="/assets/images/dashboard/Rectangle 11.png"
-                  alt="line"
-                  className="w-full"
-                />
-              </div>
             </div>
           </div>
         </div>
