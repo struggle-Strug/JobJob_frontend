@@ -118,7 +118,7 @@ const JobLists = () => {
       <div className="flex flex-wrap w-full px-2 lg:px-4">
         <p className="text-lg text-[#343434] font-bold">{prefecture}</p>
         <div className=" border-t-[1px] border-[#bdbdbd] mt-4">
-          {Municipalities[prefecture].map((muni, index) => (
+          {Municipalities[prefecture]?.map((muni, index) => (
             <button
               key={index}
               className="lg:w-1/4 sm:w-1/2 text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] text-center py-1 lg:py-[0.5rem] duration-300"
@@ -813,30 +813,6 @@ const JobLists = () => {
                   </div>
                 </>
               )}
-              <div className="flex items-center justify-start w-full mt-8">
-                <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                  LINEでお問い合わせOK
-                </p>
-              </div>
-              <div className="flex flex-col items-center bg-white rounded-lg px-6 py-6 w-full mt-8 shadow-xl">
-                <img
-                  src="/assets/images/dashboard/Rectangle 11.png"
-                  alt="line"
-                  className="w-full"
-                />
-              </div>
-              <div className="flex items-center justify-start w-full mt-8">
-                <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                  JobJob公式SNS
-                </p>
-              </div>
-              <div className="flex flex-col items-center bg-white rounded-lg px-6 py-6 w-full mt-8 shadow-xl">
-                <img
-                  src="/assets/images/dashboard/Rectangle 11.png"
-                  alt="line"
-                  className="w-full"
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -1017,7 +993,7 @@ const JobLists = () => {
           className="modal"
         >
           <div className="w-full py-3 gap-4 px-4">
-            {renderMunicipalitiesSection("大阪府")}
+            {renderMunicipalitiesSection(getPrefectureKeyByValue(pref))}
           </div>
         </Modal>
       }

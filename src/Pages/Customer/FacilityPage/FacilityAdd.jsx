@@ -176,7 +176,8 @@ const FacilityAdd = () => {
       return message.error("郵便番号を入力してください。");
     if (facilityPrefecture === "")
       return message.error("都道府県を選択してください。");
-    // if (facilityCity === "") return message.error("市区町村を入力してください。");
+    if (facilityCity === "")
+      return message.error("市区町村を入力してください。");
     if (facilityVillage === "")
       return message.error("町名・番地を入力してください。");
     if (facilityBuilding === "")
@@ -199,6 +200,8 @@ const FacilityAdd = () => {
       service_time: facilityServiceTime,
       rest_day: facilityRestDay,
     };
+
+    console.log(facilityData);
 
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/v1/facility`,
