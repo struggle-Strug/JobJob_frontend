@@ -330,7 +330,7 @@ const JobPostEdit = () => {
 
   const handleRequestAllow = async () => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/pending/${jobPostId}`
+      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}/allowed`
     );
     if (response.data.error) message.error(response.data.error);
     setSuccessModalOpen(true);

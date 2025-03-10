@@ -171,6 +171,7 @@ const FacilityEdit = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}`
       );
+
       setFacility(response.data.facility);
       setFacilityName(response.data.facility.name);
       setFacilityPostalCode(response.data.facility.postal_code);
@@ -180,8 +181,7 @@ const FacilityEdit = () => {
       setFacilityBuilding(response.data.facility.building);
       setFacilityPhotoUrl(response.data.facility.photo);
       setFacilityIntroduction(response.data.facility.introduction);
-      setFacilityJobTypeDetail(response.data.facility.job_type[0]);
-      setFacilityAccess(response.data.facility.access);
+      setFacilityAccess(response.data.facility.access[0]);
       setFacilityAccessText(response.data.facility.access_text);
       setFacilityGenre(response.data.facility.facility_genre);
       setFacilityEstablishmentDateYear(
