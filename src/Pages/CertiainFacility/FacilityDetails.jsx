@@ -169,7 +169,7 @@ const FacilityDetails = () => {
                 </div>
               );
             })}
-            <div className="flex flex-col bg-white px-4 rounded-lg mt-8">
+            <div className="flex flex-col bg-white px-4 rounded-lg mt-8 w-full">
               <p className="lg:text-lg font-bold text-sm text-[#343434] border-b-[1px] py-6 border-[#e7e7e7]">
                 事業所情報
               </p>
@@ -271,7 +271,7 @@ const FacilityDetails = () => {
               </div>
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                  施設・サービス形態・診療科目
+                  施設
                 </p>
                 <div className="flex flex-col items-start justify-start w-4/5">
                   <Link

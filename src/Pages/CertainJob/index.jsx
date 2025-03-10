@@ -3,10 +3,12 @@ import {
   getEmploymentTypeKeyByValue,
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
+  getJobValueByKey,
 } from "../../utils/getFunctions";
 import {
   Descriptions,
   EmploymentType,
+  Facilities,
   Features,
   Prefectures,
   JobType as jobType,
@@ -66,6 +68,30 @@ const CertainJob = () => {
     { value: "4000", label: "4000" },
     { value: "5000", label: "5000" },
   ];
+
+  const renderMeshLink01 = (jobType) => {
+    return Object.keys(Facilities).map((facility, index) => {
+      return (
+        <Link
+          key={index} // Add a unique key when mapping
+          to={`/${getJobValueByKey(jobType)}/${Facilities[facility]}`}
+          className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
+        >
+          <p className="py-1">
+            {facility}の{jobType}
+            <span className="text-[#343434] text-xs">(123)</span>
+          </p>
+          <div className="flex items-center">
+            <img
+              src={"/assets/images/companytop/ep_arrow-right_red.png"}
+              alt="arrow"
+              className="duration-300 w-4"
+            />
+          </div>
+        </Link>
+      );
+    });
+  };
 
   const handleSearch = () => {
     const url = `/${path}/search?filters=${encodeURIComponent(
@@ -422,13 +448,30 @@ const CertainJob = () => {
               </div>
             )}
           </section>
-          <div className="flex flex-col container bg-white rounded-lg px-12 py-6 w-full mt-8 shadow-xl">
-            <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-              {JobType}について
-            </p>
-            <pre className="lg:text-[1rem] md:text-[0.8rem] mt-4">
-              {Descriptions[JobType]}
-            </pre>
+          <div className="flex container w-full">
+            <div className="flex flex-col w-2/3">
+              <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+                <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                  {JobType}について
+                </p>
+                <pre className="lg:text-[1rem] md:text-[0.8rem] mt-4">
+                  {Descriptions[JobType]}
+                </pre>
+              </div>
+              <div className="flex flex-col gap-2 rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+                <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                  施設形態から{JobType}の求人を探す
+                </p>
+                <div className="flex flex-col mt-4 border-t-[1px] border-[#e7e7e7]">
+                  {renderMeshLink01(JobType)}
+                </div>
+              </div>
+              <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+                <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                  {JobType}について
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}
