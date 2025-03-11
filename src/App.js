@@ -8,11 +8,11 @@ import {
   getAllJobTypeValues,
   getAllPrefectureValues,
 } from "./utils/getFunctions";
-import FacilityDetails from "./Pages/CertiainFacility/FacilityDetails";
 
 // Lazy load components
 const Register = lazy(() => import("./Pages/Auth/Register"));
 const Login = lazy(() => import("./Pages/Auth/Login"));
+const ForgotPassword = lazy(() => import("./Pages/Auth/ForgotPassword"));
 const MyPageLayout = lazy(() => import("./components/MyPageLayout"));
 const MyPage = lazy(() => import("./Pages/MemberProfile/MyPage"));
 const Profile = lazy(() => import("./Pages/MemberProfile/Profile"));
@@ -77,6 +77,9 @@ const CoporateManagement = lazy(() =>
 const CertainFacility = lazy(() => import("./Pages/CertiainFacility"));
 const FacilityAdd = lazy(() =>
   import("./Pages/Customer/FacilityPage/FacilityAdd")
+);
+const FacilityDetails = lazy(() =>
+  import("./Pages/CertiainFacility/FacilityDetails")
 );
 
 function App() {
@@ -178,6 +181,7 @@ function App() {
         )}
         <Route element={<CSLayout />}>
           <Route path="/" element={<Top />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/members/sign_up" element={<Register />} />
           <Route path="/members/sign_in" element={<Login />} />
           <Route path="/:jobtype/details/:id" element={<JobDetails />} />
