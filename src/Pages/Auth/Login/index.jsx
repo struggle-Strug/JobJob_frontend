@@ -87,6 +87,12 @@ const Login = () => {
                 </div>
               </div>
             </div>
+            <Link
+              to={"/forgot-password"}
+              className="text-[#FF2A3B] mt-4 px-2 lg:text-base text-xs hover:underline duration-300"
+            >
+              パスワードを忘れた方はこちら
+            </Link>
           </div>
           {errorMessage && <p className="text-red-500 pt-4">{errorMessage}</p>}
           <div className="flex items-center justify-start mt-4 gap-4 w-4/5 pl-2">
