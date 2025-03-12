@@ -1,11 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { message } from "antd";
 import { Facilities } from "../../../utils/constants/categories/facilities";
+import Loading from "../../../components/Loading";
 
 const JobDetails = () => {
   const [jobPost, setJobPost] = useState(null);
   const [allFacilityJobPosts, setAllFacilityJobPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { pathname } = useLocation();
   const job_type = pathname.split("/")[1];
   const jobpost_id = pathname.split("/")[3];
@@ -18,12 +21,21 @@ const JobDetails = () => {
   };
 
   const getFacilityJobPosts = async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/facility/${jobPost?.facility_id.facility_id}`
-    );
-    setAllFacilityJobPosts(
-      response.data.jobposts.filter((jobpost) => jobpost.allowed === "allowed")
-    );
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/facility/${jobPost?.facility_id.facility_id}`
+      );
+      setAllFacilityJobPosts(
+        response.data.jobposts.filter(
+          (jobpost) => jobpost.allowed === "allowed"
+        )
+      );
+    } catch {
+      message.error("エラーが発生しました");
+    } finally {
+      setLoading(false);
+    }
   };
   useEffect(() => {
     if (jobPost?.facility_id) {
@@ -54,6 +66,13 @@ const JobDetails = () => {
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [jobPost?.jobpost_id]); // Re-run when jobPost ID changes
+
+  if (loading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
 
   return (
     <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
