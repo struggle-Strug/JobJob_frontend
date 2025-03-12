@@ -40,7 +40,9 @@ const CustomerSignUp = () => {
       newCustomer
     );
     if (resData.data.error) message.error(resData.data.message);
-    message.success(resData.data.message);
+    message.success(
+      "パスワードのご案内メールを送信しました。メールボックスをご確認ください。"
+    );
     navigate("/customers/sign_in");
   };
 
@@ -61,13 +63,12 @@ const CustomerSignUp = () => {
             求人の掲載をご検討いただきありがとうございます。
           </p>
           <p className="lg:text-base md:text-sn text-xs text-[#343434] mt-4">
-            ジョブジョブは採用するまで無料で利用できます！
+            ジョブジョブは求人掲載から採用まで完全無料でご利用いただけます。
           </p>
           <p className="lg:text-base md:text-sn text-xs text-[#343434]">
-            掲載料0円、原稿作成料0円、応募課金0円、採用時の単価は40,000円~となります。
-          </p>
-          <p className="lg:text-base md:text-sn text-xs text-[#343434]">
-            採用単価は経験年数や年収で左右されることはありません！
+            掲載期間も無制限となっておりますので、じっくりと最適な人材を探すことができますので、
+            <br />
+            ぜひ御社の採用活動にお役立てください。
           </p>
           <p className="lg:text-base md:text-sn text-xs text-[#343434] mt-4">
             ご利用の流れは以下をご覧ください。
@@ -94,7 +95,7 @@ const CustomerSignUp = () => {
               2.
             </p>
             <p className="lg:text-base md:text-sm text-xs mt-4">
-              ジョブジョブ運営事務局に よるお申し込み内容の確認・ 審査(最短即日)
+              アカウントの発行
             </p>
           </div>
           <img
@@ -255,13 +256,6 @@ const CustomerSignUp = () => {
             className="lg:text-base md:text-sm text-xs text-blue-500 flex items-center gap-1 hover:underline"
           >
             利用規約はこちら
-            <GoLink className="text-blue-500" />
-          </Link>
-          <Link
-            to={"#"}
-            className="lg:text-base md:text-sm text-xs text-blue-500 flex items-center gap-1 hover:underline"
-          >
-            外部送信ポリシー
             <GoLink className="text-blue-500" />
           </Link>
         </div>

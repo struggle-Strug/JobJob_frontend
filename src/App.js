@@ -58,6 +58,7 @@ const ProcessManagementPage = lazy(() =>
   import("./Pages/Customer/ProcessManagementPage")
 );
 const PhotoManagement = lazy(() => import("./Pages/Customer/PhotoManagement"));
+const CLMessage = lazy(() => import("./Pages/Customer/Message"));
 const CustomerSetting = lazy(() =>
   import("./Pages/Customer/CustomerSettingPage")
 );
@@ -136,9 +137,9 @@ function App() {
         <Route path="/company" element={<CompanyLandingPage />} />
         <Route path="/customers/new" element={<CustomerSignUp />} />
         <Route path="/customers/sign_in" element={<CustomerSignIn />} />
+        <Route path="/customers/rule" element={<Rule />} />
         {token && (customer || admin) ? (
           <Route element={<CLLayout />}>
-            <Route path="/customers/rule" element={<Rule />} />
             <Route path="/customers" element={<CLMainLayout />}>
               <Route path="/customers" element={<CLTop />} />
               <Route path="/customers/facility/add" element={<FacilityAdd />} />
@@ -156,6 +157,7 @@ function App() {
                 element={<ProcessManagementPage />}
               />
               <Route path="/customers/picture/" element={<PhotoManagement />} />
+              <Route path="/customers/message" element={<CLMessage />} />
               <Route
                 path="/customers/settings/"
                 element={<CustomerSetting />}

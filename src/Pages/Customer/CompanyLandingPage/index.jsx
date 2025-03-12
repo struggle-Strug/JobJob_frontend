@@ -376,11 +376,11 @@ const CompanyLandingPage = () => {
               さまざまな機能でサポートいたします。
             </p>
           </div>
-          <img
+          {/* <img
             src="/assets/images/companytop/image 7.png"
             alt=""
             className="w-3/5 mt-4"
-          />
+          /> */}
           <div className="flex flex-col justify-center gap-4 max-w-[1000px] mx-auto mt-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
@@ -672,7 +672,7 @@ const CompanyLandingPage = () => {
       </section>
       <section className="bg-[#343434] w-full h-20 flex items-center px-4">
         <div className="max-w-[1000px] mx-auto flex items-center justify-start w-full gap-4">
-          <Link to={"/company"}>
+          <Link to={"/"}>
             <img
               src="/assets/images/companytop/logo_negative_horizontal00 1.png"
               alt="logo"
@@ -680,7 +680,7 @@ const CompanyLandingPage = () => {
             />
           </Link>
           <Link
-            to={"/customer/sign_in"}
+            to={"/customers/rule"}
             className="text-white text-sm hover:text-[#7a7a7a] duration-200"
           >
             利用規約

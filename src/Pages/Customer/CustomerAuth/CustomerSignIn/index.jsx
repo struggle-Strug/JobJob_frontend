@@ -17,8 +17,9 @@ const CustomerSignIn = () => {
   const token = queryParams.get("token");
 
   const handleSubmit = async (e) => {
-    // if(email === "") return message.error("メールアドレスを入力してください。");
-    // if(password === "") return message.error("パスワードを入力してください。");
+    if (email === "")
+      return message.error("メールアドレスを入力してください。");
+    if (password === "") return message.error("パスワードを入力してください。");
     e.preventDefault();
     const signInData = {
       email: email,
@@ -72,9 +73,6 @@ const CustomerSignIn = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <p className="lg:text-base md:text-sm text-xs text-[#FF2A3B] text-right hover:underline cursor-pointer px-8 mt-2">
-          パスワードを設定していない、またはお忘れの方はこちら
-        </p>
         <div className="flex items-center justify-center px-8 py-4 mt-4">
           <button
             className="bg-red-600 hover:bg-red-200 text-white hover:text-red-500 rounded-sm lg:text-lg md:text-base text-sm lg:px-12 md:px-8 px-4 py-2 duration-300"
