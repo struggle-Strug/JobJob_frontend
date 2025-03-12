@@ -83,13 +83,10 @@ const CustomerSignIn = () => {
         </div>
         <div className="text-center mt-4">
           <p className="lg:text-base md:text-sm text-xs text-[#343434] pt-4">
-            メールアドレスをお忘れの場合やログインができない場合は、
+            パスワードがわからない場合やログインができない場合は、
           </p>
           <p className="lg:text-base md:text-sm text-xs text-[#343434]">
-            support@job-medley.com または 0570-666-571 ※9:00-18:00（土日祝除く）
-          </p>
-          <p className="lg:text-base md:text-sm text-xs text-[#343434] pb-4">
-            までお問い合わせください。
+            support@jobjob-jp.com までお問い合わせください。
           </p>
         </div>
       </div>

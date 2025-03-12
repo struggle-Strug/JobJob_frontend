@@ -437,16 +437,16 @@ const FacilityEdit = () => {
             className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
             onClick={handleSave}
           >
-            下書き保存
+            保存
           </button>
-          {facility?.allowed === "draft" && (
+          {/* {facility?.allowed === "draft" && (
             <button
               className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
               onClick={handleRequestAllow}
             >
               掲載を申請する
             </button>
-          )}
+          )} */}
           {facility?.allowed === "pending" && (
             <button
               className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
