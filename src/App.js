@@ -58,6 +58,7 @@ const ProcessManagementPage = lazy(() =>
   import("./Pages/Customer/ProcessManagementPage")
 );
 const PhotoManagement = lazy(() => import("./Pages/Customer/PhotoManagement"));
+const CLMessage = lazy(() => import("./Pages/Customer/Message"));
 const CustomerSetting = lazy(() =>
   import("./Pages/Customer/CustomerSettingPage")
 );
@@ -156,6 +157,7 @@ function App() {
                 element={<ProcessManagementPage />}
               />
               <Route path="/customers/picture/" element={<PhotoManagement />} />
+              <Route path="/customers/message" element={<CLMessage />} />
               <Route
                 path="/customers/settings/"
                 element={<CustomerSetting />}
