@@ -39,7 +39,7 @@ const CustomerSignUp = () => {
       `${process.env.REACT_APP_API_URL}/api/v1/customers/signup`,
       newCustomer
     );
-    if (resData.data.error) message.error(resData.data.message);
+    if (resData.data.error) return message.error(resData.data.message);
     message.success(
       "パスワードのご案内メールを送信しました。メールボックスをご確認ください。"
     );
