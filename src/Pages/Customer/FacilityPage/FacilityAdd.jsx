@@ -201,8 +201,6 @@ const FacilityAdd = () => {
       rest_day: facilityRestDay,
     };
 
-    console.log(facilityData);
-
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/v1/facility`,
       facilityData
@@ -328,7 +326,7 @@ const FacilityAdd = () => {
         />
       </div>
       <div className="flex items-start mt-4">
-        <p className="lg:text-sm text-xs w-1/5">アクセス(住所)</p>
+        <p className="lg:text-sm text-xs w-1/5">アクセス（補足）</p>
         <Input
           value={facilityAccessText}
           onChange={(e) => setFacilityAccessText(e.target.value)}
