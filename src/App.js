@@ -137,9 +137,9 @@ function App() {
         <Route path="/company" element={<CompanyLandingPage />} />
         <Route path="/customers/new" element={<CustomerSignUp />} />
         <Route path="/customers/sign_in" element={<CustomerSignIn />} />
+        <Route path="/customers/rule" element={<Rule />} />
         {token && (customer || admin) ? (
           <Route element={<CLLayout />}>
-            <Route path="/customers/rule" element={<Rule />} />
             <Route path="/customers" element={<CLMainLayout />}>
               <Route path="/customers" element={<CLTop />} />
               <Route path="/customers/facility/add" element={<FacilityAdd />} />
