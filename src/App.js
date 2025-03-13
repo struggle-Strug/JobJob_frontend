@@ -40,7 +40,7 @@ const CustomerSignIn = lazy(() =>
 );
 const Setting = lazy(() => import("./Pages/MemberProfile/Setting"));
 const NotFound = lazy(() => import("./Pages/NotFound"));
-const Rule = lazy(() => import("./Pages/Customer/CustomerRule"));
+const Rule = lazy(() => import("./Pages/Rule"));
 const CLMainLayout = lazy(() => import("./components/CLMainLayout"));
 const CLTop = lazy(() => import("./Pages/Customer/TopPage"));
 const FacilityPage = lazy(() => import("./Pages/Customer/FacilityPage"));
@@ -140,7 +140,7 @@ function App() {
         <Route path="/company" element={<CompanyLandingPage />} />
         <Route path="/customers/new" element={<CustomerSignUp />} />
         <Route path="/customers/sign_in" element={<CustomerSignIn />} />
-        <Route path="/customers/rule" element={<Rule />} />
+        <Route path="/rule" element={<Rule />} />
         {token && (customer || admin) ? (
           <Route element={<CLLayout />}>
             <Route path="/customers" element={<CLMainLayout />}>
