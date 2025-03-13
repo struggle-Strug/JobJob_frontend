@@ -105,14 +105,9 @@ const CLMainLayout = () => {
             </p>
           </Link>
           <img
-            src="/assets/images/dashboard/Group 16.png"
+            src="/assets/images/CLTop/リンク掲載のお願い.jpg"
             alt="banner"
-            className="w-full mt-8"
-          />
-          <img
-            src="/assets/images/dashboard/Group 16.png"
-            alt="banner"
-            className="w-full mt-8"
+            className="mt-8"
           />
         </div>
         <div className="flex h-full w-5/6">
