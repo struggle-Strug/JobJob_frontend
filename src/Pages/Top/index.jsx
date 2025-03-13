@@ -5,8 +5,24 @@ import { MdWheelchairPickup } from "react-icons/md";
 import { FaHandsHoldingChild, FaChildReaching } from "react-icons/fa6";
 import { GiHairStrands } from "react-icons/gi";
 import { MdOutlineKey } from "react-icons/md";
+import axios from "axios";
+import { message } from "antd";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const Top = () => {
+  const [jobTypeNumbers, setJobTypeNumbers] = useState([]);
+  const getJobTypeNumbers = async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/number`
+    );
+    if (response.data.error) return message.error(response.data.message);
+    setJobTypeNumbers(response.data.JobPostsNumbers);
+  };
+
+  useEffect(() => {
+    getJobTypeNumbers();
+  }, []);
   return (
     <>
       <div className="bg-[#EFEFEF]">
@@ -79,7 +95,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    医師<span className="text-[#343434] text-xs">(123)</span>
+                    医師
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.医師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -94,7 +113,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    薬剤師<span className="text-[#343434] text-xs">(123)</span>
+                    薬剤師
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.薬剤師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -110,7 +132,9 @@ const Top = () => {
                 >
                   <p>
                     看護師/准看護師
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["看護師/准看護師"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -125,7 +149,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    助産師<span className="text-[#343434] text-xs">(123)</span>
+                    助産師
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.助産師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -142,7 +169,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    保健師<span className="text-[#343434] text-xs">(123)</span>
+                    保健師
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.保健師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -158,7 +188,9 @@ const Top = () => {
                 >
                   <p>
                     看護助手
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.看護助手})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -174,7 +206,9 @@ const Top = () => {
                 >
                   <p>
                     看護師/准看護師
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["看護師/准看護師"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -190,7 +224,9 @@ const Top = () => {
                 >
                   <p>
                     診療放射線技師
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.診療放射線技師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -208,7 +244,9 @@ const Top = () => {
                 >
                   <p>
                     臨床検査技師
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.臨床検査技師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -224,7 +262,9 @@ const Top = () => {
                 >
                   <p>
                     管理栄養士/栄養士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["管理栄養士/栄養士"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -240,7 +280,9 @@ const Top = () => {
                 >
                   <p>
                     公認心理師/臨床心理士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["公認心理師/臨床心理士"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -256,7 +298,9 @@ const Top = () => {
                 >
                   <p>
                     医療ソーシャルワーカー
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.医療ソーシャルワーカー})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -274,7 +318,9 @@ const Top = () => {
                 >
                   <p>
                     登録販売者
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.登録販売者})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -290,7 +336,9 @@ const Top = () => {
                 >
                   <p>
                     医療事務/受付
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["医療事務/受付"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -306,7 +354,9 @@ const Top = () => {
                 >
                   <p>
                     治験コーディネーター
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.治験コーディネーター})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -322,7 +372,9 @@ const Top = () => {
                 >
                   <p>
                     営業/管理部門/その他
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["営業/管理部門/その他"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -340,7 +392,9 @@ const Top = () => {
                 >
                   <p>
                     調剤事務
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.調剤事務})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -356,7 +410,9 @@ const Top = () => {
                 >
                   <p>
                     臨床開発モニター
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.臨床開発モニター})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -371,7 +427,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    MR<span className="text-[#343434] text-xs">(123)</span>
+                    MR
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.MR})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -387,7 +446,9 @@ const Top = () => {
                 >
                   <p>
                     MS（医薬品卸）
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["MS_医薬品卸"] || 0})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -420,7 +481,9 @@ const Top = () => {
                 >
                   <p>
                     歯科医師
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.歯科医師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -436,7 +499,9 @@ const Top = () => {
                 >
                   <p>
                     歯科衛生士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.歯科衛生士})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -452,7 +517,9 @@ const Top = () => {
                 >
                   <p>
                     歯科技工士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.歯科技工士})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -468,7 +535,9 @@ const Top = () => {
                 >
                   <p>
                     歯科助手
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.歯科助手})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -501,7 +570,9 @@ const Top = () => {
                 >
                   <p>
                     介護職/ヘルパー
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["介護職/ヘルパー"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -517,7 +588,9 @@ const Top = () => {
                 >
                   <p>
                     生活相談員
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.生活相談員})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -533,7 +606,9 @@ const Top = () => {
                 >
                   <p>
                     ケアマネジャー
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.ケアマネジャー})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -549,7 +624,9 @@ const Top = () => {
                 >
                   <p>
                     管理職（介護）
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["管理職_介護"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -567,7 +644,9 @@ const Top = () => {
                 >
                   <p>
                     サービス提供責任者
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.サービス提供責任者})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -583,7 +662,9 @@ const Top = () => {
                 >
                   <p>
                     生活支援員
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.生活支援員})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -599,7 +680,9 @@ const Top = () => {
                 >
                   <p>
                     福祉用具専門相談員
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.福祉用具専門相談員})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -615,7 +698,9 @@ const Top = () => {
                 >
                   <p>
                     児童発達支援管理責任者
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.児童発達支援管理責任者})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -633,7 +718,9 @@ const Top = () => {
                 >
                   <p>
                     サービス管理責任者
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.サービス管理責任者})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -649,7 +736,9 @@ const Top = () => {
                 >
                   <p>
                     児童指導員/指導員
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["児童指導員/指導員"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -665,7 +754,9 @@ const Top = () => {
                 >
                   <p>
                     看護師/准看護師
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["看護師/准看護師"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -681,7 +772,9 @@ const Top = () => {
                 >
                   <p>
                     管理栄養士/栄養士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["管理栄養士/栄養士"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -699,7 +792,9 @@ const Top = () => {
                 >
                   <p>
                     調理師/調理スタッフ
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["調理師/調理スタッフ"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -715,7 +810,9 @@ const Top = () => {
                 >
                   <p>
                     介護タクシー/ドライバー
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["介護タクシー/ドライバー"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -731,7 +828,9 @@ const Top = () => {
                 >
                   <p>
                     医療事務/受付
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["医療事務/受付"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -747,7 +846,9 @@ const Top = () => {
                 >
                   <p>
                     営業/管理部門/その他
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["営業/管理部門/その他"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -765,7 +866,9 @@ const Top = () => {
                 >
                   <p>
                     介護事務
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.介護事務})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -781,7 +884,9 @@ const Top = () => {
                 >
                   <p>
                     相談支援専門員
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.相談支援専門員})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -813,7 +918,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    保育士<span className="text-[#343434] text-xs">(123)</span>
+                    保育士
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.保育士})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -829,7 +937,9 @@ const Top = () => {
                 >
                   <p>
                     幼稚園教諭
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.幼稚園教諭})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -845,7 +955,9 @@ const Top = () => {
                 >
                   <p>
                     保育補助
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.保育補助})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -861,7 +973,9 @@ const Top = () => {
                 >
                   <p>
                     児童指導員/指導員
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["児童指導員/指導員"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -879,7 +993,9 @@ const Top = () => {
                 >
                   <p>
                     児童発達支援管理責任者
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.児童発達支援管理責任者})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -895,7 +1011,9 @@ const Top = () => {
                 >
                   <p>
                     看護師/准看護師
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["看護師/准看護師"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -911,7 +1029,9 @@ const Top = () => {
                 >
                   <p>
                     管理栄養士/栄養士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["管理栄養士/栄養士"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -927,7 +1047,9 @@ const Top = () => {
                 >
                   <p>
                     調理師/調理スタッフ
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["調理師/調理スタッフ"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -945,7 +1067,9 @@ const Top = () => {
                 >
                   <p>
                     放課後児童支援員/学童指導員
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["放課後児童支援員/学童指導員"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -978,7 +1102,9 @@ const Top = () => {
                 >
                   <p>
                     理学療法士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.理学療法士})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -994,7 +1120,9 @@ const Top = () => {
                 >
                   <p>
                     言語聴覚士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.言語聴覚士})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1010,7 +1138,9 @@ const Top = () => {
                 >
                   <p>
                     作業療法士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.作業療法士})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1026,7 +1156,9 @@ const Top = () => {
                 >
                   <p>
                     視能訓練士
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.視能訓練士})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1044,7 +1176,9 @@ const Top = () => {
                 >
                   <p>
                     柔道整復師
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.柔道整復師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1060,7 +1194,9 @@ const Top = () => {
                 >
                   <p>
                     あん摩マッサージ指圧師
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.あん摩マッサージ指圧師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1075,7 +1211,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    鍼灸師<span className="text-[#343434] text-xs">(123)</span>
+                    鍼灸師
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.鍼灸師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1090,7 +1229,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    整体師<span className="text-[#343434] text-xs">(123)</span>
+                    整体師
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.整体師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1122,7 +1264,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    美容師<span className="text-[#343434] text-xs">(123)</span>
+                    美容師
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.美容師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1137,7 +1282,10 @@ const Top = () => {
                   className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
                 >
                   <p>
-                    理容師<span className="text-[#343434] text-xs">(123)</span>
+                    理容師
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.理容師})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1153,7 +1301,9 @@ const Top = () => {
                 >
                   <p>
                     ネイリスト
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.ネイリスト})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1169,7 +1319,9 @@ const Top = () => {
                 >
                   <p>
                     アイリスト
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.アイリスト})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1187,7 +1339,9 @@ const Top = () => {
                 >
                   <p>
                     エステティシャン/セラピスト
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.["エステティシャン/セラピスト"]})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1203,7 +1357,9 @@ const Top = () => {
                 >
                   <p>
                     美容部員
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.美容部員})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
@@ -1219,7 +1375,9 @@ const Top = () => {
                 >
                   <p>
                     インストラクター
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.インストラクター})
+                    </span>
                   </p>
                   <div className="flex items-center">
                     <img
