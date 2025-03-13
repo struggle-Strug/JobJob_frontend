@@ -395,7 +395,7 @@ const Rule = () => {
             当社は、お客様やお客様の担当者個人を特定する情報を除き、お客様が登録した情報や本サービスの利用状況に関する情報について、あらゆる態様で二次利用することができるものとします。その際の著作権は当社が保有するものとします。
           </p>
           <h1 className="lg:text-lg md:text-base text-sm font-bold text-[#343434] pt-4">
-            第13条（免責
+            第13条（免責）
           </h1>
           <p className="lg:text-sm text-xs text-[#343434] pt-4">
             <span className="number">1.</span>
