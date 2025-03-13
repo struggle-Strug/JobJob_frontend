@@ -680,7 +680,7 @@ const CompanyLandingPage = () => {
             />
           </Link>
           <Link
-            to={"rule"}
+            to={"/customers/rule"}
             className="text-white text-sm hover:text-[#7a7a7a] duration-200"
           >
             利用規約
