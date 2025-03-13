@@ -2,176 +2,21 @@ import moment from "moment";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Checkbox, Input, message, Modal, Radio, Select, Upload } from "antd";
-import {
-  EmploymentType,
-  Features,
-  JobType,
-  Paysystems,
-  Qualifications,
-} from "../../../utils/constants/categories";
-import { getBase64 } from "../../../utils/getBase64";
-import { PlusOutlined } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
 import axios from "axios";
-import { useAuth } from "../../../context/AuthContext";
 import FacilityPreview from "./FacilityPreview";
 import JobPostPreview from "./JobPostPreview";
 
 const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
-  const { customer } = useAuth();
   const [companyFacilities, setCompanyFacilites] = useState([]);
   const [selectedCompanyFacility, setSelectedCompanyFacility] = useState("");
   const [selectedJobPosts, setSelectedJobPosts] = useState([]);
   const [selectedJobPostId, setSelectedJobPostId] = useState("");
   const [newJobPostModal, setNewJobPostModal] = useState(false);
-  const [jobPostType, setJobPostType] = useState("");
-  const [jobPostTypeDetail, setJobPostTypeDetail] = useState("");
-  const [jobPostPicture, setJobPostPicture] = useState([]);
-  const [jobPostSubTitle, setJobPostSubTitle] = useState("");
-  const [jobPostSubDescription, setJobPostSubDescription] = useState("");
-  const [jobPostWorkItem, setJobPostWorkItem] = useState([]);
-  const [jobPostWorkContent, setJobPostWorkContent] = useState("");
-  const [jobPostServiceSubject, setJobPostServiceSubject] = useState([]);
-  const [jobPostServiceType, setJobPostServiceType] = useState([]);
-  const [jobPostEmploymentType, setJobPostEmploymentType] = useState([]);
-  const [jobPostSalaryType, setJobPostSalaryType] = useState("");
-  const [jobPostSalaryMax, setJobPostSalaryMax] = useState(0);
-  const [jobPostSalaryMin, setJobPostSalaryMin] = useState(0);
-  const [jobPostSalaryRemarks, setJobPostSalaryRemarks] = useState("");
-  const [jobPostExpectedIncome, setJobPostExpectedIncome] = useState(0);
-  const [jobPostTreatmentType, setJobPostTreatmentType] = useState([]);
-  const [jobPostTreatmentContent, setJobPostTreatmentContent] = useState("");
-  const [jobPostWorkTimeType, setJobPostWorkTimeType] = useState([]);
-  const [jobPostWorkTimeContent, setJobPostWorkTimeContent] = useState("");
-  const [jobPostRestType, setJobPostRestType] = useState([]);
-  const [jobPostRestContent, setJobPostRestContent] = useState("");
-  const [jobPostSpecialContent, setJobPostSpecialContent] = useState("");
-  const [jobPostEducationContent, setJobPostEducationContent] = useState("");
-  const [jobPostQualificationType, setJobPostQualificationType] = useState([]);
-  const [jobPostQualificationOther, setJobPostQualificationOther] =
-    useState("");
-  const [jobPostQualificationContent, setJobPostQualificationContent] =
-    useState("");
-  const [jobPostQualificationWelcome, setJobPostQualificationWelcome] =
-    useState("");
-  const [jobPostProcess, setJobPostProcess] = useState(`
-        1：応募フォームよりご応募ください
-        ↓
-        2：採用担当より面接日程の調整などの連絡をさせていただきます
-        ↓
-        3：面接実施
-        ↓
-        4：採用決定のご連絡
-        ↓
-        5：入職手続きを進めます
 
-        ※応募から内定までは平均1週間～1か月ほどになります。
-        ※在職中で今すぐ転職が難しい方も調整のご相談が可能です。
-    `);
-
-  const [previewImage, setPreviewImage] = useState("");
-  const [previewOpen, setPreviewOpen] = useState(false);
   const [copyJobPost, setCopyJobPost] = useState(false);
   const [facilityPreviewModal, setFacilityPreviewModal] = useState(false);
   const [jobPostPreviewModal, setJobPostPreviewModal] = useState(false);
   const [jobPostPreviewData, setJobPostPreviewData] = useState();
-
-  const jobTypesOptions = [
-    {
-      label: "選択する",
-      value: "",
-    },
-    ...Object.keys(JobType).map((type) => ({
-      value: type,
-      label: type,
-    })),
-  ];
-
-  const jobTypeDetailOptions = (jobType) => {
-    return [
-      {
-        label: "選択する",
-        value: "",
-      },
-      ...Object.keys(JobType[jobType]).map((type) => ({
-        value: type,
-        label: type,
-      })),
-    ];
-  };
-
-  const workItemOptions = Object.keys(Features.DESCRIPTION).map((workItem) => ({
-    value: workItem,
-    label: workItem,
-  }));
-
-  const serviceSubjectOptions = Object.keys(Features.MEDICAL_DEPARTMENT).map(
-    (serviceSubject) => ({
-      value: serviceSubject,
-      label: serviceSubject,
-    })
-  );
-
-  const serviceTypeOptions = Object.keys(Features.SERVICE_TYPES).map(
-    (serviceType) => ({
-      value: serviceType,
-      label: serviceType,
-    })
-  );
-
-  const employmentTypeOptions = Object.keys(EmploymentType).map(
-    (employmentType) => ({
-      value: employmentType,
-      label: employmentType,
-    })
-  );
-
-  const salaryTypeOptions = Object.keys(Paysystems).map((salaryType) => ({
-    value: salaryType,
-    label: salaryType,
-  }));
-
-  const jobPostTreatmentTypeOptions = Object.keys(
-    Features.SALARY_BENEFITS_WELFARE
-  ).map((treatmentType) => ({
-    value: treatmentType,
-    label: treatmentType,
-  }));
-
-  const jobPostWorkTimeTypeOptions = Object.keys(Features.WORKING_HOURS).map(
-    (workTimeType) => ({
-      value: workTimeType,
-      label: workTimeType,
-    })
-  );
-
-  const jobPostRestTypeOptions = Object.keys(Features.HOLIDAY).map(
-    (restType) => ({
-      value: restType,
-      label: restType,
-    })
-  );
-
-  const jobPostEducationTypeOptions = Object.keys(Features.EDUCATION).map(
-    (educationType) => ({
-      value: educationType,
-      label: educationType,
-    })
-  );
-
-  const jobPostQualificationTypeOptions = Object.keys(
-    Qualifications.REQUIRED
-  ).map((qualificationType) => ({
-    value: qualificationType,
-    label: qualificationType,
-  }));
-
-  const jobPostQualificationOtherOptions = Object.keys(
-    Qualifications.OTHERS
-  ).map((qualificationOther) => ({
-    value: qualificationOther,
-    label: qualificationOther,
-  }));
 
   const companyFacilitiesOptions = companyFacilities?.map((facility) => ({
     value: facility.facility_id,
@@ -188,7 +33,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
       `${process.env.REACT_APP_API_URL}/api/v1/facility/getByCompany`
     );
     if (response.data.error) return message.error(response.data.message);
-    setCompanyFacilites(response.data.facility);
+    setCompanyFacilites(response.data.facilities);
   };
 
   const getJobPostsByFacilityId = async () => {
@@ -197,135 +42,6 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
     );
     if (response.data.error) return message.error(response.data.message);
     setSelectedJobPosts(response.data.jobposts);
-  };
-
-  const beforeUpload = () => {
-    return false;
-  };
-
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
-
-  const handleChange = (info) => {
-    let updatedFileList = [...info.fileList];
-
-    // Limit the number of files to 1
-    if (updatedFileList.length > 1) {
-      updatedFileList = updatedFileList.slice(-1);
-    }
-
-    setJobPostPicture(updatedFileList);
-
-    // Provide feedback on upload status
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (jobPostPicture.length === 0) {
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", jobPostPicture[0].originFileObj); // Use the correct file object
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/file`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      message.success("写真アップロード成功!");
-      return response.data.fileUrl;
-    } catch (error) {
-      message.error("写真アップロード失敗");
-    }
-  };
-
-  const handleSubmit = async () => {
-    const pictureUrl = await handleUpload();
-
-    const JobPostData = {
-      facility_id: facility.facility_id,
-      customer_id: customer.customer_id,
-      type: jobPostTypeDetail,
-      picture: pictureUrl,
-      sub_title: jobPostSubTitle,
-      sub_description: jobPostSubDescription,
-      work_item: jobPostWorkItem,
-      work_content: jobPostWorkContent,
-      service_subject: jobPostServiceSubject,
-      service_type: jobPostServiceType,
-      employment_type: jobPostEmploymentType,
-      salary_type: jobPostSalaryType,
-      salary_min: jobPostSalaryMin,
-      salary_max: jobPostSalaryMax,
-      salary_remarks: jobPostSalaryRemarks,
-      expected_income: jobPostExpectedIncome,
-      treatment_type: jobPostTreatmentType,
-      treatment_content: jobPostTreatmentContent,
-      work_time_type: jobPostWorkTimeType,
-      work_time_content: jobPostWorkTimeContent,
-      rest_type: jobPostRestType,
-      rest_content: jobPostRestContent,
-      special_content: jobPostSpecialContent,
-      education_content: jobPostEducationContent,
-      qualification_type: jobPostQualificationType,
-      qualification_other: jobPostQualificationOther,
-      qualification_content: jobPostQualificationContent,
-      qualification_welcome: jobPostQualificationWelcome,
-      process: jobPostProcess,
-    };
-
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost`,
-      JobPostData
-    );
-    if (response.data.error) message.error(response.data.error);
-    message.success("求人を登録しました");
-    setJobPosts([...jobPosts, response.data.jobpost]);
-    setNewJobPostModal(false);
-    setJobPostType("");
-    setJobPostTypeDetail("");
-    setJobPostPicture([]);
-    setJobPostSubTitle("");
-    setJobPostSubDescription("");
-    setJobPostWorkItem([]);
-    setJobPostWorkContent("");
-    setJobPostServiceSubject([]);
-    setJobPostServiceType([]);
-    setJobPostEmploymentType([]);
-    setJobPostSalaryType("");
-    setJobPostSalaryMin(0);
-    setJobPostSalaryMax(0);
-    setJobPostSalaryRemarks("");
-    setJobPostExpectedIncome(0);
-    setJobPostTreatmentType([]);
-    setJobPostTreatmentContent("");
-    setJobPostWorkTimeType([]);
-    setJobPostWorkTimeContent("");
-    setJobPostRestType([]);
-    setJobPostRestContent("");
-    setJobPostSpecialContent("");
-    setJobPostEducationContent("");
-    setJobPostQualificationType([]);
-    setJobPostQualificationOther("");
-    setJobPostQualificationContent("");
-    setJobPostQualificationWelcome("");
-    setJobPostProcess("");
   };
 
   const handleCopy = async () => {
@@ -448,15 +164,15 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
           </span>
         </div>
         <div className="flex items-center justify-center w-full gap-4 py-2 mt-2 border-t-[1px] border-[#e7e7e7]">
-          <button
-            onClick={() => setNewJobPostModal(true)}
+          <Link
+            to={`/customers/jobpost/${facility.facility_id}/add`}
             className={`lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-2 duration-300 ${
               facility.allowed !== "allowed" ? "cursor-not-allowed" : ""
             }`}
             disabled={facility.allowed !== "allowed"}
           >
             求人を新規登録
-          </button>
+          </Link>
           <button
             className={`lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-2 hover:bg-[#ffe4e4] hover:text-red-500 duration-300 ${
               facility.allowed !== "allowed" ? "cursor-not-allowed" : ""
@@ -538,7 +254,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
           ))}
         </div>
       </div>
-      {
+      {/* {
         <Modal
           open={newJobPostModal}
           onCancel={() => setNewJobPostModal(false)}
@@ -857,7 +573,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
             </button>
           </div>
         </Modal>
-      }
+      } */}
 
       {
         <Modal
