@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 const CSRule = () => {
   useEffect(() => {
-    document.title = "ジョブジョブー利用規約 | JobJob";
+    document.title = "利用規約・プライバシーポリシー | JobJob (ジョブジョブ)";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (

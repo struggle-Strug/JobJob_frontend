@@ -86,6 +86,7 @@ const AddJobPost = lazy(() =>
   import("./Pages/Customer/FacilityPage/AddJobPost")
 );
 const CSRule = lazy(() => import("./Pages/Rule"));
+const Coporate = lazy(() => import("./Pages/CoporatePage"));
 
 function App() {
   const {
@@ -192,6 +193,7 @@ function App() {
         <Route path="/rule" element={<CSRule />} />
         <Route element={<CSLayout />}>
           <Route path="/" element={<Top />} />
+          <Route path="/coporate" element={<Coporate />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/members/sign_up" element={<Register />} />
           <Route path="/members/sign_in" element={<Login />} />
