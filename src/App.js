@@ -40,7 +40,7 @@ const CustomerSignIn = lazy(() =>
 );
 const Setting = lazy(() => import("./Pages/MemberProfile/Setting"));
 const NotFound = lazy(() => import("./Pages/NotFound"));
-const Rule = lazy(() => import("./Pages/Rule"));
+const Rule = lazy(() => import("./Pages/Customer/Rule"));
 const CLMainLayout = lazy(() => import("./components/CLMainLayout"));
 const CLTop = lazy(() => import("./Pages/Customer/TopPage"));
 const FacilityPage = lazy(() => import("./Pages/Customer/FacilityPage"));
@@ -85,6 +85,7 @@ const FacilityDetails = lazy(() =>
 const AddJobPost = lazy(() =>
   import("./Pages/Customer/FacilityPage/AddJobPost")
 );
+const CSRule = lazy(() => import("./Pages/Rule"));
 
 function App() {
   const {
@@ -140,7 +141,7 @@ function App() {
         <Route path="/company" element={<CompanyLandingPage />} />
         <Route path="/customers/new" element={<CustomerSignUp />} />
         <Route path="/customers/sign_in" element={<CustomerSignIn />} />
-        <Route path="/rule" element={<Rule />} />
+        <Route path="/customers/rule" element={<Rule />} />
         {token && (customer || admin) ? (
           <Route element={<CLLayout />}>
             <Route path="/customers" element={<CLMainLayout />}>
@@ -188,6 +189,7 @@ function App() {
         ) : (
           <Route path="/*" element={<CustomerSignIn />} />
         )}
+        <Route path="/rule" element={<CSRule />} />
         <Route element={<CSLayout />}>
           <Route path="/" element={<Top />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

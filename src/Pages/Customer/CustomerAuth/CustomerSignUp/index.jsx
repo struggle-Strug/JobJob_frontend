@@ -252,7 +252,7 @@ const CustomerSignUp = () => {
         </div>
         <div className="flex items-center justify-center gap-4 px-8 pb-4">
           <Link
-            to={"/rule"}
+            to={"/customers/rule"}
             className="lg:text-base md:text-sm text-xs text-blue-500 flex items-center gap-1 hover:underline"
           >
             利用規約はこちら
