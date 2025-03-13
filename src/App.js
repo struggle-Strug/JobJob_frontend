@@ -82,6 +82,9 @@ const FacilityAdd = lazy(() =>
 const FacilityDetails = lazy(() =>
   import("./Pages/CertiainFacility/FacilityDetails")
 );
+const AddJobPost = lazy(() =>
+  import("./Pages/Customer/FacilityPage/AddJobPost")
+);
 
 function App() {
   const {
@@ -151,6 +154,10 @@ function App() {
               <Route
                 path="/customers/jobpost/edit/:jobpost_id"
                 element={<JobPostEdit />}
+              />
+              <Route
+                path="/customers/jobpost/:facilityId/add"
+                element={<AddJobPost />}
               />
               <Route
                 path="/customers/recruit/edit/"
