@@ -81,34 +81,35 @@ const Register = () => {
     }
 
     setStep((prev) => prev + 1);
-    // Scroll to top when moving to the next step
+    // ステップ移動時に上部へスクロール
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
   const onChangeBefore = () => {
     setErrorMessage("");
     setStep((prev) => prev - 1);
   };
 
   const onHandleSubmit = async () => {
-    if (step === 6) {
+    if (step === 5) {
       const error = [];
-      // Check for empty fields
+      // 必須項目のチェック
       if (phoneNumber === "") error.push("電話番号");
       if (email === "") error.push("メールアドレス");
       if (password === "") error.push("PASSWORD");
       if (passwordConfirm === "") error.push("PASSWORD確認");
 
-      // Check email format only if email is not empty
+      // メールアドレス形式のチェック（空でない場合）
       if (!email.includes("@")) {
         return message.error("メールアドレスの形式が不正です。");
       }
 
-      // If any required fields are empty, show that error first
+      // 必須項目が空の場合はエラーを表示
       if (error.length > 0) {
         return message.error(error.join(", ") + "を入力してください。");
       }
 
-      // Check password match only if both passwords are not empty
+      // パスワードの一致確認
       if (password !== passwordConfirm) {
         return message.error("PASSWORDが一致しません。");
       }
@@ -151,6 +152,7 @@ const Register = () => {
       window.location.href = "/members/sign_in";
     }, 1000);
   };
+
   useEffect(() => {
     if (user) {
       window.location.href = "/members/mypage";
@@ -214,29 +216,39 @@ const Register = () => {
               setDay={setDay}
             />
           )}
-          {step === 5 && (
-            <Step6
+          {step === 5 && <Step6
               setPhoneNumber={setPhoneNumber}
               setEmail={setEmail}
               setPassword={setPassword}
               setPasswordConfirm={setPasswordConfirm}
             />
-          )}
-          <div className="flex items-center justify-center mt-12 w-full gap-4">
-            {step !== 1 && (
-              <button
-                className="bg-[#929292] hover:bg-[#c2c2c2] duration-300 text-white py-4 px-6 rounded-lg mt-5"
-                onClick={onChangeBefore}
-              >
-                戻る
-              </button>
+          }
+          {/* 入力部分とボタンの間は、元々の隙間（mt-12）を残す */}
+          <div className="mt-12 w-full">
+            {step === 5 && (
+              <p className="text-sm text-center mb-2">
+                <Link to="/rule" className="text-[#FF2A3B] hover:underline">
+                  利用規約・個人情報の取り扱い
+                </Link>
+                に同意の上、ご登録ください
+              </p>
             )}
-            <button
-              className="bg-[#FF2A3B] hover:bg-[#bc212e] duration-300 text-white py-4 px-6 rounded-lg mt-5"
-              onClick={step === 5 ? onHandleSubmit : onChangeNext}
-            >
-              {step === 5 ? "登録" : "次へ"}
-            </button>
+            <div className="flex items-center justify-center w-full gap-4">
+              {step !== 1 && (
+                <button
+                  className="bg-[#929292] hover:bg-[#c2c2c2] duration-300 text-white py-4 px-6 rounded-lg mt-5"
+                  onClick={onChangeBefore}
+                >
+                  戻る
+                </button>
+              )}
+              <button
+                className="bg-[#FF2A3B] hover:bg-[#bc212e] duration-300 text-white py-4 px-6 rounded-lg mt-5"
+                onClick={step === 5 ? onHandleSubmit : onChangeNext}
+              >
+                {step === 5 ? "登録" : "次へ"}
+              </button>
+            </div>
           </div>
         </div>
       </div>

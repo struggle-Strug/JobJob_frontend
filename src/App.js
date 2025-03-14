@@ -139,6 +139,7 @@ function App() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
+        <Route path="/sample" element={<CoporateInformation />}/>
         <Route path="/company" element={<CompanyLandingPage />} />
         <Route path="/customers/new" element={<CustomerSignUp />} />
         <Route path="/customers/sign_in" element={<CustomerSignIn />} />
