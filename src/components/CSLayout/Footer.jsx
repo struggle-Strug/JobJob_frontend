@@ -22,7 +22,12 @@ const Footer = () => {
                 <p className="text-sm lg:text-lg py-2"></p>
                 <p className="text-sm lg:text-lg py-1">ご利用規約</p>
                 <p className="text-sm lg:text-lg py-1">転職ノウハウ</p>
-                <p className="text-sm lg:text-lg py-1">運営会社情報</p>
+                <Link
+                  to={"/coporate"}
+                  className="text-sm lg:text-lg py-1 hover:text-[#ff2A3B] duration-300"
+                >
+                  運営会社情報
+                </Link>
               </div>
             </div>
             <div className="sm:col-span-1 lg:col-span-5">
