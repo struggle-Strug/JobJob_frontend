@@ -1,50 +1,54 @@
-import React, { useState } from 'react';
-import { Row, Col, Input, Select, message } from 'antd';
-import { Prefectures } from '../../../utils/constants/categories/prefectures.js';
-import { Municipalities } from '../../../utils/constants/categories/municipalities.js';
+import React, { useState } from "react";
+import { Row, Col, Input, Select, message } from "antd";
+import { Prefectures } from "../../../utils/constants/categories/prefectures.js";
+import { Municipalities } from "../../../utils/constants/categories/municipalities.js";
+import { useAuth } from "../../../context/AuthContext.js";
+import axios from "axios";
+import { useEffect } from "react";
 
 const { Option, OptGroup } = Select;
 
 // スタイルオブジェクトの定義
 const inputStyle = {
-  width: '100%',
-  border: 'none',
-  outline: 'none',
-  background: 'transparent',
+  width: "100%",
+  border: "none",
+  outline: "none",
+  background: "transparent",
 };
 
 const selectStyle = {
-  width: '100%',
-  border: 'none',
-  outline: 'none',
-  background: 'transparent',
+  width: "100%",
+  border: "none",
+  outline: "none",
+  background: "transparent",
 };
 
 const cellStyle = {
-  border: '0.5px solid #c5c5c5',
+  border: "0.5px solid #c5c5c5",
   padding: 1,
-  boxSizing: 'border-box',
-  display: 'flex',
-  alignItems: 'center',
+  boxSizing: "border-box",
+  display: "flex",
+  alignItems: "center",
   paddingLeft: 2,
 };
 
 const formCellStyle = {
-  border: '0.5px solid #c5c5c5',
+  border: "0.5px solid #c5c5c5",
 };
 
 const CoporateInformation = () => {
+  const { customer } = useAuth();
   // 各入力項目用の state 変数の定義
-  const [postalCode, setPostalCode] = useState(''); // 郵便番号
-  const [prefecture, setPrefecture] = useState(''); // 都道府県
-  const [municipality, setMunicipality] = useState(''); // 市区町村
-  const [address, setAddress] = useState(''); // 町名・番地
-  const [buildingName, setBuildingName] = useState(''); // 建物名
-  const [firstName, setFirstName] = useState(''); // 担当者氏名（名）
-  const [lastName, setLastName] = useState(''); // 担当者氏名（姓）
-  const [firstNameFurigana, setFirstNameFurigana] = useState(''); // 担当者氏名(フリガナ)（名）
-  const [lastNameFurigana, setLastNameFurigana] = useState(''); // 担当者氏名(フリガナ)（姓）
-  const [phoneNumber, setPhoneNumber] = useState(''); // 電話番号
+  const [postalCode, setPostalCode] = useState(""); // 郵便番号
+  const [prefecture, setPrefecture] = useState(""); // 都道府県
+  const [municipality, setMunicipality] = useState(""); // 市区町村
+  const [address, setAddress] = useState(""); // 町名・番地
+  const [buildingName, setBuildingName] = useState(""); // 建物名
+  const [firstName, setFirstName] = useState(""); // 担当者氏名（名）
+  const [lastName, setLastName] = useState(""); // 担当者氏名（姓）
+  const [firstNameFurigana, setFirstNameFurigana] = useState(""); // 担当者氏名(フリガナ)（名）
+  const [lastNameFurigana, setLastNameFurigana] = useState(""); // 担当者氏名(フリガナ)（姓）
+  const [phoneNumber, setPhoneNumber] = useState(""); // 電話番号
 
   // 数字のみの入力を許容するハンドラ
   const handleNumericInput = (value, setter, fieldName) => {
@@ -56,12 +60,53 @@ const CoporateInformation = () => {
   };
 
   // 送信ボタン押下時のハンドラ（中身は未実装）
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // ここに送信処理のロジックを実装する
-    return message.error("送信ロジックが未構築です");
+    const companyData = {
+      companyName: customer?.companyName,
+      postalCode: postalCode,
+      prefecture: prefecture,
+      municipality: municipality,
+      address: address,
+      buildingName: buildingName,
+      contactPerson: `${firstName} ${lastName}`, // Correct way to concatenate variables
+      contactPersonHurigana: `${firstNameFurigana} ${lastNameFurigana}`,
+      phoneNumber: phoneNumber,
+    };
+
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/v1/company`,
+      companyData
+    );
+    if (response.data.error) return message.error(response.data.message);
+    message.success("法人情報を登録しました。");
   };
 
+  const getCompanyInfo = async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/v1/company/${customer?.companyName}`
+    );
+    if (response.data.error) return message.error(response.data.message);
+    setPostalCode(response.data.company.postalCode);
+    setPrefecture(response.data.company.prefecture);
+    setMunicipality(response.data.company.municipality);
+    setAddress(response.data.company.address);
+    setBuildingName(response.data.company.buildingName);
+    setFirstName(response.data.company.contactPerson.split(" ")[0]);
+    setLastName(response.data.company.contactPerson.split(" ")[1]);
+    setFirstNameFurigana(
+      response.data.company.contactPersonHurigana.split(" ")[0]
+    );
+    setLastNameFurigana(
+      response.data.company.contactPersonHurigana.split(" ")[1]
+    );
+    setPhoneNumber(response.data.company.phoneNumber);
+  };
+
+  useEffect(() => {
+    getCompanyInfo();
+  }, []);
   return (
     <form onSubmit={handleSubmit}>
       <Row className="bg-[#ffffff] rounded-lg p-3 ">
@@ -77,9 +122,16 @@ const CoporateInformation = () => {
               法人名・貴社名
             </Col>
             <Col span={19}>
-              <p className="pl-3 pr-3 pb-3">登録の法人名が入ります</p>
+              <p className="pl-3 pr-3 pb-3">{customer?.companyName}</p>
               <p className="p-3">
-                ※法人名・貴社名を変更する場合は、<a href="/contact" style={{ textDecoration: 'underline', color: '-webkit-link' }}>お問い合わせ</a>ください
+                ※法人名・貴社名を変更する場合は、
+                <a
+                  href="/contact"
+                  style={{ textDecoration: "underline", color: "-webkit-link" }}
+                >
+                  お問い合わせ
+                </a>
+                ください
               </p>
             </Col>
           </Row>
@@ -87,13 +139,20 @@ const CoporateInformation = () => {
           {/* 住所入力エリア */}
           <Row className="mt-8">
             {/* 郵便番号 */}
-            <Col span={8} style={{ ...cellStyle, borderRight: '0.5px', borderBottom: 0 }} className="font-bold">
+            <Col
+              span={8}
+              style={{ ...cellStyle, borderRight: "0.5px", borderBottom: 0 }}
+              className="font-bold"
+            >
               郵便番号
             </Col>
             <Col span={4} style={{ ...cellStyle, borderBottom: 0 }}>
               必須
             </Col>
-            <Col span={12} style={{ ...cellStyle, borderLeft: '0.5px', borderBottom: 0 }}>
+            <Col
+              span={12}
+              style={{ ...cellStyle, borderLeft: "0.5px", borderBottom: 0 }}
+            >
               <Input
                 style={inputStyle}
                 placeholder="郵便番号"
@@ -105,20 +164,27 @@ const CoporateInformation = () => {
             </Col>
 
             {/* 都道府県 */}
-            <Col span={8} style={{ ...cellStyle, borderRight: '0.5px', borderBottom: 0 }} className="font-bold">
+            <Col
+              span={8}
+              style={{ ...cellStyle, borderRight: "0.5px", borderBottom: 0 }}
+              className="font-bold"
+            >
               都道府県
             </Col>
             <Col span={4} style={{ ...cellStyle, borderBottom: 0 }}>
               必須
             </Col>
-            <Col span={12} style={{ ...cellStyle, borderLeft: '0.5px', borderBottom: 0 }}>
+            <Col
+              span={12}
+              style={{ ...cellStyle, borderLeft: "0.5px", borderBottom: 0 }}
+            >
               <Select
                 style={selectStyle}
                 placeholder="都道府県"
                 value={prefecture || undefined}
                 onChange={(value) => {
                   setPrefecture(value);
-                  setMunicipality(''); // 都道府県が変更されたら市区町村をリセット
+                  setMunicipality(""); // 都道府県が変更されたら市区町村をリセット
                 }}
               >
                 {Object.keys(Prefectures).map((region) => (
@@ -134,19 +200,26 @@ const CoporateInformation = () => {
             </Col>
 
             {/* 市区町村 */}
-            <Col span={8} style={{ ...cellStyle, borderRight: '0.5px', borderBottom: 0 }} className="font-bold">
+            <Col
+              span={8}
+              style={{ ...cellStyle, borderRight: "0.5px", borderBottom: 0 }}
+              className="font-bold"
+            >
               市区町村
             </Col>
             <Col span={4} style={{ ...cellStyle, borderBottom: 0 }}>
               必須
             </Col>
-            <Col span={12} style={{ ...cellStyle, borderLeft: '0.5px', borderBottom: 0 }}>
+            <Col
+              span={12}
+              style={{ ...cellStyle, borderLeft: "0.5px", borderBottom: 0 }}
+            >
               <Select
                 style={selectStyle}
                 placeholder="市区町村"
                 value={municipality || undefined}
                 onChange={(value) => setMunicipality(value)}
-                disabled={!prefecture}  // 都道府県未選択時は無効にする
+                disabled={!prefecture} // 都道府県未選択時は無効にする
               >
                 {prefecture &&
                   Municipalities[prefecture] &&
@@ -159,13 +232,20 @@ const CoporateInformation = () => {
             </Col>
 
             {/* 町名・番地 */}
-            <Col span={8} style={{ ...cellStyle, borderRight: '0.5px', borderBottom: 0 }} className="font-bold">
+            <Col
+              span={8}
+              style={{ ...cellStyle, borderRight: "0.5px", borderBottom: 0 }}
+              className="font-bold"
+            >
               町名・番地
             </Col>
             <Col span={4} style={{ ...cellStyle, borderBottom: 0 }}>
               必須
             </Col>
-            <Col span={12} style={{ ...cellStyle, borderLeft: '0.5px', borderBottom: 0 }}>
+            <Col
+              span={12}
+              style={{ ...cellStyle, borderLeft: "0.5px", borderBottom: 0 }}
+            >
               <Input
                 style={inputStyle}
                 placeholder="町名・番地"
@@ -175,11 +255,15 @@ const CoporateInformation = () => {
             </Col>
 
             {/* 建物名 */}
-            <Col span={8} style={{ ...cellStyle, borderRight: '0.5px' }} className="font-bold">
+            <Col
+              span={8}
+              style={{ ...cellStyle, borderRight: "0.5px" }}
+              className="font-bold"
+            >
               建物名
             </Col>
             <Col span={4} style={cellStyle}></Col>
-            <Col span={12} style={{ ...cellStyle, borderLeft: '0.5px' }}>
+            <Col span={12} style={{ ...cellStyle, borderLeft: "0.5px" }}>
               <Input
                 style={inputStyle}
                 placeholder="建物名"
@@ -266,7 +350,11 @@ const CoporateInformation = () => {
                     placeholder="0123456789"
                     value={phoneNumber}
                     onChange={(e) =>
-                      handleNumericInput(e.target.value, setPhoneNumber, "電話番号")
+                      handleNumericInput(
+                        e.target.value,
+                        setPhoneNumber,
+                        "電話番号"
+                      )
                     }
                   />
                 </Col>
@@ -282,7 +370,7 @@ const CoporateInformation = () => {
             <button
               type="submit"
               className="inline-block px-4 py-2 font-bold text-blue-600 bg-blue-100 rounded-lg border relative"
-              style={{ border: '2px solid #aaaaaa' }}
+              style={{ border: "2px solid #aaaaaa" }}
             >
               上記の内容で情報を保存する
             </button>

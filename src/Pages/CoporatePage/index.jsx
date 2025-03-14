@@ -1,6 +1,11 @@
 import React from "react";
+import { useEffect } from "react";
 
 const Coporate = () => {
+  useEffect(() => {
+    document.title = "運営会社情報 | JobJob (ジョブジョブ)";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
   return (
     <>
       <div className="bg-[#EFEFEF]">
