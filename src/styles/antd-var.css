@@ -66,3 +66,13 @@
 .ant-select * {
   font-family: "Noto Sans JP", sans-serif;
 }
+
+.ant-col,
+.ant-col * {
+  font-family: "Noto Sans JP", sans-serif;
+}
+
+.ant-row,
+.ant-row * {
+  font-family: "Noto Sans JP", sans-serif;
+}

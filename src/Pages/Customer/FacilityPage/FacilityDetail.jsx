@@ -13,10 +13,12 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
   const [selectedJobPostId, setSelectedJobPostId] = useState("");
   const [newJobPostModal, setNewJobPostModal] = useState(false);
 
+  const [filteredJobPosts, setFilteredJobPosts] = useState([]);
   const [copyJobPost, setCopyJobPost] = useState(false);
   const [facilityPreviewModal, setFacilityPreviewModal] = useState(false);
   const [jobPostPreviewModal, setJobPostPreviewModal] = useState(false);
   const [jobPostPreviewData, setJobPostPreviewData] = useState();
+  const [filterStatus, setFilterStatus] = useState("all");
 
   const companyFacilitiesOptions = companyFacilities?.map((facility) => ({
     value: facility.facility_id,
@@ -77,6 +79,26 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
     selectedCompanyFacility !== "" && getJobPostsByFacilityId();
   }, [selectedCompanyFacility]);
 
+  useEffect(() => {
+    if (filterStatus === "all") return setFilteredJobPosts(jobPosts);
+    if (filterStatus === "draft")
+      return setFilteredJobPosts(
+        jobPosts.filter((jobPost) => jobPost.allowed === "draft")
+      );
+    if (filterStatus === "pending")
+      return setFilteredJobPosts(
+        jobPosts.filter((jobPost) => jobPost.allowed === "pending")
+      );
+    if (filterStatus === "allowed")
+      return setFilteredJobPosts(
+        jobPosts.filter((jobPost) => jobPost.allowed === "allowed")
+      );
+    if (filterStatus === "ended")
+      return setFilteredJobPosts(
+        jobPosts.filter((jobPost) => jobPost.allowed === "ended")
+      );
+  }, [filterStatus]);
+
   return (
     <>
       <div className="flex flex-col p-4">
@@ -133,35 +155,50 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
           </div>
         </div>
         <div className="flex items-start justify-start mt-2 gap-2">
-          <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">
+          <button
+            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
+            onClick={() => setFilterStatus("all")}
+          >
             すべて：{jobPosts?.length}件
-          </span>
-          <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">
+          </button>
+          <button
+            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
+            onClick={() => setFilterStatus("draft")}
+          >
             下書き：
             {jobPosts?.filter((jobpost) => jobpost.allowed === "draft")?.length}
             件
-          </span>
-          <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">
+          </button>
+          <button
+            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
+            onClick={() => setFilterStatus("pending")}
+          >
             掲載申請中：
             {
               jobPosts?.filter((jobpost) => jobpost.allowed === "pending")
                 ?.length
             }
             件
-          </span>
-          <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">
+          </button>
+          <button
+            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
+            onClick={() => setFilterStatus("allowed")}
+          >
             掲載中：
             {
               jobPosts?.filter((jobpost) => jobpost.allowed === "allowed")
                 ?.length
             }
             件
-          </span>
-          <span className="lg:text-xs text-[0.55rem] font-bold text-[#343434]">
+          </button>
+          <button
+            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
+            onClick={() => setFilterStatus("ended")}
+          >
             受付終了：
             {jobPosts?.filter((jobpost) => jobpost.allowed === "ended")?.length}
             件
-          </span>
+          </button>
         </div>
         <div className="flex items-center justify-center w-full gap-4 py-2 mt-2 border-t-[1px] border-[#e7e7e7]">
           <Link
@@ -184,7 +221,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
           </button>
         </div>
         <div className="w-full flex flex-col border-t-[1px] border-[#e7e7e7]">
-          {jobPosts?.map((jobPost, index) => (
+          {filteredJobPosts?.map((jobPost, index) => (
             <div
               key={index}
               className="flex items-center justify-start gap-2 p-2"
