@@ -103,7 +103,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
       <div className="flex flex-col p-4">
         <div className="flex items-start justify-start gap-4">
           <img
-            src={facility.photo}
+            src={facility.photo[0]}
             alt={facility.name}
             className="w-1/5 object-cover rounded-lg"
           />

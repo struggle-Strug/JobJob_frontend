@@ -129,8 +129,9 @@ const FacilityEdit = () => {
   const handleChange = (info) => {
     let updatedFileList = [...info.fileList];
 
-    if (updatedFileList.length > 1) {
-      updatedFileList = updatedFileList.slice(-1);
+    if (updatedFileList.length > 10) {
+      updatedFileList.pop(); 
+      message.error("10枚まで選択できます");
     }
 
     setFacilityPhoto(updatedFileList);
@@ -144,15 +145,16 @@ const FacilityEdit = () => {
 
   const handleUpload = async () => {
     if (facilityPhoto.length === 0) {
-      return;
+      return [];
     }
-
     const formData = new FormData();
-    formData.append("file", facilityPhoto[0].originFileObj);
-
+    facilityPhoto.forEach((file) => {
+      formData.append("files", file.originFileObj);
+    });
+  
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/file`,
+        `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
         formData,
         {
           headers: {
@@ -160,46 +162,62 @@ const FacilityEdit = () => {
           },
         }
       );
-      message.success("写真アップロード成功!");
-      return response.data.fileUrl;
+      message.success("ファイルのアップロードに成功しました");
+      // バックエンドから返された files 配列を利用する
+      const fileUrls = response.data.files.map((item) => item.fileUrl);
+      return fileUrls;
     } catch (error) {
-      message.error("写真アップロード失敗");
+      message.error("ファイルのアップロードに失敗しました");
+      return [];
     }
   };
 
   const getFacility = useCallback(async () => {
     try {
-      setLoading(true); // Set loading to true before fetching
+      setLoading(true);
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}`
       );
-
-      setFacility(response.data.facility);
-      setFacilityName(response.data.facility.name);
-      setFacilityPostalCode(response.data.facility.postal_code);
-      setFacilityPrefecture(response.data.facility.prefecture);
-      setFacilityCity(response.data.facility.city);
-      setFacilityVillage(response.data.facility.village);
-      setFacilityBuilding(response.data.facility.building);
-      setFacilityPhotoUrl(response.data.facility.photo);
-      setFacilityIntroduction(response.data.facility.introduction);
-      setFacilityAccess(response.data.facility.access[0]);
-      setFacilityAccessText(response.data.facility.access_text);
-      setFacilityGenre(response.data.facility.facility_genre);
+  
+      const fetchedFacility = response.data.facility;
+      setFacility(fetchedFacility);
+      setFacilityName(fetchedFacility.name);
+      setFacilityPostalCode(fetchedFacility.postal_code);
+      setFacilityPrefecture(fetchedFacility.prefecture);
+      setFacilityCity(fetchedFacility.city);
+      setFacilityVillage(fetchedFacility.village);
+      setFacilityBuilding(fetchedFacility.building);
+      setFacilityPhotoUrl(fetchedFacility.photo);
+      setFacilityIntroduction(fetchedFacility.introduction);
+      setFacilityAccess(fetchedFacility.access[0]);
+      setFacilityAccessText(fetchedFacility.access_text);
+      setFacilityGenre(fetchedFacility.facility_genre);
       setFacilityEstablishmentDateYear(
-        response.data.facility.establishment_date.split("-")[0]
+        fetchedFacility.establishment_date.split("-")[0]
       );
       setFacilityEstablishmentDateMonth(
-        response.data.facility.establishment_date.split("-")[1]
+        fetchedFacility.establishment_date.split("-")[1]
       );
-      setFacilityServiceTime(response.data.facility.service_time);
-      setFacilityRestDay(response.data.facility.rest_day);
+      setFacilityServiceTime(fetchedFacility.service_time);
+      setFacilityRestDay(fetchedFacility.rest_day);
+  
+      // facilityPhotoUrl をアップロード用のファイルリストに変換して保存
+      if (fetchedFacility.photo && Array.isArray(fetchedFacility.photo)) {
+        const initialFileList = fetchedFacility.photo.map((url, index) => ({
+          uid: `existing-${index}`,
+          name: `image-${index}`,
+          status: "done",
+          url: url,
+        }));
+        setFacilityPhoto(initialFileList);
+      }
     } catch (error) {
       console.error("Error fetching facility data:", error);
     } finally {
-      setLoading(false); // Set loading to false after fetching
+      setLoading(false);
     }
   }, []);
+  
 
   const handleSave = async () => {
     const photoUrl = await handleUpload();
@@ -340,14 +358,8 @@ const FacilityEdit = () => {
             <span className="lg:text-sm text-xs text-[#343434]">施設写真</span>
           </div>
           <div className="flex items-center justify-start gap-2">
-            {facilityPhoto.length == 0 && (
-              <img
-                src={facilityPhotoUrl}
-                alt="施設写真"
-                className="w-32 h-32 rounded-lg"
-              />
-            )}
             <Upload
+              maxCount={10}
               name="avatar"
               listType="picture-card"
               fileList={facilityPhoto}

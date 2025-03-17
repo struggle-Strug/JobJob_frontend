@@ -130,8 +130,9 @@ const FacilityAdd = () => {
   const handleChange = (info) => {
     let updatedFileList = [...info.fileList];
 
-    if (updatedFileList.length > 1) {
-      updatedFileList = updatedFileList.slice(-1);
+    if (updatedFileList.length > 10) {
+      updatedFileList.pop(); 
+      message.error("10枚まで選択できます");
     }
 
     setFacilityPhoto(updatedFileList);
@@ -145,15 +146,16 @@ const FacilityAdd = () => {
 
   const handleUpload = async () => {
     if (facilityPhoto.length === 0) {
-      return;
+      return [];
     }
-
     const formData = new FormData();
-    formData.append("file", facilityPhoto[0].originFileObj);
-
+    facilityPhoto.forEach((file) => {
+      formData.append("files", file.originFileObj);
+    });
+  
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/file`,
+        `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
         formData,
         {
           headers: {
@@ -161,15 +163,19 @@ const FacilityAdd = () => {
           },
         }
       );
-      message.success("写真アップロード成功!");
-      return response.data.fileUrl;
+      message.success("ファイルのアップロードに成功しました");
+      // バックエンドから返された files 配列を利用する
+      const fileUrls = response.data.files.map((item) => item.fileUrl);
+      return fileUrls;
     } catch (error) {
-      message.error("写真アップロード失敗");
+      message.error("ファイルのアップロードに失敗しました");
+      return [];
     }
   };
+  
 
   const handleSave = async () => {
-    const photoUrl = await handleUpload();
+    const photoUrls = await handleUpload();
 
     if (facilityName === "") return message.error("施設名を入力してください。");
     if (facilityPostalCode === "")
@@ -191,7 +197,7 @@ const FacilityAdd = () => {
       city: facilityCity,
       village: facilityVillage,
       building: facilityBuilding,
-      photo: photoUrl || facilityPhoto,
+      photo: photoUrls, 
       introduction: facilityIntroduction,
       access: facilityAccess,
       access_text: facilityAccessText,
@@ -273,6 +279,7 @@ const FacilityAdd = () => {
         </div>
         <div className="flex items-center justify-start gap-2">
           <Upload
+            maxCount={10}
             name="avatar"
             listType="picture-card"
             fileList={facilityPhoto}
