@@ -87,7 +87,7 @@ const Message = () => {
                       <Link
                         to={`/members/message/${message.message_id}`}
                         key={index}
-                        className="flex items-center justify-center w-full border-[1px] border-[#e7e7e7] rounded-lg bg-slate-100 px-2 hover:px-4 py-1 hover:cursor-pointer duration-300"
+                        className="flex items-center justify-start w-full border-[1px] border-[#e7e7e7] rounded-lg bg-slate-100 px-2 hover:px-4 py-1 hover:cursor-pointer duration-300"
                       >
                         <img
                           src={message?.facility_id?.photo}

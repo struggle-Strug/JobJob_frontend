@@ -76,7 +76,6 @@ const MessageDetail = () => {
 
   const sendMessage = async () => {
     const files = await handleUpload();
-    console.log(files);
 
     const messageData = {
       message_id: message?.message_id,
@@ -85,7 +84,6 @@ const MessageDetail = () => {
       recevier: message?.second,
       files: files,
     };
-    console.log(message?.second);
 
     const res = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/v1/message/send`,
@@ -96,6 +94,7 @@ const MessageDetail = () => {
     setFileList([]);
     setContent("");
   };
+  console.log(user?._id);
 
   useEffect(() => {
     document.title = "メッセージ詳細";
@@ -141,30 +140,32 @@ const MessageDetail = () => {
                   >
                     <div key={index} className="flex flex-col">
                       <div className="flex justify-center bg-[#e7e7e7] rounded-lg">
-                        <pre className="text-sm text-[#343434] p-4 leading-relaxed">
-                          {message?.message}
-                        </pre>
+                        {message?.message !== "" && (
+                          <pre className="text-sm text-[#343434] p-4 leading-relaxed">
+                            {message?.message}
+                          </pre>
+                        )}
                       </div>
                     </div>
-                  </div>
-                  <div className="flex justify-end mt-2">
-                    {message?.files.length > 0 &&
-                      message?.files?.map((file, index) => {
-                        return (
-                          <a
-                            key={index}
-                            href={`${
-                              process.env.REACT_APP_API_URL
-                            }/api/v1/file/download/${file.fileUrl
-                              .split("/")
-                              .pop()}`}
-                            className="text-xs hover:text-[#FF2A3B] duration-300 mt-1"
-                            download={file.fileName}
-                          >
-                            {file.fileName}
-                          </a>
-                        );
-                      })}
+                    <div className="flex justify-end">
+                      {message?.files.length > 0 &&
+                        message?.files?.map((file, index) => {
+                          return (
+                            <a
+                              key={index}
+                              href={`${
+                                process.env.REACT_APP_API_URL
+                              }/api/v1/file/download/${file.fileUrl
+                                .split("/")
+                                .pop()}`}
+                              className="text-xs hover:text-[#FF2A3B] duration-300 mt-1"
+                              download={file.fileName}
+                            >
+                              {file.fileName}
+                            </a>
+                          );
+                        })}
+                    </div>
                   </div>
                 </>
               );

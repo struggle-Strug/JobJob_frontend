@@ -27,7 +27,7 @@ const ProcessManagementPage = () => {
   }, []);
 
   useEffect(() => {
-    document.title = "選考管理";
+    document.title = "選考管理 | JobJob (ジョブジョブ)";
     getProcessesByStatus();
   }, [status]);
 
