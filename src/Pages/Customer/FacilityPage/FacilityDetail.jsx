@@ -227,7 +227,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
             >
               <div className="flex flex-col gap-1 w-1/6">
                 <img
-                  src={jobPost?.picture}
+                  src={jobPost?.picture[0]}
                   alt={jobPost?.sub_title}
                   className="w-full object-cover rounded-lg"
                 />

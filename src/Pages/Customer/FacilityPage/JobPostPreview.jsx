@@ -28,9 +28,17 @@ const JobPostPreview = ({ open, onCancel, data }) => {
               写真
             </span>
           </div>
-          <div className="flex items-center justify-start gap-2 w-3/4">
-            <img src={data?.picture} alt="jobPostPhoto" className="w-20" />
-          </div>
+          <div className="flex gap-2 overflow-x-auto w-3/4">
+  {data?.picture?.map((pic, index) => (
+    <img
+      key={index}
+      src={pic}
+      alt="jobPostPhoto"
+      className="w-20 flex-shrink-0"
+    />
+  ))}
+</div>
+
         </div>
         <div className="flex items-start mt-4">
           <p className="lg:text-sm text-xs w-1/4">
