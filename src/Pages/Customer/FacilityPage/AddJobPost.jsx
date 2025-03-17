@@ -33,7 +33,7 @@ const AddJobPost = () => {
   const [jobPostSalaryMax, setJobPostSalaryMax] = useState(0);
   const [jobPostSalaryMin, setJobPostSalaryMin] = useState(0);
   const [jobPostSalaryRemarks, setJobPostSalaryRemarks] = useState("");
-  const [jobPostExpectedIncome, setJobPostExpectedIncome] = useState(0);
+  const [jobPostExpectedIncome, setJobPostExpectedIncome] = useState(null);
   const [jobPostTreatmentType, setJobPostTreatmentType] = useState([]);
   const [jobPostTreatmentContent, setJobPostTreatmentContent] = useState("");
   const [jobPostWorkTimeType, setJobPostWorkTimeType] = useState([]);
@@ -485,12 +485,14 @@ const AddJobPost = () => {
               onChange={(e) => setJobPostSalaryMin(e.target.value)}
               className="w-1/4"
             />
+            <span className="mx-2 lg:text-sm text-xs">円</span>
             <span className="mx-2">~</span>
             <Input
               value={jobPostSalaryMax}
               onChange={(e) => setJobPostSalaryMax(e.target.value)}
               className="w-1/4"
             />
+            <span className="mx-2 lg:text-sm text-xs">円</span>
           </div>
         </div>
         <div className="flex items-start mt-4 textarea">
@@ -643,7 +645,7 @@ const AddJobPost = () => {
             className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300"
             onClick={handleSubmit}
           >
-            求人を登録する
+            求人を申請する
           </button>
         </div>
       </div>
