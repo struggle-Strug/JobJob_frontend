@@ -32,6 +32,7 @@ const JobLists = lazy(() => import("./Pages/CertainJob/JobLists"));
 const JobOffer = lazy(() => import("./Pages/CertainJob/JobOffer"));
 const CSLayout = lazy(() => import("./components/CSLayout"));
 const CLLayout = lazy(() => import("./components/CLLayout"));
+const CLLogoLayout = lazy(() => import("./components/CLLayout/CLLogoLayout"));
 const CustomerSignUp = lazy(() =>
   import("./Pages/Customer/CustomerAuth/CustomerSignUp")
 );
@@ -140,8 +141,10 @@ function App() {
     <Suspense fallback={<Loading />}>
       <Routes>
         <Route path="/company" element={<CompanyLandingPage />} />
-        <Route path="/customers/new" element={<CustomerSignUp />} />
-        <Route path="/customers/sign_in" element={<CustomerSignIn />} />
+        <Route element={<CLLogoLayout />}>
+          <Route path="/customers/new" element={<CustomerSignUp />} />
+          <Route path="/customers/sign_in" element={<CustomerSignIn />} />
+        </Route>
         <Route path="/customers/rule" element={<Rule />} />
         {token && (customer || admin) ? (
           <Route element={<CLLayout />}>
@@ -188,7 +191,9 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Route>
         ) : (
-          <Route path="/*" element={<CustomerSignIn />} />
+          <Route element={<CLLogoLayout />}>
+            <Route path="/*" element={<CustomerSignIn />} />
+          </Route>
         )}
         <Route path="/rule" element={<CSRule />} />
         <Route element={<CSLayout />}>

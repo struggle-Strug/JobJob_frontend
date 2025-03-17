@@ -25,9 +25,12 @@ const CompanyLandingPage = () => {
           <Avatar />
         </Link>
         <div className="flex items-center gap-8">
-          <p className="lg:text-base md:text-sm text-xs text-[#F53544] font-semibold">
+        <Link
+            to={"/"}
+            className="lg:text-base md:text-sm text-xs text-[#F53544] hover:text-[#343434] hover:shadow-lg font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2 duration-300"
+          >
             求人検索
-          </p>
+          </Link>
           <Link
             to={"/customers/sign_in"}
             className="lg:text-base md:text-sm text-xs text-[#F53544] hover:text-[#343434] hover:shadow-lg font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2 duration-300"
@@ -128,7 +131,7 @@ const CompanyLandingPage = () => {
                 className="w-full"
               />
               <p className="lg:text-xl md:text-lg text-base font-bold mt-4">
-                求人掲載から採用まで完全無料!
+              最短本日から求人掲載!
               </p>
             </div>
           </div>
