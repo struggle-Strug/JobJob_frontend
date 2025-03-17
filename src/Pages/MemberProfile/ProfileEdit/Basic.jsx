@@ -142,7 +142,7 @@ const Basic = () => {
           },
         }
       );
-      message.success("写真アップロード成功!");
+      message.success("写真アップロード完了!");
       return response.data.fileUrl;
     } catch (error) {
       message.error("写真アップロード失敗");

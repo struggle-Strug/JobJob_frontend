@@ -52,7 +52,7 @@ const PhotoManagement = () => {
           },
         }
       );
-      message.success("ファイルアップロード成功!");
+      message.success("ファイルアップロード完了!");
       return response.data.files; // Assuming API returns an array of URLs
     } catch (error) {
       message.error("ファイルアップロードに失敗しました");
