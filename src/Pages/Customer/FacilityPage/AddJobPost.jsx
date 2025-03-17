@@ -230,9 +230,9 @@ const AddJobPost = () => {
       return message.error("訴求文タイトルを入力してください。");
     if (jobPostSubDescription === "")
       return message.error("訴求文を入力してください。");
-    if (work_item.length === 0)
+    if (jobPostWorkItem.length === 0)
       return message.error("仕事内容を選択してください。");
-    if (work_content === "")
+    if (jobPostWorkContent === "")
       return message.error("仕事内容を入力してください。");
     if (jobPostEmploymentType.length === 0)
       return message.error("雇用形態を選択してください。");
