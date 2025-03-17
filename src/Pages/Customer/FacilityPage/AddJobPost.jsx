@@ -224,6 +224,30 @@ const AddJobPost = () => {
   };
 
   const handleSubmit = async () => {
+    if (jobPostTypeDetail === "")
+      return message.error("募集職種を選択してください。");
+    if (jobPostSubTitle === "")
+      return message.error("訴求文タイトルを入力してください。");
+    if (jobPostSubDescription === "")
+      return message.error("訴求文を入力してください。");
+    if (work_item.length === 0)
+      return message.error("仕事内容を選択してください。");
+    if (work_content === "")
+      return message.error("仕事内容を入力してください。");
+    if (jobPostEmploymentType.length === 0)
+      return message.error("雇用形態を選択してください。");
+    if (jobPostSalaryType === "")
+      return message.error("給与体系を入力してください。");
+    if (jobPostSalaryMin === 0 || jobPostSalaryMax === 0)
+      return message.error("給与下限・上限を入力してください。");
+    if (jobPostWorkTimeContent === "")
+      return message.error("勤務時間・休憩時間を入力してください。");
+    if (jobPostRestContent === "")
+      return message.error("休日を入力してください。");
+    if (jobPostQualificationType.length === 0)
+      return message.error("応募要件（資格）を選択してください。");
+    if (jobPostProcess === "")
+      return message.error("選考プロセスを入力してください。");
     const pictureUrl = await handleUpload();
 
     const JobPostData = {
