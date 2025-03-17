@@ -163,7 +163,7 @@ const FacilityAdd = () => {
           },
         }
       );
-      message.success("ファイルのアップロードに成功しました");
+      message.success("ファイルのアップロードに完了しました");
       // バックエンドから返された files 配列を利用する
       const fileUrls = response.data.files.map((item) => item.fileUrl);
       return fileUrls;

@@ -72,7 +72,7 @@ const CoporateManagement = () => {
       newCustomer
     );
     if (response.data.error) return message.error(response.data.message);
-    message.success("ユーザー追加成功");
+    message.success("ユーザー追加完了");
     setContactPersonSei("");
     setContactPersonMei("");
     setHuriganaContactPersonSei("");
@@ -90,7 +90,7 @@ const CoporateManagement = () => {
       `${process.env.REACT_APP_API_URL}/api/v1/customers/users/${id}`
     );
     if (response.data.error) return message.error(response.data.message);
-    message.success("ユーザー削除成功");
+    message.success("ユーザー削除完了");
     getUsers();
   };
 
