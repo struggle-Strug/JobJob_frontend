@@ -67,7 +67,7 @@ const MessageDetail = () => {
           },
         }
       );
-      Message.success("ファイルアップロード成功!");
+      Message.success("ファイルアップロード完了!");
       return response.data.files; // Assuming API returns an array of URLs
     } catch (error) {
       Message.error("ファイルアップロードに失敗しました");
