@@ -71,7 +71,7 @@ const FacilityPage = () => {
               onClick={() => onClick(facility.facility_id)}
             >
               <img
-                src={facility.photo}
+                src={facility.photo[0]}
                 alt={facility.name}
                 className="w-1/3 object-cover rounded-lg"
               />
