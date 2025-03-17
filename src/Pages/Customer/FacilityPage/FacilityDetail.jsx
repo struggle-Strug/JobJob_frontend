@@ -11,7 +11,6 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
   const [selectedCompanyFacility, setSelectedCompanyFacility] = useState("");
   const [selectedJobPosts, setSelectedJobPosts] = useState([]);
   const [selectedJobPostId, setSelectedJobPostId] = useState("");
-  const [newJobPostModal, setNewJobPostModal] = useState(false);
 
   const [filteredJobPosts, setFilteredJobPosts] = useState([]);
   const [copyJobPost, setCopyJobPost] = useState(false);
@@ -97,7 +96,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
       return setFilteredJobPosts(
         jobPosts.filter((jobPost) => jobPost.allowed === "ended")
       );
-  }, [filterStatus]);
+  }, [filterStatus, jobPosts]);
 
   return (
     <>

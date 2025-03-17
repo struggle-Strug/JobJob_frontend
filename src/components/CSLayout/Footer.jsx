@@ -20,7 +20,12 @@ const Footer = () => {
               <div className="flex flex-col justify-start">
                 <p className="text-base lg:text-lg font-bold">JobJobについて</p>
                 <p className="text-sm lg:text-lg py-2"></p>
-                <p className="text-sm lg:text-lg py-1">ご利用規約</p>
+                <Link
+                  to={"/rule"}
+                  className="text-sm lg:text-lg py-1 hover:text-[#ff2A3B] duration-300"
+                >
+                  ご利用規約
+                </Link>
                 <p className="text-sm lg:text-lg py-1">転職ノウハウ</p>
                 <Link
                   to={"/coporate"}
