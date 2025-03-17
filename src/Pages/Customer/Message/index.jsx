@@ -67,7 +67,7 @@ const Message = () => {
             </button>
           </div>
           <div className="border-t-[1px] pt-2">
-            {messages.map((message, index) => (
+            {messages?.map((message, index) => (
               <div
                 key={index}
                 className={`flex flex-col border-b-[1px] p-2 rounded-lg cursor-pointer duration-300 ${
