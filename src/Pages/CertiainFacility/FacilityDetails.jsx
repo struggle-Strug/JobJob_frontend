@@ -28,11 +28,19 @@ const FacilityDetails = () => {
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-start justify-start w-2/3">
             <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-xl hover:scale-[1.02] duration-300">
-              <img
-                src={facility?.photo}
-                alt="arrow-down"
-                className="w-full rounded-lg aspect-video object-cover "
-              />
+              {facility?.photo?.length === 0 ? (
+                <img
+                  src={"/assets/images/noimage.png"}
+                  alt="arrow-down"
+                  className="w-full rounded-lg aspect-video object-cover "
+                />
+              ) : (
+                <img
+                  src={facility?.photo}
+                  alt="arrow-down"
+                  className="w-full rounded-lg aspect-video object-cover "
+                />
+              )}
               <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
                 <p className="lg:text-xl md:text-sm text-[#343434]">
                   <span className="lg:text-2xl md:text-xl font-bold">
@@ -66,11 +74,19 @@ const FacilityDetails = () => {
                   className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8"
                 >
                   <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
-                    <img
-                      src={`${jobpost.picture}`}
-                      alt="arrow-down"
-                      className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
-                    />
+                    {jobpost.picture.length === 0 ? (
+                      <img
+                        src={"/assets/images/noimage.png"}
+                        alt="arrow-down"
+                        className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                      />
+                    ) : (
+                      <img
+                        src={`${jobpost.picture}`}
+                        alt="arrow-down"
+                        className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                      />
+                    )}
                     <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
                       <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
                         {facility?.name}の{jobpost.type}求人
