@@ -1,14 +1,16 @@
 import { message } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, React } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getJobValueByKey } from "../../utils/getFunctions";
 import { Facilities } from "../../utils/constants/categories";
+
 
 const FacilityDetails = () => {
   const { pathname } = useLocation();
   const [facility, setFacility] = useState(null);
   const facility_id = pathname.split("/")[3];
+  
 
   const getFacility = async () => {
     const response = await axios.get(
@@ -29,7 +31,7 @@ const FacilityDetails = () => {
           <div className="flex flex-col items-start justify-start w-2/3">
             <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-xl hover:scale-[1.02] duration-300">
               <img
-                src={facility?.photo}
+                src={facility?.photo[0]}
                 alt="arrow-down"
                 className="w-full rounded-lg aspect-video object-cover "
               />
@@ -67,7 +69,7 @@ const FacilityDetails = () => {
                 >
                   <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
                     <img
-                      src={`${jobpost.picture}`}
+                      src={`${jobpost.picture[0]}`}
                       alt="arrow-down"
                       className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
                     />
@@ -177,12 +179,7 @@ const FacilityDetails = () => {
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   法人・施設名
                 </p>
-                <Link
-                  to={`/facility/${facility?.facility_id}`}
-                  className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
-                >
-                  {facility?.name}
-                </Link>
+                {facility?.name}
               </div>
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
@@ -208,6 +205,14 @@ const FacilityDetails = () => {
                 </p>
                 <p className="lg:text-base text-sm text-[#343434] w-4/5">
                   <pre>{facility?.introduction}</pre>
+                </p>
+              </div>
+              <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+                <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                 郵便番号
+                </p>
+                <p className="lg:text-base text-sm text-[#343434] w-4/5">
+                  <pre>{facility?.postal_code}</pre>
                 </p>
               </div>
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
@@ -266,7 +271,7 @@ const FacilityDetails = () => {
                 </p>
                 <p className="lg:text-base text-sm text-[#343434] w-4/5">
                   {facility?.establishment_date.split("-")[0]}年
-                  {facility?.establishment_date.split("-")[1]}日
+                  {facility?.establishment_date.split("-")[1]}月
                 </p>
               </div>
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
