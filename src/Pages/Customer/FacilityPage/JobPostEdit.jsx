@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import {
   EmploymentType,
@@ -13,7 +13,6 @@ import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
 import { getBase64 } from "../../../utils/getBase64";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { useEffect } from "react";
 import EditorComponent from "../../../components/EditorComponent";
 import Loading from "../../../components/Loading";
 
@@ -23,7 +22,7 @@ const JobPostEdit = () => {
   const [jobPostType, setJobPostType] = useState("");
   const [jobPostTypeDetail, setJobPostTypeDetail] = useState("");
   const [jobPostPicture, setJobPostPicture] = useState([]);
-  const [jobPostPictureUrl, setJobPostPictureUrl] = useState("");
+  const [jobPostPictureUrl, setJobPostPictureUrl] = useState([]);
   const [jobPostSubTitle, setJobPostSubTitle] = useState("");
   const [jobPostSubDescription, setJobPostSubDescription] = useState("");
   const [jobPostWorkItem, setJobPostWorkItem] = useState([]);
@@ -45,20 +44,16 @@ const JobPostEdit = () => {
   const [jobPostSpecialContent, setJobPostSpecialContent] = useState("");
   const [jobPostEducationContent, setJobPostEducationContent] = useState("");
   const [jobPostQualificationType, setJobPostQualificationType] = useState([]);
-  const [jobPostQualificationOther, setJobPostQualificationOther] =
-    useState("");
-  const [jobPostQualificationContent, setJobPostQualificationContent] =
-    useState("");
-  const [jobPostQualificationWelcome, setJobPostQualificationWelcome] =
-    useState("");
+  const [jobPostQualificationOther, setJobPostQualificationOther] = useState("");
+  const [jobPostQualificationContent, setJobPostQualificationContent] = useState("");
+  const [jobPostQualificationWelcome, setJobPostQualificationWelcome] = useState("");
   const [jobPostProcess, setJobPostProcess] = useState("");
-  const [successModalOpen, setSuccessModalOpen] = useState("");
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const navigate = useNavigate();
-
   const { pathname } = useLocation();
   const jobPostId = pathname.split("/").pop();
 
@@ -67,10 +62,7 @@ const JobPostEdit = () => {
   };
 
   const jobTypesOptions = [
-    {
-      label: "選択する",
-      value: "",
-    },
+    { label: "選択する", value: "" },
     ...Object.keys(JobType).map((type) => ({
       value: type,
       label: type,
@@ -79,10 +71,7 @@ const JobPostEdit = () => {
 
   const jobTypeDetailOptions = (jobType) => {
     return [
-      {
-        label: "選択する",
-        value: "",
-      },
+      { label: "選択する", value: "" },
       ...Object.keys(JobType[jobType]).map((type) => ({
         value: type,
         label: type,
@@ -121,12 +110,12 @@ const JobPostEdit = () => {
     label: salaryType,
   }));
 
-  const jobPostTreatmentTypeOptions = Object.keys(
-    Features.SALARY_BENEFITS_WELFARE
-  ).map((treatmentType) => ({
-    value: treatmentType,
-    label: treatmentType,
-  }));
+  const jobPostTreatmentTypeOptions = Object.keys(Features.SALARY_BENEFITS_WELFARE).map(
+    (treatmentType) => ({
+      value: treatmentType,
+      label: treatmentType,
+    })
+  );
 
   const jobPostWorkTimeTypeOptions = Object.keys(Features.WORKING_HOURS).map(
     (workTimeType) => ({
@@ -149,19 +138,19 @@ const JobPostEdit = () => {
     })
   );
 
-  const jobPostQualificationTypeOptions = Object.keys(
-    Qualifications.REQUIRED
-  ).map((qualificationType) => ({
-    value: qualificationType,
-    label: qualificationType,
-  }));
+  const jobPostQualificationTypeOptions = Object.keys(Qualifications.REQUIRED).map(
+    (qualificationType) => ({
+      value: qualificationType,
+      label: qualificationType,
+    })
+  );
 
-  const jobPostQualificationOtherOptions = Object.keys(
-    Qualifications.OTHERS
-  ).map((qualificationOther) => ({
-    value: qualificationOther,
-    label: qualificationOther,
-  }));
+  const jobPostQualificationOtherOptions = Object.keys(Qualifications.OTHERS).map(
+    (qualificationOther) => ({
+      value: qualificationOther,
+      label: qualificationOther,
+    })
+  );
 
   const beforeUpload = () => {
     return false;
@@ -171,22 +160,19 @@ const JobPostEdit = () => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
-
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
   };
 
+  // 複数アップロードに対応（最大10枚まで）
   const handleChange = (info) => {
     let updatedFileList = [...info.fileList];
-
-    // Limit the number of files to 1
-    if (updatedFileList.length > 1) {
-      updatedFileList = updatedFileList.slice(-1);
+    if (updatedFileList.length > 10) {
+      updatedFileList = updatedFileList.slice(0, 10);
+      message.error("10枚まで選択できます");
     }
-
     setJobPostPicture(updatedFileList);
 
-    // Provide feedback on upload status
     if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === "error") {
@@ -194,17 +180,18 @@ const JobPostEdit = () => {
     }
   };
 
+  // 複数ファイルアップロード対応の実装
   const handleUpload = async () => {
     if (jobPostPicture.length === 0) {
-      return;
+      return [];
     }
-
     const formData = new FormData();
-    formData.append("file", jobPostPicture[0].originFileObj); // Use the correct file object
-
+    jobPostPicture.forEach((file) => {
+      formData.append("files", file.originFileObj);
+    });
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/file`,
+        `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
         formData,
         {
           headers: {
@@ -212,10 +199,12 @@ const JobPostEdit = () => {
           },
         }
       );
-      message.success("写真アップロード完了!");
-      return response.data.fileUrl;
+      message.success("写真のアップロードが完了しました");
+      const fileUrls = response.data.files.map((item) => item.fileUrl);
+      return fileUrls;
     } catch (error) {
       message.error("写真アップロード失敗");
+      return [];
     }
   };
 
@@ -225,73 +214,85 @@ const JobPostEdit = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`
       );
-      setJobPost(response.data.jobpost);
+      const jobData = response.data.jobpost;
+      setJobPost(jobData);
       setJobPostType(
-        Object.keys(JobType.医科).includes(response.data.jobpost.type)
+        Object.keys(JobType.医科).includes(jobData.type)
           ? "医科"
-          : Object.keys(JobType.歯科).includes(response.data.jobpost.type)
+          : Object.keys(JobType.歯科).includes(jobData.type)
           ? "歯科"
-          : Object.keys(JobType.薬剤師).includes(response.data.jobpost.type)
+          : Object.keys(JobType.薬剤師).includes(jobData.type)
           ? "薬剤師"
-          : Object.keys(JobType.看護婦).includes(response.data.jobpost.type)
+          : Object.keys(JobType.看護婦).includes(jobData.type)
           ? "看護婦"
-          : Object.keys(JobType.診療放射線技師).includes(
-              response.data.jobpost.type
-            )
-          ? "診療放射線技師"
-          : Object.keys(JobType.診療放射線技師).includes(
-              response.data.jobpost.type
-            )
+          : Object.keys(JobType.診療放射線技師).includes(jobData.type)
           ? "診療放射線技師"
           : ""
       );
-      setJobPostTypeDetail(response.data.jobpost.type);
-      setJobPostPictureUrl(response.data.jobpost.picture);
-      setJobPostSubTitle(response.data.jobpost.sub_title);
-      setJobPostSubDescription(response.data.jobpost.sub_description);
-      setJobPostWorkItem(response.data.jobpost.work_item);
-      setJobPostWorkContent(response.data.jobpost.work_content);
-      setJobPostServiceSubject(response.data.jobpost.service_subject);
-      setJobPostServiceType(response.data.jobpost.service_type);
-      setJobPostEmploymentType(response.data.jobpost.employment_type);
-      setJobPostSalaryType(response.data.jobpost.salary_type);
-      setJobPostSalaryMin(response.data.jobpost.salary_min);
-      setJobPostSalaryMax(response.data.jobpost.salary_max);
-      setJobPostSalaryRemarks(response.data.jobpost.salary_remarks);
-      setJobPostExpectedIncome(response.data.jobpost.expected_income);
-      setJobPostTreatmentType(response.data.jobpost.treatment_type);
-      setJobPostTreatmentContent(response.data.jobpost.treatment_content);
-      setJobPostWorkTimeType(response.data.jobpost.work_time_type);
-      setJobPostWorkTimeContent(response.data.jobpost.work_time_content);
-      setJobPostRestType(response.data.jobpost.rest_type);
-      setJobPostRestContent(response.data.jobpost.rest_content);
-      setJobPostSpecialContent(response.data.jobpost.special_content);
-      setJobPostEducationContent(response.data.jobpost.education_content);
-      setJobPostQualificationType(response.data.jobpost.qualification_type);
-      setJobPostQualificationOther(response.data.jobpost.qualification_other);
-      setJobPostQualificationContent(
-        response.data.jobpost.qualification_content
-      );
-      setJobPostQualificationWelcome(
-        response.data.jobpost.qualification_welcome
-      );
-      setJobPostProcess(response.data.jobpost.process);
+      setJobPostTypeDetail(jobData.type);
+      
+      // 既存の画像 URL を Upload 用のファイルリストに変換する
+      if (jobData.picture) {
+        const initialFileList = Array.isArray(jobData.picture)
+          ? jobData.picture.map((url, index) => ({
+              uid: `existing-${index}`,
+              name: `image-${index}`,
+              status: "done",
+              url: url,
+            }))
+          : [{
+              uid: "existing-0",
+              name: "image-0",
+              status: "done",
+              url: jobData.picture,
+            }];
+        setJobPostPicture(initialFileList);
+        setJobPostPictureUrl(Array.isArray(jobData.picture) ? jobData.picture : [jobData.picture]);
+      }
+      
+      setJobPostSubTitle(jobData.sub_title);
+      setJobPostSubDescription(jobData.sub_description);
+      setJobPostWorkItem(jobData.work_item);
+      setJobPostWorkContent(jobData.work_content);
+      setJobPostServiceSubject(jobData.service_subject);
+      setJobPostServiceType(jobData.service_type);
+      setJobPostEmploymentType(jobData.employment_type);
+      setJobPostSalaryType(jobData.salary_type);
+      setJobPostSalaryMin(jobData.salary_min);
+      setJobPostSalaryMax(jobData.salary_max);
+      setJobPostSalaryRemarks(jobData.salary_remarks);
+      setJobPostExpectedIncome(jobData.expected_income);
+      setJobPostTreatmentType(jobData.treatment_type);
+      setJobPostTreatmentContent(jobData.treatment_content);
+      setJobPostWorkTimeType(jobData.work_time_type);
+      setJobPostWorkTimeContent(jobData.work_time_content);
+      setJobPostRestType(jobData.rest_type);
+      setJobPostRestContent(jobData.rest_content);
+      setJobPostSpecialContent(jobData.special_content);
+      setJobPostEducationContent(jobData.education_content);
+      setJobPostQualificationType(jobData.qualification_type);
+      setJobPostQualificationOther(jobData.qualification_other);
+      setJobPostQualificationContent(jobData.qualification_content);
+      setJobPostQualificationWelcome(jobData.qualification_welcome);
+      setJobPostProcess(jobData.process);
     } catch (error) {
-      console.error("Error fetching facility data:", error);
+      console.error("Error fetching job post data:", error);
     } finally {
-      setLoading(false); // Set loading to false after fetching
+      setLoading(false);
     }
   };
-
-  console.log(jobPost);
+  
 
   const handleSave = async () => {
-    const pictureUrl = await handleUpload();
+    const pictureUrls = await handleUpload();
+    // pictureUrls が存在すればそちら、なければ既存のURLをそのまま利用
+    const finalPicture =
+      pictureUrls.length > 0 ? pictureUrls : jobPostPictureUrl;
     const JobPostData = {
       facility_id: jobPost.facility_id.facility_id,
       customer_id: jobPost.customer_id.customer_id,
       type: jobPostTypeDetail,
-      picture: pictureUrl ? pictureUrl : jobPostPictureUrl,
+      picture: finalPicture,
       sub_title: jobPostSubTitle,
       sub_description: jobPostSubDescription,
       work_item: jobPostWorkItem,
@@ -324,7 +325,7 @@ const JobPostEdit = () => {
       JobPostData
     );
     if (response.data.error) message.error(response.data.error);
-    message.success("求人を更新しました");
+    else message.success("求人を更新しました");
     navigate("/customers/facility");
   };
 
@@ -378,14 +379,9 @@ const JobPostEdit = () => {
             <span className="lg:text-sm text-xs text-[#343434]">写真</span>
           </div>
           <div className="flex items-center justify-start gap-2">
-            {jobPostPicture.length == 0 && (
-              <img
-                src={jobPostPictureUrl}
-                alt="施設写真"
-                className="w-32 h-32 rounded-lg"
-              />
-            )}
+            
             <Upload
+              maxCount={10}
               name="avatar"
               listType="picture-card"
               fileList={jobPostPicture}
@@ -400,10 +396,10 @@ const JobPostEdit = () => {
             </Upload>
           </div>
         </div>
+        {/* 以下、各入力項目のフォーム */}
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-            訴求文タイトル
-            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            訴求文タイトル<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <Input
             value={jobPostSubTitle}
@@ -423,8 +419,7 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-start mt-4 desireEmployment">
           <p className="lg:text-sm text-xs w-1/5">
-            仕事内容（選択）
-            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            仕事内容（選択）<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <Checkbox.Group
             options={workItemOptions}
@@ -489,8 +484,7 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-            給与下限・上限
-            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            給与下限・上限<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <div className="flex items-center justify-start w-4/5">
             <Input
@@ -550,8 +544,7 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">
-            勤務時間・休憩時間
-            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            勤務時間・休憩時間<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <TextArea
             value={jobPostWorkTimeContent}
@@ -597,8 +590,7 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-start mt-4 desireEmployment">
           <p className="lg:text-sm text-xs w-1/5">
-            応募要件（資格）
-            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            応募要件（資格）<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <Checkbox.Group
             options={jobPostQualificationTypeOptions}
@@ -634,8 +626,7 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">
-            選考プロセス
-            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            選考プロセス<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <TextArea
             value={jobPostProcess}
@@ -679,10 +670,7 @@ const JobPostEdit = () => {
           <p className="text-sm text-[#343434]">
             ※掲載された内容を事務局により修正される場合がございます。
           </p>
-          <Link
-            to="/customers/facility"
-            className="text-center text-blue-500 mt-4"
-          >
+          <Link to="/customers/facility" className="text-center text-blue-500 mt-4">
             求人一覧へ戻る
           </Link>
         </div>

@@ -33,7 +33,7 @@ const AddJobPost = () => {
   const [jobPostSalaryMax, setJobPostSalaryMax] = useState(0);
   const [jobPostSalaryMin, setJobPostSalaryMin] = useState(0);
   const [jobPostSalaryRemarks, setJobPostSalaryRemarks] = useState("");
-  const [jobPostExpectedIncome, setJobPostExpectedIncome] = useState(0);
+  const [jobPostExpectedIncome, setJobPostExpectedIncome] = useState(null);
   const [jobPostTreatmentType, setJobPostTreatmentType] = useState([]);
   const [jobPostTreatmentContent, setJobPostTreatmentContent] = useState("");
   const [jobPostWorkTimeType, setJobPostWorkTimeType] = useState([]);
@@ -182,15 +182,12 @@ const AddJobPost = () => {
 
   const handleChange = (info) => {
     let updatedFileList = [...info.fileList];
-
-    // Limit the number of files to 1
-    if (updatedFileList.length > 1) {
-      updatedFileList = updatedFileList.slice(-1);
+    if (updatedFileList.length > 10) {
+      updatedFileList.pop();
+      message.error("10枚まで選択できます");
     }
-
     setJobPostPicture(updatedFileList);
 
-    // Provide feedback on upload status
     if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === "error") {
@@ -200,15 +197,16 @@ const AddJobPost = () => {
 
   const handleUpload = async () => {
     if (jobPostPicture.length === 0) {
-      return;
+      return [];
     }
-
     const formData = new FormData();
-    formData.append("file", jobPostPicture[0].originFileObj); // Use the correct file object
-
+    jobPostPicture.forEach((file) => {
+      formData.append("files", file.originFileObj);
+    });
+  
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/file`,
+        `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
         formData,
         {
           headers: {
@@ -216,10 +214,13 @@ const AddJobPost = () => {
           },
         }
       );
-      message.success("写真アップロード完了!");
-      return response.data.fileUrl;
+      message.success("写真のアップロードが完了しました");
+      // アップロード後のURL配列を返す（バックエンドの仕様に合わせてください）
+      const fileUrls = response.data.files.map((item) => item.fileUrl);
+      return fileUrls;
     } catch (error) {
-      message.error("写真アップロード失敗");
+      message.error("写真のアップロードに失敗しました");
+      return [];
     }
   };
 
@@ -248,13 +249,14 @@ const AddJobPost = () => {
       return message.error("応募要件（資格）を選択してください。");
     if (jobPostProcess === "")
       return message.error("選考プロセスを入力してください。");
-    const pictureUrl = await handleUpload();
+
+    const pictureUrls = await handleUpload();
 
     const JobPostData = {
       facility_id: facility.facility_id,
       customer_id: customer.customer_id,
       type: jobPostTypeDetail,
-      picture: pictureUrl,
+      picture: pictureUrls, // 複数のURLが配列で渡される
       sub_title: jobPostSubTitle,
       sub_description: jobPostSubDescription,
       work_item: jobPostWorkItem,
@@ -287,7 +289,9 @@ const AddJobPost = () => {
       JobPostData
     );
     if (response.data.error) message.error(response.data.error);
-    message.success("求人を登録しました");
+    else message.success("求人を登録しました");
+    
+    // 各フォームのリセット
     setJobPostType("");
     setJobPostTypeDetail("");
     setJobPostPicture([]);
@@ -366,6 +370,7 @@ const AddJobPost = () => {
           </div>
           <div className="flex items-center justify-start gap-2">
             <Upload
+              maxCount={10}
               name="avatar"
               listType="picture-card"
               fileList={jobPostPicture}
@@ -480,12 +485,14 @@ const AddJobPost = () => {
               onChange={(e) => setJobPostSalaryMin(e.target.value)}
               className="w-1/4"
             />
+            <span className="mx-2 lg:text-sm text-xs">円</span>
             <span className="mx-2">~</span>
             <Input
               value={jobPostSalaryMax}
               onChange={(e) => setJobPostSalaryMax(e.target.value)}
               className="w-1/4"
             />
+            <span className="mx-2 lg:text-sm text-xs">円</span>
           </div>
         </div>
         <div className="flex items-start mt-4 textarea">
@@ -638,7 +645,7 @@ const AddJobPost = () => {
             className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300"
             onClick={handleSubmit}
           >
-            求人を登録する
+            求人を申請する
           </button>
         </div>
       </div>
