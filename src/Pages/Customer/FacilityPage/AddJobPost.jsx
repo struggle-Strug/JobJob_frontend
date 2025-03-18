@@ -229,7 +229,7 @@ const AddJobPost = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (allowed) => {
     if (jobPostTypeDetail === "")
       return message.error("募集職種を選択してください。");
     if (jobPostSubTitle === "")
@@ -246,6 +246,14 @@ const AddJobPost = () => {
       return message.error("給与体系を入力してください。");
     if (jobPostSalaryMin === 0 || jobPostSalaryMax === 0)
       return message.error("給与下限・上限を入力してください。");
+    if (
+      isNaN(jobPostSalaryMin) ||
+      isNaN(jobPostSalaryMax) ||
+      isNaN(jobPostExpectedIncome)
+    )
+      return message.error(
+        "給与下限・上限、想定年収を正しく入力してください。"
+      );
     if (jobPostWorkTimeContent === "")
       return message.error("勤務時間・休憩時間を入力してください。");
     if (jobPostRestContent === "")
@@ -286,6 +294,7 @@ const AddJobPost = () => {
       qualification_other: jobPostQualificationOther,
       qualification_content: jobPostQualificationContent,
       qualification_welcome: jobPostQualificationWelcome,
+      allowed: allowed ? "pending" : "draft",
       process: jobPostProcess,
     };
 
@@ -648,9 +657,15 @@ const AddJobPost = () => {
           </Link>
           <button
             className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(false)}
           >
-            求人を申請する
+            下書き保存
+          </button>
+          <button
+            className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300"
+            onClick={() => handleSubmit(true)}
+          >
+            掲載を申請する
           </button>
         </div>
       </div>
