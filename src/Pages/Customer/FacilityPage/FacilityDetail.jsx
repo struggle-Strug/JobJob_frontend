@@ -102,11 +102,19 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
     <>
       <div className="flex flex-col p-4">
         <div className="flex items-start justify-start gap-4">
-          <img
-            src={facility.photo[0]}
-            alt={facility.name}
-            className="w-1/5 object-cover rounded-lg"
-          />
+          {facility.photo.length === 0 ? (
+            <img
+              src={"/assets/images/noimage.png"}
+              alt={facility.name}
+              className="w-1/5 object-cover rounded-lg"
+            />
+          ) : (
+            <img
+              src={facility.photo[0]}
+              alt={facility.name}
+              className="w-1/5 object-cover rounded-lg"
+            />
+          )}
           <div className="flex flex-col items-start w-4/5">
             <div className="flex justify-between w-full">
               <p className="lg:text-xs text-[0.5rem] py-1 px-2 bg-[#FF2A3B] text-white rounded-lg">
@@ -226,11 +234,19 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
               className="flex items-center justify-start gap-2 p-2"
             >
               <div className="flex flex-col gap-1 w-1/6">
-                <img
-                  src={jobPost?.picture[0]}
-                  alt={jobPost?.sub_title}
-                  className="w-full object-cover rounded-lg"
-                />
+                {jobPost?.picture.length === 0 ? (
+                  <img
+                    src={"/assets/images/noimage.png"}
+                    alt={jobPost?.sub_title}
+                    className="w-full object-cover rounded-lg"
+                  />
+                ) : (
+                  <img
+                    src={jobPost?.picture[0]}
+                    alt={jobPost?.sub_title}
+                    className="w-full object-cover rounded-lg"
+                  />
+                )}
                 <p className="lg:text-xs text-[0.5rem] p-2 bg-[#FF2A3B] text-white rounded-lg text-center">
                   {jobPost?.allowed === "draft"
                     ? "下書き"
