@@ -44,10 +44,14 @@ const JobPostEdit = () => {
   const [jobPostSpecialContent, setJobPostSpecialContent] = useState("");
   const [jobPostEducationContent, setJobPostEducationContent] = useState("");
   const [jobPostQualificationType, setJobPostQualificationType] = useState([]);
-  const [jobPostQualificationOther, setJobPostQualificationOther] = useState("");
-  const [jobPostQualificationContent, setJobPostQualificationContent] = useState("");
-  const [jobPostQualificationWelcome, setJobPostQualificationWelcome] = useState("");
+  const [jobPostQualificationOther, setJobPostQualificationOther] =
+    useState("");
+  const [jobPostQualificationContent, setJobPostQualificationContent] =
+    useState("");
+  const [jobPostQualificationWelcome, setJobPostQualificationWelcome] =
+    useState("");
   const [jobPostProcess, setJobPostProcess] = useState("");
+  const [status, setStatus] = useState("");
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -110,12 +114,12 @@ const JobPostEdit = () => {
     label: salaryType,
   }));
 
-  const jobPostTreatmentTypeOptions = Object.keys(Features.SALARY_BENEFITS_WELFARE).map(
-    (treatmentType) => ({
-      value: treatmentType,
-      label: treatmentType,
-    })
-  );
+  const jobPostTreatmentTypeOptions = Object.keys(
+    Features.SALARY_BENEFITS_WELFARE
+  ).map((treatmentType) => ({
+    value: treatmentType,
+    label: treatmentType,
+  }));
 
   const jobPostWorkTimeTypeOptions = Object.keys(Features.WORKING_HOURS).map(
     (workTimeType) => ({
@@ -138,19 +142,19 @@ const JobPostEdit = () => {
     })
   );
 
-  const jobPostQualificationTypeOptions = Object.keys(Qualifications.REQUIRED).map(
-    (qualificationType) => ({
-      value: qualificationType,
-      label: qualificationType,
-    })
-  );
+  const jobPostQualificationTypeOptions = Object.keys(
+    Qualifications.REQUIRED
+  ).map((qualificationType) => ({
+    value: qualificationType,
+    label: qualificationType,
+  }));
 
-  const jobPostQualificationOtherOptions = Object.keys(Qualifications.OTHERS).map(
-    (qualificationOther) => ({
-      value: qualificationOther,
-      label: qualificationOther,
-    })
-  );
+  const jobPostQualificationOtherOptions = Object.keys(
+    Qualifications.OTHERS
+  ).map((qualificationOther) => ({
+    value: qualificationOther,
+    label: qualificationOther,
+  }));
 
   const beforeUpload = () => {
     return false;
@@ -230,7 +234,7 @@ const JobPostEdit = () => {
           : ""
       );
       setJobPostTypeDetail(jobData.type);
-      
+
       // 既存の画像 URL を Upload 用のファイルリストに変換する
       if (jobData.picture) {
         const initialFileList = Array.isArray(jobData.picture)
@@ -240,16 +244,20 @@ const JobPostEdit = () => {
               status: "done",
               url: url,
             }))
-          : [{
-              uid: "existing-0",
-              name: "image-0",
-              status: "done",
-              url: jobData.picture,
-            }];
+          : [
+              {
+                uid: "existing-0",
+                name: "image-0",
+                status: "done",
+                url: jobData.picture,
+              },
+            ];
         setJobPostPicture(initialFileList);
-        setJobPostPictureUrl(Array.isArray(jobData.picture) ? jobData.picture : [jobData.picture]);
+        setJobPostPictureUrl(
+          Array.isArray(jobData.picture) ? jobData.picture : [jobData.picture]
+        );
       }
-      
+
       setJobPostSubTitle(jobData.sub_title);
       setJobPostSubDescription(jobData.sub_description);
       setJobPostWorkItem(jobData.work_item);
@@ -275,13 +283,13 @@ const JobPostEdit = () => {
       setJobPostQualificationContent(jobData.qualification_content);
       setJobPostQualificationWelcome(jobData.qualification_welcome);
       setJobPostProcess(jobData.process);
+      setStatus(jobData.allowed);
     } catch (error) {
       console.error("Error fetching job post data:", error);
     } finally {
       setLoading(false);
     }
   };
-  
 
   const handleSave = async () => {
     const pictureUrls = await handleUpload();
@@ -329,12 +337,22 @@ const JobPostEdit = () => {
     navigate("/customers/facility");
   };
 
-  const handleRequestAllow = async () => {
+  const handleRequest = async (status) => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}/pending`
+      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}/${status}`
     );
     if (response.data.error) message.error(response.data.error);
-    setSuccessModalOpen(true);
+    if (status === "pending") {
+      setSuccessModalOpen(true);
+    }
+  };
+
+  const handleDelete = async () => {
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`
+    );
+    if (response.data.error) message.error(response.data.error);
+    navigate("/customers/facility");
   };
 
   useEffect(() => {
@@ -379,7 +397,6 @@ const JobPostEdit = () => {
             <span className="lg:text-sm text-xs text-[#343434]">写真</span>
           </div>
           <div className="flex items-center justify-start gap-2">
-            
             <Upload
               maxCount={10}
               name="avatar"
@@ -399,7 +416,8 @@ const JobPostEdit = () => {
         {/* 以下、各入力項目のフォーム */}
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-            訴求文タイトル<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            訴求文タイトル
+            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <Input
             value={jobPostSubTitle}
@@ -419,7 +437,8 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-start mt-4 desireEmployment">
           <p className="lg:text-sm text-xs w-1/5">
-            仕事内容（選択）<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            仕事内容（選択）
+            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <Checkbox.Group
             options={workItemOptions}
@@ -484,7 +503,8 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-            給与下限・上限<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            給与下限・上限
+            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <div className="flex items-center justify-start w-4/5">
             <Input
@@ -544,7 +564,8 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">
-            勤務時間・休憩時間<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            勤務時間・休憩時間
+            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <TextArea
             value={jobPostWorkTimeContent}
@@ -590,7 +611,8 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-start mt-4 desireEmployment">
           <p className="lg:text-sm text-xs w-1/5">
-            応募要件（資格）<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            応募要件（資格）
+            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <Checkbox.Group
             options={jobPostQualificationTypeOptions}
@@ -626,7 +648,8 @@ const JobPostEdit = () => {
         </div>
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">
-            選考プロセス<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            選考プロセス
+            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <TextArea
             value={jobPostProcess}
@@ -638,18 +661,76 @@ const JobPostEdit = () => {
           <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">
             プレビュー
           </button>
-          <button
-            className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-            onClick={handleSave}
-          >
-            下書き保存
-          </button>
-          <button
-            className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-            onClick={handleRequestAllow}
-          >
-            掲載を申請する
-          </button>
+          {status === "draft" && (
+            <>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleSave}
+              >
+                下書き保存
+              </button>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={() => handleRequest("pending")}
+              >
+                掲載を申請する
+              </button>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleDelete}
+              >
+                掲載を削除する
+              </button>
+            </>
+          )}
+          {status === "pending" && (
+            <>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleSave}
+              >
+                下書き保存
+              </button>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleDelete}
+              >
+                掲載を削除する
+              </button>
+            </>
+          )}
+          {status === "allowed" && (
+            <>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={() => handleRequest("ended")}
+              >
+                掲載を終了する
+              </button>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleDelete}
+              >
+                掲載を削除する
+              </button>
+            </>
+          )}
+          {status === "ended" && (
+            <>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={() => handleRequest("pending")}
+              >
+                掲載を申請する
+              </button>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleDelete}
+              >
+                掲載を削除する
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -670,7 +751,10 @@ const JobPostEdit = () => {
           <p className="text-sm text-[#343434]">
             ※掲載された内容を事務局により修正される場合がございます。
           </p>
-          <Link to="/customers/facility" className="text-center text-blue-500 mt-4">
+          <Link
+            to="/customers/facility"
+            className="text-center text-blue-500 mt-4"
+          >
             求人一覧へ戻る
           </Link>
         </div>
