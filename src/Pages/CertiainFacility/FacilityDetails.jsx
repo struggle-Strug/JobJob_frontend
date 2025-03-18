@@ -1,6 +1,6 @@
 import { message } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, React } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getJobValueByKey } from "../../utils/getFunctions";
 import { Facilities } from "../../utils/constants/categories";
@@ -193,12 +193,7 @@ const FacilityDetails = () => {
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   法人・施設名
                 </p>
-                <Link
-                  to={`/facility/${facility?.facility_id}`}
-                  className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
-                >
-                  {facility?.name}
-                </Link>
+                {facility?.name}
               </div>
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
@@ -224,6 +219,14 @@ const FacilityDetails = () => {
                 </p>
                 <p className="lg:text-base text-sm text-[#343434] w-4/5">
                   <pre>{facility?.introduction}</pre>
+                </p>
+              </div>
+              <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+                <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                  郵便番号
+                </p>
+                <p className="lg:text-base text-sm text-[#343434] w-4/5">
+                  <pre>{facility?.postal_code}</pre>
                 </p>
               </div>
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
