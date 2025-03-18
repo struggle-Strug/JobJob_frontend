@@ -218,7 +218,8 @@ const FacilityEdit = () => {
     }
   }, []);
   
-
+/*
+// 施設編集の保存処理
   const handleSave = async () => {
     const photoUrl = await handleUpload();
 
@@ -259,7 +260,7 @@ const FacilityEdit = () => {
     message.success(response.data.message);
     navigate(`/customers/facility`);
   };
-
+*/
   const handleRequestAllow = async () => {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}/pending`
@@ -449,12 +450,6 @@ const FacilityEdit = () => {
             onClick={() => setPreviewModal(true)}
           >
             プレビュー
-          </button>
-          <button
-            className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-            onClick={handleSave}
-          >
-            保存
           </button>
           {facility?.allowed === "draft" && (
             <button
