@@ -25,10 +25,6 @@ const MyPage = () => {
                     <p className="lg:text-xl md:text-lg text-base font-bold text-[#343434]">新着求人メール</p>
                     <button className="text-center lg:text-sm md:text-xs text-xs bg-gray-200 hover:bg-gray-100 text-[#FF2A3B] p-1 rounded-lg">もっと見る</button>
                 </div>
-                <div className="flex items-center justify-between gap-4 w-full bg-white rounded-lg py-4 px-4 mt-4 shadow-xl">
-                    <p className="lg:text-xl md:text-lg text-base font-bold text-[#343434]">ブロック中の企業・法人</p>
-                    <button className="text-center lg:text-sm md:text-xs text-xs bg-gray-200 hover:bg-gray-100 text-[#FF2A3B] p-1 rounded-lg">詳細を見る</button>
-                </div>
             </div>
         </>
     )

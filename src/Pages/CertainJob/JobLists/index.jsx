@@ -506,7 +506,7 @@ const JobLists = () => {
                   >
                     <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
                       <img
-                        src={`${jobpost.picture}`}
+                        src={`${jobpost.picture[0]}`}
                         alt="arrow-down"
                         className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
                       />
@@ -554,11 +554,6 @@ const JobLists = () => {
                             </p>
                             <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
                               {jobpost.facility_id.access_text}
-                            </p>
-                          </div>
-                          <div className="flex items-start justify-start mt-4">
-                            <p className="lg:text-sm md:text-xs font-bold text-[#FF2A3B]">
-                              勤続支援金 &nbsp;&nbsp;正職員12,500円 ~ 16,000円
                             </p>
                           </div>
                         </div>
