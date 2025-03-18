@@ -216,18 +216,24 @@ const Register = () => {
               setDay={setDay}
             />
           )}
-          {step === 5 && <Step6
+          {step === 5 && (
+            <Step6
               setPhoneNumber={setPhoneNumber}
               setEmail={setEmail}
               setPassword={setPassword}
               setPasswordConfirm={setPasswordConfirm}
             />
-          }
+          )}
           {/* 入力部分とボタンの間は、元々の隙間（mt-12）を残す */}
           <div className="mt-12 w-full">
             {step === 5 && (
               <p className="text-sm text-center mb-2">
-                <Link to="/rule" className="text-[#FF2A3B] hover:underline">
+                <Link
+                  to="/rule"
+                  className="text-[#FF2A3B] hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   利用規約・個人情報の取り扱い
                 </Link>
                 に同意の上、ご登録ください
