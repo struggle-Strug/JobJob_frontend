@@ -15,6 +15,7 @@ import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import EditorComponent from "../../../components/EditorComponent";
 
 const AddJobPost = () => {
   const { customer } = useAuth();
@@ -69,6 +70,10 @@ const AddJobPost = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const facilityId = pathname.split("/")[3];
+
+  const editorStyle = {
+    width: "80%",
+  };
 
   const jobTypesOptions = [
     {
@@ -203,7 +208,7 @@ const AddJobPost = () => {
     jobPostPicture.forEach((file) => {
       formData.append("files", file.originFileObj);
     });
-  
+
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
@@ -290,7 +295,7 @@ const AddJobPost = () => {
     );
     if (response.data.error) message.error(response.data.error);
     else message.success("求人を登録しました");
-    
+
     // 各フォームのリセット
     setJobPostType("");
     setJobPostTypeDetail("");
@@ -400,10 +405,10 @@ const AddJobPost = () => {
           <p className="lg:text-sm text-xs w-1/5">
             訴求文<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
-          <TextArea
-            value={jobPostSubDescription}
-            onChange={(e) => setJobPostSubDescription(e.target.value)}
-            className="w-4/5"
+          <EditorComponent
+            editorValue={jobPostSubDescription}
+            onEditorChange={(value) => setJobPostSubDescription(value)}
+            editorStyle={editorStyle}
           />
         </div>
         <div className="flex items-start mt-4 desireEmployment">

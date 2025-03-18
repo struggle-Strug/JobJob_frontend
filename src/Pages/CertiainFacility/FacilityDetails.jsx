@@ -5,12 +5,10 @@ import { Link, useLocation } from "react-router-dom";
 import { getJobValueByKey } from "../../utils/getFunctions";
 import { Facilities } from "../../utils/constants/categories";
 
-
 const FacilityDetails = () => {
   const { pathname } = useLocation();
   const [facility, setFacility] = useState(null);
   const facility_id = pathname.split("/")[3];
-  
 
   const getFacility = async () => {
     const response = await axios.get(
@@ -30,11 +28,19 @@ const FacilityDetails = () => {
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-start justify-start w-2/3">
             <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-xl hover:scale-[1.02] duration-300">
-              <img
-                src={facility?.photo[0]}
-                alt="arrow-down"
-                className="w-full rounded-lg aspect-video object-cover "
-              />
+              {facility?.photo?.length === 0 ? (
+                <img
+                  src={"/assets/images/noimage.png"}
+                  alt="arrow-down"
+                  className="w-full rounded-lg aspect-video object-cover "
+                />
+              ) : (
+                <img
+                  src={facility?.photo}
+                  alt="arrow-down"
+                  className="w-full rounded-lg aspect-video object-cover "
+                />
+              )}
               <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
                 <p className="lg:text-xl md:text-sm text-[#343434]">
                   <span className="lg:text-2xl md:text-xl font-bold">
@@ -68,11 +74,19 @@ const FacilityDetails = () => {
                   className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8"
                 >
                   <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
-                    <img
-                      src={`${jobpost.picture[0]}`}
-                      alt="arrow-down"
-                      className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
-                    />
+                    {jobpost.picture.length === 0 ? (
+                      <img
+                        src={"/assets/images/noimage.png"}
+                        alt="arrow-down"
+                        className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                      />
+                    ) : (
+                      <img
+                        src={`${jobpost.picture}`}
+                        alt="arrow-down"
+                        className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                      />
+                    )}
                     <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
                       <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
                         {facility?.name}の{jobpost.type}求人
@@ -209,7 +223,7 @@ const FacilityDetails = () => {
               </div>
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                 郵便番号
+                  郵便番号
                 </p>
                 <p className="lg:text-base text-sm text-[#343434] w-4/5">
                   <pre>{facility?.postal_code}</pre>
