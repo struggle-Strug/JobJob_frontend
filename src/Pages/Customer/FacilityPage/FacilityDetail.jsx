@@ -213,7 +213,11 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
             className={`lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-2 duration-300 ${
               facility.allowed !== "allowed" ? "cursor-not-allowed" : ""
             }`}
-            disabled={facility.allowed !== "allowed"}
+            onClick={(e) => {
+              if (facility.allowed !== "allowed") {
+                e.preventDefault(); // Prevent the link action
+              }
+            }}
           >
             求人を新規登録
           </Link>
