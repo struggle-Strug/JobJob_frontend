@@ -259,11 +259,20 @@ const CertaionFacility = () => {
                     className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl hover:scale-[1.02] duration-300"
                   >
                     <div className="flex items-center justify-between w-full">
-                      <img
-                        src={facility.photo[0]}
-                        alt="arrow-down"
-                        className="md:w-1/2 rounded-lg aspect-[3/2] object-cover"
-                      />
+                      {facility?.photo.length === 0 ? (
+                        <img
+                          src={"/assets/images/noimage.png"}
+                          alt="arrow-down"
+                          className="md:w-1/2 rounded-lg aspect-[3/2] object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={facility.photo}
+                          alt="arrow-down"
+                          className="md:w-1/2 rounded-lg aspect-[3/2] object-cover"
+                        />
+                      )}
+
                       <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
                         <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
                           {facility.name}

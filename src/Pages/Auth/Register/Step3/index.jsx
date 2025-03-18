@@ -133,6 +133,7 @@ const Step3 = ({
                 <Radio.Group
                   options={prefectureOptions_1}
                   onChange={onChange}
+                  value={prefecture}
                 />
               </div>
             </div>
@@ -164,6 +165,7 @@ const Step3 = ({
                 <Radio.Group
                   options={prefectureOptions_2}
                   onChange={onChange}
+                  value={prefecture}
                 />
               </div>
             </div>
@@ -195,6 +197,7 @@ const Step3 = ({
                 <Radio.Group
                   options={prefectureOptions_3}
                   onChange={onChange}
+                  value={prefecture}
                 />
               </div>
             </div>
@@ -226,6 +229,7 @@ const Step3 = ({
                 <Radio.Group
                   options={prefectureOptions_4}
                   onChange={onChange}
+                  value={prefecture}
                 />
               </div>
             </div>
@@ -257,6 +261,7 @@ const Step3 = ({
                 <Radio.Group
                   options={prefectureOptions_5}
                   onChange={onChange}
+                  value={prefecture}
                 />
               </div>
             </div>
@@ -288,6 +293,7 @@ const Step3 = ({
                 <Radio.Group
                   options={prefectureOptions_6}
                   onChange={onChange}
+                  value={prefecture}
                 />
               </div>
             </div>
@@ -319,6 +325,7 @@ const Step3 = ({
                 <Radio.Group
                   options={prefectureOptions_7}
                   onChange={onChange}
+                  value={prefecture}
                 />
               </div>
             </div>

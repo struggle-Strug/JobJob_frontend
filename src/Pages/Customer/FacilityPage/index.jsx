@@ -70,11 +70,19 @@ const FacilityPage = () => {
               className="flex w-full justify-start mt-3 gap-4 cursor-pointer hover:bg-[#e9e9e9] rounded-lg p-2 duration-300"
               onClick={() => onClick(facility?.facility_id)}
             >
-              <img
-                src={facility?.photo[0]}
-                alt={facility?.name}
-                className="w-1/3 object-cover rounded-lg"
-              />
+              {facility?.photo?.length === 0 ? (
+                <img
+                  src={"/assets/images/noimage.png"}
+                  alt={facility?.name}
+                  className="w-1/3 object-cover rounded-lg"
+                />
+              ) : (
+                <img
+                  src={facility?.photo[0]}
+                  alt={facility?.name}
+                  className="w-1/3 object-cover rounded-lg"
+                />
+              )}
               <p className="lg:text-sm text-xs">{facility?.name}</p>
             </div>
           ))}
