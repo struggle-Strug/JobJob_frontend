@@ -80,7 +80,7 @@ const JobDetails = () => {
     <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
       <div className="container flex items-start justify-between p-4 bg-white rounded-lg">
         <img
-          src={jobPost?.picture}
+          src={jobPost?.picture[0]}
           alt={jobPost?.sub_title}
           className="aspect-[2/1] object-cover rounded-lg"
         />
