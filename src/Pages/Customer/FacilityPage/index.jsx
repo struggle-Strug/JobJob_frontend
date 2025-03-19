@@ -15,7 +15,7 @@ const FacilityPage = () => {
 
   const getFacilities = useCallback(async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/v1/facility`
+      `${process.env.REACT_APP_API_URL}/api/v1/facility/customer`
     );
     setFacilities(response.data.facility);
   }, []);
