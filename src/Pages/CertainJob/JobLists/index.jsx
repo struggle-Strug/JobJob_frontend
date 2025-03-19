@@ -456,7 +456,7 @@ const JobLists = () => {
               </div>
               {/* 雇用形態・給与から選択（チェックボックス＋リンクエリア） */}
               <div
-                className="flex flex-col py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
+                className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
                 onClick={() => setEmploymentTypeModalOpen(true)}
               >
                 <div className="flex items-center justify-between gap-1 ">
@@ -465,32 +465,36 @@ const JobLists = () => {
                     alt="checkbox"
                     className="w-5 pt-0.5"
                   />
-                  <p className="lg:text-md md:text-sm font-bold text-[#343434]">
+                  <p className="lg:text-md md:text-sm font-bold text-[#343434] hover:text-[#FF2A3B]">
                     雇用形態・給与から選択
                   </p>
                 </div>
-                <div className="mt-2 text-xs text-[#999]">
-                  （下記モーダル内でチェックとリンクを別エリアで実装）
-                </div>
+                <img
+                  src="/assets/images/dashboard/ep_arrow-right_black.png"
+                  alt="arrow-down"
+                  className="w-4"
+                />
               </div>
               {/* 特徴から選択（チェックボックス＋リンクエリア） */}
               <div
-                className="flex flex-col py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
+                className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
                 onClick={() => setFeatureModalOpen(true)}
               >
                 <div className="flex items-center justify-between gap-1 ">
                   <img
-                    src="/assets/images/dashboard/mdi_tag-outline.png"
-                    alt="tag"
+                    src="/assets/images/dashboard/material-symbols_check-box-outline.png"
+                    alt="checkbox"
                     className="w-5 pt-0.5"
                   />
-                  <p className="lg:text-md md:text-sm font-bold text-[#343434]">
+                  <p className="lg:text-md md:text-sm font-bold text-[#343434] hover:text-[#FF2A3B]">
                     特徴から選択
                   </p>
                 </div>
-                <div className="mt-2 text-xs text-[#999]">
-                  （下記モーダル内でチェックとリンクを別エリアで実装）
-                </div>
+                <img
+                  src="/assets/images/dashboard/ep_arrow-right_black.png"
+                  alt="arrow-down"
+                  className="w-4"
+                />
               </div>
             </div>
             <div className="flex items-center justify-start w-full mt-8">
