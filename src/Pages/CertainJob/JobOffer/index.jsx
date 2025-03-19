@@ -699,6 +699,17 @@ const JobOffer = () => {
                   </div>
                 </div>
                 <div className="w-full border-t-[1px] border-[#EFEFEF] mt-4 text-center p-4">
+                  <p className="text-sm text-center mb-2">
+                    <Link
+                      to="/rule"
+                      className="text-[#FF2A3B] hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      利用規約・個人情報の取り扱い
+                    </Link>
+                    に同意の上、ご登録ください
+                  </p>
                   <button
                     className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300"
                     onClick={handleApply}

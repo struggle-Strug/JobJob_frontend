@@ -15,45 +15,45 @@ const JobDetails = () => {
   const job_type = pathname.split("/")[1];
   const jobpost_id = pathname.split("/")[3];
   const jobMapping = {
-    "医師": "/dr",
-    "薬剤師": "/ph",
+    医師: "/dr",
+    薬剤師: "/ph",
     "看護師/准看護師": "/nan",
-    "助産師": "/mw",
-    "保健師": "/phn",
-    "看護助手": "/nuas",
-    "診療放射線技師": "/mrt",
-    "臨床検査技師": "/clt",
+    助産師: "/mw",
+    保健師: "/phn",
+    看護助手: "/nuas",
+    診療放射線技師: "/mrt",
+    臨床検査技師: "/clt",
     "管理栄養士/栄養士": "/rdn",
     "公認心理師/臨床心理士": "/cp",
-    "医療ソーシャルワーカー": "/msw",
-    "歯科医師": "/de",
-    "歯科衛生士": "/dh",
-    "歯科技工士": "/dt",
-    "歯科助手": "/deas",
+    医療ソーシャルワーカー: "/msw",
+    歯科医師: "/de",
+    歯科衛生士: "/dh",
+    歯科技工士: "/dt",
+    歯科助手: "/deas",
     "介護職/ヘルパー": "/cwh",
-    "生活相談員": "/lc",
-    "ケアマネジャー": "/cm",
+    生活相談員: "/lc",
+    ケアマネジャー: "/cm",
     "管理職（介護）": "/mp",
-    "サービス提供責任者": "/sp",
-    "生活支援員": "/lsw",
-    "福祉用具専門相談員": "/wesc",
-    "児童発達支援管理責任者": "/cdsm",
-    "保育士": "/chil",
-    "幼稚園教諭": "/kt",
-    "保育補助": "/ca",
+    サービス提供責任者: "/sp",
+    生活支援員: "/lsw",
+    福祉用具専門相談員: "/wesc",
+    児童発達支援管理責任者: "/cdsm",
+    保育士: "/chil",
+    幼稚園教諭: "/kt",
+    保育補助: "/ca",
     "児童指導員/指導員": "/cii",
-    "理学療法士": "/pt",
-    "言語聴覚士": "/st",
-    "作業療法士": "/ot",
-    "視能訓練士": "/ort",
+    理学療法士: "/pt",
+    言語聴覚士: "/st",
+    作業療法士: "/ot",
+    視能訓練士: "/ort",
     "調理師/調理スタッフ": "/ccs",
-    "美容師": "/hai",
-    "理容師": "/bar",
-    "ネイリスト": "/naar",
-    "アイリスト": "/el",
+    美容師: "/hai",
+    理容師: "/bar",
+    ネイリスト: "/naar",
+    アイリスト: "/el",
     "エステティシャン/セラピスト": "/et",
-    "美容部員": "/bcm",
-    "インストラクター": "/ins",
+    美容部員: "/bcm",
+    インストラクター: "/ins",
   };
 
   const getJobPost = async () => {
@@ -344,11 +344,17 @@ const JobDetails = () => {
           <div className="flex flex-col bg-white p-4 rounded-lg mt-8">
             <p className="lg:text-lg font-bold text-sm text-[#343434]">写真</p>
             <div className="flex items-start justify-start gap-2 py-4">
-              <img
-                src={jobPost?.picture}
-                alt="jobpost"
-                className="w-1/3 aspect-[2/1] object-cover rounded-lg"
-              />
+              {jobPost?.picture?.length > 0 &&
+                jobPost?.picture?.map((item, index) => {
+                  return (
+                    <img
+                      key={index}
+                      src={item}
+                      alt="jobpost"
+                      className="w-1/3 aspect-[2/1] object-cover rounded-lg"
+                    />
+                  );
+                })}
             </div>
           </div>
           <div className="flex flex-col bg-white px-4 rounded-lg mt-8">
