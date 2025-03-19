@@ -1,21 +1,10 @@
 import { Link } from "react-router-dom";
 import { LiaUserCircleSolid } from "react-icons/lia";
 import { MdOutlineKey } from "react-icons/md";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = ({ user, isAuthenticated }) => {
-  const [likes, setLikes] = useState([]);
-  useEffect(() => {
-    const storedLikes = localStorage.getItem("likes");
-    if (storedLikes) {
-      setLikes(JSON.parse(storedLikes)); // Ensure we parse it as an array
-    } else {
-      setLikes([]);
-      localStorage.setItem("likes", JSON.stringify([]));
-    }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  const { likes } = useAuth();
   return (
     <header>
       <div className="bg-[#EFEFEF] w-full min-h-[5rem] flex items-center px-4">

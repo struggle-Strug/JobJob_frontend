@@ -13,14 +13,14 @@ import {
   Prefectures,
   SmallDescriptions,
 } from "../../../utils/constants/categories";
-import axios, { all } from "axios";
+import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
 import Loading from "../../../components/Loading";
 import BreadCrumb from "../../../components/BreadCrumb";
 import Pagination from "../../../components/Pagination";
 
 const JobLists = () => {
-  const { user } = useAuth();
+  const { user, likes, setLikes } = useAuth();
   const { pathname } = useLocation();
   const [pref, setPref] = useState("");
   const [muni, setMuni] = useState("");
@@ -36,7 +36,6 @@ const JobLists = () => {
   const [featureModalOpen, setFeatureModalOpen] = useState(false);
   const [jobPosts, setJobPosts] = useState([]);
   const [allJobPostsNum, setAllJobPostsNum] = useState(0);
-  const [likes, setLikes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState({
     pref: "",
