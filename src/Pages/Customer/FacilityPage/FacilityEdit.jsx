@@ -165,7 +165,8 @@ const FacilityEdit = () => {
       message.success("ファイルのアップロードに完了しました");
       // バックエンドから返された files 配列を利用する
       const fileUrls = response.data.files.map((item) => item.fileUrl);
-      return fileUrls;
+
+      return { fileUrls: fileUrls, files: response.data.files };
     } catch (error) {
       message.error("ファイルのアップロードに失敗しました");
       return [];
@@ -242,7 +243,7 @@ const FacilityEdit = () => {
       city: facilityCity,
       village: facilityVillage,
       building: facilityBuilding,
-      photo: photoUrl ? photoUrl : facilityPhotoUrl,
+      photo: photoUrl.fileUrls ? photoUrl.fileUrls : facilityPhotoUrl,
       introduction: facilityIntroduction,
       access: facilityAccess,
       access_text: facilityAccessText,
@@ -252,6 +253,10 @@ const FacilityEdit = () => {
       rest_day: facilityRestDay,
     };
 
+    await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
+      photoUrl.files
+    );
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}`,
       facilityData

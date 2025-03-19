@@ -222,7 +222,7 @@ const AddJobPost = () => {
       message.success("写真のアップロードが完了しました");
       // アップロード後のURL配列を返す（バックエンドの仕様に合わせてください）
       const fileUrls = response.data.files.map((item) => item.fileUrl);
-      return fileUrls;
+      return { fileUrls: fileUrls, files: response.data.files };
     } catch (error) {
       message.error("写真のアップロードに失敗しました");
       return [];
@@ -269,7 +269,7 @@ const AddJobPost = () => {
       facility_id: facility.facility_id,
       customer_id: customer.customer_id,
       type: jobPostTypeDetail,
-      picture: pictureUrls, // 複数のURLが配列で渡される
+      picture: pictureUrls.fileUrls, // 複数のURLが配列で渡される
       sub_title: jobPostSubTitle,
       sub_description: jobPostSubDescription,
       work_item: jobPostWorkItem,
@@ -297,6 +297,11 @@ const AddJobPost = () => {
       allowed: allowed ? "pending" : "draft",
       process: jobPostProcess,
     };
+
+    await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
+      pictureUrls.files
+    );
 
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/v1/jobpost`,
