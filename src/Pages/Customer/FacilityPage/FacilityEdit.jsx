@@ -130,7 +130,7 @@ const FacilityEdit = () => {
     let updatedFileList = [...info.fileList];
 
     if (updatedFileList.length > 10) {
-      updatedFileList.pop(); 
+      updatedFileList.pop();
       message.error("10枚まで選択できます");
     }
 
@@ -151,7 +151,7 @@ const FacilityEdit = () => {
     facilityPhoto.forEach((file) => {
       formData.append("files", file.originFileObj);
     });
-  
+
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
@@ -178,7 +178,7 @@ const FacilityEdit = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}`
       );
-  
+
       const fetchedFacility = response.data.facility;
       setFacility(fetchedFacility);
       setFacilityName(fetchedFacility.name);
@@ -200,7 +200,7 @@ const FacilityEdit = () => {
       );
       setFacilityServiceTime(fetchedFacility.service_time);
       setFacilityRestDay(fetchedFacility.rest_day);
-  
+
       // facilityPhotoUrl をアップロード用のファイルリストに変換して保存
       if (fetchedFacility.photo && Array.isArray(fetchedFacility.photo)) {
         const initialFileList = fetchedFacility.photo.map((url, index) => ({
@@ -217,9 +217,8 @@ const FacilityEdit = () => {
       setLoading(false);
     }
   }, []);
-  
-/*
-// 施設編集の保存処理
+
+  // 施設編集の保存処理
   const handleSave = async () => {
     const photoUrl = await handleUpload();
 
@@ -228,7 +227,8 @@ const FacilityEdit = () => {
       return message.error("郵便番号を入力してください。");
     if (facilityPrefecture === "")
       return message.error("都道府県を選択してください。");
-    // if (facilityCity === "") return message.error("市区町村を入力してください。");
+    if (facilityCity === "")
+      return message.error("市区町村を入力してください。");
     if (facilityVillage === "")
       return message.error("町名・番地を入力してください。");
     if (facilityBuilding === "")
@@ -260,7 +260,7 @@ const FacilityEdit = () => {
     message.success(response.data.message);
     navigate(`/customers/facility`);
   };
-*/
+
   const handleRequestAllow = async () => {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}/pending`
@@ -450,6 +450,12 @@ const FacilityEdit = () => {
             onClick={() => setPreviewModal(true)}
           >
             プレビュー
+          </button>
+          <button
+            className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+            onClick={handleSave}
+          >
+            下書きを保存
           </button>
           {facility?.allowed === "draft" && (
             <button
