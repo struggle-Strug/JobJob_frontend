@@ -505,11 +505,19 @@ const JobLists = () => {
                     className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8"
                   >
                     <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
-                      <img
-                        src={`${jobpost.picture[0]}`}
-                        alt="arrow-down"
-                        className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
-                      />
+                      {jobpost?.picture?.length === 0 ? (
+                        <img
+                          src={"/assets/images/noimage.png"}
+                          alt="arrow-down"
+                          className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                        />
+                      ) : (
+                        <img
+                          src={`${jobpost.picture[0]}`}
+                          alt="arrow-down"
+                          className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                        />
+                      )}
                       <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
                         <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
                           {jobpost.facility_id.name}の{jobpost.type}求人
