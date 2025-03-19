@@ -1,10 +1,13 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getJobTypeKeyByValue } from "../../../utils/getFunctions";
 import { useAuth } from "../../../context/AuthContext";
-import { Checkbox, Input, message, Modal, Select } from "antd";
+import { Checkbox, Input, message, Modal, Radio, Select } from "antd";
 import { getDateOptions } from "../../../utils/date";
 import { useEffect, useState } from "react";
-import { Prefectures } from "../../../utils/constants/categories";
+import {
+  Municipalities,
+  Prefectures,
+} from "../../../utils/constants/categories";
 import axios from "axios";
 
 const JobOffer = () => {
@@ -21,6 +24,10 @@ const JobOffer = () => {
   const [day, setDay] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [prefecture, setPrefecture] = useState("");
+  const [municipalities, setMunicipalities] = useState("");
+  const [village, setVillage] = useState("");
+  const [building, setBuilding] = useState("");
+  const [currentStatus, setCurrentStatus] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [qualification, setQualification] = useState([]);
@@ -49,6 +56,19 @@ const JobOffer = () => {
         value: name,
       }))
   );
+
+  const cityOptions = (prefecture) => {
+    return [
+      {
+        label: "選択する",
+        value: "",
+      },
+      ...Municipalities[prefecture]?.map((type) => ({
+        value: type,
+        label: type,
+      })),
+    ];
+  };
   const periodOptions = [
     { value: "未経験", label: "未経験" },
     { value: "1年未満", label: "1年未満" },
@@ -318,6 +338,10 @@ const JobOffer = () => {
       setDay(user?.birthday.split("-")[2]);
       setPhoneNumber(user?.phoneNumber);
       setPrefecture(user?.prefecture);
+      setMunicipalities(user?.municipalities);
+      setVillage(user?.village);
+      setBuilding(user?.building);
+      setCurrentStatus(user?.currentStatus);
       setEmail(user?.email);
     }
     getJobPost();
@@ -473,7 +497,7 @@ const JobOffer = () => {
                 </div>
                 <div className="flex justify-between w-full mt-6">
                   <div className="flex items-start gap-2 justify-end">
-                    <p>都道府県</p>
+                    <p>住所</p>
                     <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
                   </div>
                   <div className="flex flex-col w-4/5">
@@ -482,9 +506,31 @@ const JobOffer = () => {
                         <div className="flex justify-start gap-8">
                           <Select
                             options={prefecturesOptions}
-                            className="w-1/3"
+                            className="w-1/4"
                             value={prefecture ? prefecture : user?.prefecture}
                             onChange={(value) => setPrefecture(value)}
+                          />
+                          <Select
+                            options={cityOptions(
+                              prefecture ? prefecture : user?.prefecture
+                            )}
+                            className="w-1/4"
+                            value={
+                              municipalities
+                                ? municipalities
+                                : user?.municipalities
+                            }
+                            onChange={(value) => setMunicipalities(value)}
+                          />
+                          <Input
+                            className="w-1/4"
+                            value={village ? village : user?.village}
+                            onChange={(e) => setVillage(e.target.value)}
+                          />
+                          <Input
+                            className="w-1/4"
+                            value={building ? building : user?.building}
+                            onChange={(e) => setBuilding(e.target.value)}
                           />
                         </div>
                       </div>
@@ -493,19 +539,25 @@ const JobOffer = () => {
                 </div>
                 <div className="flex justify-between w-full mt-6">
                   <div className="flex items-start gap-2 justify-end">
-                    <p>メールアドレス</p>
+                    <p>就業状況</p>
                     <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
                   </div>
                   <div className="flex flex-col w-4/5">
                     <div className="flex flex-col px-2">
                       <div className="duration-300 overflow-hidden">
                         <div className="flex justify-start gap-4">
-                          <Input
-                            placeholder="example@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-1/3"
-                          />
+                          <Radio.Group
+                            value={
+                              currentStatus
+                                ? currentStatus
+                                : user?.currentStatus
+                            }
+                            onChange={(e) => setCurrentStatus(e.target.value)}
+                          >
+                            <Radio value="就業中">就業中</Radio>
+                            <Radio value="離職中">離職中</Radio>
+                            <Radio value="在学中">在学中</Radio>
+                          </Radio.Group>
                         </div>
                       </div>
                     </div>
@@ -699,6 +751,17 @@ const JobOffer = () => {
                   </div>
                 </div>
                 <div className="w-full border-t-[1px] border-[#EFEFEF] mt-4 text-center p-4">
+                  <p className="text-sm text-center mb-2">
+                    <Link
+                      to="/rule"
+                      className="text-[#FF2A3B] hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      利用規約・個人情報の取り扱い
+                    </Link>
+                    に同意の上、ご登録ください
+                  </p>
                   <button
                     className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300"
                     onClick={handleApply}

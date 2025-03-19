@@ -131,7 +131,7 @@ const FacilityAdd = () => {
     let updatedFileList = [...info.fileList];
 
     if (updatedFileList.length > 10) {
-      updatedFileList.pop(); 
+      updatedFileList.pop();
       message.error("10枚まで選択できます");
     }
 
@@ -152,7 +152,7 @@ const FacilityAdd = () => {
     facilityPhoto.forEach((file) => {
       formData.append("files", file.originFileObj);
     });
-  
+
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
@@ -166,13 +166,12 @@ const FacilityAdd = () => {
       message.success("ファイルのアップロードに完了しました");
       // バックエンドから返された files 配列を利用する
       const fileUrls = response.data.files.map((item) => item.fileUrl);
-      return fileUrls;
+      return { fileUrls: fileUrls, files: response.data.files };
     } catch (error) {
       message.error("ファイルのアップロードに失敗しました");
       return [];
     }
   };
-  
 
   const handleSave = async () => {
     const photoUrls = await handleUpload();
@@ -195,7 +194,7 @@ const FacilityAdd = () => {
       city: facilityCity,
       village: facilityVillage,
       building: facilityBuilding,
-      photo: photoUrls, 
+      photo: photoUrls.fileUrls,
       introduction: facilityIntroduction,
       access: facilityAccess,
       access_text: facilityAccessText,
@@ -204,6 +203,11 @@ const FacilityAdd = () => {
       service_time: facilityServiceTime,
       rest_day: facilityRestDay,
     };
+
+    await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
+      photoUrls.files
+    );
 
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/v1/facility`,
@@ -219,7 +223,10 @@ const FacilityAdd = () => {
         施設を新規登録
       </p>
       <div className="flex items-center mt-4">
-        <p className="lg:text-sm text-xs w-1/5">施設名<span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span></p>
+        <p className="lg:text-sm text-xs w-1/5">
+          施設名
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+        </p>
         <Input
           value={facilityName}
           onChange={(e) => setFacilityName(e.target.value)}
@@ -227,7 +234,10 @@ const FacilityAdd = () => {
         />
       </div>
       <div className="flex items-center mt-4">
-        <p className="lg:text-sm text-xs w-1/5">郵便番号<span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span></p>
+        <p className="lg:text-sm text-xs w-1/5">
+          郵便番号
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+        </p>
         <Input
           value={facilityPostalCode}
           onChange={(e) => setFacilityPostalCode(e.target.value)}
@@ -235,7 +245,10 @@ const FacilityAdd = () => {
         />
       </div>
       <div className="flex items-center mt-4">
-        <p className="lg:text-sm text-xs w-1/5">都道府県<span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span></p>
+        <p className="lg:text-sm text-xs w-1/5">
+          都道府県
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+        </p>
         <Select
           options={allPrefectureOptions}
           onChange={(e) => setFacilityPrefecture(e)}
@@ -247,7 +260,10 @@ const FacilityAdd = () => {
           className="flex items-center mt-4"
           disabled={facilityPrefecture !== "" ? true : false}
         >
-          <p className="lg:text-sm text-xs w-1/5">市区町村<span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span></p>
+          <p className="lg:text-sm text-xs w-1/5">
+            市区町村
+            <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+          </p>
           <Select
             options={cityOptions(facilityPrefecture)}
             onChange={(e) => setFacilityCity(e)}
@@ -256,7 +272,10 @@ const FacilityAdd = () => {
         </div>
       )}
       <div className="flex items-center mt-4">
-        <p className="lg:text-sm text-xs w-1/5">町名・番地<span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span></p>
+        <p className="lg:text-sm text-xs w-1/5">
+          町名・番地
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+        </p>
         <Input
           value={facilityVillage}
           onChange={(e) => setFacilityVillage(e.target.value)}

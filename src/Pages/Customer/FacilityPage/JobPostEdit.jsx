@@ -205,7 +205,7 @@ const JobPostEdit = () => {
       );
       message.success("写真のアップロードが完了しました");
       const fileUrls = response.data.files.map((item) => item.fileUrl);
-      return fileUrls;
+      return { fileUrls: fileUrls, files: response.data.files };
     } catch (error) {
       message.error("写真アップロード失敗");
       return [];
@@ -295,7 +295,9 @@ const JobPostEdit = () => {
     const pictureUrls = await handleUpload();
     // pictureUrls が存在すればそちら、なければ既存のURLをそのまま利用
     const finalPicture =
-      pictureUrls.length > 0 ? pictureUrls : jobPostPictureUrl;
+      pictureUrls.fileUrls.length > 0
+        ? pictureUrls.fileUrls
+        : jobPostPictureUrl;
     const JobPostData = {
       facility_id: jobPost.facility_id.facility_id,
       customer_id: jobPost.customer_id.customer_id,
@@ -327,6 +329,11 @@ const JobPostEdit = () => {
       qualification_welcome: jobPostQualificationWelcome,
       process: jobPostProcess,
     };
+
+    await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
+      pictureUrls.files
+    );
 
     const response = await axios.put(
       `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`,
