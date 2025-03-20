@@ -106,6 +106,11 @@ const JobDetails = () => {
         newRecents.pop(); // Remove the oldest entry if limit exceeds 10
       }
       localStorage.setItem("recents", JSON.stringify(newRecents));
+    } else {
+      // If the jobpost_id is already in recents, move it to the front
+      newRecents = newRecents.filter((id) => id !== jobPost.jobpost_id);
+      newRecents.unshift(jobPost.jobpost_id);
+      localStorage.setItem("recents", JSON.stringify(newRecents));
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [jobPost?.jobpost_id]); // Re-run when jobPost ID changes
@@ -119,27 +124,32 @@ const JobDetails = () => {
 
   return (
     <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
-      <div className="container flex items-start justify-between p-4 bg-white rounded-lg h-full">
+      <div className="container flex items-stretch justify-between p-4 bg-white rounded-lg">
         {jobPost?.picture.length === 0 ? (
           <img
             src={"/assets/images/noimage.png"}
             alt={jobPost?.sub_title}
-            className="h-[300px] object-cover rounded-lg"
+            className="w-2/3 object-cover rounded-lg"
           />
         ) : (
           <img
-            src={jobPost?.picture}
+            src={jobPost?.picture[0]}
             alt={jobPost?.sub_title}
-            className="h-[300px] object-cover rounded-lg"
+            className="w-2/3 aspect-[2/1] object-cover rounded-lg"
           />
         )}
-        <div className="flex flex-col items-start justify-between p-4 w-full gap-4 h-full">
+
+        <div className="flex flex-col items-start justify-between p-4 w-1/3 gap-4">
           <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
             {jobPost?.facility_id.name}
             <span className="text-sm text-[#343434]">
               の{jobPost?.type}求人({jobPost?.employment_type})
             </span>
           </p>
+
+          {/* Flex-grow ensures content stretches to fill available space */}
+          <div className="flex-grow"></div>
+
           <div className="flex flex-col w-full items-center gap-4 mt-6">
             <Link
               to={`/${job_type}/apply/${jobPost?.jobpost_id}`}
@@ -154,7 +164,7 @@ const JobDetails = () => {
                 </p>
               </div>
             </Link>
-            <button className="flex items-center justify-center gap-2 bg-whtie rounded-lg py-3 text-white border-2 border-[#FF6B56] w-full hover:bg-[#FF6B56]/20 hover:scale-105 duration-300">
+            <button className="flex items-center justify-center gap-2 bg-white rounded-lg py-3 text-white border-2 border-[#FF6B56] w-full hover:bg-[#FF6B56]/20 hover:scale-105 duration-300">
               <img
                 src="/assets/images/dashboard/Vector.png"
                 alt="eye"
@@ -327,6 +337,13 @@ const JobDetails = () => {
                 <p className="lg:text-base text-sm text-[#343434] mt-4">
                   <pre>{jobPost?.qualification_content}</pre>
                 </p>
+              </div>
+            </div>
+            <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+                歓迎要件
+              </p>
+              <div className="flex flex-col w-4/5 py-6">
                 <p className="lg:text-base text-sm text-[#343434]">
                   <pre>{jobPost?.qualification_welcome}</pre>
                 </p>

@@ -39,7 +39,7 @@ const Recent = () => {
           最近見た求人
         </p>
       </div>
-      <div className=" mt-4">
+      <div className="flex flex-col gap-2 mt-4">
         {recents?.length === 0 && (
           <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">
             最近見た求人はありません
@@ -48,12 +48,20 @@ const Recent = () => {
         {jobPosts?.map((jobPost, index) => {
           return (
             <div className="flex rounded-lg w-full h-40">
-              <img
-                src={jobPost.picture}
-                alt="image"
-                className="w-1/2 object-cover rounded-l-lg"
-              />
-              <div className="flex flex-col bg-white rounded-r-lg p-2 h-full justify-between">
+              {jobPost.picture.length > 0 ? (
+                <img
+                  src={jobPost.picture[0]}
+                  alt="image"
+                  className="w-1/2 object-cover rounded-l-lg"
+                />
+              ) : (
+                <img
+                  src={"/assets/images/noimage.png"}
+                  alt="image"
+                  className="w-1/2 object-cover rounded-l-lg"
+                />
+              )}
+              <div className="flex flex-col bg-white rounded-r-lg p-2 h-full justify-between w-1/2">
                 <div>
                   <p className="text-[0.9rem] font-bold text-[#FF2A3B] break-words line-clamp-1">
                     {jobPost.facility_id.name}の{jobPost.type}求人
