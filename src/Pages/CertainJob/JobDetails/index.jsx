@@ -119,27 +119,32 @@ const JobDetails = () => {
 
   return (
     <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
-      <div className="container flex items-start justify-between p-4 bg-white rounded-lg h-full">
+      <div className="container flex items-stretch justify-between p-4 bg-white rounded-lg">
         {jobPost?.picture.length === 0 ? (
           <img
             src={"/assets/images/noimage.png"}
             alt={jobPost?.sub_title}
-            className="h-[300px] object-cover rounded-lg"
+            className="w-2/3 object-cover rounded-lg"
           />
         ) : (
           <img
             src={jobPost?.picture}
             alt={jobPost?.sub_title}
-            className="h-[300px] object-cover rounded-lg"
+            className="w-2/3 object-cover rounded-lg"
           />
         )}
-        <div className="flex flex-col items-start justify-between p-4 w-full gap-4 h-full">
+
+        <div className="flex flex-col items-start justify-between p-4 w-1/3 gap-4">
           <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
             {jobPost?.facility_id.name}
             <span className="text-sm text-[#343434]">
               の{jobPost?.type}求人({jobPost?.employment_type})
             </span>
           </p>
+
+          {/* Flex-grow ensures content stretches to fill available space */}
+          <div className="flex-grow"></div>
+
           <div className="flex flex-col w-full items-center gap-4 mt-6">
             <Link
               to={`/${job_type}/apply/${jobPost?.jobpost_id}`}
@@ -154,7 +159,7 @@ const JobDetails = () => {
                 </p>
               </div>
             </Link>
-            <button className="flex items-center justify-center gap-2 bg-whtie rounded-lg py-3 text-white border-2 border-[#FF6B56] w-full hover:bg-[#FF6B56]/20 hover:scale-105 duration-300">
+            <button className="flex items-center justify-center gap-2 bg-white rounded-lg py-3 text-white border-2 border-[#FF6B56] w-full hover:bg-[#FF6B56]/20 hover:scale-105 duration-300">
               <img
                 src="/assets/images/dashboard/Vector.png"
                 alt="eye"
