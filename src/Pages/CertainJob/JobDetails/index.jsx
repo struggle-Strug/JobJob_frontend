@@ -332,6 +332,13 @@ const JobDetails = () => {
                 <p className="lg:text-base text-sm text-[#343434] mt-4">
                   <pre>{jobPost?.qualification_content}</pre>
                 </p>
+              </div>
+            </div>
+            <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+                歓迎要件
+              </p>
+              <div className="flex flex-col w-4/5 py-6">
                 <p className="lg:text-base text-sm text-[#343434]">
                   <pre>{jobPost?.qualification_welcome}</pre>
                 </p>
