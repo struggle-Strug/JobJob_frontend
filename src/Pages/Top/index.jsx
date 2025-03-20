@@ -9,8 +9,10 @@ import axios from "axios";
 import { message } from "antd";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 const Top = () => {
+  const { user } = useAuth();
   const [jobTypeNumbers, setJobTypeNumbers] = useState([]);
   const getJobTypeNumbers = async () => {
     const response = await axios.get(
@@ -40,31 +42,33 @@ const Top = () => {
                 alt="logo"
                 className="w-3/5 mt-4"
               />
-              <div className="flex items-center jus gap-4 mt-4">
-                <Link
-                  to={"/members/sign_up"}
-                  className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] rounded-lg px-6 py-2 hover:scale-105 duration-300"
-                >
-                  <img
-                    src="/assets/images/dashboard/mdi_account.png"
-                    alt="register"
-                    className="pt-0.5"
-                  />
-                  <p className="lg:text-lg md:text-sm text-white font-bold">
-                    会員登録する
-                  </p>
-                </Link>
-                <Link
-                  to={"/members/sign_in"}
-                  className="flex items-center justify-center gap-2 mt-4 border-2 border-[#FF2A3B] rounded-lg px-6 py-[6px] hover:scale-105 duration-300"
-                >
-                  <MdOutlineKey className="w-5 h-5 lg:w-6 lg:h-6 text-[#FF2A3B]" />
+              {!user && (
+                <div className="flex items-center jus gap-4 mt-4">
+                  <Link
+                    to={"/members/sign_up"}
+                    className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] rounded-lg px-6 py-2 hover:scale-105 duration-300"
+                  >
+                    <img
+                      src="/assets/images/dashboard/mdi_account.png"
+                      alt="register"
+                      className="pt-0.5"
+                    />
+                    <p className="lg:text-lg md:text-sm text-white font-bold">
+                      会員登録する
+                    </p>
+                  </Link>
+                  <Link
+                    to={"/members/sign_in"}
+                    className="flex items-center justify-center gap-2 mt-4 border-2 border-[#FF2A3B] rounded-lg px-6 py-[6px] hover:scale-105 duration-300"
+                  >
+                    <MdOutlineKey className="w-5 h-5 lg:w-6 lg:h-6 text-[#FF2A3B]" />
 
-                  <p className="lg:text-lg md:text-sm text-[#FF2A3B] font-bold">
-                    ログイン
-                  </p>
-                </Link>
-              </div>
+                    <p className="lg:text-lg md:text-sm text-[#FF2A3B] font-bold">
+                      ログイン
+                    </p>
+                  </Link>
+                </div>
+              )}
             </div>
             <div className="col-span-1 flex flex-col justify-center items-center">
               <img
