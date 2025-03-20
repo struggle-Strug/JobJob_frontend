@@ -522,7 +522,8 @@ const JobLists = () => {
                       )}
                       <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
                         <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                          {jobpost.facility_id.name}の{jobpost.type}求人
+                          {jobpost.facility_id.name}の{jobpost.type}求人(
+                          {jobpost.employment_type[0]})
                         </p>
                         <p className="lg:text-sm md:text-xs text-[#343434]">
                           {jobpost.sub_title}
