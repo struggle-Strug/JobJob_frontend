@@ -572,18 +572,20 @@ const JobLists = () => {
                             ...jobpost.treatment_type,
                             ...jobpost.work_time_type,
                             ...jobpost.rest_type,
-                          ].map((item, index) => {
-                            return (
-                              <div
-                                key={index}
-                                className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                              >
-                                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                                  {item}
-                                </p>
-                              </div>
-                            );
-                          })}
+                          ]
+                            .slice(0, 10)
+                            .map((item, index) => {
+                              return (
+                                <div
+                                  key={index}
+                                  className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                                >
+                                  <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                                    {item}
+                                  </p>
+                                </div>
+                              );
+                            })}
                         </div>
                       </div>
                     </div>
