@@ -550,7 +550,7 @@ const JobLists = () => {
                             <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
                               応募要件
                             </p>
-                            <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
+                            <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
                               {jobpost.qualification_content}{" "}
                               {jobpost.qualification_welcome}
                             </p>
