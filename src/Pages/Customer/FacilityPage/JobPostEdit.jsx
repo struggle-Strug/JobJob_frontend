@@ -186,11 +186,14 @@ const JobPostEdit = () => {
 
   // 複数ファイルアップロード対応の実装
   const handleUpload = async () => {
-    if (jobPostPicture.length === 0) {
+    const filteredUploadedImage = jobPostPicture.filter(
+      (picture) => picture.originFileObj
+    );
+    if (filteredUploadedImage.length === 0) {
       return [];
     }
     const formData = new FormData();
-    jobPostPicture.forEach((file) => {
+    filteredUploadedImage.forEach((file) => {
       formData.append("files", file.originFileObj);
     });
     try {
@@ -234,29 +237,7 @@ const JobPostEdit = () => {
           : ""
       );
       setJobPostTypeDetail(jobData.type);
-
-      // 既存の画像 URL を Upload 用のファイルリストに変換する
-      if (jobData.picture) {
-        const initialFileList = Array.isArray(jobData.picture)
-          ? jobData.picture.map((url, index) => ({
-              uid: `existing-${index}`,
-              name: `image-${index}`,
-              status: "done",
-              url: url,
-            }))
-          : [
-              {
-                uid: "existing-0",
-                name: "image-0",
-                status: "done",
-                url: jobData.picture,
-              },
-            ];
-        setJobPostPicture(initialFileList);
-        setJobPostPictureUrl(
-          Array.isArray(jobData.picture) ? jobData.picture : [jobData.picture]
-        );
-      }
+      setJobPostPictureUrl(jobData.picture);
 
       setJobPostSubTitle(jobData.sub_title);
       setJobPostSubDescription(jobData.sub_description);
@@ -284,6 +265,17 @@ const JobPostEdit = () => {
       setJobPostQualificationWelcome(jobData.qualification_welcome);
       setJobPostProcess(jobData.process);
       setStatus(jobData.allowed);
+
+      // 既存の画像 URL を Upload 用のファイルリストに変換する
+      if (jobData.picture && Array.isArray(jobData.picture)) {
+        const initialFileList = jobData.picture.map((url, index) => ({
+          uid: `existing-${index}`,
+          name: `image-${index}`,
+          status: "done",
+          url: url,
+        }));
+        setJobPostPicture(initialFileList);
+      }
     } catch (error) {
       console.error("Error fetching job post data:", error);
     } finally {
@@ -293,16 +285,14 @@ const JobPostEdit = () => {
 
   const handleSave = async () => {
     const pictureUrls = await handleUpload();
+    const originPictures = jobPostPicture.filter((p) => !p.originFileObj);
+    const urls = originPictures.map((p) => p.url);
     // pictureUrls が存在すればそちら、なければ既存のURLをそのまま利用
-    const finalPicture =
-      pictureUrls.fileUrls.length > 0
-        ? pictureUrls.fileUrls
-        : jobPostPictureUrl;
     const JobPostData = {
       facility_id: jobPost.facility_id.facility_id,
       customer_id: jobPost.customer_id.customer_id,
       type: jobPostTypeDetail,
-      picture: finalPicture,
+      picture: pictureUrls.fileUrls ? [...pictureUrls.fileUrls, ...urls] : urls,
       sub_title: jobPostSubTitle,
       sub_description: jobPostSubDescription,
       work_item: jobPostWorkItem,
@@ -332,7 +322,7 @@ const JobPostEdit = () => {
 
     await axios.put(
       `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
-      pictureUrls.files
+      pictureUrls.files || []
     );
 
     const response = await axios.put(

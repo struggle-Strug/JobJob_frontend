@@ -144,11 +144,14 @@ const FacilityEdit = () => {
   };
 
   const handleUpload = async () => {
-    if (facilityPhoto.length === 0) {
+    const filteredUploadedImage = facilityPhoto.filter(
+      (picture) => picture.originFileObj
+    );
+    if (filteredUploadedImage.length === 0) {
       return [];
     }
     const formData = new FormData();
-    facilityPhoto.forEach((file) => {
+    filteredUploadedImage.forEach((file) => {
       formData.append("files", file.originFileObj);
     });
 
@@ -167,6 +170,7 @@ const FacilityEdit = () => {
       const fileUrls = response.data.files.map((item) => item.fileUrl);
 
       return { fileUrls: fileUrls, files: response.data.files };
+      // return fileUrls;
     } catch (error) {
       message.error("ファイルのアップロードに失敗しました");
       return [];
@@ -223,6 +227,9 @@ const FacilityEdit = () => {
   const handleSave = async () => {
     const photoUrl = await handleUpload();
 
+    const originPictures = facilityPhoto.filter((p) => !p.originFileObj);
+    const urls = originPictures.map((p) => p.url);
+
     if (facilityName === "") return message.error("施設名を入力してください。");
     if (facilityPostalCode === "")
       return message.error("郵便番号を入力してください。");
@@ -243,7 +250,7 @@ const FacilityEdit = () => {
       city: facilityCity,
       village: facilityVillage,
       building: facilityBuilding,
-      photo: photoUrl.fileUrls ? photoUrl.fileUrls : facilityPhotoUrl,
+      photo: photoUrl.fileUrls ? [...photoUrl.fileUrls, ...urls] : urls,
       introduction: facilityIntroduction,
       access: facilityAccess,
       access_text: facilityAccessText,
@@ -255,23 +262,23 @@ const FacilityEdit = () => {
 
     await axios.put(
       `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
-      photoUrl.files
+      photoUrl.files || []
     );
-    const response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}`,
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/v1/facility`,
       facilityData
     );
     if (response.data.error) message.error(response.data.error);
     message.success(response.data.message);
-    navigate(`/customers/facility`);
+    setSuccessModalOpen(true);
   };
 
-  const handleRequestAllow = async () => {
+  const handleRequest = async (status) => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}/pending`
+      `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}/${status}`
     );
     if (response.data.error) message.error(response.data.error);
-    setSuccessModalOpen(true);
+    navigate(`/customers/facility`);
   };
 
   const handleDeleteFacility = async () => {
@@ -456,16 +463,10 @@ const FacilityEdit = () => {
           >
             プレビュー
           </button>
-          <button
-            className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-            onClick={handleSave}
-          >
-            下書きを保存
-          </button>
           {facility?.allowed === "draft" && (
             <button
               className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-              onClick={handleRequestAllow}
+              onClick={handleSave}
             >
               掲載を申請する
             </button>
@@ -482,7 +483,7 @@ const FacilityEdit = () => {
             <>
               <button
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-                onClick={handleRequestEnd}
+                onClick={() => handleRequest("ended")}
               >
                 掲載を終了する
               </button>
@@ -498,7 +499,7 @@ const FacilityEdit = () => {
             <>
               <button
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-                onClick={handleRequestAllow}
+                onClick={handleSave}
               >
                 掲載を申請する
               </button>
