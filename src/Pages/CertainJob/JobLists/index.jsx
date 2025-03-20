@@ -501,7 +501,10 @@ const JobLists = () => {
                 return (
                   <div
                     key={jobpost.jobpost_id}
-                    className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8"
+                    className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 cursor-pointer hover:scale-[1.02] duration-300"
+                    onClick={() =>
+                      navigate(`/${path}/details/${jobpost.jobpost_id}`)
+                    }
                   >
                     <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
                       {jobpost?.picture?.length === 0 ? (
