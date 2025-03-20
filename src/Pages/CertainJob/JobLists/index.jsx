@@ -542,7 +542,7 @@ const JobLists = () => {
                             <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
                               仕事内容
                             </p>
-                            <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-4">
+                            <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
                               <pre>{jobpost.work_content}</pre>
                             </p>
                           </div>
