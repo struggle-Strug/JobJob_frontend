@@ -106,6 +106,11 @@ const JobDetails = () => {
         newRecents.pop(); // Remove the oldest entry if limit exceeds 10
       }
       localStorage.setItem("recents", JSON.stringify(newRecents));
+    } else {
+      // If the jobpost_id is already in recents, move it to the front
+      newRecents = newRecents.filter((id) => id !== jobPost.jobpost_id);
+      newRecents.unshift(jobPost.jobpost_id);
+      localStorage.setItem("recents", JSON.stringify(newRecents));
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [jobPost?.jobpost_id]); // Re-run when jobPost ID changes
@@ -128,9 +133,9 @@ const JobDetails = () => {
           />
         ) : (
           <img
-            src={jobPost?.picture}
+            src={jobPost?.picture[0]}
             alt={jobPost?.sub_title}
-            className="w-2/3 object-cover rounded-lg"
+            className="w-2/3 aspect-[2/1] object-cover rounded-lg"
           />
         )}
 

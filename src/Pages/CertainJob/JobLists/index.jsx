@@ -502,94 +502,97 @@ const JobLists = () => {
                   <div
                     key={jobpost.jobpost_id}
                     className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 cursor-pointer hover:scale-[1.02] duration-300"
-                    onClick={() =>
-                      navigate(`/${path}/details/${jobpost.jobpost_id}`)
-                    }
                   >
-                    <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
-                      {jobpost?.picture?.length === 0 ? (
-                        <img
-                          src={"/assets/images/noimage.png"}
-                          alt="arrow-down"
-                          className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
-                        />
-                      ) : (
-                        <img
-                          src={`${jobpost.picture[0]}`}
-                          alt="arrow-down"
-                          className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
-                        />
-                      )}
-                      <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
-                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                          {jobpost.facility_id.name}の{jobpost.type}求人(
-                          {jobpost.employment_type[0]})
-                        </p>
-                        <p className="lg:text-sm md:text-xs text-[#343434]">
-                          {jobpost.sub_title}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between w-full gap-4 px-2 mt-2">
-                      <div className="flex gap-4 h-full">
-                        <div className="flex flex-col justify-center w-2/3 h-full">
-                          <div className="flex items-center justify-start">
-                            <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                              給与
-                            </p>
-                            <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
-                              {jobpost.employment_type} {jobpost.salary_type}{" "}
-                              {jobpost.salary_min}円〜{jobpost.salary_max}円
-                            </p>
-                          </div>
-                          <div className="flex items-start justify-start mt-4">
-                            <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                              仕事内容
-                            </p>
-                            <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
-                              <pre>{jobpost.work_content}</pre>
-                            </p>
-                          </div>
-                          <div className="flex items-start justify-start mt-4">
-                            <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                              応募要件
-                            </p>
-                            <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
-                              {jobpost.qualification_content}{" "}
-                              {jobpost.qualification_welcome}
-                            </p>
-                          </div>
-                          <div className="flex items-start justify-start mt-4">
-                            <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                              住所
-                            </p>
-                            <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
-                              {jobpost.facility_id.access_text}
-                            </p>
-                          </div>
+                    <div
+                      onClick={() =>
+                        navigate(`/${path}/details/${jobpost.jobpost_id}`)
+                      }
+                    >
+                      <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
+                        {jobpost?.picture?.length === 0 ? (
+                          <img
+                            src={"/assets/images/noimage.png"}
+                            alt="arrow-down"
+                            className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                          />
+                        ) : (
+                          <img
+                            src={`${jobpost.picture[0]}`}
+                            alt="arrow-down"
+                            className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                          />
+                        )}
+                        <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
+                          <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                            {jobpost.facility_id.name}の{jobpost.type}求人(
+                            {jobpost.employment_type[0]})
+                          </p>
+                          <p className="lg:text-sm md:text-xs text-[#343434]">
+                            {jobpost.sub_title}
+                          </p>
                         </div>
-                        <div className="inline-block items-start justify-start gap-2 w-1/3 h-full">
-                          {[
-                            ...jobpost.work_item,
-                            ...jobpost.service_subject,
-                            ...jobpost.service_type,
-                            ...jobpost.treatment_type,
-                            ...jobpost.work_time_type,
-                            ...jobpost.rest_type,
-                          ]
-                            .slice(0, 10)
-                            .map((item, index) => {
-                              return (
-                                <div
-                                  key={index}
-                                  className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                                >
-                                  <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                                    {item}
-                                  </p>
-                                </div>
-                              );
-                            })}
+                      </div>
+                      <div className="flex items-center justify-between w-full gap-4 px-2 mt-2">
+                        <div className="flex gap-4 h-full">
+                          <div className="flex flex-col justify-center w-2/3 h-full">
+                            <div className="flex items-center justify-start">
+                              <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
+                                給与
+                              </p>
+                              <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
+                                {jobpost.employment_type} {jobpost.salary_type}{" "}
+                                {jobpost.salary_min}円〜{jobpost.salary_max}円
+                              </p>
+                            </div>
+                            <div className="flex items-start justify-start mt-4">
+                              <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
+                                仕事内容
+                              </p>
+                              <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
+                                <pre>{jobpost.work_content}</pre>
+                              </p>
+                            </div>
+                            <div className="flex items-start justify-start mt-4">
+                              <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
+                                応募要件
+                              </p>
+                              <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
+                                {jobpost.qualification_content}{" "}
+                                {jobpost.qualification_welcome}
+                              </p>
+                            </div>
+                            <div className="flex items-start justify-start mt-4">
+                              <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
+                                住所
+                              </p>
+                              <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
+                                {jobpost.facility_id.access_text}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="inline-block items-start justify-start gap-2 w-1/3 h-full">
+                            {[
+                              ...jobpost.work_item,
+                              ...jobpost.service_subject,
+                              ...jobpost.service_type,
+                              ...jobpost.treatment_type,
+                              ...jobpost.work_time_type,
+                              ...jobpost.rest_type,
+                            ]
+                              .slice(0, 10)
+                              .map((item, index) => {
+                                return (
+                                  <div
+                                    key={index}
+                                    className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                                  >
+                                    <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                                      {item}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                          </div>
                         </div>
                       </div>
                     </div>
