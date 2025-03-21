@@ -8,13 +8,14 @@ import {
   Qualifications,
 } from "../../../utils/constants/categories";
 import axios from "axios";
-import { message, Input, Select, Radio, Checkbox, Upload, Modal } from "antd";
+import { message, Input, Select, Radio, Checkbox, Upload, Modal, Button } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
 import { getBase64 } from "../../../utils/getBase64";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import EditorComponent from "../../../components/EditorComponent";
 import Loading from "../../../components/Loading";
+import PhotoSelectModal from "./PhotoSelectModal";
 
 const JobPostEdit = () => {
   const { customer } = useAuth();
@@ -57,6 +58,8 @@ const JobPostEdit = () => {
 
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [photoSelectModalVisible, setPhotoSelectModalVisible] = useState(false);
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const jobPostId = pathname.split("/").pop();
@@ -392,6 +395,9 @@ const JobPostEdit = () => {
         <div className="flex items-start mt-4">
           <div className="flex items-center justify-start gap-1 w-1/5">
             <span className="lg:text-sm text-xs text-[#343434]">写真</span>
+            <Button onClick={() => setPhotoSelectModalVisible(true)}>
+                          写真管理から選択
+                        </Button>
           </div>
           <div className="flex items-center justify-start gap-2">
             <Upload
@@ -756,6 +762,22 @@ const JobPostEdit = () => {
           </Link>
         </div>
       </Modal>
+
+      <PhotoSelectModal
+  visible={photoSelectModalVisible}
+  onCancel={() => setPhotoSelectModalVisible(false)}
+  onSelect={(selected) => {
+    const formattedPhotos = selected.map((photoUrl, index) => ({
+      uid: `existing-${index}`,
+      name: `Photo ${index + 1}`,
+      url: photoUrl,
+      status: 'done',
+    }));
+    setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
+    setPhotoSelectModalVisible(false);
+  }}
+/>
+
     </>
   );
 };
