@@ -9,6 +9,7 @@ import {
   message,
   Modal,
   Spin,
+  Button
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
@@ -23,6 +24,7 @@ import {
 import { getBase64 } from "../../../utils/getBase64";
 import { useAuth } from "../../../context/AuthContext";
 import { getJobValueByKey } from "../../../utils/getFunctions";
+import PhotoSelectModal from "./PhotoSelectModal";
 
 const FacilityEdit = () => {
   const { customer } = useAuth();
@@ -36,6 +38,7 @@ const FacilityEdit = () => {
   const [facilityPhoto, setFacilityPhoto] = useState([]);
   const [facilityPhotoUrl, setFacilityPhotoUrl] = useState("");
   const [previewImage, setPreviewImage] = useState("");
+  const [photoSelectModalVisible, setPhotoSelectModalVisible] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [facilityIntroduction, setFacilityIntroduction] = useState("");
   const [facilityJobTypeDetail, setFacilityJobTypeDetail] = useState("");
@@ -369,6 +372,9 @@ const FacilityEdit = () => {
         <div className="flex items-start mt-4">
           <div className="flex items-center justify-start gap-1 w-1/5">
             <span className="lg:text-sm text-xs text-[#343434]">施設写真</span>
+            <Button onClick={() => setPhotoSelectModalVisible(true)}>
+                        写真管理から選択
+                      </Button>
           </div>
           <div className="flex items-center justify-start gap-2">
             <Upload
@@ -709,6 +715,21 @@ const FacilityEdit = () => {
           </div>
         </div>
       </Modal>
+
+      <PhotoSelectModal
+  visible={photoSelectModalVisible}
+  onCancel={() => setPhotoSelectModalVisible(false)}
+  onSelect={(selected) => {
+    const formattedPhotos = selected.map((photoUrl, index) => ({
+      uid: `existing-${index}`,
+      name: `Photo ${index + 1}`,
+      url: photoUrl,
+      status: 'done',
+    }));
+    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+    setPhotoSelectModalVisible(false);
+  }}
+/>
     </>
   );
 };

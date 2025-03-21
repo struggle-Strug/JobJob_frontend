@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Checkbox, Input, message, Radio, Select, Upload } from "antd";
+import { Checkbox, Input, message, Radio, Select, Upload, Button } from "antd";
 import {
   Facilities,
   Features,
@@ -13,6 +13,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { useAuth } from "../../../context/AuthContext";
 import { Municipalities } from "../../../utils/constants/categories/municipalities";
+import PhotoSelectModal from "./PhotoSelectModal";
 
 const FacilityAdd = () => {
   const { customer } = useAuth();
@@ -25,6 +26,7 @@ const FacilityAdd = () => {
   const [facilityPhoto, setFacilityPhoto] = useState([]);
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [photoSelectModalVisible, setPhotoSelectModalVisible] = useState(false);
   const [facilityIntroduction, setFacilityIntroduction] = useState("");
   const [facilityJobType, setFacilityJobType] = useState("");
   const [facilityJobTypeDetail, setFacilityJobTypeDetail] = useState("");
@@ -293,6 +295,9 @@ const FacilityAdd = () => {
       <div className="flex items-start mt-4">
         <div className="flex items-center justify-start gap-1 w-1/5">
           <span className="lg:text-sm text-xs text-[#343434]">施設写真</span>
+          <Button onClick={() => setPhotoSelectModalVisible(true)}>
+                        写真管理から選択
+                      </Button>
         </div>
         <div className="flex items-center justify-start gap-2">
           <Upload
@@ -416,6 +421,20 @@ const FacilityAdd = () => {
           施設を申請する
         </button>
       </div>
+      <PhotoSelectModal
+  visible={photoSelectModalVisible}
+  onCancel={() => setPhotoSelectModalVisible(false)}
+  onSelect={(selected) => {
+    const formattedPhotos = selected.map((photoUrl, index) => ({
+      uid: `existing-${index}`,
+      name: `Photo ${index + 1}`,
+      url: photoUrl,
+      status: 'done',
+    }));
+    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+    setPhotoSelectModalVisible(false);
+  }}
+/>
     </div>
   );
 };
