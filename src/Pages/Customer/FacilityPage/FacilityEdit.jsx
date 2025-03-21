@@ -372,9 +372,6 @@ const FacilityEdit = () => {
         <div className="flex items-start mt-4">
           <div className="flex items-center justify-start gap-1 w-1/5">
             <span className="lg:text-sm text-xs text-[#343434]">施設写真</span>
-            <Button onClick={() => setPhotoSelectModalVisible(true)}>
-                        写真管理から選択
-                      </Button>
           </div>
           <div className="flex items-center justify-start gap-2">
             <Upload
@@ -393,6 +390,16 @@ const FacilityEdit = () => {
             </Upload>
           </div>
         </div>
+        <div className="flex items-start mt-1">
+                <div className="flex items-center justify-start gap-1 w-1/5"/>
+                <div className="flex items-center justify-start gap-2">
+                <Button
+                onClick={() => setPhotoSelectModalVisible(true)}
+              >
+                写真管理から選択
+              </Button>
+              </div>
+              </div>
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
           <TextArea

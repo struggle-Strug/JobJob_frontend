@@ -389,10 +389,6 @@ const AddJobPost = () => {
         <div className="flex items-start mt-4">
           <div className="flex items-center justify-start gap-1 w-1/5">
             <span className="lg:text-sm text-xs text-[#343434]">写真</span>
-            <Button onClick={() => setPhotoSelectModalVisible(true)}>
-              写真管理から選択
-            </Button>
-
           </div>
           <div className="flex items-center justify-start gap-2">
             <Upload
@@ -409,8 +405,19 @@ const AddJobPost = () => {
                 <div className="mt-4 text-center">Upload</div>
               </div>
             </Upload>
+            
           </div>
         </div>
+        <div className="flex items-start mt-1">
+        <div className="flex items-center justify-start gap-1 w-1/5"/>
+        <div className="flex items-center justify-start gap-2">
+        <Button
+        onClick={() => setPhotoSelectModalVisible(true)}
+      >
+        写真管理から選択
+      </Button>
+      </div>
+      </div>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
             訴求文タイトル
