@@ -213,7 +213,7 @@ function App() {
               return (
                 <Route
                   key={jobType}
-                  path={`/${jobType}/${prefOrFacility}/`}
+                  path={`/${jobType}/${prefOrFacility}/*`}
                   element={<JobLists />}
                 />
               );
@@ -237,7 +237,7 @@ function App() {
               return (
                 <Route
                   key={`${jobType}-search`}
-                  path={`/${jobType}/search`}
+                  path={`/${jobType}/search/*`}
                   element={
                     filters.pref === undefined || filters.pref === "" ? (
                       <CertainJob />
@@ -253,12 +253,12 @@ function App() {
               <>
                 <Route
                   key={jobType}
-                  path={`/${jobType}`}
+                  path={`/${jobType}/*`}
                   element={<CertainJob />}
                 />
                 <Route
                   key={jobType}
-                  path={`/${jobType}/search`}
+                  path={`/${jobType}/search/*`}
                   element={<CertainJob />}
                 />
               </>

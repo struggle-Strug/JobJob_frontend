@@ -1,9 +1,10 @@
 import { Checkbox, Input, Modal, Select } from "antd";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Links, useLocation, useNavigate } from "react-router-dom";
 import {
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
   getPrefectureKeyByValue,
+  getJobValueByKey
 } from "../../../utils/getFunctions";
 import { useEffect, useState } from "react";
 import {
@@ -30,10 +31,6 @@ const JobLists = () => {
   const [feature, setFeature] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState();
-  const [prefectureModalOpen, setPrefectureModalOpen] = useState(false);
-  const [municipalitiesModal, setMunicipalitiesModal] = useState(false);
-  const [employmentTypeModalOpen, setEmploymentTypeModalOpen] = useState(false);
-  const [featureModalOpen, setFeatureModalOpen] = useState(false);
   const [jobPosts, setJobPosts] = useState([]);
   const [allJobPostsNum, setAllJobPostsNum] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,6 +59,13 @@ const JobLists = () => {
 
   const path = pathname.split("/")[1];
   const JobType = getJobTypeKeyByValue(path);
+
+
+  const isMuniModalOpen = pathname.endsWith("/modal/muni");
+  const isEmploymentTypeModalOpen = pathname.endsWith("/modal/employmentType");
+  const isFeatureModalOpen = pathname.endsWith("/modal/feature");
+  const isPrefModalOpen = pathname.endsWith("/modal/pref");
+
   const monthlySalaryOptions = [
     { value: "", label: "指定なし" },
     { value: "180000", label: "18" },
@@ -100,13 +104,13 @@ const JobLists = () => {
       </div>
       <div className="flex flex-col w-full px-2 lg:px-4">
         {Object.keys(prefectures).map((prefecture, index) => (
-          <button
+          <a
             key={index}
             className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
-            onClick={() => handleOnChangePref(prefectures[prefecture])}
+            href={`/${getJobValueByKey(JobType)}/${prefectures[prefecture]}`}
           >
             {prefecture}
-          </button>
+          </a>
         ))}
       </div>
     </div>
@@ -178,39 +182,34 @@ const JobLists = () => {
       JSON.stringify(updatedFilters)
     )}`;
     navigate(url);
-    setEmploymentTypeModalOpen(false);
-    setFeatureModalOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     // Ensure job posts are fetched immediately
     getJobPosts();
   };
 
-  const handleOnChangePref = (p) => {
-    setPref(p);
-    if (pathname.split("/")[2] === "search") {
-      setFilters((prevFilters) => {
-        const updatedFilters = { ...prevFilters, pref: p, muni: "" };
-
-        // Navigate only after state update
-        navigate(
-          `/${path}/search?filters=${encodeURIComponent(
-            JSON.stringify(updatedFilters)
-          )}`
-        );
-        return updatedFilters;
-      });
-      setPrefectureModalOpen(false);
-    } else {
-      setFilters((prevFilters) => {
-        const updatedFilters = { ...prevFilters, pref: p };
-        navigate(`/${path}/${p}`);
-        setPrefectureModalOpen(false);
-
-        return updatedFilters;
-      });
-    }
+  // 指定のフィルター条件のみを含むURLを生成するヘルパー関数
+const getConditionUrl = (filterName, value) => {
+  const defaultFilters = {
+    pref: "",
+    muni: "",
+    employmentType: [],
+    monthlySalary: "",
+    hourlySalary: "",
+    feature: [],
+    page: 1,
   };
+  // 配列型のフィルターの場合
+  if (filterName === "employmentType" || filterName === "feature") {
+    defaultFilters[filterName] = [value];
+  } else {
+    defaultFilters[filterName] = value;
+  }
+  return `/${path}/search?filters=${encodeURIComponent(
+    JSON.stringify(defaultFilters)
+  )}`;
+};
+
 
   const handleOnChangeMuni = (m) => {
     setMuni(m);
@@ -225,7 +224,6 @@ const JobLists = () => {
       );
       return updatedFilters;
     });
-    setMunicipalitiesModal(false);
   };
 
   const handleOnChangePage = (p) => {
@@ -260,6 +258,15 @@ const JobLists = () => {
           : [...prev, getFeatureKeyByValue(feature)] // Add if not selected
     );
   };
+
+  const handleCloseModal = () => {
+    const newPath = location.pathname.replace(/\/modal\/[^/]+$/, "");
+    navigate(`${newPath}${location.search}`);
+  }
+  
+
+  
+  
 
   useEffect(() => {
     const newFilters = {
@@ -358,6 +365,8 @@ const JobLists = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  
+
   if (isLoading) {
     return <Loading />;
   }
@@ -393,12 +402,12 @@ const JobLists = () => {
                   </p>
                 </div>
                 <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
-                  <button
+                  <Link
                     className="lg:text-[1rem] md:text-sm font-bold text-[#FF2A3B] hover:underline"
-                    onClick={() => setPrefectureModalOpen(true)}
+                    to={`${pathname}/modal/pref?filters=${encodeURIComponent(JSON.stringify(filters))}`}
                   >
                     都道府県を変更
-                  </button>
+                  </Link>
                   <img
                     src="/assets/images/dashboard/ep_arrow-right.png"
                     alt="chevron-right"
@@ -413,9 +422,9 @@ const JobLists = () => {
               </p>
             </div>
             <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl mt-8">
-              <div
+              <Link
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg hover:px-12 duration-300 cursor-pointer"
-                onClick={() => setMunicipalitiesModal(true)}
+                to={`${pathname}/modal/muni?filters=${encodeURIComponent(JSON.stringify(filters))}`}
               >
                 <div className="flex items-center justify-between gap-1">
                   <img
@@ -432,7 +441,7 @@ const JobLists = () => {
                   alt="arrow-down"
                   className="w-4"
                 />
-              </div>
+              </Link>
               <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer">
                 <div className="flex items-center justify-between gap-1 ">
                   <img
@@ -450,9 +459,9 @@ const JobLists = () => {
                   className="w-4"
                 />
               </div>
-              <div
+              <Link
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-                onClick={() => setEmploymentTypeModalOpen(true)}
+                to={`${pathname}/modal/employmentType?filters=${encodeURIComponent(JSON.stringify(filters))}`}
               >
                 <div className="flex items-center justify-between gap-1 ">
                   <img
@@ -469,10 +478,10 @@ const JobLists = () => {
                   alt="arrow-down"
                   className="w-4"
                 />
-              </div>
-              <div
+              </Link>
+              <Link
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-                onClick={() => setFeatureModalOpen(true)}
+                to={`${pathname}/modal/feature?filters=${encodeURIComponent(JSON.stringify(filters))}`}
               >
                 <div className="flex items-center justify-between gap-1 ">
                   <img
@@ -489,7 +498,7 @@ const JobLists = () => {
                   alt="arrow-down"
                   className="w-4"
                 />
-              </div>
+              </Link>
             </div>
             <div className="flex items-center justify-start w-full mt-8">
               <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
@@ -830,8 +839,8 @@ const JobLists = () => {
       </div>
       {
         <Modal
-          open={prefectureModalOpen}
-          onCancel={() => setPrefectureModalOpen(false)}
+          open={isPrefModalOpen}
+          onCancel={() => handleCloseModal()}
           footer={null}
           width={1000}
           height={800}
@@ -856,8 +865,8 @@ const JobLists = () => {
       }
       {
         <Modal
-          open={employmentTypeModalOpen}
-          onCancel={() => setEmploymentTypeModalOpen(false)}
+          open={isEmploymentTypeModalOpen}
+          onCancel={() => handleCloseModal()}
           footer={null}
           width={1000}
           height={800}
@@ -869,20 +878,36 @@ const JobLists = () => {
                 雇用形態
               </p>
               <div className="flex items-center justify-start desire gap-4 mt-4">
-                {Object.keys(EmploymentType).map((employmentTypeKey, index) => {
-                  return (
-                    <Checkbox
-                      key={index}
-                      onChange={() =>
-                        handleEmploymentTypeChange(employmentTypeKey)
-                      }
-                      checked={employmentType.includes(employmentTypeKey)}
-                    >
-                      {employmentTypeKey}
-                    </Checkbox>
-                  );
-                })}
-              </div>
+  {Object.keys(EmploymentType).map((employmentTypeKey, index) => {
+    return (
+      <Checkbox
+  key={index}
+  onChange={() => handleEmploymentTypeChange(employmentTypeKey)}
+  checked={employmentType.includes(employmentTypeKey)}
+  className="relative"  // 右側に十分な余白を確保
+>
+  {employmentTypeKey}
+  {/* 縦線 */}
+  <span className="absolute right-5 top-1 bottom-1 border-l border-gray-400"></span>
+  {/* チェブロンをリンクに */}
+  <a
+    href={getConditionUrl("employmentType", employmentTypeKey)} // リンク先URLを指定
+    className="absolute right-0 top-1/2 transform -translate-y-1/2"
+  >
+    <img
+      src="/assets/images/dashboard/ep_arrow-right_black.png"
+      alt="arrow-down"
+      className="w-4"
+    />
+  </a>
+</Checkbox>
+
+
+
+
+    );
+  })}
+</div>
             </div>
             <div className="w-full p-6">
               <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">
@@ -932,8 +957,8 @@ const JobLists = () => {
       }
       {
         <Modal
-          open={featureModalOpen}
-          onCancel={() => setFeatureModalOpen(false)}
+          open={isFeatureModalOpen}
+          onCancel={() => handleCloseModal()}
           footer={null}
           width={1000}
           height={800}
@@ -969,16 +994,30 @@ const JobLists = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {Object.keys(section.features).map((featureKey, idx) => (
                     <Checkbox
-                      key={idx}
-                      onChange={() =>
-                        handleFeatureChange(section.features[featureKey])
-                      }
-                      checked={feature.includes(
+                    key={idx}
+                    onChange={() => handleFeatureChange(section.features[featureKey])}
+                    checked={feature.includes(
+                      getFeatureKeyByValue(section.features[featureKey])
+                    )}
+                    className="relative" // 右側に十分な余白を確保
+                  >
+                    <span className="text-xs lg:text-sm">{featureKey}</span>
+                    <span className="absolute right-5 top-1 bottom-1 border-l border-gray-400"></span>
+                    <a
+                      href={getConditionUrl(
+                        "feature",
                         getFeatureKeyByValue(section.features[featureKey])
                       )}
+                      className="absolute right-0 top-1/2 transform -translate-y-1/2"
                     >
-                      <span className="text-xs lg:text-sm">{featureKey}</span>
-                    </Checkbox>
+                      <img
+                        src="/assets/images/dashboard/ep_arrow-right_black.png"
+                        alt="arrow-down"
+                        className="w-4"
+                      />
+                    </a>
+                  </Checkbox>
+                  
                   ))}
                 </div>
               </div>
@@ -996,8 +1035,8 @@ const JobLists = () => {
       }
       {
         <Modal
-          open={municipalitiesModal}
-          onCancel={() => setMunicipalitiesModal(false)}
+          open={isMuniModalOpen}
+          onCancel={() => handleCloseModal()}
           footer={null}
           width={1000}
           height={800}
