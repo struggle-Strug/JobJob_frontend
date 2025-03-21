@@ -1,19 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
-import { IoIosHome } from "react-icons/io";
-import { IoIosArrowForward } from "react-icons/io";
+import { IoIosHome, IoIosArrowForward } from "react-icons/io";
 import {
   getAllJobTypeValues,
-  getAllPrefectureValues,
   getJobTypeKeyByValue,
+  getAllPrefectureValues,
   getPrefectureKeyByValue,
 } from "../../utils/getFunctions";
 
 const BreadCrumb = () => {
   const location = useLocation();
-  const pathnames = location.pathname.split("/");
+  // "modal", "search", "select" などのセグメントは除外する
+  const filteredPathnames = location.pathname
+  .split("/")
+  .filter((segment) => segment && !["modal", "search", "select"].includes(segment));
+
 
   return (
-    <nav className="text-gray-600 text-sm  px-4 py-1 bg-[#EFEFEF]">
+    <nav className="text-gray-600 text-sm px-4 py-1 bg-[#EFEFEF]">
       <ul className="flex items-center space-x-2 container bg-white py-1 px-2 rounded-lg border-y-[1px] border-[#e7e7e7]">
         <li>
           <Link
@@ -24,55 +27,36 @@ const BreadCrumb = () => {
             <IoIosArrowForward className="w-2" />
           </Link>
         </li>
-        {getAllJobTypeValues().includes(pathnames[1]) &&
-          pathnames.length === 2 && (
-            <li>
-              <span className="text-xs text-[#343434]">
-                {getJobTypeKeyByValue(pathnames[1])}求人トップ
-              </span>
-            </li>
-          )}
-        {getAllJobTypeValues().includes(pathnames[1]) &&
-          pathnames.length === 3 &&
-          pathnames[2] === "search" && (
+        {/* 例えば、1つ目のセグメントが求人種別の場合 */}
+        {getAllJobTypeValues().includes(filteredPathnames[0])  && (
+          <li>
+            <span className="text-xs text-[#343434]">
+              {getJobTypeKeyByValue(filteredPathnames[0])}求人トップ
+            </span>
+          </li>
+        )}
+        {/* 2つ目のセグメントが都道府県の場合 */}
+        {getAllJobTypeValues().includes(filteredPathnames[0]) &&
+          getAllPrefectureValues().includes(filteredPathnames[1]) && (
             <>
               <li>
                 <Link
-                  to={`/${pathnames[1]}`}
+                  to={`/${filteredPathnames[0]}`}
                   className="text-xs text-[#343434] hover:text-black hover:underline duration-300"
                 >
-                  {getJobTypeKeyByValue(pathnames[1])}の求人
+                  {getJobTypeKeyByValue(filteredPathnames[0])}の求人
                 </Link>
               </li>
               <IoIosArrowForward className="w-2" />
-
-              <li>
-                <span className="text-xs text-[#343434]">検索結果</span>
-              </li>
-            </>
-          )}
-        {getAllJobTypeValues().includes(pathnames[1]) &&
-          pathnames.length === 3 &&
-          getAllPrefectureValues().includes(pathnames[2]) && (
-            <>
-              <li>
-                <Link
-                  to={`/${pathnames[1]}`}
-                  className="text-xs text-[#343434] hover:text-black hover:underline duration-300"
-                >
-                  {getJobTypeKeyByValue(pathnames[1])}の求人
-                </Link>
-              </li>
-              <IoIosArrowForward className="w-2" />
-
               <li>
                 <span className="text-xs text-[#343434]">
-                  {getPrefectureKeyByValue(pathnames[2])}の
-                  {getJobTypeKeyByValue(pathnames[1])}求人
+                  {getPrefectureKeyByValue(filteredPathnames[1])}の
+                  {getJobTypeKeyByValue(filteredPathnames[0])}求人
                 </span>
               </li>
             </>
           )}
+        {/* 必要に応じて、他のパス構成にも対応 */}
       </ul>
     </nav>
   );
