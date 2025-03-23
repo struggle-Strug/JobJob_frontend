@@ -580,11 +580,6 @@ const CertainJob = () => {
               </div>
               <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                  {JobType}について
-                </p>
-              </div>
-              <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
-                <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   職種から求人を探す
                 </p>
                 <div className="w-full mt-4">

@@ -648,7 +648,7 @@ const getConditionUrl = (filterName, value) => {
                 );
               })}
             </div>
-            <div className="flex flex-col bg-white rounded-lg px-4 py-2 w-full mt-8 shadow-xl">
+            <div className="flex flex-col bg-white rounded-lg px-4 py-2 w-full shadow-xl">
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}
