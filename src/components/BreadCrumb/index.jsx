@@ -16,7 +16,7 @@ const BreadCrumb = () => {
 
 
   return (
-    <nav className="text-gray-600 text-sm px-4 py-1 bg-[#EFEFEF]">
+    <nav className="text-gray-600 text-sm px-4 py-1 bg-[#EFEFEF] pb-5">
       <ul className="flex items-center space-x-2 container bg-white py-1 px-2 rounded-lg border-y-[1px] border-[#e7e7e7]">
         <li>
           <Link

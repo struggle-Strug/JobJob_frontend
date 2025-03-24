@@ -1852,7 +1852,7 @@ const Top = () => {
             </div>
           </div>
         </section>
-        <section className="container lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8">
+        <section className="container lg:mt-3 mt-2 lg:px-10 md:px-6 px-4 bg-white rounded-md pt-8 pb-8">
           <p className="lg:text-xl md:text-lg text-base font-bold">
             施設ジャンルから探す
           </p>

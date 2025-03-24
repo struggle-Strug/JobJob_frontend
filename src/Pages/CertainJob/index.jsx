@@ -16,6 +16,8 @@ import {
 import { Checkbox, Select } from "antd";
 import { useEffect, useState } from "react";
 import BreadCrumb from "../../components/BreadCrumb";
+import axios from "axios";
+import { message } from "antd";
 
 const CertainJob = () => {
   const { pathname } = useLocation();
@@ -47,6 +49,7 @@ const CertainJob = () => {
   const JobType = getJobTypeKeyByValue(path);
   const isSelected = (v) => v === type;
   const params = new URLSearchParams(location.search);
+  const [jobTypeNumbers, setJobTypeNumbers] = useState([]);
 
   const isMuniSelected = pathname.endsWith("/select/muni");
   const isEmploymentSelected = pathname.endsWith("/select/employmentType");
@@ -82,6 +85,18 @@ const CertainJob = () => {
     { value: "5000", label: "5000" },
   ];
 
+  const getJobTypeNumbers = async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/number`
+    );
+    if (response.data.error) return message.error(response.data.message);
+    setJobTypeNumbers(response.data.JobPostsNumbers);
+  };
+
+  useEffect(() => {
+    getJobTypeNumbers();
+  }, []);
+
   const renderMeshLink01 = (jobType) => {
     return Object.keys(Facilities).map((facility, index) => {
       return (
@@ -92,7 +107,7 @@ const CertainJob = () => {
         >
           <p className="py-1">
             {facility}の{jobType}
-            <span className="text-[#343434] text-xs">(123)</span>
+            <span className="text-[#343434] text-xs">({jobTypeNumbers?.jobType})</span>
           </p>
           <div className="flex items-center">
             <img
@@ -137,7 +152,7 @@ const CertainJob = () => {
                 >
                   <p>
                     {job}
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">({jobTypeNumbers?.[job]})</span>
                   </p>
                 </Link>
               );
@@ -562,11 +577,6 @@ const CertainJob = () => {
                 <div className="flex flex-col mt-4 border-t-[1px] border-[#e7e7e7]">
                   {renderMeshLink01(JobType)}
                 </div>
-              </div>
-              <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
-                <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                  {JobType}について
-                </p>
               </div>
               <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">

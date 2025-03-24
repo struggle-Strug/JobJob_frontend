@@ -351,6 +351,7 @@ const AddJobPost = () => {
     );
     if (response.data.error) message.error(response.data.error);
     setFacility(response.data.facility);
+    console.log(response.data.facility);
   };
 
   useEffect(() => {

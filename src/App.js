@@ -140,7 +140,6 @@ function App() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        <Route path="/sample" element={<AddJobPost />} />
         <Route path="/company" element={<CompanyLandingPage />} />
         <Route element={<CLLogoLayout />}>
           <Route path="/customers/new" element={<CustomerSignUp />} />
