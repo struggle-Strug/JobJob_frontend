@@ -510,18 +510,20 @@ const JobOffer = () => {
                             value={prefecture ? prefecture : user?.prefecture}
                             onChange={(value) => setPrefecture(value)}
                           />
-                          <Select
-                            options={cityOptions(
-                              prefecture ? prefecture : user?.prefecture
-                            )}
-                            className="w-1/4"
-                            value={
-                              municipalities
-                                ? municipalities
-                                : user?.municipalities
-                            }
-                            onChange={(value) => setMunicipalities(value)}
-                          />
+                          {(prefecture || user) && (
+                            <Select
+                              options={cityOptions(
+                                prefecture ? prefecture : user?.prefecture
+                              )}
+                              className="w-1/4"
+                              value={
+                                municipalities
+                                  ? municipalities
+                                  : user?.municipalities
+                              }
+                              onChange={(value) => setMunicipalities(value)}
+                            />
+                          )}
                           <Input
                             className="w-1/4"
                             value={village ? village : user?.village}
