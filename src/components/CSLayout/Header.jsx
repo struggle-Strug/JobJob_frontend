@@ -81,7 +81,7 @@ const Header = ({ user, isAuthenticated }) => {
                 />
               </Link>
               <Link
-                to={"/customers"}
+                to={"/company"}
                 className="lg:text-md md:text-sm text-xs font-bold text-[#188CE0] whitespace-nowrap hover:scale-[1.02] duration-300"
               >
                 求人広告掲載（無料）
