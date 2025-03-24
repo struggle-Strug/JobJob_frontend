@@ -788,7 +788,8 @@ const JobOffer = () => {
         >
           <div className="flex flex-col items-start justify-start">
             <h1 className="lg:text-base text-sm font-bold text-[#343434]">
-              {jobPost?.facility_id.name}への応募が完了しました。
+              {jobPost?.facility_id.name}({jobPost?.type}/
+              {jobPost?.employment_type[0]})への応募が完了しました。
             </h1>
             <p className="text-xs text-[#343434] mt-4">
               ご応募ありがとうございます。応募後の流れなどを紹介している応募完了メールを送信しました。質問や追加アピール、履歴書の送付などはメッセージにて応募先へ直接連絡できます。
