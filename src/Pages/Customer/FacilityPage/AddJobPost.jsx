@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Checkbox, Input, message, Radio, Select, Upload,Button } from "antd";
+import { Checkbox, Input, message, Radio, Select, Upload, Button } from "antd";
 import {
   EmploymentType,
   Features,
@@ -204,14 +204,16 @@ const AddJobPost = () => {
   };
 
   const handleUpload = async () => {
-    if (jobPostPicture.length === 0) {
+    const filteredUploadedImage = jobPostPicture.filter(
+      (picture) => picture.originFileObj
+    );
+    if (filteredUploadedImage.length === 0) {
       return [];
     }
     const formData = new FormData();
-    jobPostPicture.forEach((file) => {
+    filteredUploadedImage.forEach((file) => {
       formData.append("files", file.originFileObj);
     });
-
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
@@ -223,11 +225,10 @@ const AddJobPost = () => {
         }
       );
       message.success("写真のアップロードが完了しました");
-      // アップロード後のURL配列を返す（バックエンドの仕様に合わせてください）
       const fileUrls = response.data.files.map((item) => item.fileUrl);
       return { fileUrls: fileUrls, files: response.data.files };
     } catch (error) {
-      message.error("写真のアップロードに失敗しました");
+      message.error("写真アップロード失敗");
       return [];
     }
   };
@@ -267,12 +268,14 @@ const AddJobPost = () => {
       return message.error("選考プロセスを入力してください。");
 
     const pictureUrls = await handleUpload();
+    const originPictures = jobPostPicture.filter((p) => !p.originFileObj);
+    const urls = originPictures.map((p) => p.url);
 
     const JobPostData = {
       facility_id: facility.facility_id,
       customer_id: customer.customer_id,
       type: jobPostTypeDetail,
-      picture: pictureUrls.fileUrls, // 複数のURLが配列で渡される
+      picture: pictureUrls.fileUrls ? [...pictureUrls.fileUrls, ...urls] : urls,
       sub_title: jobPostSubTitle,
       sub_description: jobPostSubDescription,
       work_item: jobPostWorkItem,
@@ -303,7 +306,7 @@ const AddJobPost = () => {
 
     await axios.put(
       `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
-      pictureUrls.files
+      pictureUrls.files || []
     );
 
     const response = await axios.post(
@@ -351,7 +354,6 @@ const AddJobPost = () => {
     );
     if (response.data.error) message.error(response.data.error);
     setFacility(response.data.facility);
-    console.log(response.data.facility);
   };
 
   useEffect(() => {
@@ -406,19 +408,16 @@ const AddJobPost = () => {
                 <div className="mt-4 text-center">Upload</div>
               </div>
             </Upload>
-            
           </div>
         </div>
         <div className="flex items-start mt-1">
-        <div className="flex items-center justify-start gap-1 w-1/5"/>
-        <div className="flex items-center justify-start gap-2">
-        <Button
-        onClick={() => setPhotoSelectModalVisible(true)}
-      >
-        写真管理から選択
-      </Button>
-      </div>
-      </div>
+          <div className="flex items-center justify-start gap-1 w-1/5" />
+          <div className="flex items-center justify-start gap-2">
+            <Button onClick={() => setPhotoSelectModalVisible(true)}>
+              写真管理から選択
+            </Button>
+          </div>
+        </div>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
             訴求文タイトル
@@ -690,21 +689,19 @@ const AddJobPost = () => {
         </div>
       </div>
       <PhotoSelectModal
-  visible={photoSelectModalVisible}
-  onCancel={() => setPhotoSelectModalVisible(false)}
-  onSelect={(selected) => {
-    const formattedPhotos = selected.map((photoUrl, index) => ({
-      uid: `existing-${index}`,
-      name: `Photo ${index + 1}`,
-      url: photoUrl,
-      status: 'done',
-    }));
-    setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
-    setPhotoSelectModalVisible(false);
-  }}
-/>
-
-
+        visible={photoSelectModalVisible}
+        onCancel={() => setPhotoSelectModalVisible(false)}
+        onSelect={(selected) => {
+          const formattedPhotos = selected.map((photoUrl, index) => ({
+            uid: `existing-${index}`,
+            name: `Photo ${index + 1}`,
+            url: photoUrl,
+            status: "done",
+          }));
+          setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
+          setPhotoSelectModalVisible(false);
+        }}
+      />
     </>
   );
 };
