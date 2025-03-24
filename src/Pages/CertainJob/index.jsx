@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import BreadCrumb from "../../components/BreadCrumb";
 import axios from "axios";
 import { message } from "antd";
+import { useAuth } from "../../context/AuthContext";
 
 const CertainJob = () => {
   const { pathname } = useLocation();
@@ -27,6 +28,7 @@ const CertainJob = () => {
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
   const [feature, setFeature] = useState([]);
+  const { user, likes, setLikes } = useAuth();
   const [filters, setFilters] = useState({
     pref: "",
     employmentType: [],
@@ -560,7 +562,7 @@ const CertainJob = () => {
               </div>
             )}
           </section>
-          <div className="flex container w-full">
+          <div className="flex container w-full justify-between gap-8">
             <div className="flex flex-col w-2/3">
               <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
@@ -1435,7 +1437,154 @@ const CertainJob = () => {
                 </section> */}
               </div>
             </div>
+            <div className="flex flex-col w-1/3">
+                      <div className="flex flex-col items-center justify-start h-full w-full mt-8">
+                        <img
+                          src="/assets/images/dashboard/Group 16.png"
+                          alt="banner"
+                          className="w-full"
+                        />
+                        <div className="flex items-center justify-start w-full mt-8">
+                          <p className="lg:text-lg md:text-sm font-bold text-[#343434]">
+                            必ず役立つ仕事術
+                          </p>
+                        </div>
+                        <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
+                          <div className="flex items-center justify-between w-full">
+                            <p className="lg:text-[1rem] md:text-[0.8rem]">
+                              ぴったりな仕事を探すには
+                            </p>
+                            <img
+                              src="/assets/images/dashboard/ep_arrow-right_black.png"
+                              alt="arrow-right"
+                              className="w-4 pt-0.5"
+                            />
+                          </div>
+                          <div className="flex items-center justify-between w-full mt-4">
+                            <p className="lg:text-[1rem] md:text-[0.8rem]">応募の仕方</p>
+                            <img
+                              src="/assets/images/dashboard/ep_arrow-right_black.png"
+                              alt="arrow-right"
+                              className="w-4 pt-0.5"
+                            />
+                          </div>
+                          <div className="flex items-center justify-between w-full mt-4">
+                            <p className="lg:text-[1rem] md:text-[0.8rem]">
+                              履歴書の書き方
+                            </p>
+                            <img
+                              src="/assets/images/dashboard/ep_arrow-right_black.png"
+                              alt="arrow-right"
+                              className="w-4 pt-0.5"
+                            />
+                          </div>
+                          <div className="flex items-center justify-between w-full mt-4">
+                            <p className="lg:text-[1rem] md:text-[0.8rem]">
+                              メッセージの書き方
+                            </p>
+                            <img
+                              src="/assets/images/dashboard/ep_arrow-right_black.png"
+                              alt="arrow-right"
+                              className="w-4 pt-0.5"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-start w-full mt-8">
+                          <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
+                            人気のコラムランキング
+                          </p>
+                        </div>
+                        <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <img
+                              src="/assets/images/dashboard/Group 17.png"
+                              alt="arrow-right"
+                            />
+                            <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
+                              失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
+                            </p>
+                          </div>
+                          <div className="flex items-center justify-between gap-2 w-full mt-4">
+                            <img
+                              src="/assets/images/dashboard/Group 17_2.png"
+                              alt="arrow-right"
+                            />
+                            <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
+                              失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
+                            </p>
+                          </div>
+                          <div className="flex items-center justify-between gap-2 w-full mt-4">
+                            <img
+                              src="/assets/images/dashboard/Group 17_3.png"
+                              alt="arrow-right"
+                            />
+                            <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
+                              失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
+                            </p>
+                          </div>
+                          <div className="flex items-center justify-center">
+                            <Link
+                              to={"/#"}
+                              className="flex items-center justify-center mt-4 border-2 border-[#FF6B56] rounded-lg py-2 lg:px-16 md:px-8 px-4"
+                            >
+                              <p className="lg:text-[0.75rem] md:text-[0.6rem] text-[#FF6B56]">
+                                ランキングをもっと見る
+                              </p>
+                            </Link>
+                          </div>
+                        </div>
+                        {user == null && (
+                          <>
+                            <div className="flex items-center justify-start w-full mt-8">
+                              <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
+                                会員登録がまだの方
+                              </p>
+                            </div>
+                            <div className="flex flex-col items-center bg-white rounded-lg py-6 w-full mt-8 shadow-xl">
+                              <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] pb-2">
+                                <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
+                                  1.
+                                </p>
+                                <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
+                                  事務所からスカウトが届く
+                                </p>
+                              </div>
+                              <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
+                                <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
+                                  2.
+                                </p>
+                                <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
+                                  希望にあった求人が届く
+                                </p>
+                              </div>
+                              <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
+                                <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
+                                  3.
+                                </p>
+                                <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
+                                  会員限定機能が利用できる
+                                </p>
+                              </div>
+                              <Link
+                                to={"/members/sign_up"}
+                                className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] rounded-lg px-6 py-2 hover:scale-105 duration-300"
+                              >
+                                <img
+                                  src="/assets/images/dashboard/mdi_account.png"
+                                  alt="register"
+                                  className="pt-0.5"
+                                />
+                                <p className="lg:text-lg md:text-sm text-white font-bold">
+                                  無料で会員登録する
+                                </p>
+                              </Link>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
           </div>
+          
         </div>
       )}
     </>

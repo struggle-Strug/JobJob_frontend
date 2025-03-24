@@ -505,7 +505,7 @@ const getConditionUrl = (filterName, value) => {
                 {getPrefectureKeyByValue(pref)}の{JobType}の求人
               </p>
             </div>
-            <div className="flex flex-col items-center justify-start w-full mt-8 ">
+            <div className="flex flex-col items-center justify-start w-full ">
               {jobPosts?.map((jobpost) => {
                 return (
                   <div
@@ -648,7 +648,7 @@ const getConditionUrl = (filterName, value) => {
                 );
               })}
             </div>
-            <div className="flex flex-col bg-white rounded-lg px-4 py-2 w-full shadow-xl">
+            <div className="flex flex-col bg-white rounded-lg px-4 py-2 w-full shadow-xl mt-8">
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}
