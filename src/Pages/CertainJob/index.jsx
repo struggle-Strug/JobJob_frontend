@@ -16,6 +16,8 @@ import {
 import { Checkbox, Select } from "antd";
 import { useEffect, useState } from "react";
 import BreadCrumb from "../../components/BreadCrumb";
+import axios from "axios";
+import { message } from "antd";
 
 const CertainJob = () => {
   const { pathname } = useLocation();
@@ -47,6 +49,12 @@ const CertainJob = () => {
   const JobType = getJobTypeKeyByValue(path);
   const isSelected = (v) => v === type;
   const params = new URLSearchParams(location.search);
+  const [jobTypeNumbers, setJobTypeNumbers] = useState([]);
+
+  const isMuniSelected = pathname.endsWith("/select/muni");
+  const isEmploymentSelected = pathname.endsWith("/select/employmentType");
+  const isFeatureSelected = pathname.endsWith("/select/feature");
+  const isPrefSelected = pathname.endsWith("/select/pref");
 
   const monthlySalaryOptions = [
     { value: "", label: "指定なし" },
@@ -77,6 +85,18 @@ const CertainJob = () => {
     { value: "5000", label: "5000" },
   ];
 
+  const getJobTypeNumbers = async () => {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/number`
+    );
+    if (response.data.error) return message.error(response.data.message);
+    setJobTypeNumbers(response.data.JobPostsNumbers);
+  };
+
+  useEffect(() => {
+    getJobTypeNumbers();
+  }, []);
+
   const renderMeshLink01 = (jobType) => {
     return Object.keys(Facilities).map((facility, index) => {
       return (
@@ -87,7 +107,7 @@ const CertainJob = () => {
         >
           <p className="py-1">
             {facility}の{jobType}
-            <span className="text-[#343434] text-xs">(123)</span>
+            <span className="text-[#343434] text-xs">({jobTypeNumbers?.jobType})</span>
           </p>
           <div className="flex items-center">
             <img
@@ -132,7 +152,7 @@ const CertainJob = () => {
                 >
                   <p>
                     {job}
-                    <span className="text-[#343434] text-xs">(123)</span>
+                    <span className="text-[#343434] text-xs">({jobTypeNumbers?.[job]})</span>
                   </p>
                 </Link>
               );
@@ -148,7 +168,6 @@ const CertainJob = () => {
       JSON.stringify(filters)
     )}`;
     navigate(url);
-    setType("1");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -187,6 +206,24 @@ const CertainJob = () => {
       navigate(url);
     }
   };
+
+  const getConditionUrl = (filterName, value) => {
+    const defaultFilters = {
+      pref: "",
+      employmentType: [],
+      monthlySalary: "",
+      hourlySalary: "",
+      feature: [],
+    };
+    // 配列で管理するフィルターの場合
+    if (filterName === "employmentType" || filterName === "feature") {
+      defaultFilters[filterName] = [value];
+    } else {
+      defaultFilters[filterName] = value;
+    }
+    return `/${path}/search?filters=${encodeURIComponent(JSON.stringify(defaultFilters))}`;
+  };
+
 
   useEffect(() => {
     setFilters({
@@ -230,7 +267,6 @@ const CertainJob = () => {
         navigate(url);
       }
     }
-
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []); // ✅ Make sure it runs when the search query updates
 
@@ -243,13 +279,13 @@ const CertainJob = () => {
       </div>
       <div className="flex flex-col w-full px-2 lg:px-4">
         {Object.keys(prefectures).map((prefecture, index) => (
-          <button
-            key={index}
-            className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
-            onClick={() => handleOnChangePref(prefectures[prefecture])}
-          >
-            {prefecture}
-          </button>
+          <a
+          key={index}
+          className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
+          href={`/${getJobValueByKey(JobType)}/${prefectures[prefecture]}`}
+        >
+          {prefecture}
+        </a>
         ))}
       </div>
     </div>
@@ -258,7 +294,7 @@ const CertainJob = () => {
   return (
     <>
       <BreadCrumb />
-      {!pathname.includes("pref") && (
+      {(!pathname.includes("pref") || isPrefSelected) && (
         <div className="bg-[#EFEFEF]">
           {pathname.split("/")[2] === "search" ? (
             <section className="container bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
@@ -297,10 +333,10 @@ const CertainJob = () => {
 
           <section className="container bg-white rounded-lg mt-4">
             <div className="grid grid-cols-3 w-full px-2">
-              <button
-                onClick={() => setType("1")}
+              <Link
+                to={`/${path}/select/pref`}
                 className={`col-span-1 flex items-center justify-center hover:border-b-4 border-[#FF2A3B] py-2 lg:py-4 duration-100 ${
-                  isSelected("1") ? "border-b-4 border-[#FF2A3B]" : ""
+                  isPrefSelected ? "border-b-4 border-[#FF2A3B]" : ""
                 }`}
               >
                 <img
@@ -311,11 +347,11 @@ const CertainJob = () => {
                 <p className="text-xs lg:text-md font-bold text-[#343434] duration-300 ml-1">
                   都道府県から選択
                 </p>
-              </button>
-              <button
-                onClick={() => setType("2")}
+              </Link>
+              <Link
+                to={`/${path}/select/employmentType`}
                 className={`col-span-1 flex items-center justify-center hover:border-b-4 border-[#FF2A3B] py-2 lg:py-4 duration-100 ${
-                  isSelected("2") ? "border-b-4 border-[#FF2A3B]" : ""
+                  isEmploymentSelected ? "border-b-4 border-[#FF2A3B]" : ""
                 }`}
               >
                 <img
@@ -326,11 +362,11 @@ const CertainJob = () => {
                 <p className="text-xs lg:text-md font-bold text-[#343434] duration-300 ml-1">
                   雇用形態・給与から選択
                 </p>
-              </button>
-              <button
-                onClick={() => setType("3")}
+              </Link>
+              <Link
+                to={`/${path}/select/feature`}
                 className={`col-span-1 flex items-center justify-center hover:border-b-4 border-[#FF2A3B] py-2 lg:py-4 duration-100 ${
-                  isSelected("3") ? "border-b-4 border-[#FF2A3B]" : ""
+                  isFeatureSelected ? "border-b-4 border-[#FF2A3B]" : ""
                 }`}
               >
                 <img
@@ -341,10 +377,10 @@ const CertainJob = () => {
                 <p className="text-xs lg:text-md font-bold text-[#343434] duration-300 ml-1">
                   特徴から選択
                 </p>
-              </button>
+              </Link>
             </div>
 
-            {type === "1" && (
+            {isPrefSelected && (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 w-full py-3 gap-4 px-4">
                 {renderPrefectureSection("関東", Prefectures.KANTO)}
                 {renderPrefectureSection("関西", Prefectures.KANSAI)}
@@ -368,7 +404,7 @@ const CertainJob = () => {
               </div>
             )}
 
-            {type === "2" && (
+            {isEmploymentSelected && (
               <div className="w-full p-4 lg:p-6">
                 <div className="mb-6">
                   <p className="text-sm lg:text-base text-[#343434] font-bold mb-4">
@@ -378,16 +414,27 @@ const CertainJob = () => {
                     {Object.keys(EmploymentType).map(
                       (employmentTypeKey, index) => (
                         <Checkbox
-                          key={index}
-                          onChange={() =>
-                            handleEmploymentTypeChange(employmentTypeKey)
-                          }
-                          checked={employmentType.includes(employmentTypeKey)}
-                        >
-                          <span className="text-xs lg:text-sm">
-                            {employmentTypeKey}
-                          </span>
-                        </Checkbox>
+  key={index}
+  onChange={() => handleEmploymentTypeChange(employmentTypeKey)}
+  checked={employmentType.includes(employmentTypeKey)}
+  className="relative" // 右側に十分な余白を確保
+>
+  <span className="text-xs lg:text-sm">
+    {employmentTypeKey}
+  </span>
+  <span className="absolute right-5 top-0 bottom-0 border-l border-gray-400"></span>
+  <a
+    href={getConditionUrl("employmentType", employmentTypeKey)} // リンク先URLを指定
+    className="absolute right-0 top-1/2 transform -translate-y-1/2"
+  >
+    <img
+      src="/assets/images/dashboard/ep_arrow-right_black.png"
+      alt="arrow-down"
+      className="w-4"
+    />
+  </a>
+</Checkbox>
+
                       )
                     )}
                   </div>
@@ -440,7 +487,7 @@ const CertainJob = () => {
               </div>
             )}
 
-            {type === "3" && (
+            {isFeatureSelected && (
               <div className="w-full p-4 lg:p-6">
                 {[
                   { title: "休日の特徴", features: Features.HOLIDAY },
@@ -471,18 +518,33 @@ const CertainJob = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                       {Object.keys(section.features).map((featureKey, idx) => (
                         <Checkbox
-                          key={idx}
-                          onChange={() =>
-                            handleFeatureChange(section.features[featureKey])
-                          }
-                          checked={feature.includes(
-                            getFeatureKeyByValue(section.features[featureKey])
-                          )}
+                        key={idx}
+                        onChange={() =>
+                          handleFeatureChange(section.features[featureKey])
+                        }
+                        checked={feature.includes(
+                          getFeatureKeyByValue(section.features[featureKey])
+                        )}
+                        className="relative" // 右側に十分な余白を確保
+                      >
+                        <span className="text-xs lg:text-sm">
+                          {featureKey}
+                        </span>
+                        {/* 縦線 */}
+                        <span className="absolute right-5 top-0 bottom-0 border-l border-gray-400"></span>
+                        {/* チェブロンをリンクに */}
+                        <a
+                          href={getConditionUrl("feature", getFeatureKeyByValue(section.features[featureKey]))} // リンク先URLを指定
+                          className="absolute right-0 top-1/2 transform -translate-y-1/2"
                         >
-                          <span className="text-xs lg:text-sm">
-                            {featureKey}
-                          </span>
-                        </Checkbox>
+                          <img
+                            src="/assets/images/dashboard/ep_arrow-right_black.png"
+                            alt="arrow-down"
+                            className="w-4"
+                          />
+                        </a>
+                      </Checkbox>
+                      
                       ))}
                     </div>
                   </div>
@@ -515,11 +577,6 @@ const CertainJob = () => {
                 <div className="flex flex-col mt-4 border-t-[1px] border-[#e7e7e7]">
                   {renderMeshLink01(JobType)}
                 </div>
-              </div>
-              <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
-                <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                  {JobType}について
-                </p>
               </div>
               <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">

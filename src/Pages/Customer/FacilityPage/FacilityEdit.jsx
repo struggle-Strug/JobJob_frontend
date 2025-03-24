@@ -9,6 +9,7 @@ import {
   message,
   Modal,
   Spin,
+  Button
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
@@ -23,6 +24,7 @@ import {
 import { getBase64 } from "../../../utils/getBase64";
 import { useAuth } from "../../../context/AuthContext";
 import { getJobValueByKey } from "../../../utils/getFunctions";
+import PhotoSelectModal from "./PhotoSelectModal";
 
 const FacilityEdit = () => {
   const { customer } = useAuth();
@@ -36,6 +38,7 @@ const FacilityEdit = () => {
   const [facilityPhoto, setFacilityPhoto] = useState([]);
   const [facilityPhotoUrl, setFacilityPhotoUrl] = useState("");
   const [previewImage, setPreviewImage] = useState("");
+  const [photoSelectModalVisible, setPhotoSelectModalVisible] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [facilityIntroduction, setFacilityIntroduction] = useState("");
   const [facilityJobTypeDetail, setFacilityJobTypeDetail] = useState("");
@@ -387,6 +390,16 @@ const FacilityEdit = () => {
             </Upload>
           </div>
         </div>
+        <div className="flex items-start mt-1">
+                <div className="flex items-center justify-start gap-1 w-1/5"/>
+                <div className="flex items-center justify-start gap-2">
+                <Button
+                onClick={() => setPhotoSelectModalVisible(true)}
+              >
+                写真管理から選択
+              </Button>
+              </div>
+              </div>
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
           <TextArea
@@ -476,7 +489,7 @@ const FacilityEdit = () => {
               className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
               onClick={handleDeleteFacility}
             >
-              掲載を削除する
+              削除する
             </button>
           )}
           {facility?.allowed === "allowed" && (
@@ -491,7 +504,7 @@ const FacilityEdit = () => {
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={handleDeleteFacility}
               >
-                掲載を削除する
+                削除する
               </button>
             </>
           )}
@@ -507,7 +520,7 @@ const FacilityEdit = () => {
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={handleDeleteFacility}
               >
-                掲載を削除する
+                削除する
               </button>
             </>
           )}
@@ -709,6 +722,21 @@ const FacilityEdit = () => {
           </div>
         </div>
       </Modal>
+
+      <PhotoSelectModal
+  visible={photoSelectModalVisible}
+  onCancel={() => setPhotoSelectModalVisible(false)}
+  onSelect={(selected) => {
+    const formattedPhotos = selected.map((photoUrl, index) => ({
+      uid: `existing-${index}`,
+      name: `Photo ${index + 1}`,
+      url: photoUrl,
+      status: 'done',
+    }));
+    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+    setPhotoSelectModalVisible(false);
+  }}
+/>
     </>
   );
 };

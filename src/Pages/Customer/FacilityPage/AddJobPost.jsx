@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Checkbox, Input, message, Radio, Select, Upload } from "antd";
+import { Checkbox, Input, message, Radio, Select, Upload,Button } from "antd";
 import {
   EmploymentType,
   Features,
@@ -16,6 +16,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import EditorComponent from "../../../components/EditorComponent";
+import PhotoSelectModal from "./PhotoSelectModal";
 
 const AddJobPost = () => {
   const { customer } = useAuth();
@@ -67,6 +68,8 @@ const AddJobPost = () => {
 
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [photoSelectModalVisible, setPhotoSelectModalVisible] = useState(false);
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const facilityId = pathname.split("/")[3];
@@ -348,6 +351,7 @@ const AddJobPost = () => {
     );
     if (response.data.error) message.error(response.data.error);
     setFacility(response.data.facility);
+    console.log(response.data.facility);
   };
 
   useEffect(() => {
@@ -402,8 +406,19 @@ const AddJobPost = () => {
                 <div className="mt-4 text-center">Upload</div>
               </div>
             </Upload>
+            
           </div>
         </div>
+        <div className="flex items-start mt-1">
+        <div className="flex items-center justify-start gap-1 w-1/5"/>
+        <div className="flex items-center justify-start gap-2">
+        <Button
+        onClick={() => setPhotoSelectModalVisible(true)}
+      >
+        写真管理から選択
+      </Button>
+      </div>
+      </div>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
             訴求文タイトル
@@ -674,6 +689,22 @@ const AddJobPost = () => {
           </button>
         </div>
       </div>
+      <PhotoSelectModal
+  visible={photoSelectModalVisible}
+  onCancel={() => setPhotoSelectModalVisible(false)}
+  onSelect={(selected) => {
+    const formattedPhotos = selected.map((photoUrl, index) => ({
+      uid: `existing-${index}`,
+      name: `Photo ${index + 1}`,
+      url: photoUrl,
+      status: 'done',
+    }));
+    setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
+    setPhotoSelectModalVisible(false);
+  }}
+/>
+
+
     </>
   );
 };
