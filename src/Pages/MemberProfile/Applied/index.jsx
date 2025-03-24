@@ -25,9 +25,9 @@ const Applied = () => {
       setLoading(false);
     }
   };
-  const toggleJobDetails = (jobId) => {
-    setExpandedJobId((prev) => (prev === jobId ? null : jobId)); // Toggle expansion
-  };
+  // const toggleJobDetails = (jobId) => {
+  //   setExpandedJobId((prev) => (prev === jobId ? null : jobId)); // Toggle expansion
+  // };
 
   useEffect(() => {
     document.title = "応募済みの求人";
@@ -59,75 +59,70 @@ const Applied = () => {
           appliedJobs.map((job) => (
             <div
               key={job.id}
-              className="flex flex-col w-full bg-[#F5F5F5] rounded-lg p-4 shadow-xl mt-4 hover:bg-[#EAEAEA] transition duration-300"
+              className="flex flex-col w-full bg-[#F5F5F5] rounded-lg p-4 shadow-xl mt-4 hover:bg-[#EAEAEA] transition duration-300 cursor-pointer"
             >
               {/* Job Title */}
-              <p
-                className="lg:text-lg md:text-md text-sm font-bold text-[#343434] cursor-pointer"
-                onClick={() => toggleJobDetails(job.id)}
-              >
-                {job.sub_title}
+              <p className="lg:text-lg md:text-md text-sm font-bold text-[#343434] cursor-pointer">
+                {job.sub_title}({job.type})
               </p>
               {/* Show details if this job is expanded */}
-              {expandedJobId === job.id && (
-                <>
-                  <div className="mt-2 p-2 border-t border-gray-300">
-                    <div className="flex flex-row items-start justify-start">
-                      <p className="text-sm text-gray-700 w-1/5">
-                        <strong>応募日時:</strong>
-                      </p>
-                      <pre className="text-sm text-gray-700 w-4/5">
-                        {moment(job.message.created_at).format(
-                          "YYYY/MM/DD HH:mm"
-                        )}
-                      </pre>
-                    </div>
-                    <div className="flex flex-row items-start justify-start">
-                      <p className="text-sm text-gray-700 w-1/5">
-                        <strong>雇用形態:</strong>
-                      </p>
-                      <pre className="text-sm text-gray-700 w-4/5">
-                        {job.employment_type}
-                      </pre>
-                    </div>
-                    <div className="flex flex-row items-start justify-start">
-                      <p className="text-sm text-gray-700 w-1/5">
-                        <strong>給与:</strong>
-                      </p>
-                      <pre className="text-sm text-gray-700 w-4/5">
-                        {job.salary_min}円 〜 {job.salary_max}円
-                      </pre>
-                    </div>
-
-                    <div className="flex flex-row items-start justify-start">
-                      <p className="text-sm text-gray-700 w-1/5">
-                        <strong>仕事内容:</strong>
-                      </p>
-                      <pre className="text-sm text-gray-700 w-4/5 break-words line-clamp-2">
-                        {job.work_content}
-                      </pre>
-                    </div>
-                    <div className="flex flex-row items-start justify-start">
-                      <p className="text-sm text-gray-700 w-1/5">
-                        <strong>応募要件:</strong>
-                      </p>
-                      <pre className="text-sm text-gray-700 w-4/5">
-                        {job.qualification_content}
-                      </pre>
-                    </div>
-                    <div className="mt-8">
-                      <Link
-                        to={`/${getJobValueByKey(job.type)}/details/${
-                          job.jobpost_id
-                        }`}
-                        className="bg-[#FF2A3B] text-white px-4 py-2 rounded-lg hover:text-gray-300 duration-300"
-                      >
-                        詳細を見る
-                      </Link>
-                    </div>
+              <>
+                <div className="mt-2 p-2 border-t border-gray-300">
+                  <div className="flex flex-row items-start justify-start">
+                    <p className="text-sm text-gray-700 w-1/5">
+                      <strong>応募日時:</strong>
+                    </p>
+                    <pre className="text-sm text-gray-700 w-4/5">
+                      {moment(job.message.created_at).format(
+                        "YYYY/MM/DD HH:mm"
+                      )}
+                    </pre>
                   </div>
-                </>
-              )}
+                  <div className="flex flex-row items-start justify-start">
+                    <p className="text-sm text-gray-700 w-1/5">
+                      <strong>雇用形態:</strong>
+                    </p>
+                    <pre className="text-sm text-gray-700 w-4/5">
+                      {job.employment_type}
+                    </pre>
+                  </div>
+                  <div className="flex flex-row items-start justify-start">
+                    <p className="text-sm text-gray-700 w-1/5">
+                      <strong>給与:</strong>
+                    </p>
+                    <pre className="text-sm text-gray-700 w-4/5">
+                      {job.salary_min}円 〜 {job.salary_max}円
+                    </pre>
+                  </div>
+
+                  <div className="flex flex-row items-start justify-start">
+                    <p className="text-sm text-gray-700 w-1/5">
+                      <strong>仕事内容:</strong>
+                    </p>
+                    <pre className="text-sm text-gray-700 w-4/5 break-words line-clamp-2">
+                      {job.work_content}
+                    </pre>
+                  </div>
+                  <div className="flex flex-row items-start justify-start">
+                    <p className="text-sm text-gray-700 w-1/5">
+                      <strong>応募要件:</strong>
+                    </p>
+                    <pre className="text-sm text-gray-700 w-4/5">
+                      {job.qualification_content}
+                    </pre>
+                  </div>
+                  <div className="mt-8">
+                    <Link
+                      to={`/${getJobValueByKey(job.type)}/details/${
+                        job.jobpost_id
+                      }`}
+                      className="bg-[#FF2A3B] text-white px-4 py-2 rounded-lg hover:text-gray-300 duration-300"
+                    >
+                      詳細を見る
+                    </Link>
+                  </div>
+                </div>
+              </>
             </div>
           ))
         )}
