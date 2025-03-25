@@ -9,7 +9,7 @@ import {
   message,
   Modal,
   Spin,
-  Button
+  Button,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
@@ -391,15 +391,13 @@ const FacilityEdit = () => {
           </div>
         </div>
         <div className="flex items-start mt-1">
-                <div className="flex items-center justify-start gap-1 w-1/5"/>
-                <div className="flex items-center justify-start gap-2">
-                <Button
-                onClick={() => setPhotoSelectModalVisible(true)}
-              >
-                写真管理から選択
-              </Button>
-              </div>
-              </div>
+          <div className="flex items-center justify-start gap-1 w-1/5" />
+          <div className="flex items-center justify-start gap-2">
+            <Button onClick={() => setPhotoSelectModalVisible(true)}>
+              写真管理から選択
+            </Button>
+          </div>
+        </div>
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
           <TextArea
@@ -564,11 +562,19 @@ const FacilityEdit = () => {
           <div className="container flex justify-between gap-8">
             <div className="flex flex-col items-start justify-start w-full">
               <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-2xl hover:scale-[1.02] duration-300">
-                <img
-                  src={facility?.photo}
-                  alt="arrow-down"
-                  className="w-full rounded-lg aspect-video object-cover "
-                />
+                {facility?.photo.length === 0 ? (
+                  <img
+                    src={"/assets/images/noimage.png"}
+                    alt="arrow-down"
+                    className="w-full rounded-lg aspect-video object-cover"
+                  />
+                ) : (
+                  <img
+                    src={facility?.photo}
+                    alt="arrow-down"
+                    className="w-full rounded-lg aspect-video object-cover "
+                  />
+                )}
                 <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
                   <p className="lg:text-xl md:text-sm text-[#343434]">
                     <span className="lg:text-2xl md:text-xl font-bold">
@@ -724,19 +730,19 @@ const FacilityEdit = () => {
       </Modal>
 
       <PhotoSelectModal
-  visible={photoSelectModalVisible}
-  onCancel={() => setPhotoSelectModalVisible(false)}
-  onSelect={(selected) => {
-    const formattedPhotos = selected.map((photoUrl, index) => ({
-      uid: `existing-${index}`,
-      name: `Photo ${index + 1}`,
-      url: photoUrl,
-      status: 'done',
-    }));
-    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
-    setPhotoSelectModalVisible(false);
-  }}
-/>
+        visible={photoSelectModalVisible}
+        onCancel={() => setPhotoSelectModalVisible(false)}
+        onSelect={(selected) => {
+          const formattedPhotos = selected.map((photoUrl, index) => ({
+            uid: `existing-${index}`,
+            name: `Photo ${index + 1}`,
+            url: photoUrl,
+            status: "done",
+          }));
+          setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+          setPhotoSelectModalVisible(false);
+        }}
+      />
     </>
   );
 };
