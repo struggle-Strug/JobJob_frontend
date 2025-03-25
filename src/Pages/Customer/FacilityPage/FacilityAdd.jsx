@@ -187,6 +187,8 @@ const FacilityAdd = () => {
       return message.error("市区町村を入力してください。");
     if (facilityVillage === "")
       return message.error("町名・番地を入力してください。");
+    if (facilityGenre === "")
+      return message.error("施設ジャンルを選択してください。");
 
     const facilityData = {
       customer_id: customer.customer_id,
@@ -368,7 +370,10 @@ const FacilityAdd = () => {
         />
       </div>
       <div className="flex items-start mt-4 textarea">
-        <p className="lg:text-sm text-xs w-1/5">施設ジャンル</p>
+        <p className="lg:text-sm text-xs w-1/5">
+          施設ジャンル
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+        </p>
         <Radio.Group
           options={facilityGenreOptions}
           value={facilityGenre}
