@@ -9,7 +9,7 @@ import {
   message,
   Modal,
   Spin,
-  Button
+  Button,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
@@ -42,7 +42,7 @@ const FacilityEdit = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [facilityIntroduction, setFacilityIntroduction] = useState("");
   const [facilityJobTypeDetail, setFacilityJobTypeDetail] = useState("");
-  const [facilityAccess, setFacilityAccess] = useState("");
+  const [facilityAccess, setFacilityAccess] = useState([]);
   const [facilityAccessText, setFacilityAccessText] = useState("");
   const [facilityGenre, setFacilityGenre] = useState("");
   const [facilityEstablishmentDateYear, setFacilityEstablishmentDateYear] =
@@ -197,7 +197,7 @@ const FacilityEdit = () => {
       setFacilityBuilding(fetchedFacility.building);
       setFacilityPhotoUrl(fetchedFacility.photo);
       setFacilityIntroduction(fetchedFacility.introduction);
-      setFacilityAccess(fetchedFacility.access[0]);
+      setFacilityAccess(fetchedFacility.access);
       setFacilityAccessText(fetchedFacility.access_text);
       setFacilityGenre(fetchedFacility.facility_genre);
       setFacilityEstablishmentDateYear(
@@ -391,15 +391,13 @@ const FacilityEdit = () => {
           </div>
         </div>
         <div className="flex items-start mt-1">
-                <div className="flex items-center justify-start gap-1 w-1/5"/>
-                <div className="flex items-center justify-start gap-2">
-                <Button
-                onClick={() => setPhotoSelectModalVisible(true)}
-              >
-                写真管理から選択
-              </Button>
-              </div>
-              </div>
+          <div className="flex items-center justify-start gap-1 w-1/5" />
+          <div className="flex items-center justify-start gap-2">
+            <Button onClick={() => setPhotoSelectModalVisible(true)}>
+              写真管理から選択
+            </Button>
+          </div>
+        </div>
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
           <TextArea
@@ -564,24 +562,32 @@ const FacilityEdit = () => {
           <div className="container flex justify-between gap-8">
             <div className="flex flex-col items-start justify-start w-full">
               <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-2xl hover:scale-[1.02] duration-300">
-                <img
-                  src={facility?.photo}
-                  alt="arrow-down"
-                  className="w-full rounded-lg aspect-video object-cover "
-                />
+                {facility?.photo.length === 0 && facilityPhoto?.length === 0 ? (
+                  <img
+                    src={"/assets/images/noimage.png"}
+                    alt="arrow-down"
+                    className="w-full rounded-lg aspect-video object-cover"
+                  />
+                ) : (
+                  <img
+                    src={previewImage}
+                    alt="arrow-down"
+                    className="w-full rounded-lg aspect-video object-cover "
+                  />
+                )}
                 <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
                   <p className="lg:text-xl md:text-sm text-[#343434]">
                     <span className="lg:text-2xl md:text-xl font-bold">
-                      {facility?.name}
+                      {facilityName}
                     </span>
                     <span className="text-base">の求人情報</span>
                   </p>
                   <div>
                     <p className="lg:text-sm md:text-xs text-[#343434]">
-                      {facility?.prefecture}
-                      {facility?.city}
-                      {facility?.village}
-                      {facility?.building}
+                      {facilityPrefecture}
+                      {facilityCity}
+                      {facilityVillage}
+                      {facilityBuilding}
                     </p>
                   </div>
                 </div>
@@ -598,7 +604,7 @@ const FacilityEdit = () => {
                     to={`/facility/${facility?.facility_id}`}
                     className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
                   >
-                    {facility?.name}
+                    {facilityName}
                   </Link>
                 </div>
                 <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
@@ -626,7 +632,7 @@ const FacilityEdit = () => {
                     施設紹介
                   </p>
                   <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                    <pre>{facility?.introduction}</pre>
+                    <pre>{facilityIntroduction}</pre>
                   </p>
                 </div>
                 <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
@@ -635,7 +641,7 @@ const FacilityEdit = () => {
                   </p>
                   <div className="flex flex-col items-start justify-start w-4/5">
                     <div className="inline-block items-start justify-start gap-2">
-                      {facility?.access.map((item, index) => {
+                      {facilityAccess?.map((item, index) => {
                         return (
                           <div
                             key={index}
@@ -649,10 +655,10 @@ const FacilityEdit = () => {
                       })}
                     </div>
                     <p className="lg:text-base text-sm text-[#343434] mt-1">
-                      {facility?.prefecture}
-                      {facility?.city}
-                      {facility?.village}
-                      {facility?.building}
+                      {facilityPrefecture}
+                      {facilityCity}
+                      {facilityVillage}
+                      {facilityBuilding}
                     </p>
                     <div className="w-full py-4 aspect-square">
                       <iframe
@@ -662,15 +668,17 @@ const FacilityEdit = () => {
                         style={{ border: 0 }}
                         loading="lazy"
                         allowFullScreen
-                        src={`https://www.google.com/maps?q=${facility?.prefecture}${facility?.city}${facility?.village}${facility?.building}&output=embed`}
+                        src={`https://www.google.com/maps?q=${facilityPrefecture}
+${facilityCity}${facilityVillage}${facilityBuilding}&output=embed`}
                       ></iframe>
                     </div>
                     <p className="lg:text-base text-sm text-[#343434] mt-1">
-                      {facility?.access_text}
+                      {facilityAccessText}
                     </p>
                     <Link
                       to={`https://www.google.com/maps?q=${encodeURIComponent(
-                        `${facility?.prefecture}${facility?.city}${facility?.village}${facility?.building}`
+                        `${facilityPrefecture}
+${facilityCity}${facilityVillage}${facilityBuilding}`
                       )}`}
                       target="_blank"
                       className="lg:text-base text-sm text-[#FF2A3B] hover:underline mt-1 border-[1px] border-[#FF2A3B] py-1 px-2 rounded-lg"
@@ -684,8 +692,8 @@ const FacilityEdit = () => {
                     設立年月日
                   </p>
                   <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                    {facility?.establishment_date.split("-")[0]}年
-                    {facility?.establishment_date.split("-")[1]}日
+                    {facilityEstablishmentDateYear}年
+                    {facilityEstablishmentDateMonth}月
                   </p>
                 </div>
                 <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
@@ -694,10 +702,10 @@ const FacilityEdit = () => {
                   </p>
                   <div className="flex flex-col items-start justify-start w-4/5">
                     <Link
-                      to={`/${Facilities[facility?.facility_genre]}`}
+                      to={`/${Facilities[facilityGenre]}`}
                       className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
                     >
-                      {facility?.facility_genre}
+                      {facilityGenre}
                     </Link>
                   </div>
                 </div>
@@ -706,7 +714,7 @@ const FacilityEdit = () => {
                     営業時間
                   </p>
                   <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                    <pre>{facility?.service_time}</pre>
+                    <pre>{facilityServiceTime}</pre>
                   </p>
                 </div>
                 <div className="flex items-start justify-start py-6">
@@ -714,7 +722,7 @@ const FacilityEdit = () => {
                     休日
                   </p>
                   <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                    <pre>{facility?.rest_day}</pre>
+                    <pre>{facilityRestDay}</pre>
                   </p>
                 </div>
               </div>
@@ -724,19 +732,19 @@ const FacilityEdit = () => {
       </Modal>
 
       <PhotoSelectModal
-  visible={photoSelectModalVisible}
-  onCancel={() => setPhotoSelectModalVisible(false)}
-  onSelect={(selected) => {
-    const formattedPhotos = selected.map((photoUrl, index) => ({
-      uid: `existing-${index}`,
-      name: `Photo ${index + 1}`,
-      url: photoUrl,
-      status: 'done',
-    }));
-    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
-    setPhotoSelectModalVisible(false);
-  }}
-/>
+        visible={photoSelectModalVisible}
+        onCancel={() => setPhotoSelectModalVisible(false)}
+        onSelect={(selected) => {
+          const formattedPhotos = selected.map((photoUrl, index) => ({
+            uid: `existing-${index}`,
+            name: `Photo ${index + 1}`,
+            url: photoUrl,
+            status: "done",
+          }));
+          setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+          setPhotoSelectModalVisible(false);
+        }}
+      />
     </>
   );
 };

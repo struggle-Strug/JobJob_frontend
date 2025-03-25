@@ -208,7 +208,7 @@ const FacilityAdd = () => {
 
     await axios.put(
       `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
-      photoUrls.files
+      photoUrls.files || []
     );
 
     const response = await axios.post(
@@ -314,15 +314,13 @@ const FacilityAdd = () => {
         </div>
       </div>
       <div className="flex items-start mt-1">
-              <div className="flex items-center justify-start gap-1 w-1/5"/>
-              <div className="flex items-center justify-start gap-2">
-              <Button
-              onClick={() => setPhotoSelectModalVisible(true)}
-            >
-              写真管理から選択
-            </Button>
-            </div>
-            </div>
+        <div className="flex items-center justify-start gap-1 w-1/5" />
+        <div className="flex items-center justify-start gap-2">
+          <Button onClick={() => setPhotoSelectModalVisible(true)}>
+            写真管理から選択
+          </Button>
+        </div>
+      </div>
       <div className="flex items-start mt-4 textarea">
         <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
         <TextArea
@@ -429,19 +427,19 @@ const FacilityAdd = () => {
         </button>
       </div>
       <PhotoSelectModal
-  visible={photoSelectModalVisible}
-  onCancel={() => setPhotoSelectModalVisible(false)}
-  onSelect={(selected) => {
-    const formattedPhotos = selected.map((photoUrl, index) => ({
-      uid: `existing-${index}`,
-      name: `Photo ${index + 1}`,
-      url: photoUrl,
-      status: 'done',
-    }));
-    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
-    setPhotoSelectModalVisible(false);
-  }}
-/>
+        visible={photoSelectModalVisible}
+        onCancel={() => setPhotoSelectModalVisible(false)}
+        onSelect={(selected) => {
+          const formattedPhotos = selected.map((photoUrl, index) => ({
+            uid: `existing-${index}`,
+            name: `Photo ${index + 1}`,
+            url: photoUrl,
+            status: "done",
+          }));
+          setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+          setPhotoSelectModalVisible(false);
+        }}
+      />
     </div>
   );
 };
