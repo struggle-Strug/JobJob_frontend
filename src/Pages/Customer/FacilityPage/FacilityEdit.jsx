@@ -691,7 +691,7 @@ const FacilityEdit = () => {
                   </p>
                   <p className="lg:text-base text-sm text-[#343434] w-4/5">
                     {facility?.establishment_date.split("-")[0]}年
-                    {facility?.establishment_date.split("-")[1]}日
+                    {facility?.establishment_date.split("-")[1]}月
                   </p>
                 </div>
                 <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
