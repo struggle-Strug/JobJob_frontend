@@ -655,99 +655,110 @@ const JobOffer = () => {
                         <p className="lg:text-sm text-xs">
                           ※選択した時間から1時間以内を希望時間とします。面接の実施や日程は確定ではありません。
                         </p>
-                        {meetingDate.map((meeting, dateIndex) => {
-                          return (
-                            <>
-                              <div className="flex flex-col w-full">
-                                <div
-                                  key={dateIndex}
-                                  className="flex flex-col bg-[#EFEFEF] rounded-lg p-2 mt-4 w-2/5"
-                                >
-                                  <Select
-                                    options={dateOptions}
-                                    placeholder="日程を選択"
-                                    value={meeting.date}
-                                    onChange={(value) =>
-                                      handleDateChange(value, dateIndex)
-                                    }
-                                    className="w-full"
-                                  />
-                                  {meeting.times.map((time, timeIndex) => {
-                                    return (
-                                      <>
-                                        <div
-                                          key={timeIndex}
-                                          className="flex mt-4 gap-2 items-center"
-                                        >
-                                          <Select
-                                            options={timeOptions}
-                                            placeholder="時間を選択"
-                                            value={time.time}
-                                            onChange={(value) =>
-                                              handleTimeChange(
-                                                value,
-                                                dateIndex,
-                                                timeIndex
-                                              )
-                                            }
-                                            className="w-1/3"
-                                          />
-                                          <Select
-                                            options={minuteOptions}
-                                            placeholder="分を選択"
-                                            value={time.minute}
-                                            onChange={(value) =>
-                                              handleMinuteChange(
-                                                value,
-                                                dateIndex,
-                                                timeIndex
-                                              )
-                                            }
-                                            className="w-1/3"
-                                          />
-                                          ~
-                                          <button
-                                            onClick={() =>
-                                              handleDeleteMeetingTime(
-                                                dateIndex,
-                                                timeIndex
-                                              )
-                                            }
-                                            className="text-[#FF2A3B] text-xs"
+                        {meetingDate.length === 0 ? (
+                          <>
+                            <button
+                              onClick={() => handleAddMeetingDate()}
+                              className="text-[#343434] hover:text-[#FF2A3B] border-[1px] rounded-lg px-4 py-2 text-xs text-center mt-2 duration-300"
+                            >
+                              面接希望日を追加する
+                            </button>
+                          </>
+                        ) : (
+                          meetingDate.map((meeting, dateIndex) => {
+                            return (
+                              <>
+                                <div className="flex flex-col w-full">
+                                  <div
+                                    key={dateIndex}
+                                    className="flex flex-col bg-[#EFEFEF] rounded-lg p-2 mt-4 w-2/5"
+                                  >
+                                    <Select
+                                      options={dateOptions}
+                                      placeholder="日程を選択"
+                                      value={meeting.date}
+                                      onChange={(value) =>
+                                        handleDateChange(value, dateIndex)
+                                      }
+                                      className="w-full"
+                                    />
+                                    {meeting.times.map((time, timeIndex) => {
+                                      return (
+                                        <>
+                                          <div
+                                            key={timeIndex}
+                                            className="flex mt-4 gap-2 items-center"
                                           >
-                                            時間を削除
-                                          </button>
-                                        </div>
-                                      </>
-                                    );
-                                  })}
+                                            <Select
+                                              options={timeOptions}
+                                              placeholder="時間を選択"
+                                              value={time.time}
+                                              onChange={(value) =>
+                                                handleTimeChange(
+                                                  value,
+                                                  dateIndex,
+                                                  timeIndex
+                                                )
+                                              }
+                                              className="w-1/3"
+                                            />
+                                            <Select
+                                              options={minuteOptions}
+                                              placeholder="分を選択"
+                                              value={time.minute}
+                                              onChange={(value) =>
+                                                handleMinuteChange(
+                                                  value,
+                                                  dateIndex,
+                                                  timeIndex
+                                                )
+                                              }
+                                              className="w-1/3"
+                                            />
+                                            ~
+                                            <button
+                                              onClick={() =>
+                                                handleDeleteMeetingTime(
+                                                  dateIndex,
+                                                  timeIndex
+                                                )
+                                              }
+                                              className="text-[#FF2A3B] text-xs"
+                                            >
+                                              時間を削除
+                                            </button>
+                                          </div>
+                                        </>
+                                      );
+                                    })}
+                                    <button
+                                      onClick={() =>
+                                        handleAddMeetingTime(dateIndex)
+                                      }
+                                      className="text-[#FF2A3B] text-xs mt-2"
+                                    >
+                                      時間を追加
+                                    </button>
+                                  </div>
                                   <button
                                     onClick={() =>
-                                      handleAddMeetingTime(dateIndex)
+                                      handleDeleteMeetingDate(dateIndex)
                                     }
-                                    className="text-[#FF2A3B] text-xs mt-2"
+                                    className="text-[#FF2A3B] text-xs w-2/5 text-right mt-2"
                                   >
-                                    時間を追加
+                                    希望日を削除する
+                                  </button>
+                                  <button
+                                    onClick={() => handleAddMeetingDate()}
+                                    className="text-[#FF2A3B] text-xs w-2/5 text-left mt-1"
+                                  >
+                                    面接希望日を追加する
                                   </button>
                                 </div>
-                                <button
-                                  onClick={() =>
-                                    handleDeleteMeetingDate(dateIndex)
-                                  }
-                                  className="text-[#FF2A3B] text-xs w-2/5 text-right mt-2"
-                                >
-                                  希望日を削除する
-                                </button>
-                                <button
-                                  onClick={() => handleAddMeetingDate()}
-                                  className="text-[#FF2A3B] text-xs w-2/5 text-left mt-1"
-                                >
-                                  面接希望日を追加する
-                                </button>
-                              </div>
-                            </>
-                          );
-                        })}
+                              </>
+                            );
+                          })
+                        )}
                       </div>
                     </div>
                   </div>
@@ -788,7 +799,8 @@ const JobOffer = () => {
         >
           <div className="flex flex-col items-start justify-start">
             <h1 className="lg:text-base text-sm font-bold text-[#343434]">
-              {jobPost?.facility_id.name}への応募が完了しました。
+              {jobPost?.facility_id.name}({jobPost?.type}/
+              {jobPost?.employment_type[0]})への応募が完了しました。
             </h1>
             <p className="text-xs text-[#343434] mt-4">
               ご応募ありがとうございます。応募後の流れなどを紹介している応募完了メールを送信しました。質問や追加アピール、履歴書の送付などはメッセージにて応募先へ直接連絡できます。
