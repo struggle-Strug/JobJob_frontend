@@ -39,6 +39,7 @@ const formCellStyle = {
 const CoporateInformation = () => {
   const { customer } = useAuth();
   // 各入力項目用の state 変数の定義
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
   const [postalCode, setPostalCode] = useState(""); // 郵便番号
   const [prefecture, setPrefecture] = useState(""); // 都道府県
   const [municipality, setMunicipality] = useState(""); // 市区町村
@@ -62,7 +63,7 @@ const CoporateInformation = () => {
   // 送信ボタン押下時のハンドラ（中身は未実装）
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // ここに送信処理のロジックを実装する
+
     const companyData = {
       companyName: customer?.companyName,
       postalCode: postalCode,
@@ -75,19 +76,36 @@ const CoporateInformation = () => {
       phoneNumber: phoneNumber,
     };
 
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/company`,
-      companyData
-    );
-    if (response.data.error) return message.error(response.data.message);
-    message.success("法人情報を登録しました。");
+    try {
+      let response;
+
+      if (alreadyRegistered) {
+        response = await axios.put(
+          `${process.env.REACT_APP_API_URL}/api/v1/company`,
+          companyData
+        );
+        if (response.data.error) return message.error(response.data.message);
+        message.success("法人情報を更新しました。");
+      } else {
+        response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/company`,
+          companyData
+        );
+        if (response.data.error) return message.error(response.data.message);
+        message.success("法人情報を登録しました。");
+      }
+    } catch (err) {
+      console.error(err);
+      message.error("エラーが発生しました。");
+    }
   };
 
   const getCompanyInfo = async () => {
     const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/v1/company/${customer?.companyName}`
+      `${process.env.REACT_APP_API_URL}/api/v1/company/`
     );
     if (response.data.error) return message.error(response.data.message);
+    setAlreadyRegistered(true);
     setPostalCode(response.data.company.postalCode);
     setPrefecture(response.data.company.prefecture);
     setMunicipality(response.data.company.municipality);
