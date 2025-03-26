@@ -217,9 +217,6 @@ const CustomerSignUp = () => {
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                 />
-                <p className="text-xs text-[#343434] mt-2 lg:text-sm ">
-                  ※応募が来た場合に、この連絡先が開示されます。求職者に開示可能な連絡先をご入力ください。
-                </p>
               </div>
             </div>
             <div className="flex w-full border-t-[1px] border-[#EFEFEF]">
