@@ -57,10 +57,10 @@ const Coporate = () => {
             </div>
             <div className="flex justify-start w-full">
               <p className="lg:text-base md:text-sm text-[#343434] font-bold mt-4 w-1/5">
-                社名
+                事業内容
               </p>
               <p className="lg:text-base md:text-sm text-[#343434] mt-4 w-4/5">
-                JobJob合同会社
+                インターネットを利用した求人・求職の情報提供サービスの運営
               </p>
             </div>
           </div>
