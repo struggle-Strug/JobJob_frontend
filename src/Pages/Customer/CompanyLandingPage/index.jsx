@@ -25,7 +25,7 @@ const CompanyLandingPage = () => {
           <Avatar />
         </Link>
         <div className="flex items-center gap-8">
-        <Link
+          <Link
             to={"/"}
             className="lg:text-base md:text-sm text-xs text-[#F53544] hover:text-[#343434] hover:shadow-lg font-semibold bg-[#F1F1F1] rounded-3xl px-4 py-2 duration-300"
           >
@@ -131,7 +131,7 @@ const CompanyLandingPage = () => {
                 className="w-full"
               />
               <p className="lg:text-xl md:text-lg text-base font-bold mt-4">
-              最短本日から求人掲載!
+                最短本日から求人掲載!
               </p>
             </div>
           </div>
@@ -157,21 +157,21 @@ const CompanyLandingPage = () => {
           <div className="grid grid-cols-3 max-w-[670px] w-full xl:gap-8">
             <div className="grid grid-cols-1">
               <img
-                src="/assets/images/companytop/image 12.png"
+                src="/assets/images/companytop/image_12.png"
                 alt=""
                 className="lg:w-full md:w-3/4 mx-auto"
               />
             </div>
             <div className="grid grid-cols-1">
               <img
-                src="/assets/images/companytop/image 13.png"
+                src="/assets/images/companytop/image_13.png"
                 alt=""
                 className="lg:w-full md:w-3/4 mx-auto"
               />
             </div>
             <div className="grid grid-cols-1">
               <img
-                src="/assets/images/companytop/image 14.png"
+                src="/assets/images/companytop/image_14.png"
                 alt=""
                 className="lg:w-full md:w-3/4 mx-auto"
               />
@@ -212,13 +212,13 @@ const CompanyLandingPage = () => {
         <div className="absolute w-full xl:h-80 sm:h-48">
           <img
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-auto"
-            src="/assets/images/companytop/image 22.png"
+            src="/assets/images/companytop/image_22.png"
             alt="description"
           />
           <div className="absolute top-0 w-full h-full xl:px-52 xl:py-16 lg:px-36 lg:py-8 md:px-12 md:py-8 sm:px-4 sm:py-2">
             <div className="bg-[#ffffffed] max-w-[1000px] mx-auto shadow-lg rounded-lg h-full flex items-center justify-center lg:gap-8 md:gap-6">
               <img
-                src="/assets/images/companytop/image 6.png"
+                src="/assets/images/companytop/image_6.png"
                 alt="fv"
                 className="lg:w-[50%] sm:w-[45%]"
               />
@@ -276,7 +276,7 @@ const CompanyLandingPage = () => {
               </p>
             </div>
             <img
-              src="/assets/images/companytop/Polygon 1.png"
+              src="/assets/images/companytop/Polygon_1.png"
               alt="triangle"
               className="mx-[-2rem] mt-[-6rem]"
             />
@@ -297,7 +297,7 @@ const CompanyLandingPage = () => {
               </p>
             </div>
             <img
-              src="/assets/images/companytop/Polygon 1.png"
+              src="/assets/images/companytop/Polygon_1.png"
               alt="triangle"
               className="mx-[-2rem] mt-[-6rem]"
             />
@@ -342,10 +342,10 @@ const CompanyLandingPage = () => {
               求職者の登録数が多いのでJobJobは採用できる確率が格段に高まります。
             </p>
           </div>
-          <img src="/assets/images/companytop/image 18.png" alt="" />
+          <img src="/assets/images/companytop/image_18.png" alt="" />
         </div>
         <div className="flex items-center max-w-[1000px] mx-auto">
-          <img src="/assets/images/companytop/image 19.png" alt="" />
+          <img src="/assets/images/companytop/image_19.png" alt="" />
           <div className="flex flex-col">
             <p className="lg:text-lg md:text-base text-sm font-bold mt-4 text-[#FF6B56] text-center leading-4">
               職種が57職種と豊富にあるから
@@ -388,7 +388,7 @@ const CompanyLandingPage = () => {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <div className="flex flex-col justify-start">
-                  <p className="lg:text-lg md:text-base text-sm font-bold mt-4 text-center leading-3">
+                  <p className="flex justify-start lg:text-lg md:text-base text-sm font-bold mt-4 text-center leading-3">
                     求人の複製
                   </p>
                   <p className="lg:text-md md:text-sm text-xs mt-8">
@@ -458,13 +458,13 @@ const CompanyLandingPage = () => {
         <div className="absolute w-full xl:h-80 sm:h-48">
           <img
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-auto"
-            src="/assets/images/companytop/image 22.png"
+            src="/assets/images/companytop/image_22.png"
             alt="description"
           />
           <div className="absolute top-0 w-full h-full xl:px-52 xl:py-16 lg:px-36 lg:py-8 md:px-12 md:py-8 sm:px-4 sm:py-2">
             <div className="bg-[#ffffffed] max-w-[1000px] mx-auto shadow-lg rounded-lg h-full flex items-center justify-center lg:gap-8 md:gap-6">
               <img
-                src="/assets/images/companytop/image 6.png"
+                src="/assets/images/companytop/image_6.png"
                 alt="fv"
                 className="lg:w-[50%] sm:w-[45%]"
               />
@@ -647,13 +647,13 @@ const CompanyLandingPage = () => {
         <div className="relative w-full xl:h-80 sm:h-48">
           <img
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full object-cover"
-            src="/assets/images/companytop/image 22.png"
+            src="/assets/images/companytop/image_22.png"
             alt="description"
           />
           <div className="relative w-full h-full xl:px-52 xl:py-16 lg:px-36 lg:py-8 md:px-12 md:py-8 sm:px-4 sm:py-2">
             <div className="bg-[#ffffffed] max-w-[1000px] mx-auto shadow-lg rounded-lg h-full flex items-center justify-center lg:gap-8 md:gap-6">
               <img
-                src="/assets/images/companytop/image 6.png"
+                src="/assets/images/companytop/image_6.png"
                 alt="fv"
                 className="lg:w-[50%] sm:w-[45%]"
               />
@@ -677,7 +677,7 @@ const CompanyLandingPage = () => {
         <div className="max-w-[1000px] mx-auto flex items-center justify-start w-full gap-4">
           <Link to={"/"}>
             <img
-              src="/assets/images/companytop/logo_negative_horizontal00 1.png"
+              src="/assets/images/companytop/logo_negative_horizontal00_1.png"
               alt="logo"
               className=""
             />
