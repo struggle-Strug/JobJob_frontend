@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="flex flex-col justify-center container py-8 lg:py-12">
           <Link to={"/"} className="w-1/2 sm:w-1/3 lg:w-1/6">
             <img
-              src={"/assets/images/header/jobjob_logo 1.png"}
+              src={"/assets/images/header/jobjob_logo_1.png"}
               alt="logo"
               className="hover:scale-105 duration-300"
             />

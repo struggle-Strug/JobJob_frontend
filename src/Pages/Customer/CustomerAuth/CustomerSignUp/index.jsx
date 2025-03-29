@@ -86,7 +86,7 @@ const CustomerSignUp = () => {
             </p>
           </div>
           <img
-            src="/assets/images/companytop/Polygon 1.png"
+            src="/assets/images/companytop/Polygon_1.png"
             alt="triangle"
             className="mx-[-2rem]"
           />
@@ -99,7 +99,7 @@ const CustomerSignUp = () => {
             </p>
           </div>
           <img
-            src="/assets/images/companytop/Polygon 1.png"
+            src="/assets/images/companytop/Polygon_1.png"
             alt="triangle"
             className="mx-[-2rem]"
           />
