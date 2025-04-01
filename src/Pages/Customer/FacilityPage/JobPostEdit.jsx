@@ -232,14 +232,19 @@ const JobPostEdit = () => {
           ? "医科"
           : Object.keys(JobType.歯科).includes(jobData.type)
           ? "歯科"
-          : Object.keys(JobType.薬剤師).includes(jobData.type)
-          ? "薬剤師"
-          : Object.keys(JobType.看護婦).includes(jobData.type)
-          ? "看護婦"
-          : Object.keys(JobType.診療放射線技師).includes(jobData.type)
-          ? "診療放射線技師"
+          : Object.keys(JobType.介護).includes(jobData.type)
+          ? "介護"
+          : Object.keys(JobType.保育).includes(jobData.type)
+          ? "保育"
+          : Object.keys(JobType["リハビリ／代替医療"]).includes(jobData.type)
+          ? "リハビリ／代替医療"
+          : Object.keys(JobType.その他).includes(jobData.type)
+          ? "その他"
+          : Object.keys(JobType["ヘルスケア／美容"]).includes(jobData.type)
+          ? "ヘルスケア／美容"
           : ""
       );
+      
       setJobPostTypeDetail(jobData.type);
       setJobPostPictureUrl(jobData.picture);
 
