@@ -42,6 +42,7 @@ const CustomerSignIn = lazy(() =>
 );
 const Setting = lazy(() => import("./Pages/MemberProfile/Setting"));
 const NotFound = lazy(() => import("./Pages/NotFound"));
+const Preparing = lazy(() => import("./Pages/Preparing"));
 const Rule = lazy(() => import("./Pages/Customer/Rule"));
 const CLMainLayout = lazy(() => import("./components/CLMainLayout"));
 const CLTop = lazy(() => import("./Pages/Customer/TopPage"));
@@ -190,6 +191,7 @@ function App() {
               />
             </Route>
             <Route path="*" element={<NotFound />} />
+            <Route path="/customers/contact" element={<Preparing />} />
           </Route>
         ) : (
           <Route element={<CLLogoLayout />}>
@@ -296,6 +298,7 @@ function App() {
             <Route path="/*" element={<Navigate to="/members/sign_in" />} />
           )}
           <Route path="*" element={<NotFound />} />
+          <Route path="/contact" element={<Preparing />} />
         </Route>
       </Routes>
     </Suspense>

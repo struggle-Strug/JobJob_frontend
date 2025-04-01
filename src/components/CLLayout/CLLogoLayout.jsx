@@ -11,7 +11,7 @@ const CLLogoLayout = () => {
               <img
                 src="/assets/images/companytop/logo_negative_horizontal00_1.png"
                 alt="logo"
-                className="w-24 hover:scale-105 duration-300"
+                className="w-24 hover:scale-105 duration-300 max-h-6"
               />
             </Link>
           </div>
