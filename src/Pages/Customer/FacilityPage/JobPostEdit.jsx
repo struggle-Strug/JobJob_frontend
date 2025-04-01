@@ -225,6 +225,7 @@ const JobPostEdit = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`
       );
       const jobData = response.data.jobpost;
+      console.log(jobData);
       setJobPost(jobData);
       setJobPostType(
         Object.keys(JobType.医科).includes(jobData.type)
