@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { message } from "antd";
+import { message, Carousel } from "antd";
 import { Facilities } from "../../../utils/constants/categories/facilities";
 import Loading from "../../../components/Loading";
 import { useAuth } from "../../../context/AuthContext";
@@ -55,7 +55,8 @@ const JobDetails = () => {
     美容部員: "/bcm",
     インストラクター: "/ins",
   };
-
+const [currentSlide, setCurrentSlide] = useState(0);
+  const carouselRef = useRef();
   const getJobPost = async () => {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobpost_id}`
@@ -125,19 +126,66 @@ const JobDetails = () => {
   return (
     <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
       <div className="container flex items-stretch justify-between p-4 bg-white rounded-lg">
-        {jobPost?.picture.length === 0 ? (
-          <img
-            src={"/assets/images/noimage.png"}
-            alt={jobPost?.sub_title}
-            className="w-2/3 object-cover rounded-lg"
-          />
-        ) : (
-          <img
-            src={jobPost?.picture[0]}
-            alt={jobPost?.sub_title}
-            className="w-2/3 aspect-[2/1] object-cover rounded-lg"
-          />
-        )}
+      <div className="relative w-2/3">
+                      <Carousel
+                        ref={carouselRef}
+                        dots={false}
+                        beforeChange={(_, next) => setCurrentSlide(next)}
+                        
+                      >
+                        {jobPost?.picture?.length > 0 ? (
+                          jobPost.picture.map((photoUrl, index) => (
+                            <div key={index}>
+                              <img
+                                src={photoUrl}
+                                alt={`facility-photo-${index}`}
+                                className="w-full aspect-video object-cover rounded-t-xl"
+                              />
+                            </div>
+                          ))
+                        ) : (
+                          <div>
+                            <img
+                              src="/assets/images/noimage.png"
+                              alt="no-image"
+                              className="w-full aspect-video object-cover"
+                            />
+                          </div>
+                        )}
+                      </Carousel>
+                      {/* スライドインジケーター（画像上に表示） */}
+                      {jobPost?.picture?.length > 0 && (
+                        <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
+                          {currentSlide + 1}/{jobPost.picture.length}
+                        </div>
+                      )}
+                      {/* 矢印バー：画像直下に隙間なく配置 */}
+                    {jobPost?.picture?.length > 1 && (
+              <div className="flex items-center justify-between w-full bg-[#fdfcf9]  h-11 rounded-b-xl border border-[#ddccc9]">
+                <button
+                  onClick={() => {
+                    const newIndex = (currentSlide - 1 + jobPost.picture.length) % jobPost.picture.length;
+                    carouselRef.current.goTo(newIndex, false);
+                    setCurrentSlide(newIndex);
+                  }}
+                  className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+                >
+                  <svg aria-label="前の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 13L5.27083 8L11 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+                <button
+                  onClick={() => {
+                    const newIndex = (currentSlide + 1) % jobPost.picture.length;
+                    carouselRef.current.goTo(newIndex, false);
+                    setCurrentSlide(newIndex);
+                  }}
+                  className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+                >
+                  <svg aria-label="次の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13L10.7292 8L5 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                </button>
+              </div>
+            )}
+                    </div>
+                    
 
         <div className="flex flex-col items-start justify-between p-4 w-1/3 gap-4">
           <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
