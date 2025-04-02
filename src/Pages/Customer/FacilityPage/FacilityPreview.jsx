@@ -1,10 +1,81 @@
-import { Modal } from "antd";
-import React from "react";
+import { Modal, Carousel } from "antd";
+import { React, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getJobValueByKey } from "../../../utils/getFunctions";
 import { Facilities } from "../../../utils/constants/categories";
 
+// カスタムアローコンポーネント（次へ）
+const CustomNextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        right: "10px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      onClick={onClick}
+    >
+      <div
+        style={{
+          background: "rgba(0, 0, 0, 0.5)",
+          borderRadius: "50%",
+          padding: "20px",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* ここにアイコンなど矢印の内容を入れる */}
+      </div>
+    </div>
+  );
+};
+
+// カスタムアローコンポーネント（前へ）
+const CustomPrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        left: "10px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      onClick={onClick}
+    >
+      <div
+        style={{
+          background: "rgba(0, 0, 0, 0.5)",
+          borderRadius: "50%",
+          padding: "20px",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* ここにアイコンなど矢印の内容を入れる */}
+      </div>
+    </div>
+  );
+};
+
 const FacilityPreview = ({ open, onCancel, data }) => {
+  // Carousel の設定にカスタムアローを追加
+  const carouselSettings = {
+    arrows: true,
+    infinite: true,
+    dots: true,
+    nextArrow: <CustomNextArrow />,
+    prevArrow: <CustomPrevArrow />,
+  };
+
+  useEffect(() => {
+    console.log("FacilityPreview data:", data);
+  }, [data]);
+
   return (
     <Modal
       open={open}
@@ -13,85 +84,30 @@ const FacilityPreview = ({ open, onCancel, data }) => {
       width={800}
       className="modal"
     >
-      {/* <div className="min-h-screen bg-white p-6 rounded-lg">
-        <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">
-          施設プレビュー
-        </p>
-        <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">施設名</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.name}</p>
-        </div>
-        <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">郵便番号</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.postal_code}</p>
-        </div>
-        <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">都道府県</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.prefecture}</p>
-        </div>
-        <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">市区町村</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.city}</p>
-        </div>
-        <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">町名・番地</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.village}</p>
-        </div>
-        <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">建物名</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.building}</p>
-        </div>
-        <div className="flex items-start mt-4">
-          <div className="flex items-center justify-start gap-1 w-1/5">
-            <span className="lg:text-sm text-xs text-[#343434]">施設写真</span>
-          </div>
-          <div className="flex items-center justify-start gap-2">
-            <img src={data?.photo} alt="facilityPhoto" className="w-20" />
-          </div>
-        </div>
-        <div className="flex items-start mt-4 textarea">
-          <p className="lg:text-sm text-xs w-1/5">施設紹介</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.introduction}</p>
-        </div>
-        <div className="flex items-start mt-4 desireEmployment">
-          <p className="lg:text-sm text-xs w-1/5">アクセス</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.access.join(",")}</p>
-        </div>
-        <div className="flex items-start mt-4">
-          <p className="lg:text-sm text-xs w-1/5">アクセス(住所)</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.access_text}</p>
-        </div>
-        <div className="flex items-start mt-4 textarea">
-          <p className="lg:text-sm text-xs w-1/5">施設ジャンル</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.facility_genre}</p>
-        </div>
-        <div className="flex items-start mt-4 textarea">
-          <p className="lg:text-sm text-xs w-1/5">設立年月日</p>
-          <div className="flex justify-start items-end w-4/5">
-            <p className="lg:text-sm text-xs w-1/5">
-              {data?.establishment_date.split("-")[0]}年
-              {data?.establishment_date.split("-")[1]}月
-            </p>
-          </div>
-        </div>
-        <div className="flex items-start mt-4 textarea">
-          <p className="lg:text-sm text-xs w-1/5">営業時間</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.service_time}</p>
-        </div>
-        <div className="flex items-start mt-4 textarea">
-          <p className="lg:text-sm text-xs w-1/5">休日</p>
-          <p className="lg:text-sm text-xs w-4/5">{data?.rest_day}</p>
-        </div>
-      </div> */}
       <div className="flex w-full p-8">
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-start justify-start w-full">
             <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-2xl hover:scale-[1.02] duration-300">
-              <img
-                src={data?.photo[0]}
-                alt="arrow-down"
-                className="w-full rounded-lg aspect-video object-cover "
-              />
+              {/* Carousel を追加 */}
+              <div style={{ width: "100%", height: "300px" }}>
+                <Carousel {...carouselSettings}>
+                  {data?.photo &&
+                    data.photo.map((photoUrl, index) => (
+                      <div key={index}>
+                        <img
+                          src={photoUrl}
+                          alt={`facility-photo-${index}`}
+                          style={{
+                            width: "100%",
+                            height: "300px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
+                    ))}
+                </Carousel>
+              </div>
+
               <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
                 <p className="lg:text-xl md:text-sm text-[#343434]">
                   <span className="lg:text-2xl md:text-xl font-bold">
@@ -109,10 +125,12 @@ const FacilityPreview = ({ open, onCancel, data }) => {
                 </div>
               </div>
             </div>
+
             <div className="flex flex-col bg-white px-4 rounded-lg mt-8 w-full">
               <p className="lg:text-lg font-bold text-sm text-[#343434] border-b-[1px] py-6 border-[#e7e7e7]">
                 事業所情報
               </p>
+
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   法人・施設名
@@ -124,18 +142,17 @@ const FacilityPreview = ({ open, onCancel, data }) => {
                   {data?.name}
                 </Link>
               </div>
+
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   募集職種
                 </p>
-                <div className="flex flex-col items-start, justify-start w-4/5">
+                <div className="flex flex-col items-start justify-start w-4/5">
                   {data?.jobPosts?.map((jobPost, index) => {
                     return (
                       <Link
                         key={index}
-                        to={`/${getJobValueByKey(jobPost.type)}/details/${
-                          jobPost?.jobpost_id
-                        }`}
+                        to={`/${getJobValueByKey(jobPost.type)}/details/${jobPost?.jobpost_id}`}
                         className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
                       >
                         {jobPost?.type}({jobPost?.employment_type})
@@ -144,6 +161,7 @@ const FacilityPreview = ({ open, onCancel, data }) => {
                   })}
                 </div>
               </div>
+
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   施設紹介
@@ -152,6 +170,7 @@ const FacilityPreview = ({ open, onCancel, data }) => {
                   <pre>{data?.introduction}</pre>
                 </p>
               </div>
+
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   アクセス
@@ -162,7 +181,7 @@ const FacilityPreview = ({ open, onCancel, data }) => {
                       return (
                         <div
                           key={index}
-                          className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                          className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
                         >
                           <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
                             {item}
@@ -202,6 +221,7 @@ const FacilityPreview = ({ open, onCancel, data }) => {
                   </Link>
                 </div>
               </div>
+
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   設立年月日
@@ -211,6 +231,7 @@ const FacilityPreview = ({ open, onCancel, data }) => {
                   {data?.establishment_date.split("-")[1]}日
                 </p>
               </div>
+
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   施設
@@ -224,6 +245,7 @@ const FacilityPreview = ({ open, onCancel, data }) => {
                   </Link>
                 </div>
               </div>
+
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   営業時間
@@ -232,6 +254,7 @@ const FacilityPreview = ({ open, onCancel, data }) => {
                   <pre>{data?.service_time}</pre>
                 </p>
               </div>
+
               <div className="flex items-start justify-start py-6">
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   休日

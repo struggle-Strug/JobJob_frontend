@@ -10,6 +10,7 @@ import {
   Modal,
   Spin,
   Button,
+  Carousel
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
@@ -25,6 +26,64 @@ import { getBase64 } from "../../../utils/getBase64";
 import { useAuth } from "../../../context/AuthContext";
 import { getJobValueByKey } from "../../../utils/getFunctions";
 import PhotoSelectModal from "./PhotoSelectModal";
+import Loading from "../../../components/Loading";
+
+const CustomNextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        right: "10px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      onClick={onClick}
+    >
+      <div
+        style={{
+          background: "rgba(0, 0, 0, 0.5)",
+          borderRadius: "50%",
+          padding: "20px",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* ここにアイコンなど矢印の内容を入れる */}
+      </div>
+    </div>
+  );
+};
+
+// カスタムアローコンポーネント（前へ）
+const CustomPrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        left: "10px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      onClick={onClick}
+    >
+      <div
+        style={{
+          background: "rgba(0, 0, 0, 0.5)",
+          borderRadius: "50%",
+          padding: "20px",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* ここにアイコンなど矢印の内容を入れる */}
+      </div>
+    </div>
+  );
+};
 
 const FacilityEdit = () => {
   const { customer } = useAuth();
@@ -62,6 +121,8 @@ const FacilityEdit = () => {
   const editorStyle = {
     width: "80%",
   };
+
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const allPrefectureKeys = [
     ...Object.keys(Prefectures.KANTO),
@@ -228,53 +289,66 @@ const FacilityEdit = () => {
 
   // 施設編集の保存処理
   const handleSave = async () => {
-    const photoUrl = await handleUpload();
-
-    const originPictures = facilityPhoto.filter((p) => !p.originFileObj);
-    const urls = originPictures.map((p) => p.url);
-
-    if (facilityName === "") return message.error("施設名を入力してください。");
-    if (facilityPostalCode === "")
-      return message.error("郵便番号を入力してください。");
-    if (facilityPrefecture === "")
-      return message.error("都道府県を選択してください。");
-    if (facilityCity === "")
-      return message.error("市区町村を入力してください。");
-    if (facilityVillage === "")
-      return message.error("町名・番地を入力してください。");
-    if (facilityBuilding === "")
-      return message.error("建物名を入力してください。");
-
-    const facilityData = {
-      customer_id: customer.customer_id,
-      name: facilityName,
-      postal_code: facilityPostalCode,
-      prefecture: facilityPrefecture,
-      city: facilityCity,
-      village: facilityVillage,
-      building: facilityBuilding,
-      photo: photoUrl.fileUrls ? [...photoUrl.fileUrls, ...urls] : urls,
-      introduction: facilityIntroduction,
-      access: facilityAccess,
-      access_text: facilityAccessText,
-      facility_genre: facilityGenre,
-      establishment_date: `${facilityEstablishmentDateYear}-${facilityEstablishmentDateMonth}`,
-      service_time: facilityServiceTime,
-      rest_day: facilityRestDay,
-    };
-
-    await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
-      photoUrl.files || []
-    );
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/facility`,
-      facilityData
-    );
-    if (response.data.error) message.error(response.data.error);
-    message.success(response.data.message);
-    setSuccessModalOpen(true);
+    setSaveLoading(true);
+    try {
+      const photoUrl = await handleUpload();
+      const originPictures = facilityPhoto.filter((p) => !p.originFileObj);
+      const urls = originPictures.map((p) => p.url);
+  
+      if (facilityName === "") {
+        return message.error("施設名を入力してください。");
+      }
+      if (facilityPostalCode === "") {
+        return message.error("郵便番号を入力してください。");
+      } else if (facilityPrefecture === "") {
+        return message.error("都道府県を選択してください。");
+      } else if (facilityCity === "") {
+        return message.error("市区町村を入力してください。");
+      } else if (facilityVillage === "") {
+        return message.error("町名・番地を入力してください。");
+      } else if (facilityBuilding === "") {
+        return message.error("建物名を入力してください。");
+      }
+  
+      const facilityData = {
+        customer_id: customer.customer_id,
+        name: facilityName,
+        postal_code: facilityPostalCode,
+        prefecture: facilityPrefecture,
+        city: facilityCity,
+        village: facilityVillage,
+        building: facilityBuilding,
+        photo: photoUrl.fileUrls ? [...photoUrl.fileUrls, ...urls] : urls,
+        introduction: facilityIntroduction,
+        access: facilityAccess,
+        access_text: facilityAccessText,
+        facility_genre: facilityGenre,
+        establishment_date: `${facilityEstablishmentDateYear}-${facilityEstablishmentDateMonth}`,
+        service_time: facilityServiceTime,
+        rest_day: facilityRestDay,
+      };
+  
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
+        photoUrl.files || []
+      );
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/facility`,
+        facilityData
+      );
+      if (response.data.error) {
+        return message.error(response.data.error);
+      }
+      message.success(response.data.message);
+      setSuccessModalOpen(true);
+    } catch (error) {
+      console.error(error);
+      message.error("施設の保存中にエラーが発生しました。");
+    } finally {
+      setSaveLoading(false);
+    }
   };
+  
 
   const handleRequest = async (status) => {
     const response = await axios.post(
@@ -308,6 +382,7 @@ const FacilityEdit = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen w-full">
@@ -318,6 +393,7 @@ const FacilityEdit = () => {
 
   return (
     <>
+    {loading ? <Loading /> : <></>}
       <div className="w-full min-h-screen flex flex-col p-4 bg-white rounded-lg mb-8">
         <h1 className="lg:text-2xl md:text-base text-sm font-bold">施設編集</h1>
         <div className="flex items-center mt-4">
@@ -552,184 +628,193 @@ const FacilityEdit = () => {
       </Modal>
 
       <Modal
-        open={previewModal}
-        onCancel={() => setPreviewModal(false)}
-        footer={null}
-        width={800}
-        className="modal"
-      >
-        <div className="flex w-full p-8">
-          <div className="container flex justify-between gap-8">
-            <div className="flex flex-col items-start justify-start w-full">
-              <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-2xl hover:scale-[1.02] duration-300">
-                {facility?.photo.length === 0 && facilityPhoto?.length === 0 ? (
+  open={previewModal}
+  onCancel={() => setPreviewModal(false)}
+  footer={null}
+  width={800}
+  className="modal"
+>
+  <div className="flex w-full p-8">
+    <div className="container flex justify-between gap-8">
+      <div className="flex flex-col items-start justify-start w-full">
+        <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-2xl hover:scale-[1.02] duration-300">
+          {/* 複数写真表示用の Carousel を追加 */}
+          <div style={{ width: "100%", height: "300px" }}>
+            <Carousel
+              arrows
+              infinite
+              dots
+              nextArrow={<CustomNextArrow />}
+              prevArrow={<CustomPrevArrow />}
+            >
+              {(facility?.photo && facility.photo.length > 0
+                ? facility.photo
+                : [previewImage]
+              ).map((photoUrl, index) => (
+                <div key={index}>
                   <img
-                    src={"/assets/images/noimage.png"}
-                    alt="arrow-down"
-                    className="w-full rounded-lg aspect-video object-cover"
+                    src={photoUrl}
+                    alt={`facility-photo-${index}`}
+                    style={{
+                      width: "100%",
+                      height: "300px",
+                      objectFit: "cover",
+                    }}
                   />
-                ) : (
-                  <img
-                    src={previewImage}
-                    alt="arrow-down"
-                    className="w-full rounded-lg aspect-video object-cover "
-                  />
-                )}
-                <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
-                  <p className="lg:text-xl md:text-sm text-[#343434]">
-                    <span className="lg:text-2xl md:text-xl font-bold">
-                      {facilityName}
-                    </span>
-                    <span className="text-base">の求人情報</span>
-                  </p>
-                  <div>
-                    <p className="lg:text-sm md:text-xs text-[#343434]">
-                      {facilityPrefecture}
-                      {facilityCity}
-                      {facilityVillage}
-                      {facilityBuilding}
-                    </p>
-                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col bg-white px-4 rounded-lg mt-8 w-full">
-                <p className="lg:text-lg font-bold text-sm text-[#343434] border-b-[1px] py-6 border-[#e7e7e7]">
-                  事業所情報
-                </p>
-                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                    法人・施設名
-                  </p>
-                  <Link
-                    to={`/facility/${facility?.facility_id}`}
-                    className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
-                  >
-                    {facilityName}
-                  </Link>
-                </div>
-                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                    募集職種
-                  </p>
-                  <div className="flex flex-col items-start, justify-start w-4/5">
-                    {facility?.jobPosts?.map((jobPost, index) => {
-                      return (
-                        <Link
-                          key={index}
-                          to={`/${getJobValueByKey(jobPost.type)}/details/${
-                            jobPost?.jobpost_id
-                          }`}
-                          className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
-                        >
-                          {jobPost?.type}({jobPost?.employment_type})
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                    施設紹介
-                  </p>
-                  <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                    <pre>{facilityIntroduction}</pre>
-                  </p>
-                </div>
-                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                    アクセス
-                  </p>
-                  <div className="flex flex-col items-start justify-start w-4/5">
-                    <div className="inline-block items-start justify-start gap-2">
-                      {facilityAccess?.map((item, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                          >
-                            <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                              {item}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <p className="lg:text-base text-sm text-[#343434] mt-1">
-                      {facilityPrefecture}
-                      {facilityCity}
-                      {facilityVillage}
-                      {facilityBuilding}
-                    </p>
-                    <div className="w-full py-4 aspect-square">
-                      <iframe
-                        title="Google Map"
-                        width="100%"
-                        height="100%"
-                        style={{ border: 0 }}
-                        loading="lazy"
-                        allowFullScreen
-                        src={`https://www.google.com/maps?q=${facilityPrefecture}
-${facilityCity}${facilityVillage}${facilityBuilding}&output=embed`}
-                      ></iframe>
-                    </div>
-                    <p className="lg:text-base text-sm text-[#343434] mt-1">
-                      {facilityAccessText}
-                    </p>
-                    <Link
-                      to={`https://www.google.com/maps?q=${encodeURIComponent(
-                        `${facilityPrefecture}
-${facilityCity}${facilityVillage}${facilityBuilding}`
-                      )}`}
-                      target="_blank"
-                      className="lg:text-base text-sm text-[#FF2A3B] hover:underline mt-1 border-[1px] border-[#FF2A3B] py-1 px-2 rounded-lg"
-                    >
-                      Google Mapsで見る
-                    </Link>
-                  </div>
-                </div>
-                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                    設立年月日
-                  </p>
-                  <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                    {facilityEstablishmentDateYear}年
-                    {facilityEstablishmentDateMonth}月
-                  </p>
-                </div>
-                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                    施設
-                  </p>
-                  <div className="flex flex-col items-start justify-start w-4/5">
-                    <Link
-                      to={`/${Facilities[facilityGenre]}`}
-                      className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
-                    >
-                      {facilityGenre}
-                    </Link>
-                  </div>
-                </div>
-                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                    営業時間
-                  </p>
-                  <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                    <pre>{facilityServiceTime}</pre>
-                  </p>
-                </div>
-                <div className="flex items-start justify-start py-6">
-                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                    休日
-                  </p>
-                  <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                    <pre>{facilityRestDay}</pre>
-                  </p>
-                </div>
-              </div>
+              ))}
+            </Carousel>
+          </div>
+
+          <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
+            <p className="lg:text-xl md:text-sm text-[#343434]">
+              <span className="lg:text-2xl md:text-xl font-bold">
+                {facilityName}
+              </span>
+              <span className="text-base">の求人情報</span>
+            </p>
+            <div>
+              <p className="lg:text-sm md:text-xs text-[#343434]">
+                {facilityPrefecture}
+                {facilityCity}
+                {facilityVillage}
+                {facilityBuilding}
+              </p>
             </div>
           </div>
         </div>
-      </Modal>
+
+        <div className="flex flex-col bg-white px-4 rounded-lg mt-8 w-full">
+          <p className="lg:text-lg font-bold text-sm text-[#343434] border-b-[1px] py-6 border-[#e7e7e7]">
+            事業所情報
+          </p>
+          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              法人・施設名
+            </p>
+            <Link
+              to={`/facility/${facility?.facility_id}`}
+              className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
+            >
+              {facilityName}
+            </Link>
+          </div>
+          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              募集職種
+            </p>
+            <div className="flex flex-col items-start justify-start w-4/5">
+              {facility?.jobPosts?.map((jobPost, index) => (
+                <Link
+                  key={index}
+                  to={`/${getJobValueByKey(jobPost.type)}/details/${jobPost?.jobpost_id}`}
+                  className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
+                >
+                  {jobPost?.type}({jobPost?.employment_type})
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              施設紹介
+            </p>
+            <p className="lg:text-base text-sm text-[#343434] w-4/5">
+              <pre>{facilityIntroduction}</pre>
+            </p>
+          </div>
+          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              アクセス
+            </p>
+            <div className="flex flex-col items-start justify-start w-4/5">
+              <div className="inline-block items-start justify-start gap-2">
+                {facilityAccess?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                  >
+                    <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                      {item}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="lg:text-base text-sm text-[#343434] mt-1">
+                {facilityPrefecture}
+                {facilityCity}
+                {facilityVillage}
+                {facilityBuilding}
+              </p>
+              <div className="w-full py-4 aspect-square">
+                <iframe
+                  title="Google Map"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  allowFullScreen
+                  src={`https://www.google.com/maps?q=${facilityPrefecture}${facilityCity}${facilityVillage}${facilityBuilding}&output=embed`}
+                ></iframe>
+              </div>
+              <p className="lg:text-base text-sm text-[#343434] mt-1">
+                {facilityAccessText}
+              </p>
+              <Link
+                to={`https://www.google.com/maps?q=${encodeURIComponent(
+                  `${facilityPrefecture}${facilityCity}${facilityVillage}${facilityBuilding}`
+                )}`}
+                target="_blank"
+                className="lg:text-base text-sm text-[#FF2A3B] hover:underline mt-1 border-[1px] border-[#FF2A3B] py-1 px-2 rounded-lg"
+              >
+                Google Mapsで見る
+              </Link>
+            </div>
+          </div>
+          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              設立年月日
+            </p>
+            <p className="lg:text-base text-sm text-[#343434] w-4/5">
+              {facilityEstablishmentDateYear}年
+              {facilityEstablishmentDateMonth}月
+            </p>
+          </div>
+          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              施設
+            </p>
+            <div className="flex flex-col items-start justify-start w-4/5">
+              <Link
+                to={`/${Facilities[facilityGenre]}`}
+                className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
+              >
+                {facilityGenre}
+              </Link>
+            </div>
+          </div>
+          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              営業時間
+            </p>
+            <p className="lg:text-base text-sm text-[#343434] w-4/5">
+              <pre>{facilityServiceTime}</pre>
+            </p>
+          </div>
+          <div className="flex items-start justify-start py-6">
+            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              休日
+            </p>
+            <p className="lg:text-base text-sm text-[#343434] w-4/5">
+              <pre>{facilityRestDay}</pre>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </Modal>
+
 
       <PhotoSelectModal
         visible={photoSelectModalVisible}
