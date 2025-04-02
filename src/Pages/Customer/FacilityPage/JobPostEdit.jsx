@@ -8,14 +8,14 @@ import {
   Qualifications,
 } from "../../../utils/constants/categories";
 import axios from "axios";
-import { message, Input, Select, Radio, Checkbox, Upload, Modal, Button } from "antd";
+import { message, Input, Select, Radio, Checkbox, Upload, Modal, Button, Spin } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
 import { getBase64 } from "../../../utils/getBase64";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import EditorComponent from "../../../components/EditorComponent";
-import Loading from "../../../components/Loading";
 import PhotoSelectModal from "./PhotoSelectModal";
+import Loading from "../../../components/Loading";
 
 const JobPostEdit = () => {
   const { customer } = useAuth();
@@ -45,12 +45,9 @@ const JobPostEdit = () => {
   const [jobPostSpecialContent, setJobPostSpecialContent] = useState("");
   const [jobPostEducationContent, setJobPostEducationContent] = useState("");
   const [jobPostQualificationType, setJobPostQualificationType] = useState([]);
-  const [jobPostQualificationOther, setJobPostQualificationOther] =
-    useState("");
-  const [jobPostQualificationContent, setJobPostQualificationContent] =
-    useState("");
-  const [jobPostQualificationWelcome, setJobPostQualificationWelcome] =
-    useState("");
+  const [jobPostQualificationOther, setJobPostQualificationOther] = useState("");
+  const [jobPostQualificationContent, setJobPostQualificationContent] = useState("");
+  const [jobPostQualificationWelcome, setJobPostQualificationWelcome] = useState("");
   const [jobPostProcess, setJobPostProcess] = useState("");
   const [status, setStatus] = useState("");
   const [successModalOpen, setSuccessModalOpen] = useState(false);
@@ -244,10 +241,8 @@ const JobPostEdit = () => {
           ? "ヘルスケア／美容"
           : ""
       );
-      
       setJobPostTypeDetail(jobData.type);
       setJobPostPictureUrl(jobData.picture);
-
       setJobPostSubTitle(jobData.sub_title);
       setJobPostSubDescription(jobData.sub_description);
       setJobPostWorkItem(jobData.work_item);
@@ -293,72 +288,95 @@ const JobPostEdit = () => {
   };
 
   const handleSave = async () => {
-    const pictureUrls = await handleUpload();
-    const originPictures = jobPostPicture.filter((p) => !p.originFileObj);
-    const urls = originPictures.map((p) => p.url);
-    // pictureUrls が存在すればそちら、なければ既存のURLをそのまま利用
-    const JobPostData = {
-      facility_id: jobPost.facility_id.facility_id,
-      customer_id: jobPost.customer_id.customer_id,
-      type: jobPostTypeDetail,
-      picture: pictureUrls.fileUrls ? [...pictureUrls.fileUrls, ...urls] : urls,
-      sub_title: jobPostSubTitle,
-      sub_description: jobPostSubDescription,
-      work_item: jobPostWorkItem,
-      work_content: jobPostWorkContent,
-      service_subject: jobPostServiceSubject,
-      service_type: jobPostServiceType,
-      employment_type: jobPostEmploymentType,
-      salary_type: jobPostSalaryType,
-      salary_min: jobPostSalaryMin,
-      salary_max: jobPostSalaryMax,
-      salary_remarks: jobPostSalaryRemarks,
-      expected_income: jobPostExpectedIncome,
-      treatment_type: jobPostTreatmentType,
-      treatment_content: jobPostTreatmentContent,
-      work_time_type: jobPostWorkTimeType,
-      work_time_content: jobPostWorkTimeContent,
-      rest_type: jobPostRestType,
-      rest_content: jobPostRestContent,
-      special_content: jobPostSpecialContent,
-      education_content: jobPostEducationContent,
-      qualification_type: jobPostQualificationType,
-      qualification_other: jobPostQualificationOther,
-      qualification_content: jobPostQualificationContent,
-      qualification_welcome: jobPostQualificationWelcome,
-      process: jobPostProcess,
-    };
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
-      pictureUrls.files || []
-    );
+    try {
+      const pictureUrls = await handleUpload();
+      const originPictures = jobPostPicture.filter((p) => !p.originFileObj);
+      const urls = originPictures.map((p) => p.url);
+      // pictureUrls が存在すればそちら、なければ既存の URL をそのまま利用
+      const JobPostData = {
+        facility_id: jobPost.facility_id.facility_id,
+        customer_id: jobPost.customer_id.customer_id,
+        type: jobPostTypeDetail,
+        picture: pictureUrls.fileUrls ? [...pictureUrls.fileUrls, ...urls] : urls,
+        sub_title: jobPostSubTitle,
+        sub_description: jobPostSubDescription,
+        work_item: jobPostWorkItem,
+        work_content: jobPostWorkContent,
+        service_subject: jobPostServiceSubject,
+        service_type: jobPostServiceType,
+        employment_type: jobPostEmploymentType,
+        salary_type: jobPostSalaryType,
+        salary_min: jobPostSalaryMin,
+        salary_max: jobPostSalaryMax,
+        salary_remarks: jobPostSalaryRemarks,
+        expected_income: jobPostExpectedIncome,
+        treatment_type: jobPostTreatmentType,
+        treatment_content: jobPostTreatmentContent,
+        work_time_type: jobPostWorkTimeType,
+        work_time_content: jobPostWorkTimeContent,
+        rest_type: jobPostRestType,
+        rest_content: jobPostRestContent,
+        special_content: jobPostSpecialContent,
+        education_content: jobPostEducationContent,
+        qualification_type: jobPostQualificationType,
+        qualification_other: jobPostQualificationOther,
+        qualification_content: jobPostQualificationContent,
+        qualification_welcome: jobPostQualificationWelcome,
+        process: jobPostProcess,
+      };
 
-    const response = await axios.put(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`,
-      JobPostData
-    );
-    if (response.data.error) message.error(response.data.error);
-    else message.success("求人を更新しました");
-    navigate("/customers/facility");
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
+        pictureUrls.files || []
+      );
+
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`,
+        JobPostData
+      );
+      if (response.data.error) message.error(response.data.error);
+      else message.success("求人を更新しました");
+      navigate("/customers/facility");
+    } catch (error) {
+      console.error("Error updating job post:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRequest = async (status) => {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}/${status}`
-    );
-    if (response.data.error) message.error(response.data.error);
-    if (status === "pending") {
-      setSuccessModalOpen(true);
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}/${status}`
+      );
+      if (response.data.error) message.error(response.data.error);
+      if (status === "pending") {
+        setSuccessModalOpen(true);
+      }
+    } catch (error) {
+      console.error("Error requesting job post status change:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async () => {
-    const response = await axios.delete(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`
-    );
-    if (response.data.error) message.error(response.data.error);
-    navigate("/customers/facility");
+    try {
+      setLoading(true);
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`
+      );
+      if (response.data.error) message.error(response.data.error);
+      navigate("/customers/facility");
+    } catch (error) {
+      console.error("Error deleting job post:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -367,17 +385,16 @@ const JobPostEdit = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
     <>
+    {loading ? <Loading /> : <></>}
+   
       <div className="w-full min-h-screen flex flex-col p-4 bg-white rounded-lg mb-8">
         <h1 className="lg:text-2xl md:text-base text-sm font-bold">求人編集</h1>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-            募集職種<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
+            募集職種
+            <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
           <div className="flex items-center justify-start gap-2 w-3/4">
             <Select
@@ -420,15 +437,13 @@ const JobPostEdit = () => {
           </div>
         </div>
         <div className="flex items-start mt-1">
-                <div className="flex items-center justify-start gap-1 w-1/5"/>
-                <div className="flex items-center justify-start gap-2">
-                <Button
-                onClick={() => setPhotoSelectModalVisible(true)}
-              >
-                写真管理から選択
-              </Button>
-              </div>
-              </div>
+          <div className="flex items-center justify-start gap-1 w-1/5" />
+          <div className="flex items-center justify-start gap-2">
+            <Button onClick={() => setPhotoSelectModalVisible(true)}>
+              写真管理から選択
+            </Button>
+          </div>
+        </div>
         {/* 以下、各入力項目のフォーム */}
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
@@ -777,20 +792,19 @@ const JobPostEdit = () => {
       </Modal>
 
       <PhotoSelectModal
-  visible={photoSelectModalVisible}
-  onCancel={() => setPhotoSelectModalVisible(false)}
-  onSelect={(selected) => {
-    const formattedPhotos = selected.map((photoUrl, index) => ({
-      uid: `existing-${index}`,
-      name: `Photo ${index + 1}`,
-      url: photoUrl,
-      status: 'done',
-    }));
-    setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
-    setPhotoSelectModalVisible(false);
-  }}
-/>
-
+        visible={photoSelectModalVisible}
+        onCancel={() => setPhotoSelectModalVisible(false)}
+        onSelect={(selected) => {
+          const formattedPhotos = selected.map((photoUrl, index) => ({
+            uid: `existing-${index}`,
+            name: `Photo ${index + 1}`,
+            url: photoUrl,
+            status: "done",
+          }));
+          setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
+          setPhotoSelectModalVisible(false);
+        }}
+      />
     </>
   );
 };
