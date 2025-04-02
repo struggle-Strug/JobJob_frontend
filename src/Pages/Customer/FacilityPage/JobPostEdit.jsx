@@ -16,6 +16,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import EditorComponent from "../../../components/EditorComponent";
 import PhotoSelectModal from "./PhotoSelectModal";
 import Loading from "../../../components/Loading";
+import JobPostPreview from "./JobPostPreview";
 
 const JobPostEdit = () => {
   const { customer } = useAuth();
@@ -30,7 +31,7 @@ const JobPostEdit = () => {
   const [jobPostWorkContent, setJobPostWorkContent] = useState("");
   const [jobPostServiceSubject, setJobPostServiceSubject] = useState([]);
   const [jobPostServiceType, setJobPostServiceType] = useState([]);
-  const [jobPostEmploymentType, setJobPostEmploymentType] = useState([]);
+  const [jobPostEmploymentType, setJobPostEmploymentType] = useState("");
   const [jobPostSalaryType, setJobPostSalaryType] = useState("");
   const [jobPostSalaryMax, setJobPostSalaryMax] = useState(0);
   const [jobPostSalaryMin, setJobPostSalaryMin] = useState(0);
@@ -56,10 +57,41 @@ const JobPostEdit = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [photoSelectModalVisible, setPhotoSelectModalVisible] = useState(false);
-
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const jobPostId = pathname.split("/").pop();
+
+  const previewData = {
+    type: jobPostTypeDetail,
+    // jobPostPicture は、既にアップロード済みの場合は url、まだの場合は preview を使用
+    picture: jobPostPicture.map((item) => item.url || item.preview),
+    sub_title: jobPostSubTitle,
+    sub_description: jobPostSubDescription,
+    work_item: jobPostWorkItem,
+    work_content: jobPostWorkContent,
+    service_subject: jobPostServiceSubject,
+    service_type: jobPostServiceType,
+    employment_type: jobPostEmploymentType,
+    salary_type: jobPostSalaryType,
+    salary_min: jobPostSalaryMin,
+    salary_max: jobPostSalaryMax,
+    salary_remarks: jobPostSalaryRemarks,
+    expected_income: jobPostExpectedIncome,
+    treatment_type: jobPostTreatmentType,
+    treatment_content: jobPostTreatmentContent,
+    work_time_type: jobPostWorkTimeType,
+    work_time_content: jobPostWorkTimeContent,
+    rest_type: jobPostRestType,
+    rest_content: jobPostRestContent,
+    special_content: jobPostSpecialContent,
+    education_content: jobPostEducationContent,
+    qualification_type: jobPostQualificationType,
+    qualification_other: jobPostQualificationOther,
+    qualification_content: jobPostQualificationContent,
+    qualification_welcome: jobPostQualificationWelcome,
+    process: jobPostProcess,
+  };
 
   const editorStyle = {
     width: "80%",
@@ -249,7 +281,14 @@ const JobPostEdit = () => {
       setJobPostWorkContent(jobData.work_content);
       setJobPostServiceSubject(jobData.service_subject);
       setJobPostServiceType(jobData.service_type);
-      setJobPostEmploymentType(jobData.employment_type);
+setJobPostEmploymentType(
+  typeof jobData.employment_type === "string"
+    ? jobData.employment_type
+    : (Array.isArray(jobData.employment_type) && jobData.employment_type.length > 0
+        ? jobData.employment_type[0]
+        : "")
+);
+
       setJobPostSalaryType(jobData.salary_type);
       setJobPostSalaryMin(jobData.salary_min);
       setJobPostSalaryMax(jobData.salary_max);
@@ -689,7 +728,10 @@ const JobPostEdit = () => {
           />
         </div>
         <div className="flex items-center justify-center w-full mt-8 gap-4 border-t-[1px] border-[#e7e7e7] pt-4">
-          <button className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300">
+        <button
+            className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+            onClick={() => setPreviewModalOpen(true)}
+          >
             プレビュー
           </button>
           {status === "draft" && (
@@ -790,6 +832,12 @@ const JobPostEdit = () => {
           </Link>
         </div>
       </Modal>
+
+      <JobPostPreview
+        open={previewModalOpen}
+        onCancel={() => setPreviewModalOpen(false)}
+        data={previewData}
+      />
 
       <PhotoSelectModal
         visible={photoSelectModalVisible}

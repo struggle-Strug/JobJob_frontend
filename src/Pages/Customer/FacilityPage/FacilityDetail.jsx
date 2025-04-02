@@ -214,9 +214,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
               facility.allowed !== "allowed" ? "cursor-not-allowed" : ""
             }`}
             onClick={(e) => {
-              if (facility.allowed !== "allowed") {
-                e.preventDefault(); // Prevent the link action
-              }
+              
             }}
           >
             求人を新規登録
