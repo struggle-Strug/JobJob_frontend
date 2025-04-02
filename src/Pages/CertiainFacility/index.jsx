@@ -267,7 +267,7 @@ const CertaionFacility = () => {
                         />
                       ) : (
                         <img
-                          src={facility.photo}
+                          src={facility.photo[0]}
                           alt="arrow-down"
                           className="md:w-1/2 rounded-lg aspect-[3/2] object-cover"
                         />

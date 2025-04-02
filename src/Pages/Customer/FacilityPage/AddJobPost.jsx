@@ -621,7 +621,7 @@ const AddJobPost = () => {
             />
           </div>
           <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">教育体制・教育</p>
+            <p className="lg:text-sm text-xs w-1/5">教育体制・研修</p>
             <Checkbox.Group
               options={jobPostEducationTypeOptions}
               value={jobPostEducationContent}

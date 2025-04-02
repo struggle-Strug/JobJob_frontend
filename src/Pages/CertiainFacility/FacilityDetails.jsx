@@ -1,6 +1,6 @@
-import { message } from "antd";
+import { message, Carousel } from "antd";
 import axios from "axios";
-import { useEffect, useState, React } from "react";
+import { useEffect, useState, React, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getJobValueByKey } from "../../utils/getFunctions";
 import { Facilities } from "../../utils/constants/categories";
@@ -50,6 +50,8 @@ const FacilityDetails = () => {
     "美容部員": "/bcm",
     "インストラクター": "/ins",
   };
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const carouselRef = useRef();
 
   const getFacility = async () => {
     const response = await axios.get(
@@ -69,19 +71,72 @@ const FacilityDetails = () => {
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-start justify-start w-2/3">
             <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-xl hover:scale-[1.02] duration-300">
-              {facility?.photo?.length === 0 ? (
+              
+            <div className="relative w-full">
+          <Carousel
+            ref={carouselRef}
+            dots={false}
+            beforeChange={(_, next) => setCurrentSlide(next)}
+            
+          >
+            {facility?.photo?.length > 0 ? (
+              facility.photo.map((photoUrl, index) => (
+                <div key={index}>
+                  <img
+                    src={photoUrl}
+                    alt={`facility-photo-${index}`}
+                    className="w-full aspect-video object-cover rounded-t-xl"
+                  />
+                </div>
+              ))
+            ) : (
+              <div>
                 <img
-                  src={"/assets/images/noimage.png"}
-                  alt="arrow-down"
-                  className="w-full rounded-lg aspect-video object-cover "
+                  src="/assets/images/noimage.png"
+                  alt="no-image"
+                  className="w-full aspect-video object-cover"
                 />
-              ) : (
-                <img
-                  src={facility?.photo}
-                  alt="arrow-down"
-                  className="w-full rounded-lg aspect-video object-cover "
-                />
-              )}
+              </div>
+            )}
+          </Carousel>
+          {/* スライドインジケーター（画像上に表示） */}
+          {facility?.photo?.length > 0 && (
+            <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
+              {currentSlide + 1}/{facility.photo.length}
+            </div>
+          )}
+        </div>
+        {/* 矢印バー：画像直下に隙間なく配置 */}
+        {facility?.photo?.length > 1 && (
+  <div className="flex items-center justify-between w-full bg-[#fdfcf9]  h-11 rounded-b-xl border border-[#ddccc9]">
+    <button
+      onClick={() => {
+        const newIndex = (currentSlide - 1 + facility.photo.length) % facility.photo.length;
+        carouselRef.current.goTo(newIndex, false);
+        setCurrentSlide(newIndex);
+      }}
+      className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+    >
+      <svg aria-label="前の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 13L5.27083 8L11 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+    <button
+      onClick={() => {
+        const newIndex = (currentSlide + 1) % facility.photo.length;
+        carouselRef.current.goTo(newIndex, false);
+        setCurrentSlide(newIndex);
+      }}
+      className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+    >
+      <svg aria-label="次の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13L10.7292 8L5 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+  </div>
+)}
+
+
+
+            
+
+              
               <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
                 <p className="lg:text-xl md:text-sm text-[#343434]">
                   <span className="lg:text-2xl md:text-xl font-bold">
@@ -172,11 +227,6 @@ const FacilityDetails = () => {
                           </p>
                           <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
                             {jobpost.facility_id.access_text}
-                          </p>
-                        </div>
-                        <div className="flex items-start justify-start mt-4">
-                          <p className="lg:text-sm md:text-xs font-bold text-[#FF2A3B]">
-                            勤続支援金 &nbsp;&nbsp;正職員12,500円 ~ 16,000円
                           </p>
                         </div>
                       </div>

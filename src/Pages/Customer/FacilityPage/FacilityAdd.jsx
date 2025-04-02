@@ -368,7 +368,7 @@ const FacilityAdd = () => {
           />
         </div>
         <div className="flex items-start mt-4 textarea">
-          <p className="lg:text-sm text-xs w-1/5">設立年月日</p>
+          <p className="lg:text-sm text-xs w-1/5">設立年月</p>
           <div className="flex justify-start items-end w-4/5">
             <Input
               value={facilityEstablishmentDateYear}

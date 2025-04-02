@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Checkbox,
@@ -27,63 +27,8 @@ import { useAuth } from "../../../context/AuthContext";
 import { getJobValueByKey } from "../../../utils/getFunctions";
 import PhotoSelectModal from "./PhotoSelectModal";
 import Loading from "../../../components/Loading";
+import { Municipalities } from "../../../utils/constants/categories/municipalities";
 
-const CustomNextArrow = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        right: "10px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      onClick={onClick}
-    >
-      <div
-        style={{
-          background: "rgba(0, 0, 0, 0.5)",
-          borderRadius: "50%",
-          padding: "20px",
-          boxSizing: "border-box",
-        }}
-      >
-        {/* ここにアイコンなど矢印の内容を入れる */}
-      </div>
-    </div>
-  );
-};
-
-// カスタムアローコンポーネント（前へ）
-const CustomPrevArrow = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        left: "10px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      onClick={onClick}
-    >
-      <div
-        style={{
-          background: "rgba(0, 0, 0, 0.5)",
-          borderRadius: "50%",
-          padding: "20px",
-          boxSizing: "border-box",
-        }}
-      >
-        {/* ここにアイコンなど矢印の内容を入れる */}
-      </div>
-    </div>
-  );
-};
 
 const FacilityEdit = () => {
   const { customer } = useAuth();
@@ -123,6 +68,8 @@ const FacilityEdit = () => {
   };
 
   const [saveLoading, setSaveLoading] = useState(false);
+const [currentSlide, setCurrentSlide] = useState(0);
+  const carouselRef = useRef();
 
   const allPrefectureKeys = [
     ...Object.keys(Prefectures.KANTO),
@@ -162,6 +109,17 @@ const FacilityEdit = () => {
       })),
     ];
   };
+
+  const cityOptions = (prefecture) => {
+    return [
+      { label: "選択する", value: "" },
+      ...Municipalities[prefecture].map((type) => ({
+        value: type,
+        label: type,
+      })),
+    ];
+  };
+  
 
   const accessOptions = [
     ...Object.keys(Features.ACCESS).map((station) => ({
@@ -399,7 +357,7 @@ const FacilityEdit = () => {
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">施設名</p>
           <Input
-            value={facility.name}
+            value={facilityName}
             onChange={(e) => setFacilityName(e.target.value)}
             className="w-1/4"
           />
@@ -407,7 +365,7 @@ const FacilityEdit = () => {
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">郵便番号</p>
           <Input
-            value={facility.postal_code}
+            value={facilityPostalCode}
             onChange={(e) => setFacilityPostalCode(e.target.value)}
             className="w-1/4"
           />
@@ -427,6 +385,7 @@ const FacilityEdit = () => {
             value={facilityCity}
             onChange={(e) => setFacilityCity(e)}
             className="w-1/4"
+            options={facilityPrefecture ? cityOptions(facilityPrefecture) : []}
           />
         </div>
         <div className="flex items-center mt-4">
@@ -509,7 +468,7 @@ const FacilityEdit = () => {
           />
         </div>
         <div className="flex items-start mt-4 textarea">
-          <p className="lg:text-sm text-xs w-1/5">設立年月日</p>
+          <p className="lg:text-sm text-xs w-1/5">設立年月</p>
           <div className="flex justify-start items-end w-4/5">
             <Input
               value={facilityEstablishmentDateYear}
@@ -638,33 +597,66 @@ const FacilityEdit = () => {
     <div className="container flex justify-between gap-8">
       <div className="flex flex-col items-start justify-start w-full">
         <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-2xl hover:scale-[1.02] duration-300">
-          {/* 複数写真表示用の Carousel を追加 */}
-          <div style={{ width: "100%", height: "300px" }}>
-            <Carousel
-              arrows
-              infinite
-              dots
-              nextArrow={<CustomNextArrow />}
-              prevArrow={<CustomPrevArrow />}
-            >
-              {(facility?.photo && facility.photo.length > 0
-                ? facility.photo
-                : [previewImage]
-              ).map((photoUrl, index) => (
-                <div key={index}>
-                  <img
-                    src={photoUrl}
-                    alt={`facility-photo-${index}`}
-                    style={{
-                      width: "100%",
-                      height: "300px",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
-              ))}
-            </Carousel>
-          </div>
+          {/* Carousel を追加 */}
+                       <div className="relative w-full">
+                                 <Carousel
+                                   ref={carouselRef}
+                                   dots={false}
+                                   beforeChange={(_, next) => setCurrentSlide(next)}
+                                   
+                                 >
+                                   {facility?.photo?.length > 0 ? (
+                                     facility.photo.map((photoUrl, index) => (
+                                       <div key={index}>
+                                         <img
+                                           src={photoUrl}
+                                           alt={`facility-photo-${index}`}
+                                           className="w-full aspect-video object-cover rounded-t-xl"
+                                         />
+                                       </div>
+                                     ))
+                                   ) : (
+                                     <div>
+                                       <img
+                                         src="/assets/images/noimage.png"
+                                         alt="no-image"
+                                         className="w-full aspect-video object-cover"
+                                       />
+                                     </div>
+                                   )}
+                                 </Carousel>
+                                 {/* スライドインジケーター（画像上に表示） */}
+                                 {facility?.photo?.length > 0 && (
+                                   <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
+                                     {currentSlide + 1}/{facility.photo.length}
+                                   </div>
+                                 )}
+                               </div>
+                               {/* 矢印バー：画像直下に隙間なく配置 */}
+                               {facility?.photo?.length > 1 && (
+                         <div className="flex items-center justify-between w-full bg-[#fdfcf9]  h-11 rounded-b-xl border border-[#ddccc9]">
+                           <button
+                             onClick={() => {
+                               const newIndex = (currentSlide - 1 + facility.photo.length) % facility.photo.length;
+                               carouselRef.current.goTo(newIndex, false);
+                               setCurrentSlide(newIndex);
+                             }}
+                             className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+                           >
+                             <svg aria-label="前の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 13L5.27083 8L11 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                           </button>
+                           <button
+                             onClick={() => {
+                               const newIndex = (currentSlide + 1) % facility.photo.length;
+                               carouselRef.current.goTo(newIndex, false);
+                               setCurrentSlide(newIndex);
+                             }}
+                             className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+                           >
+                             <svg aria-label="次の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13L10.7292 8L5 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                           </button>
+                         </div>
+                       )}
 
           <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
             <p className="lg:text-xl md:text-sm text-[#343434]">
@@ -773,7 +765,7 @@ const FacilityEdit = () => {
           </div>
           <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
             <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-              設立年月日
+              設立年月
             </p>
             <p className="lg:text-base text-sm text-[#343434] w-4/5">
               {facilityEstablishmentDateYear}年
