@@ -645,8 +645,7 @@ const [currentSlide, setCurrentSlide] = useState(0);
                                    </div>
                                  )}
                                </div>
-                               {/* 矢印バー：画像直下に隙間なく配置 */}
-                               {facility?.photo?.length > 1 && (
+                               
                          <div className="flex items-center justify-between w-full bg-[#fdfcf9]  h-11 rounded-b-xl border border-[#ddccc9]">
                            <button
                              onClick={() => {
@@ -669,7 +668,7 @@ const [currentSlide, setCurrentSlide] = useState(0);
                              <svg aria-label="次の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13L10.7292 8L5 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                            </button>
                          </div>
-                       )}
+                     
 
           <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
             <p className="lg:text-xl md:text-sm text-[#343434]">
