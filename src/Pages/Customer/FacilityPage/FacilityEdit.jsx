@@ -12,6 +12,7 @@ import {
   Button,
   Carousel
 } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -148,6 +149,8 @@ const [currentSlide, setCurrentSlide] = useState(0);
     setPreviewOpen(true);
   };
 
+  
+
   const handleChange = (info) => {
     let updatedFileList = [...info.fileList];
 
@@ -166,37 +169,47 @@ const [currentSlide, setCurrentSlide] = useState(0);
   };
 
   const handleUpload = async () => {
-    const filteredUploadedImage = facilityPhoto.filter(
-      (picture) => picture.originFileObj
-    );
-    if (filteredUploadedImage.length === 0) {
-      return [];
+    if (facilityPhoto.length === 0) {
+      return { fileUrls: [], files: [] };
     }
+  
     const formData = new FormData();
-    filteredUploadedImage.forEach((file) => {
+    // 新規アップロードするファイルのみを抽出
+    const newFiles = facilityPhoto.filter((file) => file.originFileObj);
+    const existingFiles = facilityPhoto.filter((file) => !file.originFileObj);
+  
+    newFiles.forEach((file) => {
       formData.append("files", file.originFileObj);
     });
-
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      message.success("ファイルのアップロードに完了しました");
-      // バックエンドから返された files 配列を利用する
-      const fileUrls = response.data.files.map((item) => item.fileUrl);
-
-      return { fileUrls: fileUrls, files: response.data.files };
-      // return fileUrls;
-    } catch (error) {
-      message.error("ファイルのアップロードに失敗しました");
-      return [];
+  
+    let uploadedFileUrls = [];
+    let uploadedFiles = [];
+  
+    if (newFiles.length > 0) {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        message.success("ファイルのアップロードに完了しました");
+        uploadedFileUrls = response.data.files.map((item) => item.fileUrl);
+        uploadedFiles = response.data.files;
+      } catch (error) {
+        message.error("ファイルのアップロードに失敗しました");
+        return { fileUrls: [], files: [] };
+      }
     }
+  
+    // 既存ファイルの URL を抽出
+    const existingFileUrls = existingFiles.map((file) => file.url);
+  
+    // 両方を統合して返す
+    return { fileUrls: [...uploadedFileUrls, ...existingFileUrls], files: uploadedFiles };
   };
 
   const getFacility = useCallback(async () => {
@@ -807,21 +820,40 @@ const [currentSlide, setCurrentSlide] = useState(0);
     </div>
   </Modal>
 
+{/* モーダルで拡大表示 */}
+<Modal
+              visible={previewOpen}
+              footer={null}
+              onCancel={() => setPreviewOpen(false)}
+              closeIcon={
+                <CloseOutlined
+                  style={{
+                    backgroundColor: "#fff",
+                    padding: "5px",
+                    borderRadius: "5px",
+                  }}
+                />
+              }
+            >
+              <img src={previewImage} alt="enlarged" style={{ width: "100%" }} />
+            </Modal>
+  <PhotoSelectModal
+  visible={photoSelectModalVisible}
+  onCancel={() => setPhotoSelectModalVisible(false)}
+  onSelect={(selected) => {
+    // 追加する際、重複チェックは行わず毎回新規アイテムとして追加する
+    const formattedPhotos = selected.map((photoUrl, index) => ({
+      uid: `existing-${Date.now()}-${Math.random()}`, // 常に新規の一意キーを生成
+      name: `Photo ${facilityPhoto.length + index + 1}`,
+      url: photoUrl,
+      status: "done",
+    }));
+    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+    setPhotoSelectModalVisible(false);
+  }}
+/>
 
-      <PhotoSelectModal
-        visible={photoSelectModalVisible}
-        onCancel={() => setPhotoSelectModalVisible(false)}
-        onSelect={(selected) => {
-          const formattedPhotos = selected.map((photoUrl, index) => ({
-            uid: `existing-${index}`,
-            name: `Photo ${index + 1}`,
-            url: photoUrl,
-            status: "done",
-          }));
-          setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
-          setPhotoSelectModalVisible(false);
-        }}
-      />
+
     </>
   );
 };

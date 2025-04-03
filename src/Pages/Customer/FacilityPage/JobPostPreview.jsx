@@ -85,7 +85,10 @@ const JobPostPreview = ({ open, onCancel, data }) => {
             仕事内容
             <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
-          <p className="lg:text-sm text-xs text-[#343434] w-3/4">
+          <p
+            style={{ whiteSpace: "pre-wrap" }}
+            className="lg:text-sm text-xs text-[#343434] w-3/4"
+          >
             {data?.work_content}
           </p>
         </div>
@@ -158,7 +161,10 @@ const JobPostPreview = ({ open, onCancel, data }) => {
         {/* 給与備考 */}
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/4">給与備考</p>
-          <p className="lg:text-sm text-xs text-[#343434] w-3/4">
+          <p
+            style={{ whiteSpace: "pre-wrap" }}
+            className="lg:text-sm text-xs text-[#343434] w-3/4"
+          >
             {data?.salary_remarks}
           </p>
         </div>
@@ -184,7 +190,10 @@ const JobPostPreview = ({ open, onCancel, data }) => {
         {/* 待遇 */}
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/4">待遇</p>
-          <p className="lg:text-sm text-xs text-[#343434] w-3/4">
+          <p
+            style={{ whiteSpace: "pre-wrap" }}
+            className="lg:text-sm text-xs text-[#343434] w-3/4"
+          >
             {data?.treatment_content}
           </p>
         </div>
@@ -205,7 +214,10 @@ const JobPostPreview = ({ open, onCancel, data }) => {
             勤務時間・休憩時間
             <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
-          <p className="lg:text-sm text-xs text-[#343434] w-3/4">
+          <p
+            style={{ whiteSpace: "pre-wrap" }}
+            className="lg:text-sm text-xs text-[#343434] w-3/4"
+          >
             {data?.work_time_content}
           </p>
         </div>
@@ -226,7 +238,10 @@ const JobPostPreview = ({ open, onCancel, data }) => {
             休日
             <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
-          <p className="lg:text-sm text-xs text-[#343434] w-3/4">
+          <p
+            style={{ whiteSpace: "pre-wrap" }}
+            className="lg:text-sm text-xs text-[#343434] w-3/4"
+          >
             {data?.rest_content}
           </p>
         </div>
@@ -234,7 +249,10 @@ const JobPostPreview = ({ open, onCancel, data }) => {
         {/* 長期休暇・特別休暇 */}
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/4">長期休暇・特別休暇</p>
-          <p className="lg:text-sm text-xs text-[#343434] w-3/4">
+          <p
+            style={{ whiteSpace: "pre-wrap" }}
+            className="lg:text-sm text-xs text-[#343434] w-3/4"
+          >
             {data?.special_content}
           </p>
         </div>
@@ -275,7 +293,10 @@ const JobPostPreview = ({ open, onCancel, data }) => {
         {/* 応募要件（テキスト） */}
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/4">応募要件（テキスト）</p>
-          <p className="lg:text-sm text-xs text-[#343434] w-3/4">
+          <p
+            style={{ whiteSpace: "pre-wrap" }}
+            className="lg:text-sm text-xs text-[#343434] w-3/4"
+          >
             {data?.qualification_content}
           </p>
         </div>
@@ -283,7 +304,10 @@ const JobPostPreview = ({ open, onCancel, data }) => {
         {/* 歓迎要件 */}
         <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/4">歓迎要件</p>
-          <p className="lg:text-sm text-xs text-[#343434] w-3/4">
+          <p
+            style={{ whiteSpace: "pre-wrap" }}
+            className="lg:text-sm text-xs text-[#343434] w-3/4"
+          >
             {data?.qualification_welcome}
           </p>
         </div>
