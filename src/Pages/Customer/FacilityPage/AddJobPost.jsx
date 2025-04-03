@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Checkbox, Input, message, Radio, Select, Upload, Button, Spin } from "antd";
+import { Checkbox, Input, message, Radio, Select, Upload, Button, Spin, Modal } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import {
   EmploymentType,
   Features,
@@ -199,34 +200,46 @@ const AddJobPost = () => {
   };
 
   const handleUpload = async () => {
-    const filteredUploadedImage = jobPostPicture.filter(
-      (picture) => picture.originFileObj
-    );
-    if (filteredUploadedImage.length === 0) {
-      return [];
+    // 新規画像と既存画像に分ける
+    const newImages = jobPostPicture.filter((pic) => pic.originFileObj);
+    const existingImages = jobPostPicture.filter((pic) => !pic.originFileObj);
+  
+    let uploadedFileUrls = [];
+    let uploadedFiles = [];
+  
+    if (newImages.length > 0) {
+      const formData = new FormData();
+      newImages.forEach((file) => {
+        formData.append("files", file.originFileObj);
+      });
+  
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        message.success("写真のアップロードが完了しました");
+        uploadedFileUrls = response.data.files.map((item) => item.fileUrl);
+        uploadedFiles = response.data.files;
+      } catch (error) {
+        message.error("写真アップロード失敗");
+        return { fileUrls: [], files: [] };
+      }
     }
-    const formData = new FormData();
-    filteredUploadedImage.forEach((file) => {
-      formData.append("files", file.originFileObj);
-    });
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      message.success("写真のアップロードが完了しました");
-      const fileUrls = response.data.files.map((item) => item.fileUrl);
-      return { fileUrls: fileUrls, files: response.data.files };
-    } catch (error) {
-      message.error("写真アップロード失敗");
-      return [];
-    }
+  
+    // 既存画像のURLを抽出（重複している可能性がないか確認）
+    const existingUrls = existingImages.map((image) => image.url);
+  
+    // 両方を統合して返す
+    return { fileUrls: [...uploadedFileUrls, ...existingUrls], files: uploadedFiles };
   };
+  
+  
 
   const handleSubmit = async (allowed) => {
     // バリデーションチェック（失敗した場合は早期リターン）
@@ -265,17 +278,19 @@ const AddJobPost = () => {
 
     setLoading(true);
     try {
-      const pictureUrls = await handleUpload();
-      const originPictures = jobPostPicture.filter((p) => !p.originFileObj);
-      const urls = originPictures.map((p) => p.url);
+      const uploadResult = await handleUpload();
+      const newUrls = uploadResult.fileUrls || [];
+      const uploadUrls = uploadResult.files || [];
+      const existingUrls = jobPostPicture
+      .filter((p) => !p.originFileObj)
+      .map((p) => p.url);
+      const allUrls = Array.from(new Set([...newUrls, ...existingUrls]));
 
       const JobPostData = {
         facility_id: facility.facility_id,
         customer_id: customer.customer_id,
         type: jobPostTypeDetail,
-        picture: pictureUrls.fileUrls
-          ? [...pictureUrls.fileUrls, ...urls]
-          : urls,
+        picture: allUrls,
         sub_title: jobPostSubTitle,
         sub_description: jobPostSubDescription,
         work_item: jobPostWorkItem,
@@ -306,7 +321,7 @@ const AddJobPost = () => {
 
       await axios.put(
         `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
-        pictureUrls.files || []
+        uploadUrls || []
       );
 
       const response = await axios.post(
@@ -712,6 +727,23 @@ const AddJobPost = () => {
             setPhotoSelectModalVisible(false);
           }}
         />
+        {/* モーダルで拡大表示 */}
+        <Modal
+                      visible={previewOpen}
+                      footer={null}
+                      onCancel={() => setPreviewOpen(false)}
+                      closeIcon={
+                        <CloseOutlined
+                          style={{
+                            backgroundColor: "#fff",
+                            padding: "5px",
+                            borderRadius: "5px",
+                          }}
+                        />
+                      }
+                    >
+                      <img src={previewImage} alt="enlarged" style={{ width: "100%" }} />
+                    </Modal>
       </>
     
   );
