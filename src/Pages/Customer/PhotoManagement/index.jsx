@@ -113,7 +113,7 @@ const PhotoManagement = () => {
             <p className="text-left lg:text-sm text-xs text-[#343434]">
               1ファイルあたりnnMBのファイルが登録可能です。
             </p>
-            <div className="w-2/3 mt-4 min-h-80">
+            <div className="w-2/3 mt-4 mb-8">
               <Dragger
                 fileList={fileList}
                 beforeUpload={beforeUpload}
