@@ -426,19 +426,25 @@ const FacilityAdd = () => {
           </button>
         </div>
         <PhotoSelectModal
-          visible={photoSelectModalVisible}
-          onCancel={() => setPhotoSelectModalVisible(false)}
-          onSelect={(selected) => {
-            const formattedPhotos = selected.map((photoUrl, index) => ({
-              uid: `existing-${index}`,
-              name: `Photo ${index + 1}`,
-              url: photoUrl,
-              status: "done",
-            }));
-            setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
-            setPhotoSelectModalVisible(false);
-          }}
-        />
+  visible={photoSelectModalVisible}
+  onCancel={() => setPhotoSelectModalVisible(false)}
+  onSelect={(selected) => {
+    const formattedPhotos = selected.map((photoUrl, index) => ({
+      uid: `existing-${index}-${photoUrl}`,
+      name: `Photo ${index + 1}`,
+      url: photoUrl,
+      status: "done",
+    }));
+    const totalPhotos = facilityPhoto.length + formattedPhotos.length;
+    if (totalPhotos > 10) {
+      message.error("最大10枚までしか選択できません");
+      return;
+    }
+    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+    setPhotoSelectModalVisible(false);
+  }}
+/>
+
         {/* モーダルで拡大表示 */}
 <Modal
               visible={previewOpen}

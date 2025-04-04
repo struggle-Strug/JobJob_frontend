@@ -836,21 +836,27 @@ const [currentSlide, setCurrentSlide] = useState(0);
             >
               <img src={previewImage} alt="enlarged" style={{ width: "100%" }} />
             </Modal>
-  <PhotoSelectModal
+            <PhotoSelectModal
   visible={photoSelectModalVisible}
   onCancel={() => setPhotoSelectModalVisible(false)}
   onSelect={(selected) => {
-    // 追加する際、重複チェックは行わず毎回新規アイテムとして追加する
     const formattedPhotos = selected.map((photoUrl, index) => ({
       uid: `existing-${Date.now()}-${Math.random()}`, // 常に新規の一意キーを生成
       name: `Photo ${facilityPhoto.length + index + 1}`,
       url: photoUrl,
       status: "done",
     }));
+    // 既存の画像数と新たに追加する画像数の合計をチェック
+    const totalPhotos = facilityPhoto.length + formattedPhotos.length;
+    if (totalPhotos > 10) {
+      message.error("最大10枚までしか選択できません");
+      return;
+    }
     setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
     setPhotoSelectModalVisible(false);
   }}
 />
+
 
 
     </>
