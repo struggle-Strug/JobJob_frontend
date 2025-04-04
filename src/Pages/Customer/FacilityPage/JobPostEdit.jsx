@@ -763,13 +763,13 @@ setJobPostEmploymentType(
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={() => handleRequest("pending")}
               >
-                掲載を申請する
+                求人を申請する
               </button>
               <button
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={handleDelete}
               >
-                掲載を削除する
+                求人を削除する
               </button>
             </>
           )}
@@ -785,7 +785,7 @@ setJobPostEmploymentType(
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={handleDelete}
               >
-                掲載を削除する
+                求人を削除する
               </button>
             </>
           )}
@@ -795,13 +795,13 @@ setJobPostEmploymentType(
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={() => handleRequest("ended")}
               >
-                掲載を終了する
+                求人を終了する
               </button>
               <button
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={handleDelete}
               >
-                掲載を削除する
+                求人を削除する
               </button>
             </>
           )}
@@ -811,13 +811,13 @@ setJobPostEmploymentType(
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={() => handleRequest("pending")}
               >
-                掲載を申請する
+                求人を申請する
               </button>
               <button
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={handleDelete}
               >
-                掲載を削除する
+                求人を削除する
               </button>
             </>
           )}
@@ -864,13 +864,19 @@ setJobPostEmploymentType(
           const formattedPhotos = selected.map((photoUrl, index) => ({
             uid: `existing-${index}-${photoUrl}`,
             name: `Photo ${index + 1}`,
-            // URLにベースURLを付与する
             url: photoUrl.startsWith("http") ? photoUrl : `${baseUrl}${photoUrl}`,
             status: "done",
           }));
+          // 既存の写真と合わせた枚数チェック
+          const totalPhotos = jobPostPicture.length + formattedPhotos.length;
+          if(totalPhotos > 10) {
+            message.error("最大10枚までしか選択できません");
+            return;
+          }
           setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
           setPhotoSelectModalVisible(false);
         }}
+        
         
       />
       {/* モーダルで拡大表示 */}

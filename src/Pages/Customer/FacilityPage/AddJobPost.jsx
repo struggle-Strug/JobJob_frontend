@@ -709,24 +709,31 @@ const AddJobPost = () => {
               className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300"
               onClick={() => handleSubmit(true)}
             >
-              掲載を申請する
+              求人を申請する
             </button>
           </div>
         </div>
         <PhotoSelectModal
-          visible={photoSelectModalVisible}
-          onCancel={() => setPhotoSelectModalVisible(false)}
-          onSelect={(selected) => {
-            const formattedPhotos = selected.map((photoUrl, index) => ({
-              uid: `existing-${index}`,
-              name: `Photo ${index + 1}`,
-              url: photoUrl,
-              status: "done",
-            }));
-            setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
-            setPhotoSelectModalVisible(false);
-          }}
-        />
+  visible={photoSelectModalVisible}
+  onCancel={() => setPhotoSelectModalVisible(false)}
+  onSelect={(selected) => {
+    const formattedPhotos = selected.map((photoUrl, index) => ({
+      uid: `existing-${index}-${photoUrl}`,
+      name: `Photo ${index + 1}`,
+      url: photoUrl,
+      status: "done",
+    }));
+    // 現在の画像枚数と新たに選択された画像枚数を合わせる
+    const totalPhotos = jobPostPicture.length + formattedPhotos.length;
+    if (totalPhotos > 10) {
+      message.error("最大10枚までしか選択できません");
+      return;
+    }
+    setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
+    setPhotoSelectModalVisible(false);
+  }}
+/>
+
         {/* モーダルで拡大表示 */}
         <Modal
                       visible={previewOpen}
