@@ -14,9 +14,25 @@ const ForgotPasswordRequest = () => {
       );
       setMessage(res.data.message);
     } catch (error) {
+      // エラーオブジェクトの詳細をコンソールに出力
+      if (error.response) {
+        // サーバーからのレスポンスがある場合
+        console.error("Error Response:", error.response.data);
+        console.error("Status:", error.response.status);
+        console.error("Headers:", error.response.headers);
+        console.error("Error Message:", error.message);
+      } else if (error.request) {
+        // リクエストが送信されたがレスポンスがない場合
+        console.error("Error Request:", error.request);
+      } else {
+        // その他のエラー
+        console.error("Error Message:", error.message);
+      }
+      console.error("Error Config:", error.config);
       setMessage("エラーが発生しました");
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center bg-[#EFEFEF] px-4">
