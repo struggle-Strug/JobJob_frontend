@@ -10,7 +10,7 @@ import {
   Modal,
   Spin,
   Button,
-  Carousel
+  Carousel,
 } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
@@ -29,7 +29,6 @@ import { getJobValueByKey } from "../../../utils/getFunctions";
 import PhotoSelectModal from "./PhotoSelectModal";
 import Loading from "../../../components/Loading";
 import { Municipalities } from "../../../utils/constants/categories/municipalities";
-
 
 const FacilityEdit = () => {
   const { customer } = useAuth();
@@ -69,7 +68,7 @@ const FacilityEdit = () => {
   };
 
   const [saveLoading, setSaveLoading] = useState(false);
-const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const carouselRef = useRef();
 
   const allPrefectureKeys = [
@@ -120,7 +119,6 @@ const [currentSlide, setCurrentSlide] = useState(0);
       })),
     ];
   };
-  
 
   const accessOptions = [
     ...Object.keys(Features.ACCESS).map((station) => ({
@@ -149,8 +147,6 @@ const [currentSlide, setCurrentSlide] = useState(0);
     setPreviewOpen(true);
   };
 
-  
-
   const handleChange = (info) => {
     let updatedFileList = [...info.fileList];
 
@@ -172,19 +168,19 @@ const [currentSlide, setCurrentSlide] = useState(0);
     if (facilityPhoto.length === 0) {
       return { fileUrls: [], files: [] };
     }
-  
+
     const formData = new FormData();
     // 新規アップロードするファイルのみを抽出
     const newFiles = facilityPhoto.filter((file) => file.originFileObj);
     const existingFiles = facilityPhoto.filter((file) => !file.originFileObj);
-  
+
     newFiles.forEach((file) => {
       formData.append("files", file.originFileObj);
     });
-  
+
     let uploadedFileUrls = [];
     let uploadedFiles = [];
-  
+
     if (newFiles.length > 0) {
       try {
         const response = await axios.post(
@@ -204,12 +200,15 @@ const [currentSlide, setCurrentSlide] = useState(0);
         return { fileUrls: [], files: [] };
       }
     }
-  
+
     // 既存ファイルの URL を抽出
     const existingFileUrls = existingFiles.map((file) => file.url);
-  
+
     // 両方を統合して返す
-    return { fileUrls: [...uploadedFileUrls, ...existingFileUrls], files: uploadedFiles };
+    return {
+      fileUrls: [...uploadedFileUrls, ...existingFileUrls],
+      files: uploadedFiles,
+    };
   };
 
   const getFacility = useCallback(async () => {
@@ -265,7 +264,7 @@ const [currentSlide, setCurrentSlide] = useState(0);
       const photoUrl = await handleUpload();
       const originPictures = facilityPhoto.filter((p) => !p.originFileObj);
       const urls = originPictures.map((p) => p.url);
-  
+
       if (facilityName === "") {
         return message.error("施設名を入力してください。");
       }
@@ -280,7 +279,7 @@ const [currentSlide, setCurrentSlide] = useState(0);
       } else if (facilityBuilding === "") {
         return message.error("建物名を入力してください。");
       }
-  
+
       const facilityData = {
         customer_id: customer.customer_id,
         name: facilityName,
@@ -298,7 +297,7 @@ const [currentSlide, setCurrentSlide] = useState(0);
         service_time: facilityServiceTime,
         rest_day: facilityRestDay,
       };
-  
+
       await axios.put(
         `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
         photoUrl.files || []
@@ -319,7 +318,6 @@ const [currentSlide, setCurrentSlide] = useState(0);
       setSaveLoading(false);
     }
   };
-  
 
   const handleRequest = async (status) => {
     const response = await axios.post(
@@ -353,7 +351,6 @@ const [currentSlide, setCurrentSlide] = useState(0);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen w-full">
@@ -364,7 +361,7 @@ const [currentSlide, setCurrentSlide] = useState(0);
 
   return (
     <>
-    {loading ? <Loading /> : <></>}
+      {loading ? <Loading /> : <></>}
       <div className="w-full min-h-screen flex flex-col p-4 bg-white rounded-lg mb-8">
         <h1 className="lg:text-2xl md:text-base text-sm font-bold">施設編集</h1>
         <div className="flex items-center mt-4">
@@ -523,12 +520,20 @@ const [currentSlide, setCurrentSlide] = useState(0);
             プレビュー
           </button>
           {facility?.allowed === "draft" && (
-            <button
-              className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-              onClick={handleSave}
-            >
-              掲載を申請する
-            </button>
+            <>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleSave}
+              >
+                掲載を申請する
+              </button>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleDeleteFacility}
+              >
+                削除する
+              </button>
+            </>
           )}
           {facility?.allowed === "pending" && (
             <button
@@ -600,265 +605,301 @@ const [currentSlide, setCurrentSlide] = useState(0);
       </Modal>
 
       <Modal
-  open={previewModal}
-  onCancel={() => setPreviewModal(false)}
-  footer={null}
-  width={800}
-  className="modal"
->
-  <div className="flex w-full p-8">
-    <div className="container flex justify-between gap-8">
-      <div className="flex flex-col items-start justify-start w-full">
-        <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-2xl hover:scale-[1.02] duration-300">
-          {/* Carousel を追加 */}
-                       <div className="relative w-full">
-                                 <Carousel
-                                   ref={carouselRef}
-                                   dots={false}
-                                   beforeChange={(_, next) => setCurrentSlide(next)}
-                                   
-                                 >
-                                   {facility?.photo?.length > 0 ? (
-                                     facility.photo.map((photoUrl, index) => (
-                                       <div key={index}>
-                                         <img
-                                           src={photoUrl}
-                                           alt={`facility-photo-${index}`}
-                                           className="w-full aspect-video object-cover rounded-t-xl"
-                                         />
-                                       </div>
-                                     ))
-                                   ) : (
-                                     <div>
-                                       <img
-                                         src="/assets/images/noimage.png"
-                                         alt="no-image"
-                                         className="w-full aspect-video object-cover"
-                                       />
-                                     </div>
-                                   )}
-                                 </Carousel>
-                                 {/* スライドインジケーター（画像上に表示） */}
-                                 {facility?.photo?.length > 0 && (
-                                   <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
-                                     {currentSlide + 1}/{facility.photo.length}
-                                   </div>
-                                 )}
-                               </div>
-                               
-                         <div className="flex items-center justify-between w-full bg-[#fdfcf9]  h-11 rounded-b-xl border border-[#ddccc9]">
-                           <button
-                             onClick={() => {
-                               const newIndex = (currentSlide - 1 + facility.photo.length) % facility.photo.length;
-                               carouselRef.current.goTo(newIndex, false);
-                               setCurrentSlide(newIndex);
-                             }}
-                             className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
-                           >
-                             <svg aria-label="前の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 13L5.27083 8L11 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                           </button>
-                           <button
-                             onClick={() => {
-                               const newIndex = (currentSlide + 1) % facility.photo.length;
-                               carouselRef.current.goTo(newIndex, false);
-                               setCurrentSlide(newIndex);
-                             }}
-                             className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
-                           >
-                             <svg aria-label="次の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13L10.7292 8L5 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                           </button>
-                         </div>
-                     
-
-          <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
-            <p className="lg:text-xl md:text-sm text-[#343434]">
-              <span className="lg:text-2xl md:text-xl font-bold">
-                {facilityName}
-              </span>
-              <span className="text-base">の求人情報</span>
-            </p>
-            <div>
-              <p className="lg:text-sm md:text-xs text-[#343434]">
-                {facilityPrefecture}
-                {facilityCity}
-                {facilityVillage}
-                {facilityBuilding}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col bg-white px-4 rounded-lg mt-8 w-full">
-          <p className="lg:text-lg font-bold text-sm text-[#343434] border-b-[1px] py-6 border-[#e7e7e7]">
-            事業所情報
-          </p>
-          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-              法人・施設名
-            </p>
-            <Link
-              to={`/facility/${facility?.facility_id}`}
-              className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
-            >
-              {facilityName}
-            </Link>
-          </div>
-          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-              募集職種
-            </p>
-            <div className="flex flex-col items-start justify-start w-4/5">
-              {facility?.jobPosts?.map((jobPost, index) => (
-                <Link
-                  key={index}
-                  to={`/${getJobValueByKey(jobPost.type)}/details/${jobPost?.jobpost_id}`}
-                  className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
-                >
-                  {jobPost?.type}({jobPost?.employment_type})
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-              施設紹介
-            </p>
-            <p className="lg:text-base text-sm text-[#343434] w-4/5">
-              <pre>{facilityIntroduction}</pre>
-            </p>
-          </div>
-          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-              アクセス
-            </p>
-            <div className="flex flex-col items-start justify-start w-4/5">
-              <div className="inline-block items-start justify-start gap-2">
-                {facilityAccess?.map((item, index) => (
-                  <div
-                    key={index}
-                    className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+        open={previewModal}
+        onCancel={() => setPreviewModal(false)}
+        footer={null}
+        width={800}
+        className="modal"
+      >
+        <div className="flex w-full p-8">
+          <div className="container flex justify-between gap-8">
+            <div className="flex flex-col items-start justify-start w-full">
+              <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-2xl hover:scale-[1.02] duration-300">
+                {/* Carousel を追加 */}
+                <div className="relative w-full">
+                  <Carousel
+                    ref={carouselRef}
+                    dots={false}
+                    beforeChange={(_, next) => setCurrentSlide(next)}
                   >
-                    <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                      {item}
+                    {facility?.photo?.length > 0 ? (
+                      facility.photo.map((photoUrl, index) => (
+                        <div key={index}>
+                          <img
+                            src={photoUrl}
+                            alt={`facility-photo-${index}`}
+                            className="w-full aspect-video object-cover rounded-t-xl"
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div>
+                        <img
+                          src="/assets/images/noimage.png"
+                          alt="no-image"
+                          className="w-full aspect-video object-cover"
+                        />
+                      </div>
+                    )}
+                  </Carousel>
+                  {/* スライドインジケーター（画像上に表示） */}
+                  {facility?.photo?.length > 0 && (
+                    <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
+                      {currentSlide + 1}/{facility.photo.length}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between w-full bg-[#fdfcf9]  h-11 rounded-b-xl border border-[#ddccc9]">
+                  <button
+                    onClick={() => {
+                      const newIndex =
+                        (currentSlide - 1 + facility.photo.length) %
+                        facility.photo.length;
+                      carouselRef.current.goTo(newIndex, false);
+                      setCurrentSlide(newIndex);
+                    }}
+                    className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+                  >
+                    <svg
+                      aria-label="前の写真を表示"
+                      class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover"
+                      width="24"
+                      height="24"
+                      role="img"
+                      aria-hidden="false"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M11 13L5.27083 8L11 3"
+                        stroke="#FF6B56"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></path>
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => {
+                      const newIndex =
+                        (currentSlide + 1) % facility.photo.length;
+                      carouselRef.current.goTo(newIndex, false);
+                      setCurrentSlide(newIndex);
+                    }}
+                    className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+                  >
+                    <svg
+                      aria-label="次の写真を表示"
+                      class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover"
+                      width="24"
+                      height="24"
+                      role="img"
+                      aria-hidden="false"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M5 13L10.7292 8L5 3"
+                        stroke="#FF6B56"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
+                  <p className="lg:text-xl md:text-sm text-[#343434]">
+                    <span className="lg:text-2xl md:text-xl font-bold">
+                      {facilityName}
+                    </span>
+                    <span className="text-base">の求人情報</span>
+                  </p>
+                  <div>
+                    <p className="lg:text-sm md:text-xs text-[#343434]">
+                      {facilityPrefecture}
+                      {facilityCity}
+                      {facilityVillage}
+                      {facilityBuilding}
                     </p>
                   </div>
-                ))}
+                </div>
               </div>
-              <p className="lg:text-base text-sm text-[#343434] mt-1">
-                {facilityPrefecture}
-                {facilityCity}
-                {facilityVillage}
-                {facilityBuilding}
-              </p>
-              <div className="w-full py-4 aspect-square">
-                <iframe
-                  title="Google Map"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  allowFullScreen
-                  src={`https://www.google.com/maps?q=${facilityPrefecture}${facilityCity}${facilityVillage}${facilityBuilding}&output=embed`}
-                ></iframe>
+
+              <div className="flex flex-col bg-white px-4 rounded-lg mt-8 w-full">
+                <p className="lg:text-lg font-bold text-sm text-[#343434] border-b-[1px] py-6 border-[#e7e7e7]">
+                  事業所情報
+                </p>
+                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                    法人・施設名
+                  </p>
+                  <Link
+                    to={`/facility/${facility?.facility_id}`}
+                    className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
+                  >
+                    {facilityName}
+                  </Link>
+                </div>
+                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                    募集職種
+                  </p>
+                  <div className="flex flex-col items-start justify-start w-4/5">
+                    {facility?.jobPosts?.map((jobPost, index) => (
+                      <Link
+                        key={index}
+                        to={`/${getJobValueByKey(jobPost.type)}/details/${
+                          jobPost?.jobpost_id
+                        }`}
+                        className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
+                      >
+                        {jobPost?.type}({jobPost?.employment_type})
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                    施設紹介
+                  </p>
+                  <p className="lg:text-base text-sm text-[#343434] w-4/5">
+                    <pre>{facilityIntroduction}</pre>
+                  </p>
+                </div>
+                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                    アクセス
+                  </p>
+                  <div className="flex flex-col items-start justify-start w-4/5">
+                    <div className="inline-block items-start justify-start gap-2">
+                      {facilityAccess?.map((item, index) => (
+                        <div
+                          key={index}
+                          className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                        >
+                          <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                            {item}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="lg:text-base text-sm text-[#343434] mt-1">
+                      {facilityPrefecture}
+                      {facilityCity}
+                      {facilityVillage}
+                      {facilityBuilding}
+                    </p>
+                    <div className="w-full py-4 aspect-square">
+                      <iframe
+                        title="Google Map"
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        loading="lazy"
+                        allowFullScreen
+                        src={`https://www.google.com/maps?q=${facilityPrefecture}${facilityCity}${facilityVillage}${facilityBuilding}&output=embed`}
+                      ></iframe>
+                    </div>
+                    <p className="lg:text-base text-sm text-[#343434] mt-1">
+                      {facilityAccessText}
+                    </p>
+                    <Link
+                      to={`https://www.google.com/maps?q=${encodeURIComponent(
+                        `${facilityPrefecture}${facilityCity}${facilityVillage}${facilityBuilding}`
+                      )}`}
+                      target="_blank"
+                      className="lg:text-base text-sm text-[#FF2A3B] hover:underline mt-1 border-[1px] border-[#FF2A3B] py-1 px-2 rounded-lg"
+                    >
+                      Google Mapsで見る
+                    </Link>
+                  </div>
+                </div>
+                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                    設立年月
+                  </p>
+                  <p className="lg:text-base text-sm text-[#343434] w-4/5">
+                    {facilityEstablishmentDateYear}年
+                    {facilityEstablishmentDateMonth}月
+                  </p>
+                </div>
+                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                    施設
+                  </p>
+                  <div className="flex flex-col items-start justify-start w-4/5">
+                    <Link
+                      to={`/${Facilities[facilityGenre]}`}
+                      className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
+                    >
+                      {facilityGenre}
+                    </Link>
+                  </div>
+                </div>
+                <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
+                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                    営業時間
+                  </p>
+                  <p className="lg:text-base text-sm text-[#343434] w-4/5">
+                    <pre>{facilityServiceTime}</pre>
+                  </p>
+                </div>
+                <div className="flex items-start justify-start py-6">
+                  <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+                    休日
+                  </p>
+                  <p className="lg:text-base text-sm text-[#343434] w-4/5">
+                    <pre>{facilityRestDay}</pre>
+                  </p>
+                </div>
               </div>
-              <p className="lg:text-base text-sm text-[#343434] mt-1">
-                {facilityAccessText}
-              </p>
-              <Link
-                to={`https://www.google.com/maps?q=${encodeURIComponent(
-                  `${facilityPrefecture}${facilityCity}${facilityVillage}${facilityBuilding}`
-                )}`}
-                target="_blank"
-                className="lg:text-base text-sm text-[#FF2A3B] hover:underline mt-1 border-[1px] border-[#FF2A3B] py-1 px-2 rounded-lg"
-              >
-                Google Mapsで見る
-              </Link>
             </div>
-          </div>
-          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-              設立年月
-            </p>
-            <p className="lg:text-base text-sm text-[#343434] w-4/5">
-              {facilityEstablishmentDateYear}年
-              {facilityEstablishmentDateMonth}月
-            </p>
-          </div>
-          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-              施設
-            </p>
-            <div className="flex flex-col items-start justify-start w-4/5">
-              <Link
-                to={`/${Facilities[facilityGenre]}`}
-                className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
-              >
-                {facilityGenre}
-              </Link>
-            </div>
-          </div>
-          <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-              営業時間
-            </p>
-            <p className="lg:text-base text-sm text-[#343434] w-4/5">
-              <pre>{facilityServiceTime}</pre>
-            </p>
-          </div>
-          <div className="flex items-start justify-start py-6">
-            <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-              休日
-            </p>
-            <p className="lg:text-base text-sm text-[#343434] w-4/5">
-              <pre>{facilityRestDay}</pre>
-            </p>
           </div>
         </div>
-      </div>
-    </div>
-    </div>
-  </Modal>
+      </Modal>
 
-{/* モーダルで拡大表示 */}
-<Modal
-              visible={previewOpen}
-              footer={null}
-              onCancel={() => setPreviewOpen(false)}
-              closeIcon={
-                <CloseOutlined
-                  style={{
-                    backgroundColor: "#fff",
-                    padding: "5px",
-                    borderRadius: "5px",
-                  }}
-                />
-              }
-            >
-              <img src={previewImage} alt="enlarged" style={{ width: "100%" }} />
-            </Modal>
-            <PhotoSelectModal
-  visible={photoSelectModalVisible}
-  onCancel={() => setPhotoSelectModalVisible(false)}
-  onSelect={(selected) => {
-    const formattedPhotos = selected.map((photoUrl, index) => ({
-      uid: `existing-${Date.now()}-${Math.random()}`, // 常に新規の一意キーを生成
-      name: `Photo ${facilityPhoto.length + index + 1}`,
-      url: photoUrl,
-      status: "done",
-    }));
-    // 既存の画像数と新たに追加する画像数の合計をチェック
-    const totalPhotos = facilityPhoto.length + formattedPhotos.length;
-    if (totalPhotos > 10) {
-      message.error("最大10枚までしか選択できません");
-      return;
-    }
-    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
-    setPhotoSelectModalVisible(false);
-  }}
-/>
-
-
-
+      {/* モーダルで拡大表示 */}
+      <Modal
+        visible={previewOpen}
+        footer={null}
+        onCancel={() => setPreviewOpen(false)}
+        closeIcon={
+          <CloseOutlined
+            style={{
+              backgroundColor: "#fff",
+              padding: "5px",
+              borderRadius: "5px",
+            }}
+          />
+        }
+      >
+        <img src={previewImage} alt="enlarged" style={{ width: "100%" }} />
+      </Modal>
+      <PhotoSelectModal
+        visible={photoSelectModalVisible}
+        onCancel={() => setPhotoSelectModalVisible(false)}
+        onSelect={(selected) => {
+          const formattedPhotos = selected.map((photoUrl, index) => ({
+            uid: `existing-${Date.now()}-${Math.random()}`, // 常に新規の一意キーを生成
+            name: `Photo ${facilityPhoto.length + index + 1}`,
+            url: photoUrl,
+            status: "done",
+          }));
+          // 既存の画像数と新たに追加する画像数の合計をチェック
+          const totalPhotos = facilityPhoto.length + formattedPhotos.length;
+          if (totalPhotos > 10) {
+            message.error("最大10枚までしか選択できません");
+            return;
+          }
+          setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+          setPhotoSelectModalVisible(false);
+        }}
+      />
     </>
   );
 };
