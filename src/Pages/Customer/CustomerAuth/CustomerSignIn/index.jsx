@@ -29,7 +29,8 @@ const CustomerSignIn = () => {
       `${process.env.REACT_APP_API_URL}/api/v1/customers/signin`,
       signInData
     );
-    if (resData.data.error) return message.error(resData.data.message);
+    if (resData.data.error)
+      return message.error("メールアドレスまたはパスワードが間違えています 。");
     localStorage.setItem("token", resData.data.token);
     message.success(resData.data.message);
     setCustomer(resData.data.customer);
