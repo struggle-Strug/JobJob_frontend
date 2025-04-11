@@ -303,9 +303,6 @@ const CoporateInformation = () => {
               </p>
             </Col>
             <Col span={17} className="p-5" style={formCellStyle}>
-              <p className="text-[red]">
-                ※ジョブメドレー運営事務所および応募者との連絡先となります。応募者に提示可能な連絡先をご入力ください。求人??には掲載されません。
-              </p>
               <Row className="pt-2 pb-2">
                 <Col span={10}>
                   <Input
@@ -359,9 +356,6 @@ const CoporateInformation = () => {
               </p>
             </Col>
             <Col span={17} className="p-5" style={formCellStyle}>
-              <p className="text-[red]">
-                ※ジョブメドレー運営事務所および応募者との連絡先となります。応募者に提示可能な連絡先をご入力ください。求人??には掲載されません。
-              </p>
               <Row className="pt-2 pb-2">
                 <Col span={24}>
                   <Input
