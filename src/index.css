@@ -24,7 +24,7 @@ pre {
 }
 
 .container {
-  @apply max-w-[1110px] mx-auto;
+  @apply max-w-[1024px] mx-auto;
 }
 
 .clcontainer {
