@@ -4,7 +4,7 @@ import {
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
   getPrefectureKeyByValue,
-  getJobValueByKey
+  getJobValueByKey,
 } from "../../../utils/getFunctions";
 import { useEffect, useState } from "react";
 import {
@@ -59,7 +59,6 @@ const JobLists = () => {
 
   const path = pathname.split("/")[1];
   const JobType = getJobTypeKeyByValue(path);
-
 
   const isMuniModalOpen = pathname.endsWith("/modal/muni");
   const isEmploymentTypeModalOpen = pathname.endsWith("/modal/employmentType");
@@ -189,27 +188,26 @@ const JobLists = () => {
   };
 
   // 指定のフィルター条件のみを含むURLを生成するヘルパー関数
-const getConditionUrl = (filterName, value) => {
-  const defaultFilters = {
-    pref: "",
-    muni: "",
-    employmentType: [],
-    monthlySalary: "",
-    hourlySalary: "",
-    feature: [],
-    page: 1,
+  const getConditionUrl = (filterName, value) => {
+    const defaultFilters = {
+      pref: "",
+      muni: "",
+      employmentType: [],
+      monthlySalary: "",
+      hourlySalary: "",
+      feature: [],
+      page: 1,
+    };
+    // 配列型のフィルターの場合
+    if (filterName === "employmentType" || filterName === "feature") {
+      defaultFilters[filterName] = [value];
+    } else {
+      defaultFilters[filterName] = value;
+    }
+    return `/${path}/search?filters=${encodeURIComponent(
+      JSON.stringify(defaultFilters)
+    )}`;
   };
-  // 配列型のフィルターの場合
-  if (filterName === "employmentType" || filterName === "feature") {
-    defaultFilters[filterName] = [value];
-  } else {
-    defaultFilters[filterName] = value;
-  }
-  return `/${path}/search?filters=${encodeURIComponent(
-    JSON.stringify(defaultFilters)
-  )}`;
-};
-
 
   const handleOnChangeMuni = (m) => {
     setMuni(m);
@@ -262,11 +260,7 @@ const getConditionUrl = (filterName, value) => {
   const handleCloseModal = () => {
     const newPath = location.pathname.replace(/\/modal\/[^/]+$/, "");
     navigate(`${newPath}${location.search}`);
-  }
-  
-
-  
-  
+  };
 
   useEffect(() => {
     const newFilters = {
@@ -365,8 +359,6 @@ const getConditionUrl = (filterName, value) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  
-
   if (isLoading) {
     return <Loading />;
   }
@@ -404,7 +396,9 @@ const getConditionUrl = (filterName, value) => {
                 <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
                   <Link
                     className="lg:text-[1rem] md:text-sm font-bold text-[#FF2A3B] hover:underline"
-                    to={`${pathname}/modal/pref?filters=${encodeURIComponent(JSON.stringify(filters))}`}
+                    to={`${pathname}/modal/pref?filters=${encodeURIComponent(
+                      JSON.stringify(filters)
+                    )}`}
                   >
                     都道府県を変更
                   </Link>
@@ -417,14 +411,16 @@ const getConditionUrl = (filterName, value) => {
               </div>
             </div>
             <div className="flex items-center justify-start w-full mt-8">
-              <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+              {/* <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                 求人検索
-              </p>
+              </p> */}
             </div>
             <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl mt-8">
               <Link
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg hover:px-12 duration-300 cursor-pointer"
-                to={`${pathname}/modal/muni?filters=${encodeURIComponent(JSON.stringify(filters))}`}
+                to={`${pathname}/modal/muni?filters=${encodeURIComponent(
+                  JSON.stringify(filters)
+                )}`}
               >
                 <div className="flex items-center justify-between gap-1">
                   <img
@@ -461,7 +457,9 @@ const getConditionUrl = (filterName, value) => {
               </div>
               <Link
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-                to={`${pathname}/modal/employmentType?filters=${encodeURIComponent(JSON.stringify(filters))}`}
+                to={`${pathname}/modal/employmentType?filters=${encodeURIComponent(
+                  JSON.stringify(filters)
+                )}`}
               >
                 <div className="flex items-center justify-between gap-1 ">
                   <img
@@ -481,7 +479,9 @@ const getConditionUrl = (filterName, value) => {
               </Link>
               <Link
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-                to={`${pathname}/modal/feature?filters=${encodeURIComponent(JSON.stringify(filters))}`}
+                to={`${pathname}/modal/feature?filters=${encodeURIComponent(
+                  JSON.stringify(filters)
+                )}`}
               >
                 <div className="flex items-center justify-between gap-1 ">
                   <img
@@ -501,9 +501,9 @@ const getConditionUrl = (filterName, value) => {
               </Link>
             </div>
             <div className="flex items-center justify-start w-full mt-8">
-              <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+              {/* <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                 {getPrefectureKeyByValue(pref)}の{JobType}の求人
-              </p>
+              </p> */}
             </div>
             <div className="flex flex-col items-center justify-start w-full ">
               {jobPosts?.map((jobpost) => {
@@ -878,36 +878,37 @@ const getConditionUrl = (filterName, value) => {
                 雇用形態
               </p>
               <div className="flex items-center justify-start desire gap-4 mt-4">
-  {Object.keys(EmploymentType).map((employmentTypeKey, index) => {
-    return (
-      <Checkbox
-  key={index}
-  onChange={() => handleEmploymentTypeChange(employmentTypeKey)}
-  checked={employmentType.includes(employmentTypeKey)}
-  className="relative"  // 右側に十分な余白を確保
->
-  {employmentTypeKey}
-  {/* 縦線 */}
-  <span className="absolute right-5 top-1 bottom-1 border-l border-gray-400"></span>
-  {/* チェブロンをリンクに */}
-  <a
-    href={getConditionUrl("employmentType", employmentTypeKey)} // リンク先URLを指定
-    className="absolute right-0 top-1/2 transform -translate-y-1/2"
-  >
-    <img
-      src="/assets/images/dashboard/ep_arrow-right_black.png"
-      alt="arrow-down"
-      className="w-4"
-    />
-  </a>
-</Checkbox>
-
-
-
-
-    );
-  })}
-</div>
+                {Object.keys(EmploymentType).map((employmentTypeKey, index) => {
+                  return (
+                    <Checkbox
+                      key={index}
+                      onChange={() =>
+                        handleEmploymentTypeChange(employmentTypeKey)
+                      }
+                      checked={employmentType.includes(employmentTypeKey)}
+                      className="relative" // 右側に十分な余白を確保
+                    >
+                      {employmentTypeKey}
+                      {/* 縦線 */}
+                      <span className="absolute right-5 top-1 bottom-1 border-l border-gray-400"></span>
+                      {/* チェブロンをリンクに */}
+                      <a
+                        href={getConditionUrl(
+                          "employmentType",
+                          employmentTypeKey
+                        )} // リンク先URLを指定
+                        className="absolute right-0 top-1/2 transform -translate-y-1/2"
+                      >
+                        <img
+                          src="/assets/images/dashboard/ep_arrow-right_black.png"
+                          alt="arrow-down"
+                          className="w-4"
+                        />
+                      </a>
+                    </Checkbox>
+                  );
+                })}
+              </div>
             </div>
             <div className="w-full p-6">
               <p className="lg:text-base md:text-md text-sm text-[#343434] font-bold">
@@ -994,30 +995,31 @@ const getConditionUrl = (filterName, value) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {Object.keys(section.features).map((featureKey, idx) => (
                     <Checkbox
-                    key={idx}
-                    onChange={() => handleFeatureChange(section.features[featureKey])}
-                    checked={feature.includes(
-                      getFeatureKeyByValue(section.features[featureKey])
-                    )}
-                    className="relative" // 右側に十分な余白を確保
-                  >
-                    <span className="text-xs lg:text-sm">{featureKey}</span>
-                    <span className="absolute right-5 top-1 bottom-1 border-l border-gray-400"></span>
-                    <a
-                      href={getConditionUrl(
-                        "feature",
+                      key={idx}
+                      onChange={() =>
+                        handleFeatureChange(section.features[featureKey])
+                      }
+                      checked={feature.includes(
                         getFeatureKeyByValue(section.features[featureKey])
                       )}
-                      className="absolute right-0 top-1/2 transform -translate-y-1/2"
+                      className="relative" // 右側に十分な余白を確保
                     >
-                      <img
-                        src="/assets/images/dashboard/ep_arrow-right_black.png"
-                        alt="arrow-down"
-                        className="w-4"
-                      />
-                    </a>
-                  </Checkbox>
-                  
+                      <span className="text-xs lg:text-sm">{featureKey}</span>
+                      <span className="absolute right-5 top-1 bottom-1 border-l border-gray-400"></span>
+                      <a
+                        href={getConditionUrl(
+                          "feature",
+                          getFeatureKeyByValue(section.features[featureKey])
+                        )}
+                        className="absolute right-0 top-1/2 transform -translate-y-1/2"
+                      >
+                        <img
+                          src="/assets/images/dashboard/ep_arrow-right_black.png"
+                          alt="arrow-down"
+                          className="w-4"
+                        />
+                      </a>
+                    </Checkbox>
                   ))}
                 </div>
               </div>
