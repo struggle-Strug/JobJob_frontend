@@ -1,34 +1,35 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { Link } from "react-router-dom";
+"use client";
+
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import {
-  Checkbox,
-  Input,
-  Radio,
-  Select,
-  Upload,
-  message,
-  Modal,
-  Spin,
   Button,
   Carousel,
+  Checkbox,
+  Input,
+  message,
+  Modal,
+  Radio,
+  Select,
+  Spin,
+  Upload,
 } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
-import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Loading from "../../../components/Loading";
+import { useAuth } from "../../../context/AuthContext";
 import {
   Facilities,
   Features,
   JobType,
   Prefectures,
 } from "../../../utils/constants/categories";
-import { getBase64 } from "../../../utils/getBase64";
-import { useAuth } from "../../../context/AuthContext";
-import { getJobValueByKey } from "../../../utils/getFunctions";
-import PhotoSelectModal from "./PhotoSelectModal";
-import Loading from "../../../components/Loading";
 import { Municipalities } from "../../../utils/constants/categories/municipalities";
+import { getBase64 } from "../../../utils/getBase64";
+import { getJobValueByKey } from "../../../utils/getFunctions";
+import ImageEditModal from "./ImageEditModal";
+import PhotoSelectModal from "./PhotoSelectModal";
 
 const FacilityEdit = () => {
   const { customer } = useAuth();
@@ -62,6 +63,10 @@ const FacilityEdit = () => {
   const location = useLocation();
   const id = location.pathname.split("/").pop();
   const navigate = useNavigate();
+
+  // Add state for image editing
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
 
   const editorStyle = {
     width: "80%",
@@ -134,7 +139,14 @@ const FacilityEdit = () => {
     })),
   ];
 
-  const beforeUpload = () => {
+  // Modified to handle image editing
+  const beforeUpload = (file) => {
+    // When a file is selected, show the edit modal instead of uploading directly
+    getBase64(file).then((base64) => {
+      setCurrentImage(base64);
+      setEditModalVisible(true);
+    });
+    // Return false to prevent automatic upload
     return false;
   };
 
@@ -147,22 +159,33 @@ const FacilityEdit = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange = (info) => {
-    let updatedFileList = [...info.fileList];
+  // Handle the edited image save
+  const handleEditSave = (croppedImage) => {
+    const { file, preview } = croppedImage;
 
-    if (updatedFileList.length > 10) {
-      updatedFileList.pop();
-      message.error("10枚まで選択できます");
+    // Create a new file entry with the cropped image
+    const newFile = {
+      uid: `${Date.now()}`,
+      name: file.name || "cropped-image.jpg",
+      status: "done",
+      originFileObj: file,
+      preview: preview,
+      url: preview, // Add url for consistency with PhotoSelectModal
+    };
+
+    // Check if adding this would exceed the limit
+    if (facilityPhoto.length >= 10) {
+      message.error("最大10枚までしか選択できません");
+      return;
     }
 
-    setFacilityPhoto(updatedFileList);
-
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
+    // Add only the edited image to the file list
+    setFacilityPhoto((prev) => [...prev, newFile]);
+    setEditModalVisible(false);
+    setCurrentImage(null);
   };
+
+  // Remove handleChange as we're bypassing the default upload behavior
 
   const handleUpload = async () => {
     if (facilityPhoto.length === 0) {
@@ -345,6 +368,12 @@ const FacilityEdit = () => {
     navigate("/customers/facility");
   };
 
+  // Add a function to remove files
+  const handleRemove = (file) => {
+    const newFileList = facilityPhoto.filter((item) => item.uid !== file.uid);
+    setFacilityPhoto(newFileList);
+  };
+
   useEffect(() => {
     document.title = "施設編集";
     getFacility();
@@ -425,10 +454,35 @@ const FacilityEdit = () => {
               listType="picture-card"
               fileList={facilityPhoto}
               onPreview={handlePreview}
-              beforeUpload={beforeUpload}
-              onChange={handleChange}
+              onRemove={handleRemove}
+              customRequest={({ onSuccess }) => {
+                // Do nothing, just call onSuccess to mark it as done
+                setTimeout(() => {
+                  onSuccess("ok", null);
+                }, 0);
+              }}
+              showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}
+              openFileDialogOnClick={false} // Prevent opening file dialog on click
             >
-              <div className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3">
+              <div
+                className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3"
+                onClick={() => {
+                  // Create a file input element
+                  const input = document.createElement("input");
+                  input.type = "file";
+                  input.accept = "image/*";
+                  input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      getBase64(file).then((base64) => {
+                        setCurrentImage(base64);
+                        setEditModalVisible(true);
+                      });
+                    }
+                  };
+                  input.click();
+                }}
+              >
                 <PlusOutlined />
                 <div className="mt-4 text-center">Upload</div>
               </div>
@@ -626,7 +680,7 @@ const FacilityEdit = () => {
                       facility.photo.map((photoUrl, index) => (
                         <div key={index}>
                           <img
-                            src={photoUrl}
+                            src={photoUrl || "/placeholder.svg"}
                             alt={`facility-photo-${index}`}
                             className="w-full aspect-video object-cover rounded-t-xl"
                           />
@@ -675,9 +729,9 @@ const FacilityEdit = () => {
                       <path
                         d="M11 13L5.27083 8L11 3"
                         stroke="#FF6B56"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </button>
@@ -704,9 +758,9 @@ const FacilityEdit = () => {
                       <path
                         d="M5 13L10.7292 8L5 3"
                         stroke="#FF6B56"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       ></path>
                     </svg>
                   </button>
@@ -878,7 +932,11 @@ const FacilityEdit = () => {
           />
         }
       >
-        <img src={previewImage} alt="enlarged" style={{ width: "100%" }} />
+        <img
+          src={previewImage || "/placeholder.svg"}
+          alt="enlarged"
+          style={{ width: "100%" }}
+        />
       </Modal>
       <PhotoSelectModal
         visible={photoSelectModalVisible}
@@ -899,6 +957,17 @@ const FacilityEdit = () => {
           setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
           setPhotoSelectModalVisible(false);
         }}
+      />
+
+      {/* Image Edit Modal */}
+      <ImageEditModal
+        visible={editModalVisible}
+        image={currentImage}
+        onCancel={() => {
+          setEditModalVisible(false);
+          setCurrentImage(null);
+        }}
+        onSave={handleEditSave}
       />
     </>
   );
