@@ -164,8 +164,8 @@ function App() {
         <Route element={<CLLogoLayout />}>
           <Route path="/customers/new" element={<CustomerSignUp />} />
           <Route path="/customers/sign_in" element={<CustomerSignIn />} />
+          <Route path="/customers/rule" element={<Rule />} />
         </Route>
-        <Route path="/customers/rule" element={<Rule />} />
         {token && (customer || admin) ? (
           <Route element={<CLLayout />}>
             <Route path="/customers" element={<CLMainLayout />}>
@@ -216,8 +216,8 @@ function App() {
             <Route path="/*" element={<CustomerSignIn />} />
           </Route>
         )}
-        <Route path="/rule" element={<CSRule />} />
         <Route element={<CSLayout />}>
+          <Route path="/rule" element={<CSRule />} />
           <Route path="/" element={<Top />} />
           <Route path="/coporate" element={<Coporate />} />
           <Route path="/forgot-password" element={<ForgotPasswordRequest />} />
