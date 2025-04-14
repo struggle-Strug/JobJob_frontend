@@ -256,7 +256,9 @@ const FacilityDetails = () => {
                             住所
                           </p>
                           <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
-                            {jobpost.facility_id.access_text}
+                            {facility.prefecture} {facility.city}{" "}
+                            {facility.village} {facility.building}{" "}
+                            {facility.access_text}
                           </p>
                         </div>
                       </div>
