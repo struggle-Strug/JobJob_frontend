@@ -10,45 +10,45 @@ const FacilityDetails = () => {
   const [facility, setFacility] = useState(null);
   const facility_id = pathname.split("/")[3];
   const jobMapping = {
-    "医師": "/dr",
-    "薬剤師": "/ph",
+    医師: "/dr",
+    薬剤師: "/ph",
     "看護師/准看護師": "/nan",
-    "助産師": "/mw",
-    "保健師": "/phn",
-    "看護助手": "/nuas",
-    "診療放射線技師": "/mrt",
-    "臨床検査技師": "/clt",
+    助産師: "/mw",
+    保健師: "/phn",
+    看護助手: "/nuas",
+    診療放射線技師: "/mrt",
+    臨床検査技師: "/clt",
     "管理栄養士/栄養士": "/rdn",
     "公認心理師/臨床心理士": "/cp",
-    "医療ソーシャルワーカー": "/msw",
-    "歯科医師": "/de",
-    "歯科衛生士": "/dh",
-    "歯科技工士": "/dt",
-    "歯科助手": "/deas",
+    医療ソーシャルワーカー: "/msw",
+    歯科医師: "/de",
+    歯科衛生士: "/dh",
+    歯科技工士: "/dt",
+    歯科助手: "/deas",
     "介護職/ヘルパー": "/cwh",
-    "生活相談員": "/lc",
-    "ケアマネジャー": "/cm",
+    生活相談員: "/lc",
+    ケアマネジャー: "/cm",
     "管理職（介護）": "/mp",
-    "サービス提供責任者": "/sp",
-    "生活支援員": "/lsw",
-    "福祉用具専門相談員": "/wesc",
-    "児童発達支援管理責任者": "/cdsm",
-    "保育士": "/chil",
-    "幼稚園教諭": "/kt",
-    "保育補助": "/ca",
+    サービス提供責任者: "/sp",
+    生活支援員: "/lsw",
+    福祉用具専門相談員: "/wesc",
+    児童発達支援管理責任者: "/cdsm",
+    保育士: "/chil",
+    幼稚園教諭: "/kt",
+    保育補助: "/ca",
     "児童指導員/指導員": "/cii",
-    "理学療法士": "/pt",
-    "言語聴覚士": "/st",
-    "作業療法士": "/ot",
-    "視能訓練士": "/ort",
+    理学療法士: "/pt",
+    言語聴覚士: "/st",
+    作業療法士: "/ot",
+    視能訓練士: "/ort",
     "調理師/調理スタッフ": "/ccs",
-    "美容師": "/hai",
-    "理容師": "/bar",
-    "ネイリスト": "/naar",
-    "アイリスト": "/el",
+    美容師: "/hai",
+    理容師: "/bar",
+    ネイリスト: "/naar",
+    アイリスト: "/el",
     "エステティシャン/セラピスト": "/et",
-    "美容部員": "/bcm",
-    "インストラクター": "/ins",
+    美容部員: "/bcm",
+    インストラクター: "/ins",
   };
   const [currentSlide, setCurrentSlide] = useState(0);
   const carouselRef = useRef();
@@ -71,72 +71,102 @@ const FacilityDetails = () => {
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-start justify-start w-2/3">
             <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-xl hover:scale-[1.02] duration-300">
-              
-            <div className="relative w-full">
-          <Carousel
-            ref={carouselRef}
-            dots={false}
-            beforeChange={(_, next) => setCurrentSlide(next)}
-            
-          >
-            {facility?.photo?.length > 0 ? (
-              facility.photo.map((photoUrl, index) => (
-                <div key={index}>
-                  <img
-                    src={photoUrl}
-                    alt={`facility-photo-${index}`}
-                    className="w-full aspect-video object-cover rounded-t-xl"
-                  />
-                </div>
-              ))
-            ) : (
-              <div>
-                <img
-                  src="/assets/images/noimage.png"
-                  alt="no-image"
-                  className="w-full aspect-video object-cover"
-                />
+              <div className="relative w-full">
+                <Carousel
+                  ref={carouselRef}
+                  dots={false}
+                  beforeChange={(_, next) => setCurrentSlide(next)}
+                >
+                  {facility?.photo?.length > 0 ? (
+                    facility.photo.map((photoUrl, index) => (
+                      <div key={index}>
+                        <img
+                          src={photoUrl}
+                          alt={`facility-photo-${index}`}
+                          className="w-full aspect-video object-cover rounded-t-xl"
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div>
+                      <img
+                        src="/assets/images/noimage.png"
+                        alt="no-image"
+                        className="w-full aspect-video object-cover"
+                      />
+                    </div>
+                  )}
+                </Carousel>
+                {/* スライドインジケーター（画像上に表示） */}
+                {facility?.photo?.length > 0 && (
+                  <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
+                    {currentSlide + 1}/{facility.photo.length}
+                  </div>
+                )}
               </div>
-            )}
-          </Carousel>
-          {/* スライドインジケーター（画像上に表示） */}
-          {facility?.photo?.length > 0 && (
-            <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
-              {currentSlide + 1}/{facility.photo.length}
-            </div>
-          )}
-        </div>
-        {/* 矢印バー：画像直下に隙間なく配置 */}
-        
-  <div className="flex items-center justify-between w-full bg-[#fdfcf9]  h-11 rounded-b-xl border border-[#ddccc9]">
-    <button
-      onClick={() => {
-        const newIndex = (currentSlide - 1 + facility.photo.length) % facility.photo.length;
-        carouselRef.current.goTo(newIndex, false);
-        setCurrentSlide(newIndex);
-      }}
-      className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
-    >
-      <svg aria-label="前の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 13L5.27083 8L11 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-    </button>
-    <button
-      onClick={() => {
-        const newIndex = (currentSlide + 1) % facility.photo.length;
-        carouselRef.current.goTo(newIndex, false);
-        setCurrentSlide(newIndex);
-      }}
-      className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
-    >
-      <svg aria-label="次の写真を表示" class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover" width="24" height="24" role="img" aria-hidden="false" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 13L10.7292 8L5 3" stroke="#FF6B56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-    </button>
-  </div>
+              {/* 矢印バー：画像直下に隙間なく配置 */}
 
+              <div className="flex items-center justify-between w-full bg-[#fdfcf9]  h-11 rounded-b-xl border border-[#ddccc9]">
+                <button
+                  onClick={() => {
+                    const newIndex =
+                      (currentSlide - 1 + facility.photo.length) %
+                      facility.photo.length;
+                    carouselRef.current.goTo(newIndex, false);
+                    setCurrentSlide(newIndex);
+                  }}
+                  className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+                >
+                  <svg
+                    aria-label="前の写真を表示"
+                    class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover"
+                    width="24"
+                    height="24"
+                    role="img"
+                    aria-hidden="false"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 13L5.27083 8L11 3"
+                      stroke="#FF6B56"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </svg>
+                </button>
+                <button
+                  onClick={() => {
+                    const newIndex = (currentSlide + 1) % facility.photo.length;
+                    carouselRef.current.goTo(newIndex, false);
+                    setCurrentSlide(newIndex);
+                  }}
+                  className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
+                >
+                  <svg
+                    aria-label="次の写真を表示"
+                    class="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover"
+                    width="24"
+                    height="24"
+                    role="img"
+                    aria-hidden="false"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5 13L10.7292 8L5 3"
+                      stroke="#FF6B56"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
 
-
-
-            
-
-              
               <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
                 <p className="lg:text-xl md:text-sm text-[#343434]">
                   <span className="lg:text-2xl md:text-xl font-bold">
@@ -178,7 +208,7 @@ const FacilityDetails = () => {
                       />
                     ) : (
                       <img
-                        src={`${jobpost.picture}`}
+                        src={`${jobpost.picture[0]}`}
                         alt="arrow-down"
                         className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
                       />

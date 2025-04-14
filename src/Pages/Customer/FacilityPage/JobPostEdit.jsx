@@ -299,7 +299,6 @@ const JobPostEdit = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`
       );
       const jobData = response.data.jobpost;
-      console.log(jobData);
       setJobPost(jobData);
       setJobPostType(
         Object.keys(JobType.医科).includes(jobData.type)
@@ -439,6 +438,7 @@ const JobPostEdit = () => {
   const handleRequest = async (status) => {
     try {
       setLoading(true);
+      await handleSave();
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}/${status}`
       );
