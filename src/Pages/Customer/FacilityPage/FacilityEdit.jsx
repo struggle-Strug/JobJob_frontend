@@ -311,7 +311,7 @@ const FacilityEdit = () => {
         city: facilityCity,
         village: facilityVillage,
         building: facilityBuilding,
-        photo: photoUrl.fileUrls ? [...photoUrl.fileUrls, ...urls] : urls,
+        photo: photoUrl.fileUrls,
         introduction: facilityIntroduction,
         access: facilityAccess,
         access_text: facilityAccessText,
