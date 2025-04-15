@@ -260,6 +260,8 @@ const CertainJob = () => {
       const url = `/${path}`;
       if (window.location.pathname !== url) {
         navigate(url);
+      } else {
+        navigate(`/${path}/select/pref`);
       }
     } else {
       const url = `/${path}/search?filters=${encodeURIComponent(
@@ -282,16 +284,18 @@ const CertainJob = () => {
       <div className="flex flex-col w-full px-2 lg:px-4">
         {Object.keys(prefectures).map((prefecture, index) => (
           <a
-          key={index}
-          className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
-          href={`/${getJobValueByKey(JobType)}/${prefectures[prefecture]}`}
-        >
-          {prefecture}
-        </a>
+            key={index}
+            className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
+            href={`/${getJobValueByKey(JobType)}/${prefectures[prefecture]}`}
+            aria-label={prefecture}  // Added aria-label based on prefecture name
+          >
+            {prefecture}
+          </a>
         ))}
       </div>
     </div>
   );
+  
 
   return (
     <>
@@ -421,10 +425,10 @@ const CertainJob = () => {
   checked={employmentType.includes(employmentTypeKey)}
   className="relative" // 右側に十分な余白を確保
 >
-  <span className="text-xs lg:text-sm">
+  <span className="text-xs lg:text-sm mr-5">
     {employmentTypeKey}
   </span>
-  <span className="absolute right-5 top-0 bottom-0 border-l border-gray-400"></span>
+  <span className="absolute right-5 top-0 bottom-0 border-l border-slate-200"></span>
   <a
     href={getConditionUrl("employmentType", employmentTypeKey)} // リンク先URLを指定
     className="absolute right-0 top-1/2 transform -translate-y-1/2"
@@ -533,7 +537,7 @@ const CertainJob = () => {
                           {featureKey}
                         </span>
                         {/* 縦線 */}
-                        <span className="absolute right-5 top-0 bottom-0 border-l border-gray-400"></span>
+                        <span className="absolute right-5 top-0 bottom-0 border-l border-slate-200"></span>
                         {/* チェブロンをリンクに */}
                         <a
                           href={getConditionUrl("feature", getFeatureKeyByValue(section.features[featureKey]))} // リンク先URLを指定
