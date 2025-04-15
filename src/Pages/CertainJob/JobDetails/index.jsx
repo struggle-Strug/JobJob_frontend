@@ -479,23 +479,24 @@ const JobDetails = () => {
           </div>
           <div className="flex flex-col bg-white p-4 rounded-lg mt-8">
             <p className="lg:text-lg font-bold text-sm text-[#343434]">写真</p>
-            <div className="flex items-start justify-start gap-2 py-4">
-              {jobPost?.picture?.length > 0 &&
-                jobPost?.picture?.map((item, index) => {
-                  return (
-                    <img
-                      key={index}
-                      src={item}
-                      alt="jobpost"
-                      className="w-1/3 aspect-[2/1] object-cover rounded-lg cursor-pointer"
-                      onClick={() => {
-                        setModalImage(item);
-                        setIsModalVisible(true);
-                      }}
-                    />
-                  );
-                })}
-            </div>
+            <div className="grid grid-cols-3 gap-2 py-4">
+  {jobPost?.picture?.length > 0 &&
+    jobPost?.picture?.map((item, index) => {
+      return (
+        <img
+          key={index}
+          src={item}
+          alt="jobpost"
+          className="aspect-[2/1] object-cover rounded-lg cursor-pointer"
+          onClick={() => {
+            setModalImage(item);
+            setIsModalVisible(true);
+          }}
+        />
+      );
+    })}
+</div>
+
             {/* モーダルで拡大表示 */}
             <Modal
               visible={isModalVisible}
