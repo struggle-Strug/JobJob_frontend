@@ -281,28 +281,28 @@ const JobDetails = () => {
               募集内容
             </p>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 募集職種
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
+              <p className="lg:text-base text-sm text-[#343434] py-6 w-3/4">
                 {jobPost?.type}
               </p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 仕事内容
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
+              <p className="lg:text-base text-sm text-[#343434] py-6 w-3/4">
                 <pre>{jobPost?.work_content}</pre>
               </p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 診療科目・
                 <br />
                 サービス形態{" "}
               </p>
-              <div className="inline-block items-start justify-start gap-2 w-4/5 py-6">
+              <div className="inline-block items-start justify-start gap-2 w-3/4 py-6">
                 {jobPost?.service_subject
                   .concat(jobPost?.service_type)
                   .map((item, index) => {
@@ -320,24 +320,24 @@ const JobDetails = () => {
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 給与
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">{`【${jobPost?.employment_type}】 ${jobPost?.salary_type} ${jobPost?.salary_min}円〜${jobPost?.salary_max}円`}</p>
+              <p className="lg:text-base text-sm text-[#343434] py-6 w-3/4">{`【${jobPost?.employment_type}】 ${jobPost?.salary_type} ${jobPost?.salary_min}円〜${jobPost?.salary_max}円`}</p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 給与の備考
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
+              <p className="lg:text-base text-sm text-[#343434] py-6 w-3/4">
                 <pre>{jobPost?.salary_remarks}</pre>
               </p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 待遇
               </p>
-              <div className="flex flex-col w-4/5 py-6">
+              <div className="flex flex-col w-3/4 py-6">
                 <div className="inline-block items-start justify-start gap-2">
                   {jobPost?.treatment_type.map((item, index) => {
                     return (
@@ -358,18 +358,18 @@ const JobDetails = () => {
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 長期休暇・特別休暇
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
+              <p className="lg:text-base text-sm text-[#343434] py-6 w-3/4">
                 <pre>{jobPost?.special_content}</pre>
               </p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 教育体制・研修
               </p>
-              <div className="inline-block items-start justify-start gap-2 w-4/5 py-6">
+              <div className="inline-block items-start justify-start gap-2 w-3/4 py-6">
                 {jobPost?.education_content.map((item, index) => {
                   return (
                     <div
@@ -385,10 +385,10 @@ const JobDetails = () => {
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 勤務時間
               </p>
-              <div className="flex flex-col w-4/5 py-6">
+              <div className="flex flex-col w-3/4 py-6">
                 <div className="inline-block items-start justify-start gap-2">
                   {jobPost?.work_time_type.map((item, index) => {
                     return (
@@ -409,10 +409,10 @@ const JobDetails = () => {
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 休日
               </p>
-              <div className="flex flex-col w-4/5 py-6">
+              <div className="flex flex-col w-3/4 py-6">
                 <div className="inline-block items-start justify-start gap-2">
                   {jobPost?.rest_type.map((item, index) => {
                     return (
@@ -433,10 +433,10 @@ const JobDetails = () => {
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 応募要件
               </p>
-              <div className="flex flex-col w-4/5 py-6">
+              <div className="flex flex-col w-3/4 py-6">
                 <div className="inline-block items-start justify-start gap-2">
                   {jobPost?.qualification_type
                     .concat(jobPost?.qualification_other)
@@ -459,20 +459,20 @@ const JobDetails = () => {
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 歓迎要件
               </p>
-              <div className="flex flex-col w-4/5 py-6">
+              <div className="flex flex-col w-3/4 py-6">
                 <p className="lg:text-base text-sm text-[#343434]">
                   <pre>{jobPost?.qualification_welcome}</pre>
                 </p>
               </div>
             </div>
             <div className="flex items-start justify-start">
-              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/4">
                 選考プロセス
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
+              <p className="lg:text-base text-sm text-[#343434] py-6 w-3/4">
                 <pre>{jobPost?.process}</pre>
               </p>
             </div>
@@ -480,22 +480,22 @@ const JobDetails = () => {
           <div className="flex flex-col bg-white p-4 rounded-lg mt-8">
             <p className="lg:text-lg font-bold text-sm text-[#343434]">写真</p>
             <div className="grid grid-cols-3 gap-2 py-4">
-  {jobPost?.picture?.length > 0 &&
-    jobPost?.picture?.map((item, index) => {
-      return (
-        <img
-          key={index}
-          src={item}
-          alt="jobpost"
-          className="aspect-[2/1] object-cover rounded-lg cursor-pointer"
-          onClick={() => {
-            setModalImage(item);
-            setIsModalVisible(true);
-          }}
-        />
-      );
-    })}
-</div>
+              {jobPost?.picture?.length > 0 &&
+                jobPost?.picture?.map((item, index) => {
+                  return (
+                    <img
+                      key={index}
+                      src={item}
+                      alt="jobpost"
+                      className="aspect-[2/1] object-cover rounded-lg cursor-pointer"
+                      onClick={() => {
+                        setModalImage(item);
+                        setIsModalVisible(true);
+                      }}
+                    />
+                  );
+                })}
+            </div>
 
             {/* モーダルで拡大表示 */}
             <Modal
@@ -520,21 +520,21 @@ const JobDetails = () => {
               事業所情報
             </p>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/4">
                 法人・施設名
               </p>
               <Link
                 to={`/facility/details/${jobPost?.facility_id.facility_id}`}
-                className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
+                className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-3/4"
               >
                 {jobPost?.facility_id.name}
               </Link>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/4">
                 募集職種
               </p>
-              <div className="flex flex-col items-start, justify-start w-4/5">
+              <div className="flex flex-col items-start, justify-start w-3/4">
                 {allFacilityJobPosts?.map((jobPost, index) => {
                   return (
                     <Link
@@ -549,18 +549,18 @@ const JobDetails = () => {
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/4">
                 施設紹介
               </p>
-              <p className="lg:text-base text-sm text-[#343434] w-4/5">
+              <p className="lg:text-base text-sm text-[#343434] w-3/4">
                 <pre>{jobPost?.facility_id.introduction}</pre>
               </p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/4">
                 アクセス
               </p>
-              <div className="flex flex-col items-start justify-start w-4/5">
+              <div className="flex flex-col items-start justify-start w-3/4">
                 <div className="inline-block items-start justify-start gap-2">
                   {jobPost?.facility_id.access.map((item, index) => {
                     return (
@@ -607,19 +607,19 @@ const JobDetails = () => {
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/4">
                 設立年月日
               </p>
-              <p className="lg:text-base text-sm text-[#343434] w-4/5">
+              <p className="lg:text-base text-sm text-[#343434] w-3/4">
                 {jobPost?.facility_id.establishment_date.split("-")[0]}年
-                {jobPost?.facility_id.establishment_date.split("-")[1]}日
+                {jobPost?.facility_id.establishment_date.split("-")[1]}月
               </p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/4">
                 施設
               </p>
-              <div className="flex flex-col items-start justify-start w-4/5">
+              <div className="flex flex-col items-start justify-start w-3/4">
                 <Link
                   to={`/${Facilities[jobPost?.facility_id.facility_genre]}`}
                   className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
@@ -629,23 +629,23 @@ const JobDetails = () => {
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/4">
                 営業時間
               </p>
-              <p className="lg:text-base text-sm text-[#343434] w-4/5">
+              <p className="lg:text-base text-sm text-[#343434] w-3/4">
                 <pre>{jobPost?.facility_id.service_time}</pre>
               </p>
             </div>
             <div className="flex items-start justify-start py-6">
-              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
+              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/4">
                 休日
               </p>
-              <p className="lg:text-base text-sm text-[#343434] w-4/5">
+              <p className="lg:text-base text-sm text-[#343434] w-3/4">
                 <pre>{jobPost?.facility_id.rest_day}</pre>
               </p>
             </div>
-            
-            <div className="flex items-center justify-between w-full gap-4 px-8 pb-6 my-6">
+
+            <div className="flex items-center justify-between w-full gap-4 px-8 pb-2 my-6">
               <button className="flex items-center justify-center gap-2 bg-whtie rounded-lg py-4 text-white border-2 border-[#FF6B56] w-full hover:bg-[#FF6B56]/20 hover:scale-105 duration-300">
                 <img
                   src="/assets/images/dashboard/Vector.png"
