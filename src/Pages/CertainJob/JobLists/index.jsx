@@ -575,6 +575,10 @@ const JobLists = () => {
                                 住所
                               </p>
                               <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
+                                {jobpost.facility_id.prefecture}{" "}
+                                {jobpost.facility_id.city}{" "}
+                                {jobpost.facility_id.village}{" "}
+                                {jobpost.facility_id.building}{" "}
                                 {jobpost.facility_id.access_text}
                               </p>
                             </div>
