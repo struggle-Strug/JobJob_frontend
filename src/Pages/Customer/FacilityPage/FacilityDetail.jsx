@@ -47,12 +47,13 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
 
   const handleCopy = async () => {
     const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/copy/${selectedJobPostId}`
+      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/copy/${selectedJobPostId}`,
+      { facility_id: facility.facility_id }
     );
     if (response.data.error) message.error(response.data.error);
     message.success("求人をコピーしました");
     setCopyJobPost(false);
-    setJobPosts([...jobPosts, response.data.jobpost]);
+    setJobPosts([response.data.jobpost, ...jobPosts]);
   };
 
   const onHandleJobPostPreview = (jobPost) => {
