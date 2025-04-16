@@ -44,7 +44,7 @@ const FacilityPage = () => {
   };
 
   useEffect(() => {
-    document.title = "施設・求人管理";
+    document.title = "施設・求人情報一覧 | JobJob (ジョブジョブ)";
     getFacilities();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);

@@ -14,7 +14,7 @@ import {
 import TextArea from "antd/es/input/TextArea";
 import axios from "axios";
 import "rc-slider/assets/index.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../../components/Loading";
 import { useAuth } from "../../../context/AuthContext";
@@ -291,6 +291,10 @@ const FacilityAdd = () => {
     const newFileList = facilityPhoto.filter((item) => item.uid !== file.uid);
     setFacilityPhoto(newFileList);
   };
+
+  useEffect(() => {
+    document.title = "施設登録・編集 | JobJob (ジョブジョブ)";
+  }, []);
 
   return (
     <>

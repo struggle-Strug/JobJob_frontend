@@ -22,7 +22,7 @@ const MailChange = () => {
   };
 
   useEffect(() => {
-    document.title = "メールアドレス変更";
+    document.title = "メールアドレス | JobJob (ジョブジョブ)";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (

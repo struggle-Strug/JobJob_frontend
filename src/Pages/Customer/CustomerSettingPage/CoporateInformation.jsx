@@ -123,6 +123,7 @@ const CoporateInformation = () => {
   };
 
   useEffect(() => {
+    document.title = "法人情報 | JobJob (ジョブジョブ)";
     getCompanyInfo();
   }, []);
   return (

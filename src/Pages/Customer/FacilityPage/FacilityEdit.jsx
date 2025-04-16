@@ -387,7 +387,7 @@ const FacilityEdit = () => {
   };
 
   useEffect(() => {
-    document.title = "施設編集";
+    document.title = "施設登録・編集 | JobJob (ジョブジョブ)";
     getFacility();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);

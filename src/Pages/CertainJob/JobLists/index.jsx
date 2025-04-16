@@ -299,7 +299,11 @@ const JobLists = () => {
   }, [filters]); // Depend on updatedFilters, not filters
 
   useEffect(() => {
-    document.title = "求人一覧";
+    const year = new Date().getFullYear();
+    const month = String(new Date().getMonth() + 1).padStart(2, "0"); // Get the current month with leading zero
+    document.title = `【${year}年${month}月最新】${getPrefectureKeyByValue(
+      pref
+    )}の${JobType}の求人・転職・募集 | JobJob (ジョブジョブ)`;
     const storedLikes = localStorage.getItem("likes");
     if (storedLikes) {
       setLikes(JSON.parse(storedLikes)); // Ensure we parse it as an array
@@ -357,7 +361,7 @@ const JobLists = () => {
       setFilters({ ...filters, pref: pathname.split("/")[2] });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  }, [document.title]);
 
   if (isLoading) {
     return <Loading />;

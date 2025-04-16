@@ -30,7 +30,7 @@ const PasswordChange = () => {
   };
 
   useEffect(() => {
-    document.title = "パスワード変更";
+    document.title = "パスワード | JobJob (ジョブジョブ)";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (

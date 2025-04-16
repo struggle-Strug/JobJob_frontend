@@ -23,6 +23,8 @@ const Top = () => {
   };
 
   useEffect(() => {
+    document.title =
+      "全国の医療・介護・保育の求人サイト | JobJob (ジョブジョブ)";
     getJobTypeNumbers();
   }, []);
   return (

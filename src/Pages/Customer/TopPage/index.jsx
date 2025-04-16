@@ -1,6 +1,10 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const CLTop = () => {
+  useEffect(() => {
+    document.title = "採用管理トップ | JobJob (ジョブジョブ)";
+  }, []);
   return (
     <div className="w-full min-h-screen">
       <div className="flex flex-col items-start justify-start gap-4 w-full bg-white rounded-lg py-4 px-8 shadow-xl">
