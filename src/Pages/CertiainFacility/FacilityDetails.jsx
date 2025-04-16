@@ -62,9 +62,10 @@ const FacilityDetails = () => {
   };
 
   useEffect(() => {
+    document.title = `${facility?.name}の求人・採用・アクセス情報  | JobJob (ジョブジョブ)`;
     getFacility();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  }, [document.title]);
   return (
     <>
       <div className="flex w-full px-4 bg-[#EFEFEF]">

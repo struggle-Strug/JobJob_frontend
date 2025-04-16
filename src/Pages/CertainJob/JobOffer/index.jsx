@@ -327,6 +327,7 @@ const JobOffer = () => {
   };
 
   useEffect(() => {
+    document.title = "応募フォーム | JobJob (ジョブジョブ)";
     if (user !== null) {
       setSei(user?.name.split(" ")[0]);
       setMei(user?.name.split(" ")[1]);

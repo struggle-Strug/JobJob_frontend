@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const CustomerSetting = () => {
@@ -6,6 +7,10 @@ const CustomerSetting = () => {
     localStorage.removeItem("token");
     navigate("/customers/sign_in");
   };
+
+  useEffect(() => {
+    document.title = "設定 | JobJob (ジョブジョブ)";
+  }, []);
   return (
     <div className="w-full min-h-screen">
       <div className="flex flex-col w-full bg-white rounded-lg shadow-xl min-h-screen">

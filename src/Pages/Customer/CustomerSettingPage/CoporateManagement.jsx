@@ -107,7 +107,7 @@ const CoporateManagement = () => {
   };
 
   useEffect(() => {
-    document.title = "ユーザー管理";
+    document.title = "ユーザー管理 | JobJob (ジョブジョブ)";
     getUsers();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);

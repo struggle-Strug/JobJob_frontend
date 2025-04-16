@@ -410,6 +410,7 @@ const AddJobPost = () => {
   };
 
   useEffect(() => {
+    document.title = "求人登録・編集 | JobJob (ジョブジョブ)";
     getFacility();
   }, []);
 

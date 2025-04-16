@@ -469,7 +469,7 @@ const JobPostEdit = () => {
   };
 
   useEffect(() => {
-    document.title = "求人編集";
+    document.title = "求人登録・編集 | JobJob (ジョブジョブ)";
     getJobPost();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
