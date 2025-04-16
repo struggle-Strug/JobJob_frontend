@@ -123,6 +123,8 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
                   ? "下書き"
                   : facility.allowed === "pending"
                   ? "掲載申請中"
+                  : facility.allowed === "rejected"
+                  ? "差し戻し"
                   : facility.allowed === "allowed"
                   ? "掲載中"
                   : facility.allowed === "ended"

@@ -325,15 +325,27 @@ const FacilityEdit = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
         photoUrl.files || []
       );
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/facility`,
-        facilityData
-      );
-      if (response.data.error) {
-        return message.error(response.data.error);
+      if (facility?.allowed === "rejected") {
+        const response = await axios.put(
+          `${process.env.REACT_APP_API_URL}/api/v1/facility/${facility?.facility_id}`,
+          facilityData
+        );
+        if (response.data.error) {
+          return message.error(response.data.error);
+        }
+        message.success(response.data.message);
+        setSuccessModalOpen(true);
+      } else {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/facility`,
+          facilityData
+        );
+        if (response.data.error) {
+          return message.error(response.data.error);
+        }
+        message.success(response.data.message);
+        setSuccessModalOpen(true);
       }
-      message.success(response.data.message);
-      setSuccessModalOpen(true);
     } catch (error) {
       console.error(error);
       message.error("施設の保存中にエラーが発生しました。");
@@ -613,22 +625,23 @@ const FacilityEdit = () => {
               </button>
             </>
           )}
-          {facility?.allowed === "ended" && (
-            <>
-              <button
-                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-                onClick={handleSave}
-              >
-                掲載を申請する
-              </button>
-              <button
-                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-                onClick={handleDeleteFacility}
-              >
-                削除する
-              </button>
-            </>
-          )}
+          {facility?.allowed === "ended" ||
+            ("rejected" && (
+              <>
+                <button
+                  className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                  onClick={handleSave}
+                >
+                  掲載を申請する
+                </button>
+                <button
+                  className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                  onClick={handleDeleteFacility}
+                >
+                  削除する
+                </button>
+              </>
+            ))}
         </div>
       </div>
 
