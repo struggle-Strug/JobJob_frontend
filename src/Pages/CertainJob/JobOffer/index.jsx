@@ -28,6 +28,7 @@ const JobOffer = () => {
   const [village, setVillage] = useState("");
   const [building, setBuilding] = useState("");
   const [currentStatus, setCurrentStatus] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [qualification, setQualification] = useState([]);
@@ -160,6 +161,10 @@ const JobOffer = () => {
   };
   const onChangePhoneNumber = (value) => {
     setPhoneNumber(value.target.value);
+  };
+
+  const onChangePostalCode = (value) => {
+    setPostalCode(value.target.value);
   };
 
   const onChangeEmail = (value) => {
@@ -348,6 +353,7 @@ const JobOffer = () => {
       setVillage(user?.village);
       setBuilding(user?.building);
       setCurrentStatus(user?.currentStatus);
+      setPostalCode(user?.postalCode);
       setEmail(user?.email);
     }
     getJobPost();
@@ -435,12 +441,13 @@ const JobOffer = () => {
                     <div className="flex flex-col px-2">
                       <div className="duration-300 overflow-hidden">
                         <div className="flex justify-start gap-8">
-                          <Select
-                            options={genderOptions}
+                          <Radio.Group
+                            onChange={(e) => onChangeGender(e.target.value)}
                             value={gender}
-                            className="w-1/3"
-                            onChange={onChangeGender}
-                          />
+                          >
+                            <Radio value="女性">女性</Radio>
+                            <Radio value="男性">男性</Radio>
+                          </Radio.Group>
                         </div>
                       </div>
                     </div>
@@ -532,13 +539,35 @@ const JobOffer = () => {
                           )}
                           <Input
                             className="w-1/4"
+                            placeholder="町名・番地"
                             value={village ? village : user?.village}
                             onChange={(e) => setVillage(e.target.value)}
                           />
                           <Input
                             className="w-1/4"
+                            placeholder="建物名"
                             value={building ? building : user?.building}
                             onChange={(e) => setBuilding(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-between w-full mt-6">
+                  <div className="flex items-start gap-2 justify-end">
+                    <p>郵便番号</p>
+                    <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
+                  </div>
+                  <div className="flex flex-col w-4/5">
+                    <div className="flex flex-col px-2">
+                      <div className="duration-300 overflow-hidden">
+                        <div className="flex justify-start gap-4">
+                          <Input
+                            placeholder="郵便番号"
+                            value={postalCode}
+                            className="w-1/3"
+                            onChange={onChangePostalCode}
                           />
                         </div>
                       </div>
@@ -594,7 +623,7 @@ const JobOffer = () => {
                 {user == null && (
                   <div className="flex justify-between w-full mt-6">
                     <div className="flex items-start gap-2 justify-end">
-                      <p>PASSWORD</p>
+                      <p>パスワード</p>
                       <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
                     </div>
                     <div className="flex flex-col w-4/5">
