@@ -596,7 +596,7 @@ const CertainJob = () => {
           </section>
           <div className="flex container w-full justify-between gap-8">
             <div className="flex flex-col w-2/3">
-              <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="  rounded-lg px-8 py-6 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   {JobType}について
                 </p>

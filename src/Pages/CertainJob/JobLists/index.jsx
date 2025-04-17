@@ -686,12 +686,10 @@ const JobLists = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-start w-full mt-8">
+            <div className="flex flex-col bg-white rounded-lg px-8 py-6 w-full mt-8 shadow-xl">
               <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                 {JobType}について
               </p>
-            </div>
-            <div className="flex flex-col bg-white rounded-lg px-12 py-6 w-full mt-8 shadow-xl">
               <pre className="lg:text-[1rem] md:text-[0.8rem]">
                 {SmallDescriptions[JobType]}
               </pre>
