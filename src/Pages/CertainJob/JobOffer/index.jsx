@@ -161,6 +161,11 @@ const JobOffer = () => {
   const onChangePhoneNumber = (value) => {
     setPhoneNumber(value.target.value);
   };
+
+  const onChangeEmail = (value) => {
+    setEmail(value.target.value);
+  };
+
   const onChangePassword = (value) => {
     setPassword(value.target.value);
   };
@@ -561,6 +566,26 @@ const JobOffer = () => {
                             <Radio value="離職中">離職中</Radio>
                             <Radio value="在学中">在学中</Radio>
                           </Radio.Group>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-between w-full mt-6">
+                  <div className="flex items-start gap-2 justify-end">
+                    <p>メールアドレス</p>
+                    <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
+                  </div>
+                  <div className="flex flex-col w-4/5">
+                    <div className="flex flex-col px-2">
+                      <div className="duration-300 overflow-hidden">
+                        <div className="flex justify-start gap-4">
+                          <Input
+                            placeholder="メールアドレス"
+                            value={email}
+                            className="w-1/3"
+                            onChange={onChangeEmail}
+                          />
                         </div>
                       </div>
                     </div>
