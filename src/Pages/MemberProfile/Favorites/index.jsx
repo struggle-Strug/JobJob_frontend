@@ -4,9 +4,10 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { getJobTypeValue } from "../../../utils/getFunctions";
 import { JobType } from "../../../utils/constants/categories";
+import { useAuth } from "../../../context/AuthContext";
 
 const Favorites = () => {
-  const [likes, setLikes] = useState([]);
+  const { likes, setLikes } = useAuth();
   const [jobPosts, setJobPosts] = useState([]);
 
   const getJobPosts = async () => {
@@ -18,18 +19,20 @@ const Favorites = () => {
     setJobPosts(response.data.jobPosts);
   };
 
+  const handleUnLike = async (id) => {
+    let newLikes = Array.isArray(likes) ? [...likes] : [];
+
+    newLikes = newLikes.filter((like) => like !== id);
+
+    localStorage.setItem("likes", JSON.stringify(newLikes));
+    setLikes(newLikes);
+  };
   useEffect(() => {
     getJobPosts();
   }, [likes]);
 
   useEffect(() => {
-    const storedLikes = localStorage.getItem("likes");
-    if (storedLikes) {
-      setLikes(JSON.parse(storedLikes)); // Ensure we parse it as an array
-    } else {
-      setLikes([]);
-      localStorage.setItem("likes", JSON.stringify([]));
-    }
+    document.title = "気になる求人 | JobJob (ジョブジョブ)";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
@@ -38,9 +41,9 @@ const Favorites = () => {
         <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">
           気になる求人
         </p>
-        <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">
+        {/* <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">
           気になる求人に登録すると、その求人からスカウトが届きやすくなります。募集を休止している求人の場合は、募集再開時にメールにてお知らせをお送りいたします。
-        </p>
+        </p> */}
       </div>
       <div className="mt-4">
         {likes?.length === 0 && (
@@ -58,9 +61,9 @@ const Favorites = () => {
                 <p className="lg:text-lg md:text-[1rem] text-sm font-bold text-[#343434]">
                   気になる求人に登録する
                 </p>
-                <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">
+                {/* <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">
                   気になることが事業所に伝わり、通常の応募より内定率が1.7倍高いスカウトが届きやすくなります！
-                </p>
+                </p> */}
               </div>
             </div>
           </>
@@ -95,7 +98,7 @@ const Favorites = () => {
                     to={`/${getJobTypeValue(JobType, jobPost.type)}/apply/${
                       jobPost.jobpost_id
                     }`}
-                    className="bg-[#FF2A3B] text-white w-1/2 text-center rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
+                    className="bg-[#FF2A3B] text-white w-1/3 text-center text-[0.7rem] rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
                   >
                     応募画面に進む
                   </Link>
@@ -103,10 +106,16 @@ const Favorites = () => {
                     to={`/${getJobTypeValue(JobType, jobPost.type)}/details/${
                       jobPost.jobpost_id
                     }`}
-                    className="bg-[#e7e7e7] text-[#FF2A3B] w-1/2 text-center rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
+                    className="bg-[#e7e7e7] text-[#FF2A3B] w-1/3 text-center text-[0.7rem] rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
                   >
                     詳細を見る
                   </Link>
+                  <button
+                    className="bg-[#e7e7e7] text-[#FF2A3B] w-1/3 text-center text-[0.7rem] rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
+                    onClick={() => handleUnLike(jobPost.jobpost_id)}
+                  >
+                    「気になる」削除
+                  </button>
                 </div>
               </div>
             </div>

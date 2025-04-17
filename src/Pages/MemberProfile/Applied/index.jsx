@@ -30,7 +30,7 @@ const Applied = () => {
   // };
 
   useEffect(() => {
-    document.title = "応募済みの求人";
+    document.title = "応募済み求人 | JobJob (ジョブジョブ)";
     getAppliedJobs();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);

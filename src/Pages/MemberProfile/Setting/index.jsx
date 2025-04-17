@@ -124,6 +124,7 @@ const Setting = () => {
   };
 
   useEffect(() => {
+    document.title = "設定 | JobJob (ジョブジョブ)";
     setNotificationEmail(user?.setting.notificationEmail);
     setMessageSetting(user?.setting.message);
     setNewJobSetting(user?.setting.newJob);
