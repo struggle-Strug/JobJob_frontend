@@ -43,6 +43,7 @@ const Message = () => {
   };
 
   useEffect(() => {
+    document.title = "メッセージ | JobJob (ジョブジョブ)";
     getMyMessages();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);

@@ -23,6 +23,7 @@ const Favorites = () => {
   }, [likes]);
 
   useEffect(() => {
+    document.title = "気になる求人 | JobJob (ジョブジョブ)";
     const storedLikes = localStorage.getItem("likes");
     if (storedLikes) {
       setLikes(JSON.parse(storedLikes)); // Ensure we parse it as an array
@@ -38,9 +39,9 @@ const Favorites = () => {
         <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">
           気になる求人
         </p>
-        <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">
+        {/* <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">
           気になる求人に登録すると、その求人からスカウトが届きやすくなります。募集を休止している求人の場合は、募集再開時にメールにてお知らせをお送りいたします。
-        </p>
+        </p> */}
       </div>
       <div className="mt-4">
         {likes?.length === 0 && (
@@ -58,9 +59,9 @@ const Favorites = () => {
                 <p className="lg:text-lg md:text-[1rem] text-sm font-bold text-[#343434]">
                   気になる求人に登録する
                 </p>
-                <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">
+                {/* <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">
                   気になることが事業所に伝わり、通常の応募より内定率が1.7倍高いスカウトが届きやすくなります！
-                </p>
+                </p> */}
               </div>
             </div>
           </>
