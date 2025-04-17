@@ -8,6 +8,8 @@ const CompanyLandingPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title =
+      "完全無料！求人掲載・採用・募集について | JobJob (ジョブジョブ)";
     if (customer) {
       navigate("/customers");
     }

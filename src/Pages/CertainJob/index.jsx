@@ -52,6 +52,7 @@ const CertainJob = () => {
   const isSelected = (v) => v === type;
   const params = new URLSearchParams(location.search);
   const [jobTypeNumbers, setJobTypeNumbers] = useState([]);
+  const [jobPostsNumbersByFacility, setJobPOstsNumbersByFacility] = useState();
 
   const isMuniSelected = pathname.endsWith("/select/muni");
   const isEmploymentSelected = pathname.endsWith("/select/employmentType");
@@ -95,8 +96,18 @@ const CertainJob = () => {
     setJobTypeNumbers(response.data.JobPostsNumbers);
   };
 
+  const getJobTypeNumbersByFacility = async () => {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/numberByNumber`,
+      { type: JobType }
+    );
+    if (response.data.error) return message.error(response.data.message);
+    setJobPOstsNumbersByFacility(response.data.numbers);
+  };
+
   useEffect(() => {
     getJobTypeNumbers();
+    getJobTypeNumbersByFacility();
   }, []);
 
   const renderMeshLink01 = (jobType) => {
@@ -109,7 +120,13 @@ const CertainJob = () => {
         >
           <p className="py-1">
             {facility}の{jobType}
-            <span className="text-[#343434] text-xs">({jobTypeNumbers?.jobType})</span>
+            <span className="text-[#343434] text-xs">
+              (
+              {jobPostsNumbersByFacility
+                ? jobPostsNumbersByFacility[facility]
+                : 0}
+              )
+            </span>
           </p>
           <div className="flex items-center">
             <img
@@ -154,7 +171,9 @@ const CertainJob = () => {
                 >
                   <p>
                     {job}
-                    <span className="text-[#343434] text-xs">({jobTypeNumbers?.[job]})</span>
+                    <span className="text-[#343434] text-xs">
+                      ({jobTypeNumbers?.[job]})
+                    </span>
                   </p>
                 </Link>
               );
@@ -223,11 +242,15 @@ const CertainJob = () => {
     } else {
       defaultFilters[filterName] = value;
     }
-    return `/${path}/search?filters=${encodeURIComponent(JSON.stringify(defaultFilters))}`;
+    return `/${path}/search?filters=${encodeURIComponent(
+      JSON.stringify(defaultFilters)
+    )}`;
   };
 
-
   useEffect(() => {
+    const year = new Date().getFullYear();
+    const month = String(new Date().getMonth() + 1).padStart(2, "0"); // Get the current month with leading zero
+    document.title = `【${year}年${month}月最新】${JobType}の求人・転職・募集 | JobJob (ジョブジョブ)`;
     setFilters({
       employmentType: employmentType,
       monthlySalary: monthlySalary,
@@ -287,7 +310,7 @@ const CertainJob = () => {
             key={index}
             className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
             href={`/${getJobValueByKey(JobType)}/${prefectures[prefecture]}`}
-            aria-label={prefecture}  // Added aria-label based on prefecture name
+            aria-label={prefecture} // Added aria-label based on prefecture name
           >
             {prefecture}
           </a>
@@ -295,7 +318,6 @@ const CertainJob = () => {
       </div>
     </div>
   );
-  
 
   return (
     <>
@@ -420,27 +442,31 @@ const CertainJob = () => {
                     {Object.keys(EmploymentType).map(
                       (employmentTypeKey, index) => (
                         <Checkbox
-  key={index}
-  onChange={() => handleEmploymentTypeChange(employmentTypeKey)}
-  checked={employmentType.includes(employmentTypeKey)}
-  className="relative" // 右側に十分な余白を確保
->
-  <span className="text-xs lg:text-sm mr-5">
-    {employmentTypeKey}
-  </span>
-  <span className="absolute right-5 top-0 bottom-0 border-l border-slate-200"></span>
-  <a
-    href={getConditionUrl("employmentType", employmentTypeKey)} // リンク先URLを指定
-    className="absolute right-0 top-1/2 transform -translate-y-1/2"
-  >
-    <img
-      src="/assets/images/dashboard/ep_arrow-right_black.png"
-      alt="arrow-down"
-      className="w-4"
-    />
-  </a>
-</Checkbox>
-
+                          key={index}
+                          onChange={() =>
+                            handleEmploymentTypeChange(employmentTypeKey)
+                          }
+                          checked={employmentType.includes(employmentTypeKey)}
+                          className="relative" // 右側に十分な余白を確保
+                        >
+                          <span className="text-xs lg:text-sm mr-5">
+                            {employmentTypeKey}
+                          </span>
+                          <span className="absolute right-5 top-0 bottom-0 border-l border-slate-200"></span>
+                          <a
+                            href={getConditionUrl(
+                              "employmentType",
+                              employmentTypeKey
+                            )} // リンク先URLを指定
+                            className="absolute right-0 top-1/2 transform -translate-y-1/2"
+                          >
+                            <img
+                              src="/assets/images/dashboard/ep_arrow-right_black.png"
+                              alt="arrow-down"
+                              className="w-4"
+                            />
+                          </a>
+                        </Checkbox>
                       )
                     )}
                   </div>
@@ -524,33 +550,35 @@ const CertainJob = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                       {Object.keys(section.features).map((featureKey, idx) => (
                         <Checkbox
-                        key={idx}
-                        onChange={() =>
-                          handleFeatureChange(section.features[featureKey])
-                        }
-                        checked={feature.includes(
-                          getFeatureKeyByValue(section.features[featureKey])
-                        )}
-                        className="relative" // 右側に十分な余白を確保
-                      >
-                        <span className="text-xs lg:text-sm">
-                          {featureKey}
-                        </span>
-                        {/* 縦線 */}
-                        <span className="absolute right-5 top-0 bottom-0 border-l border-slate-200"></span>
-                        {/* チェブロンをリンクに */}
-                        <a
-                          href={getConditionUrl("feature", getFeatureKeyByValue(section.features[featureKey]))} // リンク先URLを指定
-                          className="absolute right-0 top-1/2 transform -translate-y-1/2"
+                          key={idx}
+                          onChange={() =>
+                            handleFeatureChange(section.features[featureKey])
+                          }
+                          checked={feature.includes(
+                            getFeatureKeyByValue(section.features[featureKey])
+                          )}
+                          className="relative" // 右側に十分な余白を確保
                         >
-                          <img
-                            src="/assets/images/dashboard/ep_arrow-right_black.png"
-                            alt="arrow-down"
-                            className="w-4"
-                          />
-                        </a>
-                      </Checkbox>
-                      
+                          <span className="text-xs lg:text-sm">
+                            {featureKey}
+                          </span>
+                          {/* 縦線 */}
+                          <span className="absolute right-5 top-0 bottom-0 border-l border-slate-200"></span>
+                          {/* チェブロンをリンクに */}
+                          <a
+                            href={getConditionUrl(
+                              "feature",
+                              getFeatureKeyByValue(section.features[featureKey])
+                            )} // リンク先URLを指定
+                            className="absolute right-0 top-1/2 transform -translate-y-1/2"
+                          >
+                            <img
+                              src="/assets/images/dashboard/ep_arrow-right_black.png"
+                              alt="arrow-down"
+                              className="w-4"
+                            />
+                          </a>
+                        </Checkbox>
                       ))}
                     </div>
                   </div>
@@ -568,7 +596,7 @@ const CertainJob = () => {
           </section>
           <div className="flex container w-full justify-between gap-8">
             <div className="flex flex-col w-2/3">
-              <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="  rounded-lg px-8 py-6 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   {JobType}について
                 </p>
@@ -609,986 +637,157 @@ const CertainJob = () => {
                     setToggleHealthcare
                   )}
                 </div>
-                {/* <section className="mt-3 bg-white rounded-md">
-                  <div className="flex flex-col w-full">
-                    <div className="flex items-center justify-start px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
-                      <div className="flex flex-col text-[#343434]">
-                        <p className="lg:text-xl md:text-lg text-base font-bold">
-                          医科
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col w-full pt-6">
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/dr"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            医師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/ph"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            薬剤師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/nan"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            看護師/准看護師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/mw"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            助産師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/phn"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            保健師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/nuas"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            看護助手
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/nan"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            看護師/准看護師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/mrt"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            診療放射線技師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/clt"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            臨床検査技師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/rdn"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            管理栄養士/栄養士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/cp"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            公認心理師/臨床心理士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/msw"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            医療ソーシャルワーカー
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/rs"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            登録販売者
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/mor"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            医療事務/受付
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/ctc"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            治験コーディネーター
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/sad"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            営業/管理部門/その他
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/diaf"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            調剤事務
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/cdm"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            臨床開発モニター
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/mr"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            MR
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/mrp"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            MS（医薬品卸）
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-full">
-                    <div className="flex items-center justify-start px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
-                      <div className="flex flex-col text-[#343434]">
-                        <p className="lg:text-xl md:text-lg text-base font-bold">
-                          歯科
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col w-full pt-6">
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/de"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            歯科医師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/dh"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            歯科衛生士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/dt"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            歯科技工士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/deas"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group group"
-                        >
-                          <p>
-                            歯科助手
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-full">
-                    <div className="flex items-center justify-start px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
-                      <div className="flex flex-col text-[#343434]">
-                        <p className="lg:text-xl md:text-lg text-base font-bold">
-                          介護
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col w-full pt-6">
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/cwh"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            介護職/ヘルパー
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/lc"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            生活相談員
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/cm"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            ケアマネジャー
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/mp"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            管理職（介護）
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/sp"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            サービス提供責任者
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/lsw"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            生活支援員
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/wesc"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            福祉用具専門相談員
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/cdsm"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            児童発達支援管理責任者
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/smm"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            サービス管理責任者
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/cii"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            児童指導員/指導員
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/nan"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            看護師/准看護師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/rdn"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            管理栄養士/栄養士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/ccs"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            調理師/調理スタッフ
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/nctd"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            介護タクシー/ドライバー
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/mor"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            医療事務/受付
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/sado"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            営業/管理部門/その他
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/nca"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            介護事務
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/css"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            相談支援専門員
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-full">
-                    <div className="flex items-center justify-start px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
-                      <div className="flex flex-col text-[#343434]">
-                        <p className="lg:text-xl md:text-lg text-base font-bold">
-                          保育
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col w-full pt-6">
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/chil"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            保育士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/kt"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            幼稚園教諭
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/ca"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            保育補助
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/cii"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            児童指導員/指導員
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/cdsm"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            児童発達支援管理責任者
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/nan"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            看護師/准看護師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/rdn"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            管理栄養士/栄養士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/ccs"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            調理師/調理スタッフ
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/acsw"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            放課後児童支援員/学童指導員
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-full">
-                    <div className="flex items-center justify-start px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
-                      <div className="flex flex-col text-[#343434]">
-                        <p className="lg:text-xl md:text-lg text-base font-bold">
-                          リハビリ／代替医療
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col w-full pt-6">
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/pt"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-[0.5rem] text-[0.4rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            理学療法士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/st"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            言語聴覚士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/ot"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            作業療法士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/ort"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            視能訓練士
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/jt"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            柔道整復師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/amst"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            あん摩マッサージ指圧師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/acu"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            鍼灸師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/chir"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            整体師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-full">
-                    <div className="flex items-center justify-start px-3 lg:pt-10 pt-6 text-[#FF2A3B] gap-2">
-                      <div className="flex flex-col text-[#343434]">
-                        <p className="lg:text-xl md:text-lg text-base font-bold">
-                          ヘルスケア／美容
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col w-full pt-6 pb-10">
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/hai"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            美容師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/bar"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            理容師
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/naar"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            ネイリスト
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/el"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            アイリスト
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                      <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-                        <Link
-                          to={"/et"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            エステティシャン/セラピスト
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/bcm"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            美容部員
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                        <Link
-                          to={"/ins"}
-                          className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                        >
-                          <p>
-                            インストラクター
-                            <span className="text-[#343434] text-xs">
-                              (123)
-                            </span>
-                          </p>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </section> */}
               </div>
             </div>
             <div className="flex flex-col w-1/3">
-                      <div className="flex flex-col items-center justify-start h-full w-full mt-8">
-                        <img
-                          src="/assets/images/dashboard/Group 16.png"
-                          alt="banner"
-                          className="w-full"
-                        />
-                        <div className="flex items-center justify-start w-full mt-8">
-                          <p className="lg:text-lg md:text-sm font-bold text-[#343434]">
-                            必ず役立つ仕事術
-                          </p>
-                        </div>
-                        <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
-                          <div className="flex items-center justify-between w-full">
-                            <p className="lg:text-[1rem] md:text-[0.8rem]">
-                              ぴったりな仕事を探すには
-                            </p>
-                            <img
-                              src="/assets/images/dashboard/ep_arrow-right_black.png"
-                              alt="arrow-right"
-                              className="w-4 pt-0.5"
-                            />
-                          </div>
-                          <div className="flex items-center justify-between w-full mt-4">
-                            <p className="lg:text-[1rem] md:text-[0.8rem]">応募の仕方</p>
-                            <img
-                              src="/assets/images/dashboard/ep_arrow-right_black.png"
-                              alt="arrow-right"
-                              className="w-4 pt-0.5"
-                            />
-                          </div>
-                          <div className="flex items-center justify-between w-full mt-4">
-                            <p className="lg:text-[1rem] md:text-[0.8rem]">
-                              履歴書の書き方
-                            </p>
-                            <img
-                              src="/assets/images/dashboard/ep_arrow-right_black.png"
-                              alt="arrow-right"
-                              className="w-4 pt-0.5"
-                            />
-                          </div>
-                          <div className="flex items-center justify-between w-full mt-4">
-                            <p className="lg:text-[1rem] md:text-[0.8rem]">
-                              メッセージの書き方
-                            </p>
-                            <img
-                              src="/assets/images/dashboard/ep_arrow-right_black.png"
-                              alt="arrow-right"
-                              className="w-4 pt-0.5"
-                            />
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-start w-full mt-8">
-                          <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                            人気のコラムランキング
-                          </p>
-                        </div>
-                        <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
-                          <div className="flex items-center justify-between gap-2 w-full">
-                            <img
-                              src="/assets/images/dashboard/Group 17.png"
-                              alt="arrow-right"
-                            />
-                            <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
-                              失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
-                            </p>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 w-full mt-4">
-                            <img
-                              src="/assets/images/dashboard/Group 17_2.png"
-                              alt="arrow-right"
-                            />
-                            <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
-                              失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
-                            </p>
-                          </div>
-                          <div className="flex items-center justify-between gap-2 w-full mt-4">
-                            <img
-                              src="/assets/images/dashboard/Group 17_3.png"
-                              alt="arrow-right"
-                            />
-                            <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
-                              失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
-                            </p>
-                          </div>
-                          <div className="flex items-center justify-center">
-                            <Link
-                              to={"/#"}
-                              className="flex items-center justify-center mt-4 border-2 border-[#FF6B56] rounded-lg py-2 lg:px-16 md:px-8 px-4"
-                            >
-                              <p className="lg:text-[0.75rem] md:text-[0.6rem] text-[#FF6B56]">
-                                ランキングをもっと見る
-                              </p>
-                            </Link>
-                          </div>
-                        </div>
-                        {user == null && (
-                          <>
-                            <div className="flex items-center justify-start w-full mt-8">
-                              <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                                会員登録がまだの方
-                              </p>
-                            </div>
-                            <div className="flex flex-col items-center bg-white rounded-lg py-6 w-full mt-8 shadow-xl">
-                              <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] pb-2">
-                                <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
-                                  1.
-                                </p>
-                                <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
-                                  事務所からスカウトが届く
-                                </p>
-                              </div>
-                              <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
-                                <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
-                                  2.
-                                </p>
-                                <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
-                                  希望にあった求人が届く
-                                </p>
-                              </div>
-                              <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
-                                <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
-                                  3.
-                                </p>
-                                <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
-                                  会員限定機能が利用できる
-                                </p>
-                              </div>
-                              <Link
-                                to={"/members/sign_up"}
-                                className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] rounded-lg px-6 py-2 hover:scale-105 duration-300"
-                              >
-                                <img
-                                  src="/assets/images/dashboard/mdi_account.png"
-                                  alt="register"
-                                  className="pt-0.5"
-                                />
-                                <p className="lg:text-lg md:text-sm text-white font-bold">
-                                  無料で会員登録する
-                                </p>
-                              </Link>
-                            </div>
-                          </>
-                        )}
-                      </div>
+              <div className="flex flex-col items-center justify-start h-full w-full mt-8">
+                <img
+                  src="/assets/images/dashboard/Group 16.png"
+                  alt="banner"
+                  className="w-full"
+                />
+                <div className="flex items-center justify-start w-full mt-8">
+                  <p className="lg:text-lg md:text-sm font-bold text-[#343434]">
+                    必ず役立つ仕事術
+                  </p>
+                </div>
+                <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
+                  <div className="flex items-center justify-between w-full">
+                    <p className="lg:text-[1rem] md:text-[0.8rem]">
+                      ぴったりな仕事を探すには
+                    </p>
+                    <img
+                      src="/assets/images/dashboard/ep_arrow-right_black.png"
+                      alt="arrow-right"
+                      className="w-4 pt-0.5"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between w-full mt-4">
+                    <p className="lg:text-[1rem] md:text-[0.8rem]">
+                      応募の仕方
+                    </p>
+                    <img
+                      src="/assets/images/dashboard/ep_arrow-right_black.png"
+                      alt="arrow-right"
+                      className="w-4 pt-0.5"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between w-full mt-4">
+                    <p className="lg:text-[1rem] md:text-[0.8rem]">
+                      履歴書の書き方
+                    </p>
+                    <img
+                      src="/assets/images/dashboard/ep_arrow-right_black.png"
+                      alt="arrow-right"
+                      className="w-4 pt-0.5"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between w-full mt-4">
+                    <p className="lg:text-[1rem] md:text-[0.8rem]">
+                      メッセージの書き方
+                    </p>
+                    <img
+                      src="/assets/images/dashboard/ep_arrow-right_black.png"
+                      alt="arrow-right"
+                      className="w-4 pt-0.5"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center justify-start w-full mt-8">
+                  <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
+                    人気のコラムランキング
+                  </p>
+                </div>
+                <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
+                  <div className="flex items-center justify-between gap-2 w-full">
+                    <img
+                      src="/assets/images/dashboard/Group 17.png"
+                      alt="arrow-right"
+                    />
+                    <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
+                      失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 w-full mt-4">
+                    <img
+                      src="/assets/images/dashboard/Group 17_2.png"
+                      alt="arrow-right"
+                    />
+                    <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
+                      失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 w-full mt-4">
+                    <img
+                      src="/assets/images/dashboard/Group 17_3.png"
+                      alt="arrow-right"
+                    />
+                    <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
+                      失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <Link
+                      to={"/#"}
+                      className="flex items-center justify-center mt-4 border-2 border-[#FF6B56] rounded-lg py-2 lg:px-16 md:px-8 px-4"
+                    >
+                      <p className="lg:text-[0.75rem] md:text-[0.6rem] text-[#FF6B56]">
+                        ランキングをもっと見る
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+                {user == null && (
+                  <>
+                    <div className="flex items-center justify-start w-full mt-8">
+                      <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
+                        会員登録がまだの方
+                      </p>
                     </div>
+                    <div className="flex flex-col items-center bg-white rounded-lg py-6 w-full mt-8 shadow-xl">
+                      <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] pb-2">
+                        <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
+                          1.
+                        </p>
+                        <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
+                          事務所からスカウトが届く
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
+                        <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
+                          2.
+                        </p>
+                        <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
+                          希望にあった求人が届く
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
+                        <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
+                          3.
+                        </p>
+                        <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
+                          会員限定機能が利用できる
+                        </p>
+                      </div>
+                      <Link
+                        to={"/members/sign_up"}
+                        className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] rounded-lg px-6 py-2 hover:scale-105 duration-300"
+                      >
+                        <img
+                          src="/assets/images/dashboard/mdi_account.png"
+                          alt="register"
+                          className="pt-0.5"
+                        />
+                        <p className="lg:text-lg md:text-sm text-white font-bold">
+                          無料で会員登録する
+                        </p>
+                      </Link>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
-          
         </div>
       )}
     </>

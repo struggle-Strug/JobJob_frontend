@@ -14,7 +14,7 @@ const Header = ({ user, isAuthenticated }) => {
               <div className="flex items-center gap-2 lg:gap-4 justify-between">
                 <Link to={"/"}>
                   <img
-                    src={"/assets/images/header/jobjob_logo 1.png"}
+                    src={"/assets/images/header/jobjob_logo_1.png"}
                     alt="logo"
                     className="hover:scale-105 duration-300"
                   />
@@ -75,7 +75,7 @@ const Header = ({ user, isAuthenticated }) => {
             <div className="flex items-center gap-2 lg:gap-4 justify-between">
               <Link to={"/"}>
                 <img
-                  src={"/assets/images/header/jobjob_logo 1.png"}
+                  src={"/assets/images/header/jobjob_logo_1.png"}
                   alt="logo"
                   className="max-w-[120px] md:max-w-full hover:scale-105 duration-300"
                 />

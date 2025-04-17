@@ -1,4 +1,22 @@
-import { useState, useEffect } from "react";
+"use client";
+
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Checkbox,
+  Input,
+  message,
+  Modal,
+  Radio,
+  Select,
+  Upload,
+} from "antd";
+import TextArea from "antd/es/input/TextArea";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import EditorComponent from "../../../components/EditorComponent";
+import Loading from "../../../components/Loading";
 import { useAuth } from "../../../context/AuthContext";
 import {
   EmploymentType,
@@ -7,17 +25,10 @@ import {
   Paysystems,
   Qualifications,
 } from "../../../utils/constants/categories";
-import axios from "axios";
-import { message, Input, Select, Radio, Checkbox, Upload, Modal, Button, Spin } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
-import { PlusOutlined } from "@ant-design/icons";
 import { getBase64 } from "../../../utils/getBase64";
-import { useLocation, useNavigate, Link } from "react-router-dom";
-import EditorComponent from "../../../components/EditorComponent";
-import PhotoSelectModal from "./PhotoSelectModal";
-import Loading from "../../../components/Loading";
+import ImageEditModal from "./ImageEditModal";
 import JobPostPreview from "./JobPostPreview";
+import PhotoSelectModal from "./PhotoSelectModal";
 
 const JobPostEdit = () => {
   const { customer } = useAuth();
@@ -47,9 +58,12 @@ const JobPostEdit = () => {
   const [jobPostSpecialContent, setJobPostSpecialContent] = useState("");
   const [jobPostEducationContent, setJobPostEducationContent] = useState("");
   const [jobPostQualificationType, setJobPostQualificationType] = useState([]);
-  const [jobPostQualificationOther, setJobPostQualificationOther] = useState("");
-  const [jobPostQualificationContent, setJobPostQualificationContent] = useState("");
-  const [jobPostQualificationWelcome, setJobPostQualificationWelcome] = useState("");
+  const [jobPostQualificationOther, setJobPostQualificationOther] =
+    useState("");
+  const [jobPostQualificationContent, setJobPostQualificationContent] =
+    useState("");
+  const [jobPostQualificationWelcome, setJobPostQualificationWelcome] =
+    useState("");
   const [jobPostProcess, setJobPostProcess] = useState("");
   const [status, setStatus] = useState("");
   const [successModalOpen, setSuccessModalOpen] = useState(false);
@@ -59,6 +73,11 @@ const JobPostEdit = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [photoSelectModalVisible, setPhotoSelectModalVisible] = useState(false);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
+
+  // Add state for image editing
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const jobPostId = pathname.split("/").pop();
@@ -189,10 +208,6 @@ const JobPostEdit = () => {
     label: qualificationOther,
   }));
 
-  const beforeUpload = () => {
-    return false;
-  };
-
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -201,20 +216,36 @@ const JobPostEdit = () => {
     setPreviewOpen(true);
   };
 
-  // 複数アップロードに対応（最大10枚まで）
-  const handleChange = (info) => {
-    let updatedFileList = [...info.fileList];
-    if (updatedFileList.length > 10) {
-      updatedFileList = updatedFileList.slice(0, 10);
-      message.error("10枚まで選択できます");
-    }
-    setJobPostPicture(updatedFileList);
+  // Handle the edited image save
+  const handleEditSave = (croppedImage) => {
+    const { file, preview } = croppedImage;
 
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
+    // Create a new file entry with the cropped image
+    const newFile = {
+      uid: `${Date.now()}`,
+      name: file.name || "cropped-image.jpg",
+      status: "done",
+      originFileObj: file,
+      preview: preview,
+      url: preview, // Add url for consistency with PhotoSelectModal
+    };
+
+    // Check if adding this would exceed the limit
+    if (jobPostPicture.length >= 10) {
+      message.error("最大10枚までしか選択できません");
+      return;
     }
+
+    // Add only the edited image to the file list
+    setJobPostPicture((prev) => [...prev, newFile]);
+    setEditModalVisible(false);
+    setCurrentImage(null);
+  };
+
+  // Remove a file from the list
+  const handleRemove = (file) => {
+    const newFileList = jobPostPicture.filter((item) => item.uid !== file.uid);
+    setJobPostPicture(newFileList);
   };
 
   // 複数ファイルアップロード対応の実装
@@ -222,16 +253,16 @@ const JobPostEdit = () => {
     // 新規画像と既存画像に分ける
     const newImages = jobPostPicture.filter((pic) => pic.originFileObj);
     const existingImages = jobPostPicture.filter((pic) => !pic.originFileObj);
-  
+
     let uploadedFileUrls = [];
     let uploadedFiles = [];
-  
+
     if (newImages.length > 0) {
       const formData = new FormData();
       newImages.forEach((file) => {
         formData.append("files", file.originFileObj);
       });
-  
+
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
@@ -250,15 +281,16 @@ const JobPostEdit = () => {
         return { fileUrls: [], files: [] };
       }
     }
-  
+
     // 既存画像のURLを抽出（重複している可能性がないか確認）
     const existingUrls = existingImages.map((image) => image.url);
-  
+
     // 両方を統合して返す
-    return { fileUrls: [...uploadedFileUrls, ...existingUrls], files: uploadedFiles };
+    return {
+      fileUrls: [...uploadedFileUrls, ...existingUrls],
+      files: uploadedFiles,
+    };
   };
-  
-  
 
   const getJobPost = async () => {
     try {
@@ -267,7 +299,6 @@ const JobPostEdit = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`
       );
       const jobData = response.data.jobpost;
-      console.log(jobData);
       setJobPost(jobData);
       setJobPostType(
         Object.keys(JobType.医科).includes(jobData.type)
@@ -294,13 +325,14 @@ const JobPostEdit = () => {
       setJobPostWorkContent(jobData.work_content);
       setJobPostServiceSubject(jobData.service_subject);
       setJobPostServiceType(jobData.service_type);
-setJobPostEmploymentType(
-  typeof jobData.employment_type === "string"
-    ? jobData.employment_type
-    : (Array.isArray(jobData.employment_type) && jobData.employment_type.length > 0
-        ? jobData.employment_type[0]
-        : "")
-);
+      setJobPostEmploymentType(
+        typeof jobData.employment_type === "string"
+          ? jobData.employment_type
+          : Array.isArray(jobData.employment_type) &&
+            jobData.employment_type.length > 0
+          ? jobData.employment_type[0]
+          : ""
+      );
 
       setJobPostSalaryType(jobData.salary_type);
       setJobPostSalaryMin(jobData.salary_min);
@@ -348,8 +380,8 @@ setJobPostEmploymentType(
       const newUrls = uploadResult.fileUrls || [];
       const uploadUrls = uploadResult.files || [];
       const existingUrls = jobPostPicture
-      .filter((p) => !p.originFileObj)
-      .map((p) => p.url);
+        .filter((p) => !p.originFileObj)
+        .map((p) => p.url);
       const allUrls = Array.from(new Set([...newUrls, ...existingUrls]));
       // pictureUrls が存在すればそちら、なければ既存の URL をそのまま利用
       const JobPostData = {
@@ -406,6 +438,7 @@ setJobPostEmploymentType(
   const handleRequest = async (status) => {
     try {
       setLoading(true);
+      await handleSave();
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}/${status}`
       );
@@ -436,15 +469,15 @@ setJobPostEmploymentType(
   };
 
   useEffect(() => {
-    document.title = "求人編集";
+    document.title = "求人登録・編集 | JobJob (ジョブジョブ)";
     getJobPost();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   return (
     <>
-    {loading ? <Loading /> : <></>}
-   
+      {loading ? <Loading /> : <></>}
+
       <div className="w-full min-h-screen flex flex-col p-4 bg-white rounded-lg mb-8">
         <h1 className="lg:text-2xl md:text-base text-sm font-bold">求人編集</h1>
         <div className="flex items-center mt-4">
@@ -482,10 +515,35 @@ setJobPostEmploymentType(
               listType="picture-card"
               fileList={jobPostPicture}
               onPreview={handlePreview}
-              beforeUpload={beforeUpload}
-              onChange={handleChange}
+              onRemove={handleRemove}
+              customRequest={({ onSuccess }) => {
+                // Do nothing, just call onSuccess to mark it as done
+                setTimeout(() => {
+                  onSuccess("ok", null);
+                }, 0);
+              }}
+              showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}
+              openFileDialogOnClick={false} // Prevent opening file dialog on click
             >
-              <div className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3">
+              <div
+                className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3"
+                onClick={() => {
+                  // Create a file input element
+                  const input = document.createElement("input");
+                  input.type = "file";
+                  input.accept = "image/*";
+                  input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      getBase64(file).then((base64) => {
+                        setCurrentImage(base64);
+                        setEditModalVisible(true);
+                      });
+                    }
+                  };
+                  input.click();
+                }}
+              >
                 <PlusOutlined />
                 <div className="mt-4 text-center">Upload</div>
               </div>
@@ -745,7 +803,7 @@ setJobPostEmploymentType(
           />
         </div>
         <div className="flex items-center justify-center w-full mt-8 gap-4 border-t-[1px] border-[#e7e7e7] pt-4">
-        <button
+          <button
             className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
             onClick={() => setPreviewModalOpen(true)}
           >
@@ -860,42 +918,56 @@ setJobPostEmploymentType(
         visible={photoSelectModalVisible}
         onCancel={() => setPhotoSelectModalVisible(false)}
         onSelect={(selected) => {
-          const baseUrl = process.env.REACT_APP_BASE_IMAGE_URL || "";
           const formattedPhotos = selected.map((photoUrl, index) => ({
-            uid: `existing-${index}-${photoUrl}`,
-            name: `Photo ${index + 1}`,
-            url: photoUrl.startsWith("http") ? photoUrl : `${baseUrl}${photoUrl}`,
+            uid: `existing-${Date.now()}-${Math.random()}`, // 常に新規の一意キーを生成
+            name: `Photo ${jobPostPicture.length + index + 1}`,
+            url: photoUrl.startsWith("http")
+              ? photoUrl
+              : `${process.env.REACT_APP_BASE_IMAGE_URL || ""}${photoUrl}`,
             status: "done",
           }));
           // 既存の写真と合わせた枚数チェック
           const totalPhotos = jobPostPicture.length + formattedPhotos.length;
-          if(totalPhotos > 10) {
+          if (totalPhotos > 10) {
             message.error("最大10枚までしか選択できません");
             return;
           }
           setJobPostPicture((prev) => [...prev, ...formattedPhotos]);
           setPhotoSelectModalVisible(false);
         }}
-        
-        
       />
       {/* モーダルで拡大表示 */}
-<Modal
-              visible={previewOpen}
-              footer={null}
-              onCancel={() => setPreviewOpen(false)}
-              closeIcon={
-                <CloseOutlined
-                  style={{
-                    backgroundColor: "#fff",
-                    padding: "5px",
-                    borderRadius: "5px",
-                  }}
-                />
-              }
-            >
-              <img src={previewImage} alt="enlarged" style={{ width: "100%" }} />
-            </Modal>
+      <Modal
+        visible={previewOpen}
+        footer={null}
+        onCancel={() => setPreviewOpen(false)}
+        closeIcon={
+          <CloseOutlined
+            style={{
+              backgroundColor: "#fff",
+              padding: "5px",
+              borderRadius: "5px",
+            }}
+          />
+        }
+      >
+        <img
+          src={previewImage || "/placeholder.svg"}
+          alt="enlarged"
+          style={{ width: "100%" }}
+        />
+      </Modal>
+
+      {/* Image Edit Modal */}
+      <ImageEditModal
+        visible={editModalVisible}
+        image={currentImage}
+        onCancel={() => {
+          setEditModalVisible(false);
+          setCurrentImage(null);
+        }}
+        onSave={handleEditSave}
+      />
     </>
   );
 };

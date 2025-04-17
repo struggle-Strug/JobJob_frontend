@@ -1,6 +1,13 @@
 import "./index.css";
-import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { Suspense, lazy, useEffect, useState } from "react";
+import { message } from "antd";
 import axios from "axios";
 import { useAuth } from "./context/AuthContext";
 import {
@@ -13,8 +20,12 @@ import { getMunicipalityById } from "./utils/getMuniId";
 // Lazy load components
 const Register = lazy(() => import("./Pages/Auth/Register"));
 const Login = lazy(() => import("./Pages/Auth/Login"));
-const ForgotPasswordRequest = lazy(() => import("./Pages/Auth/ForgotPassword/ForgotPasswordRequest"));
-const ResetPassword = lazy(() => import("./Pages/Auth/ForgotPassword/ResetPassword"));
+const ForgotPasswordRequest = lazy(() =>
+  import("./Pages/Auth/ForgotPassword/ForgotPasswordRequest")
+);
+const ResetPassword = lazy(() =>
+  import("./Pages/Auth/ForgotPassword/ResetPassword")
+);
 const MyPageLayout = lazy(() => import("./components/MyPageLayout"));
 const MyPage = lazy(() => import("./Pages/MemberProfile/MyPage"));
 const Profile = lazy(() => import("./Pages/MemberProfile/Profile"));
@@ -106,6 +117,7 @@ function App() {
   const token = localStorage.getItem("token");
   const { pathname } = useLocation();
   const prefOrFacility = pathname.split("/")[2];
+  const navigate = useNavigate();
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -120,8 +132,14 @@ function App() {
       res.data.user.type === "customer" && setCustomer(res.data.user.data);
       res.data.user.type === "admin" && setAdmin(res.data.user.data);
     } catch (err) {
-      console.error("Failed to fetch user data:", err);
-      setIsAuthenticated(false);
+      if (err.response?.status === 401) {
+        message.error("ログインしてください。");
+        localStorage.removeItem("token"); // Remove token from localStorage
+        setIsAuthenticated(false); // Set authentication state to false
+        setTimeout(() => {
+          navigate("/"); // Redirect to login page after a short delay
+        }, 500);
+      }
     } finally {
       setIsLoading(false); // Ensure loading state is updated
     }
@@ -148,8 +166,8 @@ function App() {
         <Route element={<CLLogoLayout />}>
           <Route path="/customers/new" element={<CustomerSignUp />} />
           <Route path="/customers/sign_in" element={<CustomerSignIn />} />
+          <Route path="/customers/rule" element={<Rule />} />
         </Route>
-        <Route path="/customers/rule" element={<Rule />} />
         {token && (customer || admin) ? (
           <Route element={<CLLayout />}>
             <Route path="/customers" element={<CLMainLayout />}>
@@ -200,8 +218,8 @@ function App() {
             <Route path="/*" element={<CustomerSignIn />} />
           </Route>
         )}
-        <Route path="/rule" element={<CSRule />} />
         <Route element={<CSLayout />}>
+          <Route path="/rule" element={<CSRule />} />
           <Route path="/" element={<Top />} />
           <Route path="/coporate" element={<Coporate />} />
           <Route path="/forgot-password" element={<ForgotPasswordRequest />} />

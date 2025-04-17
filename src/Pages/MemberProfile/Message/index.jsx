@@ -1,3 +1,5 @@
+"use client";
+
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
@@ -43,6 +45,7 @@ const Message = () => {
   };
 
   useEffect(() => {
+    document.title = "メッセージ | JobJob (ジョブジョブ)";
     getMyMessages();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -57,22 +60,32 @@ const Message = () => {
       <div className="flex flex-col items-center w-full bg-white rounded-t-lg p-4 shadow-xl mt-4">
         <div className="flex justify-center w-3/5">
           <div className="flex items-center justify-between w-full">
-            <button
-              className={`lg:text-sm md:text-xs text-xs font-bold text-[#343434] hover:text-[#FF2A3B] duration-300 ${
-                showUnreplied ? "text-[#FF2A3B]" : ""
-              }`}
-              onClick={onClickUnreplied}
-            >
-              未返信
-            </button>
-            <button
-              className={`lg:text-sm md:text-xs text-xs font-bold text-[#343434] hover:text-[#FF2A3B] duration-300 ${
-                showAll ? "text-[#FF2A3B]" : ""
-              }`}
-              onClick={onClickAll}
-            >
-              すべて
-            </button>
+            <div className="relative">
+              <button
+                className={`lg:text-sm md:text-xs text-xs font-bold text-[#343434] hover:text-[#FF2A3B] duration-300 ${
+                  showUnreplied ? "text-[#FF2A3B]" : ""
+                }`}
+                onClick={onClickUnreplied}
+              >
+                未返信
+              </button>
+              {showUnreplied && (
+                <div className="absolute -bottom-2 left-0 w-full h-0.5 bg-[#FF2A3B]"></div>
+              )}
+            </div>
+            <div className="relative">
+              <button
+                className={`lg:text-sm md:text-xs text-xs font-bold text-[#343434] hover:text-[#FF2A3B] duration-300 ${
+                  showAll ? "text-[#FF2A3B]" : ""
+                }`}
+                onClick={onClickAll}
+              >
+                すべて
+              </button>
+              {showAll && (
+                <div className="absolute -bottom-2 left-0 w-full h-0.5 bg-[#FF2A3B]"></div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -90,7 +103,9 @@ const Message = () => {
                         className="flex items-center justify-start w-full border-[1px] border-[#e7e7e7] rounded-lg bg-slate-100 px-2 hover:px-4 py-1 hover:cursor-pointer duration-300"
                       >
                         <img
-                          src={message?.facility_id?.photo}
+                          src={
+                            message?.facility_id?.photo || "/placeholder.svg"
+                          }
                           alt=""
                           className="h-14 rounded-lg mr-2"
                         />
@@ -130,7 +145,9 @@ const Message = () => {
                         className="flex items-center w-full border-[1px] border-[#e7e7e7] rounded-lg bg-slate-100 px-2 hover:px-4 py-1 hover:cursor-pointer duration-300"
                       >
                         <img
-                          src={message?.facility_id?.photo}
+                          src={
+                            message?.facility_id?.photo || "/placeholder.svg"
+                          }
                           alt=""
                           className="h-14 rounded-lg mr-2"
                         />
@@ -168,12 +185,19 @@ const Message = () => {
         )}
       </div>
       <div className="flex items-center justify-center w-full bg-white rounded-lg px-4 py-6 shadow-xl mt-4">
-        <button
-          className="lg:text-sm md:text-xs text-xs text-[#FF2A3B] duration-300 py-1 px-2 bg-[#fae8e9] hover:bg-[#ffbfc4] rounded-lg"
-          onClick={onClickHidden}
-        >
-          非表示にしたメッセージを見る
-        </button>
+        <div className="relative">
+          <button
+            className={`lg:text-sm md:text-xs text-xs ${
+              showHidden ? "text-[#FF2A3B]" : "text-[#FF2A3B]"
+            } duration-300 py-1 px-2 bg-[#fae8e9] hover:bg-[#ffbfc4] rounded-lg`}
+            onClick={onClickHidden}
+          >
+            非表示にしたメッセージを見る
+          </button>
+          {showHidden && (
+            <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#FF2A3B]"></div>
+          )}
+        </div>
       </div>
     </div>
   );

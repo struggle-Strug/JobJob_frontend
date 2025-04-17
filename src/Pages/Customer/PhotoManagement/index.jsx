@@ -59,6 +59,36 @@ const PhotoManagement = () => {
     }
   };
 
+  const handleDeleteImage = async (phototUrl) => {
+    try {
+      const photoName = phototUrl.split("/").pop();
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/v1/file/${photoName}`
+      );
+      if (response.error) return false;
+      return true;
+    } catch (err) {
+      console.log("Error deleteing Image:", err.message);
+      return false;
+    }
+  };
+
+  const handleDelete = async (phototUrl) => {
+    try {
+      const deleteResult = await handleDeleteImage(phototUrl);
+      if (!deleteResult) return;
+      const photoName = phototUrl.split("/").pop();
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/v1/photo/${photoName}`
+      );
+      if (response.error) return message.error("画像の削除に失敗しました。");
+      message.success("ファイル削除完了!");
+      setPhotos(response.data.photos?.images);
+    } catch (error) {
+      console.log("Error deleting image:", error.message);
+    }
+  };
+
   const handleSave = async () => {
     const files = await handleUpload();
     await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/photo/`, files);
@@ -93,7 +123,7 @@ const PhotoManagement = () => {
 
   useEffect(() => {
     getPhotosByCustomerId();
-    document.title = "写真管理";
+    document.title = "写真管理 | JobJob (ジョブジョブ)";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
@@ -152,14 +182,22 @@ const PhotoManagement = () => {
                     {photo.description}
                   </p>
                 </Tooltip>
-                <button
-                  className="text-left text-xs text-[#FF2A3B] pl-2 mt-2"
-                  onClick={() =>
-                    handleOpenDescriptionModal(photo.description, photo._id)
-                  }
-                >
-                  説明文を更新
-                </button>
+                <div className="flex justify-between w-full">
+                  <button
+                    className="text-left text-xs text-[#FF2A3B] pl-2 mt-2"
+                    onClick={() =>
+                      handleOpenDescriptionModal(photo.description, photo._id)
+                    }
+                  >
+                    説明文を更新
+                  </button>
+                  <button
+                    className="text-left text-xs text-[#FF2A3B] pl-2 mt-2 hover:underline"
+                    onClick={() => handleDelete(photo.photoUrl)}
+                  >
+                    削除
+                  </button>
+                </div>
               </div>
             ))}
           </div>

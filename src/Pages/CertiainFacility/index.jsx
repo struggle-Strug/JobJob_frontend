@@ -111,6 +111,11 @@ const CertaionFacility = () => {
   }, [jobType, pref, employmentType, facility]);
 
   useEffect(() => {
+    const year = new Date().getFullYear();
+    const month = String(new Date().getMonth() + 1).padStart(2, "0"); // Get the current month with leading zero
+    document.title = `【${year}年${month}月最新】求人を掲載中の${getFacilityKeyByValue(
+      facility
+    )} | JobJob (ジョブジョブ)`;
     const jobTypeOrFacility = pathname.split("/")[1];
     if (getAllJobTypeValues().includes(jobTypeOrFacility)) {
       setJobType(jobTypeOrFacility);
@@ -131,7 +136,7 @@ const CertaionFacility = () => {
       pathname.split("/").length === 4 && setPref(pathname.split("/")[2]);
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  }, [document.title]);
 
   if (isLoading) {
     return <Loading />;

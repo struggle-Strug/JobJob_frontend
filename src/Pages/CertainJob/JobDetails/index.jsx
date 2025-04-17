@@ -1,8 +1,10 @@
-import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+"use client";
+
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { message, Carousel, Modal } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
+import axios from "axios";
 import { Facilities } from "../../../utils/constants/categories/facilities";
 import Loading from "../../../components/Loading";
 import { useAuth } from "../../../context/AuthContext";
@@ -11,230 +13,269 @@ const JobDetails = () => {
   const { user } = useAuth();
   const [jobPost, setJobPost] = useState(null);
   const [allFacilityJobPosts, setAllFacilityJobPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalImage, setModalImage] = useState(null);
   const { pathname } = useLocation();
   const job_type = pathname.split("/")[1];
   const jobpost_id = pathname.split("/")[3];
-  const jobMapping = {
-    医師: "/dr",
-    薬剤師: "/ph",
-    "看護師/准看護師": "/nan",
-    助産師: "/mw",
-    保健師: "/phn",
-    看護助手: "/nuas",
-    診療放射線技師: "/mrt",
-    臨床検査技師: "/clt",
-    "管理栄養士/栄養士": "/rdn",
-    "公認心理師/臨床心理士": "/cp",
-    医療ソーシャルワーカー: "/msw",
-    歯科医師: "/de",
-    歯科衛生士: "/dh",
-    歯科技工士: "/dt",
-    歯科助手: "/deas",
-    "介護職/ヘルパー": "/cwh",
-    生活相談員: "/lc",
-    ケアマネジャー: "/cm",
-    "管理職（介護）": "/mp",
-    サービス提供責任者: "/sp",
-    生活支援員: "/lsw",
-    福祉用具専門相談員: "/wesc",
-    児童発達支援管理責任者: "/cdsm",
-    保育士: "/chil",
-    幼稚園教諭: "/kt",
-    保育補助: "/ca",
-    "児童指導員/指導員": "/cii",
-    理学療法士: "/pt",
-    言語聴覚士: "/st",
-    作業療法士: "/ot",
-    視能訓練士: "/ort",
-    "調理師/調理スタッフ": "/ccs",
-    美容師: "/hai",
-    理容師: "/bar",
-    ネイリスト: "/naar",
-    アイリスト: "/el",
-    "エステティシャン/セラピスト": "/et",
-    美容部員: "/bcm",
-    インストラクター: "/ins",
-  };
-  const [currentSlide, setCurrentSlide] = useState(0);
   const carouselRef = useRef();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  const getJobPost = async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobpost_id}`
-    );
-    setJobPost(response.data.jobpost);
-  };
+  // Memoize job mapping to avoid unnecessary re-calculation
+  const jobMapping = useMemo(
+    () => ({
+      医師: "/dr",
+      薬剤師: "/ph",
+      "看護師/准看護師": "/nan",
+      助産師: "/mw",
+      保健師: "/phn",
+      看護助手: "/nuas",
+      診療放射線技師: "/mrt",
+      臨床検査技師: "/clt",
+      "管理栄養士/栄養士": "/rdn",
+      "公認心理師/臨床心理士": "/cp",
+      医療ソーシャルワーカー: "/msw",
+      歯科医師: "/de",
+      歯科衛生士: "/dh",
+      歯科技工士: "/dt",
+      歯科助手: "/deas",
+      "介護職/ヘルパー": "/cwh",
+      生活相談員: "/lc",
+      ケアマネジャー: "/cm",
+      "管理職（介護）": "/mp",
+      サービス提供責任者: "/sp",
+      生活支援員: "/lsw",
+      福祉用具専門相談員: "/wesc",
+      児童発達支援管理責任者: "/cdsm",
+      保育士: "/chil",
+      幼稚園教諭: "/kt",
+      保育補助: "/ca",
+      "児童指導員/指導員": "/cii",
+      理学療法士: "/pt",
+      言語聴覚士: "/st",
+      作業療法士: "/ot",
+      視能訓練士: "/ort",
+      "調理師/調理スタッフ": "/ccs",
+      美容師: "/hai",
+      理容師: "/bar",
+      ネイリスト: "/naar",
+      アイリスト: "/el",
+      "エステティシャン/セラピスト": "/et",
+      美容部員: "/bcm",
+      インストラクター: "/ins",
+    }),
+    []
+  );
 
-  const getFacilityJobPosts = async () => {
+  // Fetch job post data
+  const getJobPost = useCallback(async () => {
+    if (!jobpost_id) return;
+
     try {
       setLoading(true);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/facility/${jobPost?.facility_id.facility_id}`
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobpost_id}`
+      );
+      setJobPost(response.data.jobpost);
+    } catch (error) {
+      console.error("Error fetching job post:", error);
+      message.error("求人情報の取得中にエラーが発生しました");
+    } finally {
+      setLoading(false);
+    }
+  }, [jobpost_id]);
+
+  // Fetch all job posts from the same facility
+  const getFacilityJobPosts = useCallback(async (facilityId) => {
+    if (!facilityId) return;
+
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/facility/${facilityId}`
       );
       setAllFacilityJobPosts(
         response.data.jobposts.filter(
           (jobpost) => jobpost.allowed === "allowed"
         )
       );
-    } catch {
-      message.error("エラーが発生しました");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (jobPost?.facility_id) {
-      getFacilityJobPosts();
-    }
-  }, [jobPost?.facility_id]);
-
-  useEffect(() => {
-    document.title = "求人詳細";
-    if (jobpost_id !== undefined) {
-      getJobPost();
+    } catch (error) {
+      console.error("Error fetching facility job posts:", error);
+      message.error("施設の求人情報の取得中にエラーが発生しました");
     }
   }, []);
 
-  useEffect(() => {
-    if (!jobPost?.jobpost_id) return; // Prevent running if jobpost_id is undefined
+  // Handle carousel navigation
+  const handleCarouselChange = useCallback((current) => {
+    setCurrentSlide(current);
+  }, []);
 
-    let storedRecents = localStorage.getItem("recents");
-    let newRecents = storedRecents ? JSON.parse(storedRecents) : [];
+  // Navigate to previous slide
+  const goToPrevSlide = useCallback(() => {
+    if (!jobPost?.picture?.length) return;
 
-    // Avoid duplicates and ensure max length of 10
-    if (!newRecents.includes(jobPost.jobpost_id)) {
-      newRecents.unshift(jobPost.jobpost_id); // Add to the beginning
-      if (newRecents.length > 10) {
-        newRecents.pop(); // Remove the oldest entry if limit exceeds 10
-      }
-      localStorage.setItem("recents", JSON.stringify(newRecents));
-    } else {
-      // If the jobpost_id is already in recents, move it to the front
-      newRecents = newRecents.filter((id) => id !== jobPost.jobpost_id);
-      newRecents.unshift(jobPost.jobpost_id);
-      localStorage.setItem("recents", JSON.stringify(newRecents));
+    const newIndex =
+      (currentSlide - 1 + jobPost.picture.length) % jobPost.picture.length;
+    carouselRef.current?.goTo(newIndex, false);
+    setCurrentSlide(newIndex);
+  }, [currentSlide, jobPost?.picture?.length]);
+
+  // Navigate to next slide
+  const goToNextSlide = useCallback(() => {
+    if (!jobPost?.picture?.length) return;
+
+    const newIndex = (currentSlide + 1) % jobPost.picture.length;
+    carouselRef.current?.goTo(newIndex, false);
+    setCurrentSlide(newIndex);
+  }, [currentSlide, jobPost?.picture?.length]);
+
+  // Open image modal
+  const openImageModal = useCallback((imageUrl) => {
+    setModalImage(imageUrl);
+    setIsModalVisible(true);
+  }, []);
+
+  // Update recently viewed jobs in localStorage
+  const updateRecentlyViewed = useCallback(() => {
+    if (!jobPost?.jobpost_id) return;
+
+    try {
+      const storedRecents = localStorage.getItem("recents");
+      const newRecents = storedRecents ? JSON.parse(storedRecents) : [];
+
+      // Remove existing entry if present
+      const filteredRecents = newRecents.filter(
+        (id) => id !== jobPost.jobpost_id
+      );
+
+      // Add to beginning and limit to 10 entries
+      filteredRecents.unshift(jobPost.jobpost_id);
+      const limitedRecents = filteredRecents.slice(0, 10);
+
+      localStorage.setItem("recents", JSON.stringify(limitedRecents));
+    } catch (error) {
+      console.error("Error updating recently viewed jobs:", error);
     }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [jobPost?.jobpost_id]); // Re-run when jobPost ID changes
+  }, [jobPost?.jobpost_id]);
 
-  if (loading)
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
+  // Initial data fetch
+  useEffect(() => {
+    getJobPost();
+  }, [getJobPost]);
+
+  // Fetch facility job posts when job post data is available
+  useEffect(() => {
+    if (jobPost?.facility_id?.facility_id) {
+      getFacilityJobPosts(jobPost.facility_id.facility_id);
+    }
+  }, [jobPost?.facility_id?.facility_id, getFacilityJobPosts]);
+
+  // Update document title
+  useEffect(() => {
+    if (!jobPost?.facility_id) return;
+
+    const year = new Date().getFullYear();
+    document.title = `【${year}年最新】${jobPost?.facility_id.name}の${jobPost?.type}の求人(${jobPost?.employment_type}) ${jobPost?.facility_id.prefecture}${jobPost?.facility_id.city} | JobJob (ジョブジョブ)`;
+  }, [jobPost]);
+
+  // Update recently viewed jobs and scroll to top
+  useEffect(() => {
+    updateRecentlyViewed();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [jobPost?.jobpost_id, updateRecentlyViewed]);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
-      <div className="container flex items-stretch justify-between p-4 bg-white rounded-lg">
-        <div className="relative w-2/3">
-          <Carousel
-            ref={carouselRef}
-            dots={false}
-            beforeChange={(_, next) => setCurrentSlide(next)}
-          >
-            {jobPost?.picture?.length > 0 ? (
-              jobPost.picture.map((photoUrl, index) => (
-                <div key={index}>
-                  <img
-                    src={photoUrl}
-                    alt={`facility-photo-${index}`}
-                    className="w-full aspect-video object-cover rounded-t-xl"
-                  />
-                </div>
-              ))
-            ) : (
-              <div>
-                <img
-                  src="/assets/images/noimage.png"
-                  alt="no-image"
-                  className="w-full aspect-video object-cover"
-                />
+      <div className="container flex flex-col md:flex-row items-stretch justify-between p-4 bg-white rounded-lg">
+        <div className="relative w-full md:w-2/3">
+          {jobPost?.picture?.length > 0 ? (
+            <>
+              <Carousel
+                ref={carouselRef}
+                dots={false}
+                beforeChange={handleCarouselChange}
+              >
+                {jobPost.picture.map((photoUrl, index) => (
+                  <div key={index} onClick={() => openImageModal(photoUrl)}>
+                    <img
+                      src={photoUrl || "/placeholder.svg"}
+                      alt={`${jobPost?.type}の求人写真-${index + 1}`}
+                      className="w-full aspect-video object-cover rounded-t-xl cursor-pointer"
+                    />
+                  </div>
+                ))}
+              </Carousel>
+
+              <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
+                {currentSlide + 1}/{jobPost.picture.length}
               </div>
-            )}
-          </Carousel>
-          {/* スライドインジケーター（画像上に表示） */}
-          {jobPost?.picture?.length > 0 && (
-            <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
-              {currentSlide + 1}/{jobPost.picture.length}
+
+              <div className="flex items-center justify-between w-full bg-[#fdfcf9] h-11 rounded-b-xl border border-[#ddccc9]">
+                <button
+                  onClick={goToPrevSlide}
+                  className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center"
+                  aria-label="前の写真を表示"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M11 13L5.27083 8L11 3"
+                      stroke="#FF6B56"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={goToNextSlide}
+                  className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center"
+                  aria-label="次の写真を表示"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5 13L10.7292 8L5 3"
+                      stroke="#FF6B56"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="w-full">
+              <img
+                src="/assets/images/noimage.png"
+                alt="画像なし"
+                className="w-full aspect-video object-cover rounded-xl"
+              />
             </div>
           )}
-          {/* 矢印バー：画像直下に隙間なく配置 */}
-          <div className="flex items-center justify-between w-full bg-[#fdfcf9]  h-11 rounded-b-xl border border-[#ddccc9]">
-            <button
-              onClick={() => {
-                const newIndex =
-                  (currentSlide - 1 + jobPost.picture.length) %
-                  jobPost.picture.length;
-                carouselRef.current.goTo(newIndex, false);
-                setCurrentSlide(newIndex);
-              }}
-              className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
-            >
-              <svg
-                aria-label="前の写真を表示"
-                className="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover"
-                width="24"
-                height="24"
-                role="img"
-                aria-hidden="false"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11 13L5.27083 8L11 3"
-                  stroke="#FF6B56"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                ></path>
-              </svg>
-            </button>
-            <button
-              onClick={() => {
-                const newIndex = (currentSlide + 1) % jobPost.picture.length;
-                carouselRef.current.goTo(newIndex, false);
-                setCurrentSlide(newIndex);
-              }}
-              className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center "
-            >
-              <svg
-                aria-label="次の写真を表示"
-                className="h-[13px] border-b border-transparent transition-jm group-hover:border-jm-linkHover"
-                width="24"
-                height="24"
-                role="img"
-                aria-hidden="false"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M5 13L10.7292 8L5 3"
-                  stroke="#FF6B56"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                ></path>
-              </svg>
-            </button>
-          </div>
         </div>
 
-        <div className="flex flex-col items-start justify-between p-4 w-1/3 gap-4">
+        <div className="flex flex-col items-start justify-between p-4 w-full md:w-1/3 gap-4 mt-4 md:mt-0">
           <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-            {jobPost?.facility_id.name}
-            <span className="text-sm text-[#343434]">
-              の{jobPost?.type}求人({jobPost?.employment_type})
+            {jobPost?.facility_id?.name || ""}
+            <span className="text-sm text-[#343434] block md:inline">
+              の{jobPost?.type || ""}求人({jobPost?.employment_type || ""})
             </span>
           </p>
 
-          {/* Flex-grow ensures content stretches to fill available space */}
           <div className="flex-grow"></div>
 
           <div className="flex flex-col w-full items-center gap-4 mt-6">
@@ -251,10 +292,13 @@ const JobDetails = () => {
                 </p>
               </div>
             </Link>
-            <button className="flex items-center justify-center gap-2 bg-white rounded-lg py-3 text-white border-2 border-[#FF6B56] w-full hover:bg-[#FF6B56]/20 hover:scale-105 duration-300">
+            <button
+              className="flex items-center justify-center gap-2 bg-white rounded-lg py-3 text-white border-2 border-[#FF6B56] w-full hover:bg-[#FF6B56]/20 hover:scale-105 duration-300"
+              aria-label="気になるボタン"
+            >
               <img
                 src="/assets/images/dashboard/Vector.png"
-                alt="eye"
+                alt=""
                 className="w-4 pt-0.5"
               />
               <p className="lg:text-base text-sm font-bold text-[#FF6B56]">
@@ -265,17 +309,22 @@ const JobDetails = () => {
         </div>
       </div>
 
-      <div className="container flex items-start gap-4 justify-between rounded-lg mt-4">
-        <div className="flex flex-col w-2/3">
+      <div className="container flex flex-col md:flex-row items-start gap-4 justify-between rounded-lg mt-4">
+        <div className="flex flex-col w-full md:w-2/3">
+          {/* Job description section */}
           <div className="flex flex-col bg-white p-4 rounded-lg">
             <p className="lg:text-lg font-bold text-sm text-[#343434]">
-              {jobPost?.sub_title}
+              {jobPost?.sub_title || ""}
             </p>
             <div
-              dangerouslySetInnerHTML={{ __html: jobPost?.sub_description }}
-              className="p-2 lg:text-base text-sm mt-8 text-[#343434]"
+              dangerouslySetInnerHTML={{
+                __html: jobPost?.sub_description || "",
+              }}
+              className="p-2 lg:text-base text-sm mt-8 text-[#343434] overflow-auto"
             />
           </div>
+
+          {/* Job details section */}
           <div className="flex flex-col bg-white px-4 rounded-lg mt-4">
             <p className="lg:text-lg text-sm text-[#343434] font-bold py-6 border-b-[1px] border-[#e7e7e7]">
               募集内容
@@ -285,16 +334,16 @@ const JobDetails = () => {
                 募集職種
               </p>
               <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
-                {jobPost?.type}
+                {jobPost?.type || ""}
               </p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
                 仕事内容
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
-                <pre>{jobPost?.work_content}</pre>
-              </p>
+              <pre className="lg:text-base text-sm text-[#343434] py-6 w-4/5 overflow-auto whitespace-pre-wrap break-words">
+                {jobPost?.work_content || ""}
+              </pre>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
@@ -304,34 +353,38 @@ const JobDetails = () => {
               </p>
               <div className="inline-block items-start justify-start gap-2 w-4/5 py-6">
                 {jobPost?.service_subject
-                  .concat(jobPost?.service_type)
-                  .map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                      >
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          {item}
-                        </p>
-                      </div>
-                    );
-                  })}
+                  ?.concat(jobPost?.service_type || [])
+                  .map((item, index) => (
+                    <div
+                      key={index}
+                      className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                    >
+                      <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
                 給与
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">{`【${jobPost?.employment_type}】 ${jobPost?.salary_type} ${jobPost?.salary_min}円〜${jobPost?.salary_max}円`}</p>
+              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
+                {`【${jobPost?.employment_type || ""}】 ${
+                  jobPost?.salary_type || ""
+                } ${jobPost?.salary_min || 0}円〜${jobPost?.salary_max || 0}円`}
+              </p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
                 給与の備考
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
-                <pre>{jobPost?.salary_remarks}</pre>
-              </p>
+              <div className="lg:text-base text-sm text-[#343434] py-6 w-4/5 overflow-auto">
+                <pre className="whitespace-pre-wrap break-words">
+                  {jobPost?.salary_remarks || ""}
+                </pre>
+              </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
@@ -339,49 +392,49 @@ const JobDetails = () => {
               </p>
               <div className="flex flex-col w-4/5 py-6">
                 <div className="inline-block items-start justify-start gap-2">
-                  {jobPost?.treatment_type.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                      >
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          {item}
-                        </p>
-                      </div>
-                    );
-                  })}
+                  {jobPost?.treatment_type?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                    >
+                      <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-                <p className="lg:text-base text-sm text-[#343434] mt-4">
-                  <pre>{jobPost?.treatment_content}</pre>
-                </p>
+                <div className="lg:text-base text-sm text-[#343434] mt-4 overflow-auto">
+                  <pre className="whitespace-pre-wrap break-words">
+                    {jobPost?.treatment_content || ""}
+                  </pre>
+                </div>
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
                 長期休暇・特別休暇
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
-                <pre>{jobPost?.special_content}</pre>
-              </p>
+              <div className="lg:text-base text-sm text-[#343434] py-6 w-4/5 overflow-auto">
+                <pre className="whitespace-pre-wrap break-words">
+                  {jobPost?.special_content || ""}
+                </pre>
+              </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
                 教育体制・研修
               </p>
               <div className="inline-block items-start justify-start gap-2 w-4/5 py-6">
-                {jobPost?.education_content.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                    >
-                      <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                        {item}
-                      </p>
-                    </div>
-                  );
-                })}
+                {jobPost?.education_content?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                  >
+                    <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                      {item}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
@@ -390,22 +443,22 @@ const JobDetails = () => {
               </p>
               <div className="flex flex-col w-4/5 py-6">
                 <div className="inline-block items-start justify-start gap-2">
-                  {jobPost?.work_time_type.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                      >
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          {item}
-                        </p>
-                      </div>
-                    );
-                  })}
+                  {jobPost?.work_time_type?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                    >
+                      <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-                <p className="lg:text-base text-sm text-[#343434] mt-4">
-                  <pre>{jobPost?.work_time_content}</pre>
-                </p>
+                <div className="lg:text-base text-sm text-[#343434] mt-4 overflow-auto">
+                  <pre className="whitespace-pre-wrap break-words">
+                    {jobPost?.work_time_content || ""}
+                  </pre>
+                </div>
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
@@ -414,22 +467,22 @@ const JobDetails = () => {
               </p>
               <div className="flex flex-col w-4/5 py-6">
                 <div className="inline-block items-start justify-start gap-2">
-                  {jobPost?.rest_type.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                      >
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          {item}
-                        </p>
-                      </div>
-                    );
-                  })}
+                  {jobPost?.rest_type?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                    >
+                      <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-                <p className="lg:text-base text-sm text-[#343434] mt-4">
-                  <pre>{jobPost?.rest_content}</pre>
-                </p>
+                <div className="lg:text-base text-sm text-[#343434] mt-4 overflow-auto">
+                  <pre className="whitespace-pre-wrap break-words">
+                    {jobPost?.rest_content || ""}
+                  </pre>
+                </div>
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
@@ -439,23 +492,23 @@ const JobDetails = () => {
               <div className="flex flex-col w-4/5 py-6">
                 <div className="inline-block items-start justify-start gap-2">
                   {jobPost?.qualification_type
-                    .concat(jobPost?.qualification_other)
-                    .map((item, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                        >
-                          <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                            {item}
-                          </p>
-                        </div>
-                      );
-                    })}
+                    ?.concat(jobPost?.qualification_other || [])
+                    .map((item, index) => (
+                      <div
+                        key={index}
+                        className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                      >
+                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                          {item}
+                        </p>
+                      </div>
+                    ))}
                 </div>
-                <p className="lg:text-base text-sm text-[#343434] mt-4">
-                  <pre>{jobPost?.qualification_content}</pre>
-                </p>
+                <div className="lg:text-base text-sm text-[#343434] mt-4 overflow-auto">
+                  <pre className="whitespace-pre-wrap break-words">
+                    {jobPost?.qualification_content || ""}
+                  </pre>
+                </div>
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
@@ -463,58 +516,43 @@ const JobDetails = () => {
                 歓迎要件
               </p>
               <div className="flex flex-col w-4/5 py-6">
-                <p className="lg:text-base text-sm text-[#343434]">
-                  <pre>{jobPost?.qualification_welcome}</pre>
-                </p>
+                <div className="lg:text-base text-sm text-[#343434] overflow-auto">
+                  <pre className="whitespace-pre-wrap break-words">
+                    {jobPost?.qualification_welcome || ""}
+                  </pre>
+                </div>
               </div>
             </div>
             <div className="flex items-start justify-start">
               <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
                 選考プロセス
               </p>
-              <p className="lg:text-base text-sm text-[#343434] py-6 w-4/5">
-                <pre>{jobPost?.process}</pre>
-              </p>
+              <div className="lg:text-base text-sm text-[#343434] py-6 w-4/5 overflow-auto">
+                <pre className="whitespace-pre-wrap break-words">
+                  {jobPost?.process || ""}
+                </pre>
+              </div>
             </div>
           </div>
+
+          {/* Photo gallery section */}
           <div className="flex flex-col bg-white p-4 rounded-lg mt-8">
             <p className="lg:text-lg font-bold text-sm text-[#343434]">写真</p>
             <div className="grid grid-cols-3 gap-2 py-4">
-  {jobPost?.picture?.length > 0 &&
-    jobPost?.picture?.map((item, index) => {
-      return (
-        <img
-          key={index}
-          src={item}
-          alt="jobpost"
-          className="aspect-[2/1] object-cover rounded-lg cursor-pointer"
-          onClick={() => {
-            setModalImage(item);
-            setIsModalVisible(true);
-          }}
-        />
-      );
-    })}
-</div>
-
-            {/* モーダルで拡大表示 */}
-            <Modal
-              visible={isModalVisible}
-              footer={null}
-              onCancel={() => setIsModalVisible(false)}
-              closeIcon={
-                <CloseOutlined
-                  style={{
-                    backgroundColor: "#fff",
-                    padding: "5px",
-                    borderRadius: "5px",
-                  }}
-                />
-              }
-            >
-              <img src={modalImage} alt="enlarged" style={{ width: "100%" }} />
-            </Modal>
+              {jobPost?.picture?.length > 0 &&
+                jobPost?.picture?.map((item, index) => (
+                  <img
+                    key={index}
+                    src={item || "/placeholder.svg"}
+                    alt={`${jobPost?.type}の求人写真-${index + 1}`}
+                    className="col-span-1 aspect-[2/1] object-cover rounded-lg cursor-pointer"
+                    onClick={() => openImageModal(item)}
+                  />
+                ))}
+            </div>
           </div>
+
+          {/* Facility information section */}
           <div className="flex flex-col bg-white px-4 rounded-lg mt-8">
             <p className="lg:text-lg font-bold text-sm text-[#343434] border-b-[1px] py-6 border-[#e7e7e7]">
               事業所情報
@@ -524,37 +562,34 @@ const JobDetails = () => {
                 法人・施設名
               </p>
               <Link
-                to={`/facility/details/${jobPost?.facility_id.facility_id}`}
+                to={`/facility/${jobPost?.facility_id?.facility_id}`}
                 className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
               >
-                {jobPost?.facility_id.name}
+                {jobPost?.facility_id?.name || ""}
               </Link>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                 募集職種
               </p>
-              <div className="flex flex-col items-start, justify-start w-4/5">
-                {allFacilityJobPosts?.map((jobPost, index) => {
-                  return (
-                    <Link
-                      key={index}
-                      to={`${jobMapping[jobPost?.type]}`}
-                      className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
-                    >
-                      {jobPost?.type}({jobPost?.employment_type})
-                    </Link>
-                  );
-                })}
+              <div className="flex flex-col items-start justify-start w-4/5">
+                <Link
+                  to={`${jobMapping[jobPost?.type] || "#"}`}
+                  className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
+                >
+                  {jobPost?.type || ""}({jobPost?.employment_type || ""})
+                </Link>
               </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                 施設紹介
               </p>
-              <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                <pre>{jobPost?.facility_id.introduction}</pre>
-              </p>
+              <div className="lg:text-base text-sm text-[#343434] w-4/5 overflow-auto">
+                <pre className="whitespace-pre-wrap break-words">
+                  {jobPost?.facility_id?.introduction || ""}
+                </pre>
+              </div>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
@@ -562,24 +597,22 @@ const JobDetails = () => {
               </p>
               <div className="flex flex-col items-start justify-start w-4/5">
                 <div className="inline-block items-start justify-start gap-2">
-                  {jobPost?.facility_id.access.map((item, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                      >
-                        <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                          {item}
-                        </p>
-                      </div>
-                    );
-                  })}
+                  {jobPost?.facility_id?.access?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                    >
+                      <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
                 </div>
                 <p className="lg:text-base text-sm text-[#343434] mt-1">
-                  {jobPost?.facility_id.prefecture}
-                  {jobPost?.facility_id.city}
-                  {jobPost?.facility_id.village}
-                  {jobPost?.facility_id.building}
+                  {jobPost?.facility_id?.prefecture || ""}
+                  {jobPost?.facility_id?.city || ""}
+                  {jobPost?.facility_id?.village || ""}
+                  {jobPost?.facility_id?.building || ""}
                 </p>
                 <div className="w-full py-4 aspect-square">
                   <iframe
@@ -589,17 +622,28 @@ const JobDetails = () => {
                     style={{ border: 0 }}
                     loading="lazy"
                     allowFullScreen
-                    src={`https://www.google.com/maps?q=${jobPost?.facility_id.prefecture}${jobPost?.facility_id.city}${jobPost?.facility_id.village}${jobPost?.facility_id.building}&output=embed`}
+                    src={`https://www.google.com/maps?q=${encodeURIComponent(
+                      `${jobPost?.facility_id?.prefecture || ""} ${
+                        jobPost?.facility_id?.city || ""
+                      } ${jobPost?.facility_id?.village || ""} ${
+                        jobPost?.facility_id?.building || ""
+                      }`
+                    )}&output=embed`}
                   ></iframe>
                 </div>
                 <p className="lg:text-base text-sm text-[#343434] mt-1">
-                  {jobPost?.facility_id.access_text}
+                  {jobPost?.facility_id?.access_text || ""}
                 </p>
                 <Link
                   to={`https://www.google.com/maps?q=${encodeURIComponent(
-                    `${jobPost?.facility_id.prefecture}${jobPost?.facility_id.city}${jobPost?.facility_id.village}${jobPost?.facility_id.building}`
+                    `${jobPost?.facility_id?.prefecture || ""} ${
+                      jobPost?.facility_id?.city || ""
+                    } ${jobPost?.facility_id?.village || ""} ${
+                      jobPost?.facility_id?.building || ""
+                    }`
                   )}`}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="lg:text-base text-sm text-[#FF2A3B] hover:underline mt-1 border-[1px] border-[#FF2A3B] py-1 px-2 rounded-lg"
                 >
                   Google Mapsで見る
@@ -608,11 +652,13 @@ const JobDetails = () => {
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                設立年月日
+                設立年月
               </p>
               <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                {jobPost?.facility_id.establishment_date.split("-")[0]}年
-                {jobPost?.facility_id.establishment_date.split("-")[1]}日
+                {jobPost?.facility_id?.establishment_date?.split("-")[0] || ""}
+                年
+                {jobPost?.facility_id?.establishment_date?.split("-")[1] || ""}
+                月
               </p>
             </div>
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
@@ -621,10 +667,12 @@ const JobDetails = () => {
               </p>
               <div className="flex flex-col items-start justify-start w-4/5">
                 <Link
-                  to={`/${Facilities[jobPost?.facility_id.facility_genre]}`}
+                  to={`/${
+                    Facilities[jobPost?.facility_id?.facility_genre] || "#"
+                  }`}
                   className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
                 >
-                  {jobPost?.facility_id.facility_genre}
+                  {jobPost?.facility_id?.facility_genre || ""}
                 </Link>
               </div>
             </div>
@@ -632,48 +680,26 @@ const JobDetails = () => {
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                 営業時間
               </p>
-              <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                <pre>{jobPost?.facility_id.service_time}</pre>
-              </p>
+              <div className="lg:text-base text-sm text-[#343434] w-4/5 overflow-auto">
+                <pre className="whitespace-pre-wrap break-words">
+                  {jobPost?.facility_id?.service_time || ""}
+                </pre>
+              </div>
             </div>
             <div className="flex items-start justify-start py-6">
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                 休日
               </p>
-              <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                <pre>{jobPost?.facility_id.rest_day}</pre>
-              </p>
-            </div>
-            
-            <div className="flex items-center justify-between w-full gap-4 px-8 pb-6 my-6">
-              <button className="flex items-center justify-center gap-2 bg-whtie rounded-lg py-4 text-white border-2 border-[#FF6B56] w-full hover:bg-[#FF6B56]/20 hover:scale-105 duration-300">
-                <img
-                  src="/assets/images/dashboard/Vector.png"
-                  alt="eye"
-                  className="w-4 pt-0.5"
-                />
-                <p className="lg:text-base text-sm font-bold text-[#FF6B56]">
-                  気になる
-                </p>
-              </button>
-              <Link
-                to={`/${job_type}/apply/${jobPost?.jobpost_id}`}
-                className="flex items-center gap-2 justify-center bg-[#FF6B56] hover:bg-[#FF5B02] hover:scale-105 duration-300 rounded-lg py-2 text-white border-2 border-[#FF6B56] w-full"
-              >
-                <p className="lg:text-base text-sm font-bold text-white">
-                  応募画面に進む
-                </p>
-                <div className="bg-white text-center rounded-lg p-1">
-                  <p className="text-xs text-[#FF6B56]">
-                    最短1分！
-                    <br />
-                    すぐできます
-                  </p>
-                </div>
-              </Link>
+              <div className="lg:text-base text-sm text-[#343434] w-4/5 overflow-auto">
+                <pre className="whitespace-pre-wrap break-words">
+                  {jobPost?.facility_id?.rest_day || ""}
+                </pre>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Sidebar */}
         <div className="flex h-full w-1/3">
           <div className="flex flex-col items-center justify-start h-full w-full">
             <img
@@ -821,6 +847,30 @@ const JobDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Image Modal */}
+      <Modal
+        open={isModalVisible}
+        footer={null}
+        onCancel={() => setIsModalVisible(false)}
+        width={800}
+        centered
+        closeIcon={
+          <CloseOutlined
+            style={{
+              backgroundColor: "#fff",
+              padding: "5px",
+              borderRadius: "5px",
+            }}
+          />
+        }
+      >
+        <img
+          src={modalImage || "/placeholder.svg"}
+          alt="拡大画像"
+          style={{ width: "100%" }}
+        />
+      </Modal>
     </div>
   );
 };

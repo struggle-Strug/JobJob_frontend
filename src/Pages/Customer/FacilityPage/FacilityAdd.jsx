@@ -1,21 +1,33 @@
-import { useState } from "react";
+"use client";
+
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Checkbox,
+  Input,
+  message,
+  Modal,
+  Radio,
+  Select,
+  Upload,
+} from "antd";
+import TextArea from "antd/es/input/TextArea";
+import axios from "axios";
+import "rc-slider/assets/index.css";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Checkbox, Input, message, Radio, Select, Upload, Button, Spin, Modal } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
+import Loading from "../../../components/Loading";
+import { useAuth } from "../../../context/AuthContext";
 import {
   Facilities,
   Features,
   JobType,
   Prefectures,
 } from "../../../utils/constants/categories";
-import { getBase64 } from "../../../utils/getBase64";
-import axios from "axios";
-import { PlusOutlined } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
-import { useAuth } from "../../../context/AuthContext";
 import { Municipalities } from "../../../utils/constants/categories/municipalities";
+import { getBase64 } from "../../../utils/getBase64";
+import ImageEditModal from "./ImageEditModal";
 import PhotoSelectModal from "./PhotoSelectModal";
-import Loading from "../../../components/Loading";
 
 const FacilityAdd = () => {
   const { customer } = useAuth();
@@ -39,10 +51,14 @@ const FacilityAdd = () => {
   const [facilityAccessText, setFacilityAccessText] = useState("");
   const [facilityGenre, setFacilityGenre] = useState("");
   const [facilityServiceType, setFacilityServiceType] = useState([]);
-  const [facilityEstablishmentDateYear, setFacilityEstablishmentDateYear] = useState("");
-  const [facilityEstablishmentDateMonth, setFacilityEstablishmentDateMonth] = useState("");
+  const [facilityEstablishmentDateYear, setFacilityEstablishmentDateYear] =
+    useState("");
+  const [facilityEstablishmentDateMonth, setFacilityEstablishmentDateMonth] =
+    useState("");
   const [facilityServiceTime, setFacilityServiceTime] = useState("");
   const [facilityRestDay, setFacilityRestDay] = useState("");
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
 
   // ローディング状態
   const [loading, setLoading] = useState(false);
@@ -120,8 +136,19 @@ const FacilityAdd = () => {
     })),
   ];
 
-  const beforeUpload = () => {
-    return false;
+  // This function handles the file selection directly from the upload button
+  const handleFileSelect = (e) => {
+    const file = e.file.originFileObj;
+    if (!file) return;
+
+    // Prevent the default upload behavior
+    e.stopPropagation();
+
+    // Process the file for editing
+    getBase64(file).then((base64) => {
+      setCurrentImage(base64);
+      setEditModalVisible(true);
+    });
   };
 
   const handlePreview = async (file) => {
@@ -132,37 +159,48 @@ const FacilityAdd = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange = (info) => {
-    let updatedFileList = [...info.fileList];
-    if (updatedFileList.length > 10) {
-      updatedFileList.pop();
-      message.error("10枚まで選択できます");
+  const handleEditSave = (croppedImage) => {
+    const { file, preview } = croppedImage;
+
+    // Create a new file entry with the cropped image
+    const newFile = {
+      uid: `${Date.now()}`,
+      name: file.name || "cropped-image.jpg",
+      status: "done",
+      originFileObj: file,
+      preview: preview,
+      url: preview, // Add url for consistency with PhotoSelectModal
+    };
+
+    // Check if adding this would exceed the limit
+    if (facilityPhoto.length >= 10) {
+      message.error("最大10枚までしか選択できません");
+      return;
     }
-    setFacilityPhoto(updatedFileList);
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
+
+    // Add only the edited image to the file list
+    setFacilityPhoto((prev) => [...prev, newFile]);
+    setEditModalVisible(false);
+    setCurrentImage(null);
   };
 
   const handleUpload = async () => {
     if (facilityPhoto.length === 0) {
       return { fileUrls: [], files: [] };
     }
-  
+
     const formData = new FormData();
     // 新規アップロードするファイルのみを抽出
     const newFiles = facilityPhoto.filter((file) => file.originFileObj);
     const existingFiles = facilityPhoto.filter((file) => !file.originFileObj);
-  
+
     newFiles.forEach((file) => {
       formData.append("files", file.originFileObj);
     });
-  
+
     let uploadedFileUrls = [];
     let uploadedFiles = [];
-  
+
     if (newFiles.length > 0) {
       try {
         const response = await axios.post(
@@ -182,21 +220,24 @@ const FacilityAdd = () => {
         return { fileUrls: [], files: [] };
       }
     }
-  
+
     // 既存ファイルの URL を抽出
     const existingFileUrls = existingFiles.map((file) => file.url);
-  
+
     // 両方を統合して返す
-    return { fileUrls: [...uploadedFileUrls, ...existingFileUrls], files: uploadedFiles };
+    return {
+      fileUrls: [...uploadedFileUrls, ...existingFileUrls],
+      files: uploadedFiles,
+    };
   };
-  
 
   const handleSave = async () => {
     setLoading(true);
     try {
       const photoUrls = await handleUpload();
 
-      if (facilityName === "") return message.error("施設名を入力してください。");
+      if (facilityName === "")
+        return message.error("施設名を入力してください。");
       if (facilityPostalCode === "")
         return message.error("郵便番号を入力してください。");
       if (facilityPrefecture === "")
@@ -242,13 +283,22 @@ const FacilityAdd = () => {
       console.error(error);
     } finally {
       setLoading(false);
-      setLoading(false);
     }
   };
 
+  // Remove a file from the list
+  const handleRemove = (file) => {
+    const newFileList = facilityPhoto.filter((item) => item.uid !== file.uid);
+    setFacilityPhoto(newFileList);
+  };
+
+  useEffect(() => {
+    document.title = "施設登録・編集 | JobJob (ジョブジョブ)";
+  }, []);
+
   return (
     <>
-    {loading ? <Loading /> : <></>}
+      {loading ? <Loading /> : <></>}
       <div className="min-h-screen bg-white p-6 rounded-lg">
         <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">
           施設を新規登録
@@ -329,10 +379,35 @@ const FacilityAdd = () => {
               listType="picture-card"
               fileList={facilityPhoto}
               onPreview={handlePreview}
-              beforeUpload={beforeUpload}
-              onChange={handleChange}
+              onRemove={handleRemove}
+              customRequest={({ onSuccess }) => {
+                // Do nothing, just call onSuccess to mark it as done
+                setTimeout(() => {
+                  onSuccess("ok", null);
+                }, 0);
+              }}
+              showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}
+              openFileDialogOnClick={false} // Prevent opening file dialog on click
             >
-              <div className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3">
+              <div
+                className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3"
+                onClick={() => {
+                  // Create a file input element
+                  const input = document.createElement("input");
+                  input.type = "file";
+                  input.accept = "image/*";
+                  input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      getBase64(file).then((base64) => {
+                        setCurrentImage(base64);
+                        setEditModalVisible(true);
+                      });
+                    }
+                  };
+                  input.click();
+                }}
+              >
                 <PlusOutlined />
                 <div className="mt-4 text-center">Upload</div>
               </div>
@@ -395,7 +470,9 @@ const FacilityAdd = () => {
             <span className="mx-2">年</span>
             <Input
               value={facilityEstablishmentDateMonth}
-              onChange={(e) => setFacilityEstablishmentDateMonth(e.target.value)}
+              onChange={(e) =>
+                setFacilityEstablishmentDateMonth(e.target.value)
+              }
               className="w-1/4"
             />
             <span className="mx-2">月</span>
@@ -426,42 +503,56 @@ const FacilityAdd = () => {
           </button>
         </div>
         <PhotoSelectModal
-  visible={photoSelectModalVisible}
-  onCancel={() => setPhotoSelectModalVisible(false)}
-  onSelect={(selected) => {
-    const formattedPhotos = selected.map((photoUrl, index) => ({
-      uid: `existing-${index}-${photoUrl}`,
-      name: `Photo ${index + 1}`,
-      url: photoUrl,
-      status: "done",
-    }));
-    const totalPhotos = facilityPhoto.length + formattedPhotos.length;
-    if (totalPhotos > 10) {
-      message.error("最大10枚までしか選択できません");
-      return;
-    }
-    setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
-    setPhotoSelectModalVisible(false);
-  }}
-/>
+          visible={photoSelectModalVisible}
+          onCancel={() => setPhotoSelectModalVisible(false)}
+          onSelect={(selected) => {
+            const formattedPhotos = selected.map((photoUrl, index) => ({
+              uid: `existing-${index}-${photoUrl}`,
+              name: `Photo ${index + 1}`,
+              url: photoUrl,
+              status: "done",
+            }));
+            const totalPhotos = facilityPhoto.length + formattedPhotos.length;
+            if (totalPhotos > 10) {
+              message.error("最大10枚までしか選択できません");
+              return;
+            }
+            setFacilityPhoto((prev) => [...prev, ...formattedPhotos]);
+            setPhotoSelectModalVisible(false);
+          }}
+        />
 
         {/* モーダルで拡大表示 */}
-<Modal
-              visible={previewOpen}
-              footer={null}
-              onCancel={() => setPreviewOpen(false)}
-              closeIcon={
-                <CloseOutlined
-                  style={{
-                    backgroundColor: "#fff",
-                    padding: "5px",
-                    borderRadius: "5px",
-                  }}
-                />
-              }
-            >
-              <img src={previewImage} alt="enlarged" style={{ width: "100%" }} />
-            </Modal>
+        <Modal
+          visible={previewOpen}
+          footer={null}
+          onCancel={() => setPreviewOpen(false)}
+          closeIcon={
+            <CloseOutlined
+              style={{
+                backgroundColor: "#fff",
+                padding: "5px",
+                borderRadius: "5px",
+              }}
+            />
+          }
+        >
+          <img
+            src={previewImage || "/placeholder.svg"}
+            alt="enlarged"
+            style={{ width: "100%" }}
+          />
+        </Modal>
+        {/* Image Edit Modal */}
+        <ImageEditModal
+          visible={editModalVisible}
+          image={currentImage}
+          onCancel={() => {
+            setEditModalVisible(false);
+            setCurrentImage(null);
+          }}
+          onSave={handleEditSave}
+        />
       </div>
     </>
   );
