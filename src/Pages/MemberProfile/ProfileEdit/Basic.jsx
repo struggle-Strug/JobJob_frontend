@@ -159,7 +159,6 @@ const Basic = () => {
     setQualificationDetails((prev) => [...prev, ...addedQualifications]);
     setIsQualificationOtherOpen(false);
   };
-  console.log(municipalities);
 
   const handleSave = async () => {
     const error = [];

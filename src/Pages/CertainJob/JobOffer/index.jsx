@@ -1,3 +1,5 @@
+"use client";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getJobTypeKeyByValue } from "../../../utils/getFunctions";
 import { useAuth } from "../../../context/AuthContext";
@@ -257,7 +259,8 @@ const JobOffer = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobpost_id}`
       );
       setJobPost(res.data.jobpost);
-      setQualification(user?.qualification?.map((q) => q.qualification));
+      // Don't overwrite qualifications here
+      // setQualification(user?.qualification?.map((q) => q.qualification));
       const resData = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/customers/${res.data.jobpost.customer_id.customer_id}`
       );
@@ -285,11 +288,66 @@ const JobOffer = () => {
     if (email === "")
       return message.error("メールアドレスを入力してください。");
 
-    const messageData = {
-      jobPost_id: jobpost_id,
-      sender: user?._id,
-      recevier: customer?._id,
-      content: `
+    if (user !== null) {
+      // 1. Separate unchangeable qualifications (those not in job posting) from changeable ones
+      const jobPostQualifications = jobPost?.qualification_type || [];
+
+      // Unchangeable qualifications - those not in the job posting
+      const unchangeableQualifications =
+        user?.qualification?.filter(
+          (qual) => !jobPostQualifications.includes(qual.qualification)
+        ) || [];
+
+      // 2. Create new qualification objects for the selected qualifications
+      const newQualifications = qualification.map((qualName) => {
+        // Check if this qualification already exists in user's qualifications
+        const existingQual = user?.qualification?.find(
+          (q) => q.qualification === qualName
+        );
+
+        // If it exists, keep its data; otherwise create new with empty year/month
+        return (
+          existingQual || {
+            qualification: qualName,
+            year: "",
+            month: "",
+          }
+        );
+      });
+
+      // 3. Combine unchangeable qualifications with the new ones
+      const updatedQualifications = [
+        ...unchangeableQualifications,
+        ...newQualifications,
+      ];
+
+      const userData = {
+        name: `${sei} ${mei}`,
+        hiraganaName: `${hiraganaSei} ${hiraganaMei}`,
+        gender: gender,
+        birthday: `${year}-${month}-${day}`,
+        phoneNumber: phoneNumber,
+        email: email,
+        currentStatus: currentStatus,
+        postalCode: postalCode,
+        municipalities: municipalities,
+        village: village,
+        building: building,
+        prefecture: prefecture,
+        qualification: updatedQualifications,
+      };
+
+      const resData = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/user/${user._id}/update`,
+        userData
+      );
+      if (resData.data.error) return message.error(resData.data.message);
+
+      const messageData = {
+        jobPost_id: jobpost_id,
+        sender: user?._id,
+        recevier: customer?._id,
+        content: `
             この度は、ジョブジョブの求人広告を見て応募いたしました。
 
             宜しければ、面接の機会をいただけましたら幸いです。
@@ -324,16 +382,122 @@ const JobOffer = () => {
                 : ""
             }
             `
-        .trim()
-        .replace(/^\s+/gm, ""),
-    };
+          .trim()
+          .replace(/^\s+/gm, ""),
+      };
 
-    const res = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/message`,
-      messageData
-    );
-    if (res.data.error) return message.error(res.data.message);
-    setSuccessModal(true);
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/message`,
+        messageData
+      );
+      if (res.data.error) return message.error(res.data.message);
+      setSuccessModal(true);
+    } else {
+      // 1. Separate unchangeable qualifications (those not in job posting) from changeable ones
+      const jobPostQualifications = jobPost?.qualification_type || [];
+
+      // Unchangeable qualifications - those not in the job posting
+      const unchangeableQualifications =
+        user?.qualification?.filter(
+          (qual) => !jobPostQualifications.includes(qual.qualification)
+        ) || [];
+
+      // 2. Create new qualification objects for the selected qualifications
+      const newQualifications = qualification.map((qualName) => {
+        // Check if this qualification already exists in user's qualifications
+        const existingQual = user?.qualification?.find(
+          (q) => q.qualification === qualName
+        );
+
+        // If it exists, keep its data; otherwise create new with empty year/month
+        return (
+          existingQual || {
+            qualification: qualName,
+            year: "",
+            month: "",
+          }
+        );
+      });
+
+      // 3. Combine unchangeable qualifications with the new ones
+      const updatedQualifications = [
+        ...unchangeableQualifications,
+        ...newQualifications,
+      ];
+
+      const userData = {
+        name: `${sei} ${mei}`,
+        hiraganaName: `${hiraganaSei} ${hiraganaMei}`,
+        gender: gender,
+        birthday: `${year}-${month}-${day}`,
+        phoneNumber: phoneNumber,
+        email: email,
+        currentStatus: currentStatus,
+        postalCode: postalCode,
+        municipalities: municipalities,
+        village: village,
+        building: building,
+        password: password,
+        prefecture: prefecture,
+        qualification: updatedQualifications,
+      };
+
+      const resData = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/user/`,
+        userData
+      );
+      if (resData.data.error) return message.error(resData.data.message);
+
+      const messageData = {
+        jobPost_id: jobpost_id,
+        sender: resData?.user?._id,
+        recevier: customer?._id,
+        content: `
+            この度は、ジョブジョブの求人広告を見て応募いたしました。
+
+            宜しければ、面接の機会をいただけましたら幸いです。
+
+            ご多忙の所恐縮ですが、どうぞよろしくお願い致します。
+
+            ■応募勤務形態 ${jobPost?.employment_type[0]}
+
+            ${period !== "" ? `■応募職種の経験 ${period}` : ""}
+
+            ${
+              jobPost?.qualification_type?.every((q) =>
+                qualification?.includes(q)
+              )
+                ? `■資格 ${jobPost?.qualification_type.join(",")}`
+                : ""
+            }
+            ${
+              meetingDate[0].date !== ""
+                ? `■面接日時
+            ${meetingDate
+              .map(
+                (meeting) =>
+                  `${meeting.date} ${meeting.times
+                    .map(
+                      (meetingTime) =>
+                        `${meetingTime.time}:${meetingTime.minute}~`
+                    )
+                    .join(", ")}`
+              )
+              .join("\n")}`
+                : ""
+            }
+            `
+          .trim()
+          .replace(/^\s+/gm, ""),
+      };
+
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/message`,
+        messageData
+      );
+      if (res.data.error) return message.error(res.data.message);
+      setSuccessModal(true);
+    }
   };
 
   useEffect(() => {
@@ -355,6 +519,10 @@ const JobOffer = () => {
       setCurrentStatus(user?.currentStatus);
       setPostalCode(user?.postalCode);
       setEmail(user?.email);
+      // Make sure we're properly initializing qualifications from user data
+      if (user?.qualification?.length > 0) {
+        setQualification(user.qualification.map((q) => q.qualification));
+      }
     }
     getJobPost();
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -685,7 +853,10 @@ const JobOffer = () => {
                     <Checkbox.Group
                       options={requiredQualificationsOptions}
                       value={qualification}
-                      onChange={(value) => setQualification(value)}
+                      onChange={(value) => {
+                        // Preserve existing qualifications and add new ones
+                        setQualification(value);
+                      }}
                     />
                   </div>
                 </div>
@@ -727,52 +898,50 @@ const JobOffer = () => {
                                   />
                                   {meeting.times.map((time, timeIndex) => {
                                     return (
-                                      <>
-                                        <div
-                                          key={timeIndex}
-                                          className="flex mt-4 gap-2 items-center"
+                                      <div
+                                        key={timeIndex}
+                                        className="flex mt-4 gap-2 items-center"
+                                      >
+                                        <Select
+                                          options={timeOptions}
+                                          placeholder="時間を選択"
+                                          value={time.time}
+                                          onChange={(value) =>
+                                            handleTimeChange(
+                                              value,
+                                              dateIndex,
+                                              timeIndex
+                                            )
+                                          }
+                                          className="w-1/3"
+                                        />
+                                        :
+                                        <Select
+                                          options={minuteOptions}
+                                          placeholder="分を選択"
+                                          value={time.minute}
+                                          onChange={(value) =>
+                                            handleMinuteChange(
+                                              value,
+                                              dateIndex,
+                                              timeIndex
+                                            )
+                                          }
+                                          className="w-1/3"
+                                        />
+                                        ~
+                                        <button
+                                          onClick={() =>
+                                            handleDeleteMeetingTime(
+                                              dateIndex,
+                                              timeIndex
+                                            )
+                                          }
+                                          className="text-[#FF2A3B] text-xs"
                                         >
-                                          <Select
-                                            options={timeOptions}
-                                            placeholder="時間を選択"
-                                            value={time.time}
-                                            onChange={(value) =>
-                                              handleTimeChange(
-                                                value,
-                                                dateIndex,
-                                                timeIndex
-                                              )
-                                            }
-                                            className="w-1/3"
-                                          />
-                                          :
-                                          <Select
-                                            options={minuteOptions}
-                                            placeholder="分を選択"
-                                            value={time.minute}
-                                            onChange={(value) =>
-                                              handleMinuteChange(
-                                                value,
-                                                dateIndex,
-                                                timeIndex
-                                              )
-                                            }
-                                            className="w-1/3"
-                                          />
-                                          ~
-                                          <button
-                                            onClick={() =>
-                                              handleDeleteMeetingTime(
-                                                dateIndex,
-                                                timeIndex
-                                              )
-                                            }
-                                            className="text-[#FF2A3B] text-xs"
-                                          >
-                                            時間を削除
-                                          </button>
-                                        </div>
-                                      </>
+                                          時間を削除
+                                        </button>
+                                      </div>
                                     );
                                   })}
                                   <button
