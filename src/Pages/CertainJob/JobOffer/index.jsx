@@ -498,7 +498,6 @@ const JobOffer = () => {
                       <div className="duration-300 overflow-hidden">
                         <div className="flex justify-start gap-4">
                           <Input
-                            placeholder="電話番号"
                             value={phoneNumber}
                             className="w-1/3"
                             onChange={onChangePhoneNumber}
@@ -632,7 +631,6 @@ const JobOffer = () => {
                           <div className="flex justify-start gap-4">
                             <Input
                               type="password"
-                              placeholder="PASSWORD"
                               className="w-1/2 py-2"
                               onChange={onChangePassword}
                             />
