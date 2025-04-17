@@ -4,9 +4,10 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { getJobTypeValue } from "../../../utils/getFunctions";
 import { JobType } from "../../../utils/constants/categories";
+import { useAuth } from "../../../context/AuthContext";
 
 const Favorites = () => {
-  const [likes, setLikes] = useState([]);
+  const { likes, setLikes } = useAuth();
   const [jobPosts, setJobPosts] = useState([]);
 
   const getJobPosts = async () => {
@@ -18,19 +19,20 @@ const Favorites = () => {
     setJobPosts(response.data.jobPosts);
   };
 
+  const handleUnLike = async (id) => {
+    let newLikes = Array.isArray(likes) ? [...likes] : [];
+
+    newLikes = newLikes.filter((like) => like !== id);
+
+    localStorage.setItem("likes", JSON.stringify(newLikes));
+    setLikes(newLikes);
+  };
   useEffect(() => {
     getJobPosts();
   }, [likes]);
 
   useEffect(() => {
     document.title = "気になる求人 | JobJob (ジョブジョブ)";
-    const storedLikes = localStorage.getItem("likes");
-    if (storedLikes) {
-      setLikes(JSON.parse(storedLikes)); // Ensure we parse it as an array
-    } else {
-      setLikes([]);
-      localStorage.setItem("likes", JSON.stringify([]));
-    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
@@ -96,7 +98,7 @@ const Favorites = () => {
                     to={`/${getJobTypeValue(JobType, jobPost.type)}/apply/${
                       jobPost.jobpost_id
                     }`}
-                    className="bg-[#FF2A3B] text-white w-1/2 text-center rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
+                    className="bg-[#FF2A3B] text-white w-1/3 text-center text-[0.7rem] rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
                   >
                     応募画面に進む
                   </Link>
@@ -104,10 +106,16 @@ const Favorites = () => {
                     to={`/${getJobTypeValue(JobType, jobPost.type)}/details/${
                       jobPost.jobpost_id
                     }`}
-                    className="bg-[#e7e7e7] text-[#FF2A3B] w-1/2 text-center rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
+                    className="bg-[#e7e7e7] text-[#FF2A3B] w-1/3 text-center text-[0.7rem] rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
                   >
                     詳細を見る
                   </Link>
+                  <button
+                    className="bg-[#e7e7e7] text-[#FF2A3B] w-1/3 text-center text-[0.7rem] rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"
+                    onClick={() => handleUnLike(jobPost.jobpost_id)}
+                  >
+                    「気になる」削除
+                  </button>
                 </div>
               </div>
             </div>

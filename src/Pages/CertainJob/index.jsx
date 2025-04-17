@@ -121,7 +121,11 @@ const CertainJob = () => {
           <p className="py-1">
             {facility}の{jobType}
             <span className="text-[#343434] text-xs">
-              ({jobPostsNumbersByFacility[facility]})
+              (
+              {jobPostsNumbersByFacility
+                ? jobPostsNumbersByFacility[facility]
+                : 0}
+              )
             </span>
           </p>
           <div className="flex items-center">
