@@ -228,6 +228,13 @@ function App() {
           <Route path="/members/sign_in" element={<Login />} />
           <Route path="/:jobtype/details/:id" element={<JobDetails />} />
           <Route path="/:jobtype/apply/:id" element={<JobOffer />} />
+          <Route path=":jobtype/city/:muniId" element={<JobLists />}>
+            <Route path="modal/:modal" element={<JobLists />} />
+          </Route>
+          <Route path="/:jobType/:pref" element={<JobLists/>}>
+            <Route path="modal/:modal" element={<JobLists/>}/>
+          </Route>
+          
           {getAllJobTypeValues().map((jobType) => {
             const hasPrefecture =
               getAllPrefectureValues().includes(prefOrFacility);
