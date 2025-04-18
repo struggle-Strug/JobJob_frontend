@@ -1,6 +1,8 @@
+"use client";
+
 import { message, Carousel } from "antd";
 import axios from "axios";
-import { useEffect, useState, React, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getJobValueByKey } from "../../utils/getFunctions";
 import { Facilities } from "../../utils/constants/categories";
@@ -82,7 +84,7 @@ const FacilityDetails = () => {
                     facility.photo.map((photoUrl, index) => (
                       <div key={index}>
                         <img
-                          src={photoUrl}
+                          src={photoUrl || "/placeholder.svg"}
                           alt={`facility-photo-${index}`}
                           className="w-full aspect-video object-cover rounded-t-xl"
                         />
@@ -132,9 +134,9 @@ const FacilityDetails = () => {
                     <path
                       d="M11 13L5.27083 8L11 3"
                       stroke="#FF6B56"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     ></path>
                   </svg>
                 </button>
@@ -160,9 +162,9 @@ const FacilityDetails = () => {
                     <path
                       d="M5 13L10.7292 8L5 3"
                       stroke="#FF6B56"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     ></path>
                   </svg>
                 </button>
@@ -218,7 +220,7 @@ const FacilityDetails = () => {
                       <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
                         {facility?.name}の{jobpost.type}求人
                       </p>
-                      <p className="lg:text-sm md:text-xs text-[#343434]">
+                      <p className="lg:text-sm md:text-xs text-[#343434] line-clamp-2">
                         {jobpost.sub_title}
                       </p>
                     </div>
@@ -239,15 +241,17 @@ const FacilityDetails = () => {
                           <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
                             仕事内容
                           </p>
-                          <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-4">
-                            <pre>{jobpost.work_content}</pre>
+                          <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
+                            <pre className="whitespace-pre-wrap overflow-hidden line-clamp-2">
+                              {jobpost.work_content}
+                            </pre>
                           </p>
                         </div>
                         <div className="flex items-start justify-start mt-4">
                           <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
                             応募要件
                           </p>
-                          <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
+                          <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
                             {jobpost.qualification_content}{" "}
                             {jobpost.qualification_welcome}
                           </p>
@@ -256,7 +260,7 @@ const FacilityDetails = () => {
                           <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
                             住所
                           </p>
-                          <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
+                          <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
                             {facility.prefecture} {facility.city}{" "}
                             {facility.village} {facility.building}{" "}
                             {facility.access_text}
@@ -341,8 +345,10 @@ const FacilityDetails = () => {
                 <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                   施設紹介
                 </p>
-                <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                  <pre>{facility?.introduction}</pre>
+                <p className="lg:text-base text-sm text-[#343434] w-4/5 line-clamp-2">
+                  <pre className="whitespace-pre-wrap overflow-hidden">
+                    {facility?.introduction}
+                  </pre>
                 </p>
               </div>
               <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
