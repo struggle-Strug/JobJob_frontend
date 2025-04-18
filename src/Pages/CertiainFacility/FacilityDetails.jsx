@@ -6,6 +6,7 @@ import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getJobValueByKey } from "../../utils/getFunctions";
 import { Facilities } from "../../utils/constants/categories";
+import NotFound from "../NotFound";
 
 // Job type to URL path mapping
 const JOB_MAPPING = {
@@ -321,20 +322,7 @@ const FacilityDetails = () => {
   }
 
   if (error || !facility) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-center">
-          <p className="text-xl text-red-500 mb-4">エラーが発生しました</p>
-          <p>{error || "施設情報が見つかりませんでした"}</p>
-          <Link
-            to="/"
-            className="text-blue-500 hover:underline mt-4 inline-block"
-          >
-            トップページに戻る
-          </Link>
-        </div>
-      </div>
-    );
+    return <NotFound />;
   }
 
   return (
