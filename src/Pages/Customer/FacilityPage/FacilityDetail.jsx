@@ -269,9 +269,11 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
               <div className="flex flex-col gap-1 w-4/5">
                 <div className="flex justify-between w-full gap-2">
                   <div className="flex items-center justify-start gap-2">
-                    <p className="lg:text-sm text-xs text-[#343434]">職種名:</p>
                     <p className="lg:text-sm text-xs text-[#343434]">
                       {jobPost?.type}
+                    </p>
+                    <p className="lg:text-sm text-xs text-[#343434]">
+                      {jobPost?.employment_type}
                     </p>
                   </div>
                   <p className="lg:text-xs text-[0.5rem] rounded-lg text-right">
