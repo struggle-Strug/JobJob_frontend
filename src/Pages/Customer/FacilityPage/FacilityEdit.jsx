@@ -325,7 +325,7 @@ const FacilityEdit = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
         photoUrl.files || []
       );
-      if (facility?.allowed === "rejected") {
+      if (facility?.allowed === "rejected" || "draft") {
         const response = await axios.put(
           `${process.env.REACT_APP_API_URL}/api/v1/facility/${facility?.facility_id}`,
           facilityData
