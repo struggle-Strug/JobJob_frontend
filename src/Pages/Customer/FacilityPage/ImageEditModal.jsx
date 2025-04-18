@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Modal, Button, Slider } from "antd";
-import ReactCrop from "react-easy-crop";
+import { useState, useEffect } from "react";
+import { Modal, Button } from "antd";
 
-// Function to create a cropped image
-const createCroppedImage = async (imageSrc, pixelCrop) => {
+// Function to create a processed image based on orientation
+const createProcessedImage = async (imageSrc) => {
   const image = new Image();
+  image.crossOrigin = "anonymous";
   image.src = imageSrc;
 
   return new Promise((resolve) => {
@@ -14,22 +14,40 @@ const createCroppedImage = async (imageSrc, pixelCrop) => {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
 
-      // Set canvas dimensions to the cropped size
-      canvas.width = pixelCrop.width;
-      canvas.height = pixelCrop.height;
+      // Set fixed output dimensions to 1024x768
+      const outputWidth = 1024;
+      const outputHeight = 768;
 
-      // Draw the cropped image
-      ctx.drawImage(
-        image,
-        pixelCrop.x,
-        pixelCrop.y,
-        pixelCrop.width,
-        pixelCrop.height,
-        0,
-        0,
-        pixelCrop.width,
-        pixelCrop.height
-      );
+      // Set canvas to the output dimensions
+      canvas.width = outputWidth;
+      canvas.height = outputHeight;
+
+      // Fill with white background
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Calculate dimensions to maintain aspect ratio
+      const imageAspectRatio = image.width / image.height;
+      const outputAspectRatio = outputWidth / outputHeight;
+
+      let drawWidth, drawHeight, xOffset, yOffset;
+
+      if (imageAspectRatio > outputAspectRatio) {
+        // Image is wider than output - fit to width
+        drawWidth = outputWidth;
+        drawHeight = outputWidth / imageAspectRatio;
+        xOffset = 0;
+        yOffset = (outputHeight - drawHeight) / 2;
+      } else {
+        // Image is taller than output - fit to height
+        drawHeight = outputHeight;
+        drawWidth = outputHeight * imageAspectRatio;
+        xOffset = (outputWidth - drawWidth) / 2;
+        yOffset = 0;
+      }
+
+      // Draw the image centered
+      ctx.drawImage(image, xOffset, yOffset, drawWidth, drawHeight);
 
       // Convert canvas to blob
       canvas.toBlob((blob) => {
@@ -38,73 +56,76 @@ const createCroppedImage = async (imageSrc, pixelCrop) => {
           return;
         }
 
-        blob.name = "cropped.jpeg";
-        const croppedFile = new File([blob], "cropped.jpeg", {
+        blob.name = "processed.jpeg";
+        const processedFile = new File([blob], "processed.jpeg", {
           type: "image/jpeg",
         });
-        resolve({ file: croppedFile, preview: URL.createObjectURL(blob) });
+        resolve({ file: processedFile, preview: URL.createObjectURL(blob) });
       }, "image/jpeg");
     };
   });
 };
 
 const ImageEditModal = ({ visible, image, onCancel, onSave }) => {
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+  // Generate preview when image changes
+  useEffect(() => {
+    if (image) {
+      const generatePreview = async () => {
+        const result = await createProcessedImage(image);
+        setPreviewUrl(result.preview);
+      };
+
+      generatePreview();
+    }
+
+    // Clean up preview URL when component unmounts or image changes
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [image]);
 
   const handleSave = async () => {
     try {
-      if (!croppedAreaPixels) return;
-
-      const croppedImage = await createCroppedImage(image, croppedAreaPixels);
-      onSave(croppedImage);
+      if (!image) return;
+      const processedImage = await createProcessedImage(image);
+      onSave(processedImage);
     } catch (e) {
-      console.error("Error creating cropped image:", e);
+      console.error("Error processing image:", e);
     }
   };
 
   return (
     <Modal
-      title="Edit Image"
-      visible={visible}
+      title="画像編集"
+      open={visible}
       onCancel={onCancel}
       width={800}
       footer={[
         <Button key="back" onClick={onCancel}>
-          Cancel
+          キャンセル
         </Button>,
         <Button key="submit" type="primary" onClick={handleSave}>
-          Save
+          保存
         </Button>,
       ]}
     >
-      <div className="relative h-96 w-full">
-        {image && (
-          <ReactCrop
-            image={image}
-            crop={crop}
-            zoom={zoom}
-            aspect={3 / 4}
-            onCropChange={setCrop}
-            onCropComplete={onCropComplete}
-            onZoomChange={setZoom}
-          />
+      <div className="flex flex-col gap-4">
+        {previewUrl && (
+          <div className="w-full flex flex-col">
+            <h4 className="font-medium mb-2">プレビュー:</h4>
+            <div className="border rounded-md overflow-hidden">
+              <img
+                src={previewUrl || "/placeholder.svg"}
+                alt="Preview"
+                className="w-full"
+              />
+            </div>
+          </div>
         )}
-      </div>
-      <div className="mt-4">
-        <p>Zoom</p>
-        <Slider
-          min={1}
-          max={3}
-          step={0.1}
-          value={zoom}
-          onChange={(value) => setZoom(value)}
-        />
       </div>
     </Modal>
   );
