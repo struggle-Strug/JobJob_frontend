@@ -15,7 +15,6 @@ import {
   getAllJobTypeValues,
   getAllPrefectureValues,
 } from "./utils/getFunctions";
-import { getMunicipalityById } from "./utils/getMuniId";
 
 // Lazy load components
 const Register = lazy(() => import("./Pages/Auth/Register"));
@@ -146,7 +145,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(getMunicipalityById("muni1"));
     if (token) {
       axios.defaults.headers.common["Authorization"] = token;
       getUserData();

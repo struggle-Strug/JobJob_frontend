@@ -304,7 +304,6 @@ const getConditionUrl = (filterName , value) => {
 
   useEffect(() => {
       const { pref, muni } = updatedFilters;
-      console.log("updatedFilters", updatedFilters);
       // 都道府県 or 市区町村 のいずれかがセットされていれば取得
       if ((pref && pref.trim()) || (muni && muni.trim())) {
         getJobPosts();
@@ -359,7 +358,6 @@ const getConditionUrl = (filterName , value) => {
       
       if (isEmptyFilters) {
         const url = `/${path}`;
-        console.log("url", url);
         if (window.location.pathname !== url) {
           navigate(url);
         }
@@ -392,7 +390,6 @@ const getConditionUrl = (filterName , value) => {
       const muni = getMunicipalityById(muniId);
       
       if (muni) {
-        console.log("muni", getPrefCodeByName(muni.prefecture));
         const newFilters = {
                   ...filters,
                   pref: getPrefCodeByName(muni.prefecture),
