@@ -8,6 +8,7 @@ import axios from "axios";
 import { Facilities } from "../../../utils/constants/categories/facilities";
 import Loading from "../../../components/Loading";
 import { useAuth } from "../../../context/AuthContext";
+import NotFound from "../../NotFound";
 
 const JobDetails = () => {
   const { user } = useAuth();
@@ -75,7 +76,7 @@ const JobDetails = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobpost_id}`
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/user/${jobpost_id}`
       );
       setJobPost(response.data.jobpost);
     } catch (error) {
@@ -185,6 +186,10 @@ const JobDetails = () => {
   }, [jobPost?.jobpost_id, updateRecentlyViewed]);
 
   if (loading) return <Loading />;
+
+  if (!jobPost) {
+    return <NotFound />;
+  }
 
   return (
     <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
