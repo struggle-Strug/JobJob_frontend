@@ -1,5 +1,5 @@
 import { Checkbox, Input, Modal, Select } from "antd";
-import { Link, Links, useLocation, useNavigate } from "react-router-dom";
+import { Link, Links, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
@@ -19,10 +19,13 @@ import { useAuth } from "../../../context/AuthContext";
 import Loading from "../../../components/Loading";
 import BreadCrumb from "../../../components/BreadCrumb";
 import Pagination from "../../../components/Pagination";
+import { getMunicipalityById, municipalitiesWithIds } from "../../../utils/getMuniId";
+import { getPrefCodeByName } from "../../../utils/getPref";
 
 const JobLists = () => {
   const { user, likes, setLikes } = useAuth();
   const { pathname } = useLocation();
+  const { muniId , modal } = useParams();
   const [pref, setPref] = useState("");
   const [muni, setMuni] = useState("");
   const [employmentType, setEmploymentType] = useState("");
@@ -60,10 +63,10 @@ const JobLists = () => {
   const path = pathname.split("/")[1];
   const JobType = getJobTypeKeyByValue(path);
 
-  const isMuniModalOpen = pathname.endsWith("/modal/muni");
-  const isEmploymentTypeModalOpen = pathname.endsWith("/modal/employmentType");
-  const isFeatureModalOpen = pathname.endsWith("/modal/feature");
-  const isPrefModalOpen = pathname.endsWith("/modal/pref");
+  const isPrefModalOpen       = modal === "pref_modal";
+  const isMuniModalOpen       = modal === "muni_modal";
+  const isEmploymentTypeModalOpen = modal === "employment_modal";
+  const isFeatureModalOpen    = modal === "feature_modal";
 
   const monthlySalaryOptions = [
     { value: "", label: "指定なし" },
@@ -116,22 +119,22 @@ const JobLists = () => {
   );
 
   const renderMunicipalitiesSection = (prefecture) => (
-    <>
-      <div className="flex flex-wrap w-full px-2 lg:px-4">
-        <p className="text-lg text-[#343434] font-bold">{prefecture}</p>
-        <div className=" border-t-[1px] border-[#bdbdbd] mt-4">
-          {Municipalities[prefecture]?.map((muni, index) => (
-            <button
-              key={index}
-              className="lg:w-1/4 sm:w-1/2 text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] text-center py-1 lg:py-[0.5rem] duration-300"
-              onClick={() => handleOnChangeMuni(muni)}
-            >
-              {muni}
-            </button>
-          ))}
-        </div>
+    <div className="flex flex-wrap w-full px-2 lg:px-4">
+      <p className="text-lg text-[#343434] font-bold">{prefecture}</p>
+      <div className="border-t-[1px] border-[#bdbdbd] mt-4 flex flex-wrap">
+        {Municipalities[prefecture]?.map((muni, index) => (
+          <Link
+            key={index}
+            to={getConditionUrl("muni", muni)}
+            className="lg:w-1/4 sm:w-1/2 text-xs lg:text-md text-[#343434]
+                       hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd]
+                       text-center py-1 lg:py-[0.5rem] duration-300"
+          >
+            {muni}
+          </Link>
+        ))}
       </div>
-    </>
+    </div>
   );
 
   const getJobPosts = async () => {
@@ -187,42 +190,50 @@ const JobLists = () => {
     getJobPosts();
   };
 
-  // 指定のフィルター条件のみを含むURLを生成するヘルパー関数
-  const getConditionUrl = (filterName, value) => {
-    const defaultFilters = {
-      pref: "",
-      muni: "",
-      employmentType: [],
-      monthlySalary: "",
-      hourlySalary: "",
-      feature: [],
-      page: 1,
+  
+
+  
+  const getConditionSearchUrl = (filterName , value) => {
+    // ① 現在の filters をコピー
+    const newFilters = {
+      ...filters,
+      page: 1, // 条件変更時はページは 1 にリセット
     };
-    // 配列型のフィルターの場合
+  
+    // ② 配列型なら [value]、文字列型なら value で上書き
     if (filterName === "employmentType" || filterName === "feature") {
-      defaultFilters[filterName] = [value];
+      newFilters[filterName] = [value];
     } else {
-      defaultFilters[filterName] = value;
+      newFilters[filterName] = value ;
     }
+  
+    // ③ URL を組み立て
     return `/${path}/search?filters=${encodeURIComponent(
-      JSON.stringify(defaultFilters)
+      JSON.stringify(newFilters)
     )}`;
   };
 
-  const handleOnChangeMuni = (m) => {
-    setMuni(m);
-    setFilters((prevFilters) => {
-      const updatedFilters = { ...prevFilters, muni: m };
+const getConditionUrl = (filterName , value) => {
+  let base = `/${path}`; // 例: "/dr"
 
-      // Navigate only after state update
-      navigate(
-        `/${path}/search?filters=${encodeURIComponent(
-          JSON.stringify(updatedFilters)
-        )}`
-      );
-      return updatedFilters;
-    });
-  };
+  switch (filterName) {
+    case "muni": {
+      // 市区町村フィルターだけは city/:id のルーティング
+      const muniObj = municipalitiesWithIds.find((m) => m.name === value);
+      return muniObj
+        ? `${base}/city/${muniObj.id}`
+        : base;
+    }
+
+    
+
+    default:
+      return getConditionSearchUrl(filterName, value);
+  }
+};
+
+
+  
 
   const handleOnChangePage = (p) => {
     setPage(p);
@@ -258,8 +269,7 @@ const JobLists = () => {
   };
 
   const handleCloseModal = () => {
-    const newPath = location.pathname.replace(/\/modal\/[^/]+$/, "");
-    navigate(`${newPath}${location.search}`);
+    navigate(-1);
   };
 
   useEffect(() => {
@@ -293,10 +303,13 @@ const JobLists = () => {
   }, [employmentType, feature, monthlySalary, hourlySalary]);
 
   useEffect(() => {
-    if (updatedFilters?.pref && updatedFilters?.pref.trim() !== "") {
-      getJobPosts();
-    }
-  }, [filters]); // Depend on updatedFilters, not filters
+      const { pref, muni } = updatedFilters;
+      console.log("updatedFilters", updatedFilters);
+      // 都道府県 or 市区町村 のいずれかがセットされていれば取得
+      if ((pref && pref.trim()) || (muni && muni.trim())) {
+        getJobPosts();
+      }
+    }, [filters]);
 
   useEffect(() => {
     const year = new Date().getFullYear();
@@ -343,8 +356,10 @@ const JobLists = () => {
         savedFilters.monthlySalary === "" &&
         savedFilters.feature.length === 0;
 
+      
       if (isEmptyFilters) {
         const url = `/${path}`;
+        console.log("url", url);
         if (window.location.pathname !== url) {
           navigate(url);
         }
@@ -356,12 +371,43 @@ const JobLists = () => {
           navigate(url);
         }
       }
+      
     } else {
-      setPref(pathname.split("/")[2]);
+      const segments = pathname.split("/");
+      if (segments[2] === "city" && muniId) {
+        const muni = getMunicipalityById(pathname.split("/")[3]);
+        setPref(getPrefCodeByName(muni.prefecture));
+      } else{
+        setPref(pathname.split("/")[2]);
+      }
+      
+      
       setFilters({ ...filters, pref: pathname.split("/")[2] });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [document.title]);
+
+  useEffect(() => {
+    if (muniId) {
+      const muni = getMunicipalityById(muniId);
+      
+      if (muni) {
+        console.log("muni", getPrefCodeByName(muni.prefecture));
+        const newFilters = {
+                  ...filters,
+                  pref: getPrefCodeByName(muni.prefecture),
+                  muni: muni.name,
+                };
+                setPref(getPrefCodeByName(muni.prefecture));
+                setMuni(muni.name);
+                setFilters(newFilters);
+                setUpdatedFilters(newFilters);
+      }
+    }
+    // 他のパラメータ(prefId, empId…)も同様に逆引き
+  }, [muniId]);
+
+  
 
   if (isLoading) {
     return <Loading />;
@@ -382,6 +428,12 @@ const JobLists = () => {
                   <p className="lg:text-xl md:text-sm font-bold text-[#FF6B56]">
                     {getPrefectureKeyByValue(pref)}
                   </p>
+                  {muni && (
+    
+      <p className="lg:text-xl md:text-sm font-bold text-[#FF6B56]">
+        {muni}
+      </p>
+  )}
                   <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
                     の{JobType}
                   </p>
@@ -400,9 +452,7 @@ const JobLists = () => {
                 <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
                   <Link
                     className="lg:text-[1rem] md:text-sm font-bold text-[#FF2A3B] hover:underline"
-                    to={`${pathname}/modal/pref?filters=${encodeURIComponent(
-                      JSON.stringify(filters)
-                    )}`}
+                    to={`${pathname}/modal/pref_modal`}
                   >
                     都道府県を変更
                   </Link>
@@ -420,28 +470,27 @@ const JobLists = () => {
               </p> */}
             </div>
             <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl mt-8">
-              <Link
-                className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg hover:px-12 duration-300 cursor-pointer"
-                to={`${pathname}/modal/muni?filters=${encodeURIComponent(
-                  JSON.stringify(filters)
-                )}`}
-              >
-                <div className="flex items-center justify-between gap-1">
-                  <img
-                    src="/assets/images/dashboard/gg_pin.png"
-                    alt="map"
-                    className="w-5 pt-0.5"
-                  />
-                  <p className="lg:text-md md:text-sm font-bold text-[#343434]">
-                    市区町村から選択
-                  </p>
-                </div>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-down"
-                  className="w-4"
-                />
-              </Link>
+            <Link
+  className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
+  to={`${pathname}/modal/muni_modal`}
+>
+  <div className="flex items-center justify-between gap-1">
+    <img
+      src="/assets/images/dashboard/gg_pin.png"
+      alt="map"
+      className="w-5 pt-0.5"
+    />
+    <p className="lg:text-md md:text-sm font-bold text-[#343434]">
+      市区町村から選択
+    </p>
+  </div>
+  <img
+    src="/assets/images/dashboard/ep_arrow-right_black.png"
+    alt="arrow-down"
+    className="w-4"
+  />
+</Link>
+
               <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer">
                 <div className="flex items-center justify-between gap-1 ">
                   <img
@@ -461,9 +510,7 @@ const JobLists = () => {
               </div>
               <Link
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-                to={`${pathname}/modal/employmentType?filters=${encodeURIComponent(
-                  JSON.stringify(filters)
-                )}`}
+                to={`${pathname}/modal/employment_modal`}
               >
                 <div className="flex items-center justify-between gap-1 ">
                   <img
@@ -483,9 +530,7 @@ const JobLists = () => {
               </Link>
               <Link
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-                to={`${pathname}/modal/feature?filters=${encodeURIComponent(
-                  JSON.stringify(filters)
-                )}`}
+                to={`${pathname}/modal/feature_modal`}
               >
                 <div className="flex items-center justify-between gap-1 ">
                   <img
