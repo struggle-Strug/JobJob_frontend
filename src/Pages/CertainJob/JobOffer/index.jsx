@@ -347,6 +347,7 @@ const JobOffer = () => {
         jobPost_id: jobpost_id,
         sender: user?._id,
         recevier: customer?._id,
+        meetingDate: meetingDate,
         content: `
             この度は、ジョブジョブの求人広告を見て応募いたしました。
 
