@@ -851,6 +851,12 @@ const JobPostEdit = () => {
             <>
               <button
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={() => handleRequest("pending")}
+              >
+                求人を申請する
+              </button>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={() => handleRequest("ended")}
               >
                 求人を終了する

@@ -1,147 +1,294 @@
+"use client";
+
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import moment from "moment";
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Checkbox, Input, message, Modal, Radio, Select, Upload } from "antd";
+import { message, Modal, Select, Spin } from "antd";
 import axios from "axios";
 import FacilityPreview from "./FacilityPreview";
 import JobPostPreview from "./JobPostPreview";
 
+// Status badge component to reduce repetition
+const StatusBadge = ({ status }) => {
+  const statusText = useMemo(() => {
+    switch (status) {
+      case "draft":
+        return "下書き";
+      case "pending":
+        return "掲載申請中";
+      case "rejected":
+        return "差し戻し";
+      case "allowed":
+        return "掲載中";
+      case "ended":
+        return "受付終了";
+      default:
+        return "";
+    }
+  }, [status]);
+
+  return (
+    <p className="lg:text-xs text-[0.5rem] py-1 px-2 bg-[#FF2A3B] text-white rounded-lg text-center">
+      {statusText}
+    </p>
+  );
+};
+
 const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
-  const [companyFacilities, setCompanyFacilites] = useState([]);
+  // State management
+  const [companyFacilities, setCompanyFacilities] = useState([]);
   const [selectedCompanyFacility, setSelectedCompanyFacility] = useState("");
   const [selectedJobPosts, setSelectedJobPosts] = useState([]);
   const [selectedJobPostId, setSelectedJobPostId] = useState("");
-
   const [filteredJobPosts, setFilteredJobPosts] = useState([]);
   const [copyJobPost, setCopyJobPost] = useState(false);
   const [facilityPreviewModal, setFacilityPreviewModal] = useState(false);
   const [jobPostPreviewModal, setJobPostPreviewModal] = useState(false);
-  const [jobPostPreviewData, setJobPostPreviewData] = useState();
+  const [jobPostPreviewData, setJobPostPreviewData] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
+  const [loading, setLoading] = useState({
+    facilities: false,
+    jobPosts: false,
+    copying: false,
+  });
 
-  const companyFacilitiesOptions = companyFacilities?.map((facility) => ({
-    value: facility.facility_id,
-    label: facility.name,
-  }));
+  // Memoized values
+  const companyFacilitiesOptions = useMemo(
+    () =>
+      companyFacilities?.map((facility) => ({
+        value: facility.facility_id,
+        label: facility.name,
+      })),
+    [companyFacilities]
+  );
 
-  const selectedJobPostsOptions = selectedJobPosts?.map((jobPost) => ({
-    value: jobPost.jobpost_id,
-    label: jobPost.sub_title,
-  }));
+  const selectedJobPostsOptions = useMemo(
+    () =>
+      selectedJobPosts?.map((jobPost) => ({
+        value: jobPost.jobpost_id,
+        label: jobPost.sub_title,
+      })),
+    [selectedJobPosts]
+  );
 
-  const getFacilitiesByCompany = async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/v1/facility/getByCompany`
-    );
-    if (response.data.error) return message.error(response.data.message);
-    setCompanyFacilites(response.data.facilities);
-  };
+  // Status counts for filter buttons
+  const statusCounts = useMemo(() => {
+    if (!jobPosts)
+      return { all: 0, draft: 0, pending: 0, allowed: 0, ended: 0 };
 
-  const getJobPostsByFacilityId = async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/facility/${selectedCompanyFacility}`
-    );
-    if (response.data.error) return message.error(response.data.message);
-    setSelectedJobPosts(response.data.jobposts);
-  };
+    return {
+      all: jobPosts.length,
+      draft: jobPosts.filter((jobpost) => jobpost.allowed === "draft").length,
+      pending: jobPosts.filter((jobpost) => jobpost.allowed === "pending")
+        .length,
+      allowed: jobPosts.filter((jobpost) => jobpost.allowed === "allowed")
+        .length,
+      ended: jobPosts.filter((jobpost) => jobpost.allowed === "ended").length,
+    };
+  }, [jobPosts]);
 
-  const handleCopy = async () => {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/copy/${selectedJobPostId}`,
-      { facility_id: facility.facility_id }
-    );
-    if (response.data.error) message.error(response.data.error);
-    message.success("求人をコピーしました");
-    setCopyJobPost(false);
-    setJobPosts([response.data.jobpost, ...jobPosts]);
-  };
+  // API calls
+  const getFacilitiesByCompany = useCallback(async () => {
+    try {
+      setLoading((prev) => ({ ...prev, facilities: true }));
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/facility/getByCompany`
+      );
 
-  const onHandleJobPostPreview = (jobPost) => {
-    setJobPostPreviewModal(true);
+      if (response.data.error) {
+        message.error(response.data.message || "施設情報の取得に失敗しました");
+        return;
+      }
+
+      setCompanyFacilities(response.data.facilities || []);
+    } catch (error) {
+      console.error("Error fetching company facilities:", error);
+      message.error("施設情報の取得中にエラーが発生しました");
+    } finally {
+      setLoading((prev) => ({ ...prev, facilities: false }));
+    }
+  }, []);
+
+  const getJobPostsByFacilityId = useCallback(async (facilityId) => {
+    if (!facilityId) return;
+
+    try {
+      setLoading((prev) => ({ ...prev, jobPosts: true }));
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/facility/${facilityId}`
+      );
+
+      if (response.data.error) {
+        message.error(response.data.message || "求人情報の取得に失敗しました");
+        return;
+      }
+
+      setSelectedJobPosts(response.data.jobposts || []);
+    } catch (error) {
+      console.error("Error fetching job posts:", error);
+      message.error("求人情報の取得中にエラーが発生しました");
+    } finally {
+      setLoading((prev) => ({ ...prev, jobPosts: false }));
+    }
+  }, []);
+
+  const handleCopy = useCallback(async () => {
+    if (!selectedJobPostId || !facility?.facility_id) {
+      message.error("求人と施設を選択してください");
+      return;
+    }
+
+    try {
+      setLoading((prev) => ({ ...prev, copying: true }));
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/copy/${selectedJobPostId}`,
+        {
+          facility_id: facility.facility_id,
+        }
+      );
+
+      if (response.data.error) {
+        message.error(response.data.error || "求人のコピーに失敗しました");
+        return;
+      }
+
+      message.success("求人をコピーしました");
+      setCopyJobPost(false);
+      setSelectedCompanyFacility("");
+      setSelectedJobPostId("");
+
+      // Add the new job post to the beginning of the list
+      setJobPosts((prev) => [response.data.jobpost, ...prev]);
+    } catch (error) {
+      console.error("Error copying job post:", error);
+      message.error("求人のコピー中にエラーが発生しました");
+    } finally {
+      setLoading((prev) => ({ ...prev, copying: false }));
+    }
+  }, [selectedJobPostId, facility?.facility_id, setJobPosts]);
+
+  // Event handlers
+  const handleJobPostPreview = useCallback((jobPost) => {
     setJobPostPreviewData(jobPost);
-  };
+    setJobPostPreviewModal(true);
+  }, []);
 
-  const onCancelJobPostPreview = () => {
-    setJobPostPreviewModal(false);
-    setJobPostPreviewData(null);
-  };
+  const handleFilterChange = useCallback((status) => {
+    setFilterStatus(status);
+  }, []);
 
+  // Effects
   useEffect(() => {
     document.title = "施設詳細";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   useEffect(() => {
-    getFacilitiesByCompany();
-  }, [copyJobPost]);
+    if (copyJobPost) {
+      getFacilitiesByCompany();
+    }
+  }, [copyJobPost, getFacilitiesByCompany]);
 
   useEffect(() => {
-    selectedCompanyFacility !== "" && getJobPostsByFacilityId();
-  }, [selectedCompanyFacility]);
+    if (selectedCompanyFacility) {
+      getJobPostsByFacilityId(selectedCompanyFacility);
+    }
+  }, [selectedCompanyFacility, getJobPostsByFacilityId]);
 
+  // Filter job posts based on selected status
   useEffect(() => {
-    if (filterStatus === "all") return setFilteredJobPosts(jobPosts);
-    if (filterStatus === "draft")
-      return setFilteredJobPosts(
-        jobPosts.filter((jobPost) => jobPost.allowed === "draft")
-      );
-    if (filterStatus === "pending")
-      return setFilteredJobPosts(
-        jobPosts.filter((jobPost) => jobPost.allowed === "pending")
-      );
-    if (filterStatus === "allowed")
-      return setFilteredJobPosts(
-        jobPosts.filter((jobPost) => jobPost.allowed === "allowed")
-      );
-    if (filterStatus === "ended")
-      return setFilteredJobPosts(
-        jobPosts.filter((jobPost) => jobPost.allowed === "ended")
-      );
+    if (!jobPosts) {
+      setFilteredJobPosts([]);
+      return;
+    }
+
+    if (filterStatus === "all") {
+      setFilteredJobPosts(jobPosts);
+      return;
+    }
+
+    setFilteredJobPosts(
+      jobPosts.filter((jobPost) => jobPost.allowed === filterStatus)
+    );
   }, [filterStatus, jobPosts]);
+
+  // Render helpers
+  const renderFacilityImage = () => {
+    if (!facility?.photo)
+      return (
+        <img
+          src="/assets/images/noimage.png"
+          alt="No image"
+          className="w-1/5 object-cover rounded-lg"
+        />
+      );
+
+    return facility.photo.length === 0 ? (
+      <img
+        src="/assets/images/noimage.png"
+        alt={facility.name}
+        className="w-1/5 object-cover rounded-lg"
+      />
+    ) : (
+      <img
+        src={facility.photo[0] || "/placeholder.svg"}
+        alt={facility.name}
+        className="w-1/5 object-cover rounded-lg"
+      />
+    );
+  };
+
+  const renderJobPostImage = (jobPost) => {
+    if (!jobPost?.picture)
+      return (
+        <img
+          src="/assets/images/noimage.png"
+          alt="No image"
+          className="w-full object-cover rounded-lg"
+        />
+      );
+
+    return jobPost.picture.length === 0 ? (
+      <img
+        src="/assets/images/noimage.png"
+        alt={jobPost.sub_title}
+        className="w-full object-cover rounded-lg"
+      />
+    ) : (
+      <img
+        src={jobPost.picture[0] || "/placeholder.svg"}
+        alt={jobPost.sub_title}
+        className="w-full object-cover rounded-lg"
+      />
+    );
+  };
+
+  if (!facility) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <p className="text-gray-500">施設が選択されていません</p>
+      </div>
+    );
+  }
 
   return (
     <>
       <div className="flex flex-col p-4">
+        {/* Facility header */}
         <div className="flex items-start justify-start gap-4">
-          {facility.photo.length === 0 ? (
-            <img
-              src={"/assets/images/noimage.png"}
-              alt={facility.name}
-              className="w-1/5 object-cover rounded-lg"
-            />
-          ) : (
-            <img
-              src={facility.photo[0]}
-              alt={facility.name}
-              className="w-1/5 object-cover rounded-lg"
-            />
-          )}
+          {renderFacilityImage()}
           <div className="flex flex-col items-start w-4/5">
             <div className="flex justify-between w-full">
-              <p className="lg:text-xs text-[0.5rem] py-1 px-2 bg-[#FF2A3B] text-white rounded-lg">
-                {facility.allowed === "draft"
-                  ? "下書き"
-                  : facility.allowed === "pending"
-                  ? "掲載申請中"
-                  : facility.allowed === "rejected"
-                  ? "差し戻し"
-                  : facility.allowed === "allowed"
-                  ? "掲載中"
-                  : facility.allowed === "ended"
-                  ? "受付終了"
-                  : ""}
-              </p>
+              <StatusBadge status={facility.allowed} />
               <p className="lg:text-xs text-[0.5rem] py-1 px-2 rounded-lg">
-                <span>
-                  <Link
-                    to={`/customers/facility/edit/${facility.facility_id}`}
-                    className="text-[#FF2A3B] hover:underline duration-300"
-                  >
-                    編集
-                  </Link>
-                </span>
+                <Link
+                  to={`/customers/facility/edit/${facility.facility_id}`}
+                  className="text-[#FF2A3B] hover:underline duration-300"
+                >
+                  編集
+                </Link>
                 <button
-                  className="text-[#FF2A3B] ml-4"
+                  className="text-[#FF2A3B] ml-4 hover:underline"
                   onClick={() => setFacilityPreviewModal(true)}
                 >
                   プレビュー
@@ -164,61 +311,64 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
             </div>
           </div>
         </div>
-        <div className="flex items-start justify-start mt-2 gap-2">
+
+        {/* Filter buttons */}
+        <div className="flex flex-wrap items-start justify-start mt-2 gap-2">
           <button
-            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
-            onClick={() => setFilterStatus("all")}
+            className={`lg:text-xs text-[0.55rem] font-bold ${
+              filterStatus === "all" ? "text-[#FF2A3B]" : "text-[#343434]"
+            } hover:underline duration-300`}
+            onClick={() => handleFilterChange("all")}
           >
-            すべて：{jobPosts?.length}件
+            すべて：{statusCounts.all}件
           </button>
           <button
-            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
-            onClick={() => setFilterStatus("draft")}
+            className={`lg:text-xs text-[0.55rem] font-bold ${
+              filterStatus === "draft" ? "text-[#FF2A3B]" : "text-[#343434]"
+            } hover:underline duration-300`}
+            onClick={() => handleFilterChange("draft")}
           >
-            下書き：
-            {jobPosts?.filter((jobpost) => jobpost.allowed === "draft")?.length}
-            件
+            下書き：{statusCounts.draft}件
           </button>
           <button
-            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
-            onClick={() => setFilterStatus("pending")}
+            className={`lg:text-xs text-[0.55rem] font-bold ${
+              filterStatus === "pending" ? "text-[#FF2A3B]" : "text-[#343434]"
+            } hover:underline duration-300`}
+            onClick={() => handleFilterChange("pending")}
           >
-            掲載申請中：
-            {
-              jobPosts?.filter((jobpost) => jobpost.allowed === "pending")
-                ?.length
-            }
-            件
+            掲載申請中：{statusCounts.pending}件
           </button>
           <button
-            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
-            onClick={() => setFilterStatus("allowed")}
+            className={`lg:text-xs text-[0.55rem] font-bold ${
+              filterStatus === "allowed" ? "text-[#FF2A3B]" : "text-[#343434]"
+            } hover:underline duration-300`}
+            onClick={() => handleFilterChange("allowed")}
           >
-            掲載中：
-            {
-              jobPosts?.filter((jobpost) => jobpost.allowed === "allowed")
-                ?.length
-            }
-            件
+            掲載中：{statusCounts.allowed}件
           </button>
           <button
-            className="lg:text-xs text-[0.55rem] font-bold text-[#343434] hover:underline duration-300"
-            onClick={() => setFilterStatus("ended")}
+            className={`lg:text-xs text-[0.55rem] font-bold ${
+              filterStatus === "ended" ? "text-[#FF2A3B]" : "text-[#343434]"
+            } hover:underline duration-300`}
+            onClick={() => handleFilterChange("ended")}
           >
-            受付終了：
-            {jobPosts?.filter((jobpost) => jobpost.allowed === "ended")?.length}
-            件
+            受付終了：{statusCounts.ended}件
           </button>
         </div>
+
+        {/* Action buttons */}
         <div className="flex items-center justify-center w-full gap-4 py-2 mt-2 border-t-[1px] border-[#e7e7e7]">
           <Link
             to={`/customers/jobpost/${facility.facility_id}/add`}
             className={`lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-2 duration-300 ${
-              facility.allowed !== "allowed" ? "cursor-not-allowed" : ""
+              facility.allowed !== "allowed"
+                ? "opacity-50 cursor-not-allowed"
+                : ""
             }`}
             onClick={(e) => {
               if (facility.allowed !== "allowed") {
-                e.preventDefault(); // Prevent the link action
+                e.preventDefault();
+                message.warning("掲載中の施設のみ求人を登録できます");
               }
             }}
           >
@@ -226,466 +376,168 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
           </Link>
           <button
             className={`lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-2 hover:bg-[#ffe4e4] hover:text-red-500 duration-300 ${
-              facility.allowed !== "allowed" ? "cursor-not-allowed" : ""
+              facility.allowed !== "allowed"
+                ? "opacity-50 cursor-not-allowed"
+                : ""
             }`}
             disabled={facility.allowed !== "allowed"}
-            onClick={() => setCopyJobPost(true)}
+            onClick={() => {
+              if (facility.allowed === "allowed") {
+                setCopyJobPost(true);
+              } else {
+                message.warning("掲載中の施設のみ求人をコピーできます");
+              }
+            }}
           >
             求人をコピーして登録
           </button>
         </div>
+
+        {/* Job posts list */}
         <div className="w-full flex flex-col border-t-[1px] border-[#e7e7e7]">
-          {filteredJobPosts?.map((jobPost, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-start gap-2 p-2"
-            >
-              <div className="flex flex-col gap-1 w-1/6">
-                {jobPost?.picture.length === 0 ? (
-                  <img
-                    src={"/assets/images/noimage.png"}
-                    alt={jobPost?.sub_title}
-                    className="w-full object-cover rounded-lg"
-                  />
-                ) : (
-                  <img
-                    src={jobPost?.picture[0]}
-                    alt={jobPost?.sub_title}
-                    className="w-full object-cover rounded-lg"
-                  />
-                )}
-                <p className="lg:text-xs text-[0.5rem] p-2 bg-[#FF2A3B] text-white rounded-lg text-center">
-                  {jobPost?.allowed === "draft"
-                    ? "下書き"
-                    : jobPost?.allowed === "pending"
-                    ? "掲載申請中"
-                    : jobPost?.allowed === "allowed"
-                    ? "掲載中"
-                    : jobPost?.allowed === "ended"
-                    ? "受付終了"
-                    : ""}
-                </p>
-              </div>
-              <div className="flex flex-col gap-1 w-4/5">
-                <div className="flex justify-between w-full gap-2">
-                  <div className="flex items-center justify-start gap-2">
-                    <p className="lg:text-sm text-xs text-[#343434]">職種名:</p>
-                    <p className="lg:text-sm text-xs text-[#343434]">
-                      {jobPost?.type}
-                    </p>
-                  </div>
-                  <p className="lg:text-xs text-[0.5rem] rounded-lg text-right">
-                    <span>
+          {filteredJobPosts?.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
+              <p>表示できる求人がありません</p>
+            </div>
+          ) : (
+            filteredJobPosts.map((jobPost, index) => (
+              <div
+                key={index}
+                className="flex items-start justify-start gap-4 p-4 border-b border-gray-100 hover:bg-gray-50"
+              >
+                <div className="flex flex-col gap-2 w-1/6">
+                  {renderJobPostImage(jobPost)}
+                  <StatusBadge status={jobPost?.allowed} />
+                </div>
+                <div className="flex flex-col gap-2 w-5/6">
+                  <div className="flex justify-between w-full gap-2">
+                    <div className="flex items-center justify-start gap-2">
+                      <p className="lg:text-sm text-xs text-[#343434]">
+                        {jobPost?.type}
+                      </p>
+                      <p className="lg:text-sm text-xs text-[#343434]">
+                        {jobPost?.employment_type}
+                      </p>
+                    </div>
+                    <p className="lg:text-xs text-[0.5rem] rounded-lg text-right">
                       <Link
                         to={`/customers/jobpost/edit/${jobPost.jobpost_id}`}
                         className="text-[#FF2A3B] hover:underline duration-300"
                       >
                         編集
                       </Link>
-                    </span>
-                    <button
-                      className="text-[#FF2A3B] ml-4"
-                      onClick={() => onHandleJobPostPreview(jobPost)}
-                    >
-                      プレビュー
-                    </button>
+                      <button
+                        className="text-[#FF2A3B] ml-4 hover:underline"
+                        onClick={() => handleJobPostPreview(jobPost)}
+                      >
+                        プレビュー
+                      </button>
+                    </p>
+                  </div>
+                  <div className="flex justify-start w-full gap-2">
+                    <p className="lg:text-sm text-xs text-[#343434]">求人ID:</p>
+                    <p className="lg:text-sm text-xs text-[#343434]">
+                      {jobPost?.jobpost_id}
+                    </p>
+                  </div>
+                  <p className="lg:text-sm text-xs font-bold text-[#343434]">
+                    {jobPost?.sub_title}
                   </p>
-                </div>
-                <div className="flex justify-start w-full gap-2">
-                  <p className="lg:text-sm text-xs text-[#343434]">求人ID:</p>
-                  <p className="lg:text-sm text-xs text-[#343434]">
-                    {jobPost?.jobpost_id}
-                  </p>
-                </div>
-                <p className="lg:text-sm text-xs font-bold text-[#343434]">
-                  {jobPost?.sub_title}
-                </p>
-                <div className="flex items-center justify-start gap-2">
-                  <p className="text-xs text-[#343434]">
-                    作成日時: {moment(jobPost?.created_at).format("YYYY/MM/DD")}
-                  </p>
-                  <p className="text-xs text-[#343434]">
-                    更新日時: {moment(jobPost?.updated_at).format("YYYY/MM/DD")}
-                  </p>
+                  <div className="flex items-center justify-start gap-2">
+                    <p className="text-xs text-[#343434]">
+                      作成日時:{" "}
+                      {moment(jobPost?.created_at).format("YYYY/MM/DD")}
+                    </p>
+                    <p className="text-xs text-[#343434]">
+                      更新日時:{" "}
+                      {moment(jobPost?.updated_at).format("YYYY/MM/DD")}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
-      {/* {
-        <Modal
-          open={newJobPostModal}
-          onCancel={() => setNewJobPostModal(false)}
-          footer={null}
-          width={800}
-          className="modal"
-        >
-          <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">
-            求人を新規登録
-          </p>
-          <div className="flex items-center mt-4">
-            <p className="lg:text-sm text-xs w-1/5">
-              募集職種
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <div className="flex items-center justify-start gap-2 w-3/4">
-              <Select
-                placeholder="職種"
-                options={jobTypesOptions}
-                value={jobPostType}
-                onChange={(value) => setJobPostType(value)}
-                className="w-1/3"
-              />
-              {jobPostType && (
-                <Select
-                  placeholder="職種"
-                  options={jobTypeDetailOptions(jobPostType)}
-                  value={jobPostTypeDetail}
-                  onChange={(value) => setJobPostTypeDetail(value)}
-                  className="w-1/3"
-                />
-              )}
-            </div>
-          </div>
-          <div className="flex items-start mt-4">
-            <div className="flex items-center justify-start gap-1 w-1/5">
-              <span className="lg:text-sm text-xs text-[#343434]">写真</span>
-            </div>
-            <div className="flex items-center justify-start gap-2">
-              <Upload
-                name="avatar"
-                listType="picture-card"
-                fileList={jobPostPicture}
-                onPreview={handlePreview}
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
-              >
-                <div className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3">
-                  <PlusOutlined />
-                  <div className="mt-4 text-center">Upload</div>
-                </div>
-              </Upload>
-            </div>
-          </div>
-          <div className="flex items-center mt-4">
-            <p className="lg:text-sm text-xs w-1/5">
-              訴求文タイトル
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <Input
-              value={jobPostSubTitle}
-              onChange={(e) => setJobPostSubTitle(e.target.value)}
-              className="w-1/2"
-            />
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">
-              訴求文<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <TextArea
-              value={jobPostSubDescription}
-              onChange={(e) => setJobPostSubDescription(e.target.value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">
-              仕事内容（選択）
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <Checkbox.Group
-              options={workItemOptions}
-              onChange={(value) => setJobPostWorkItem(value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">
-              仕事内容
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <TextArea
-              value={jobPostWorkContent}
-              onChange={(e) => setJobPostWorkContent(e.target.value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">診療科目</p>
-            <Checkbox.Group
-              options={serviceSubjectOptions}
-              value={jobPostServiceSubject}
-              onChange={(value) => setJobPostServiceSubject(value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">サービス形態</p>
-            <Checkbox.Group
-              options={serviceTypeOptions}
-              value={jobPostServiceType}
-              onChange={(value) => setJobPostServiceType(value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4">
-            <p className="lg:text-sm text-xs w-1/5">
-              雇用形態
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <div className="flex items-center justify-start gap-2 w-4/5">
-              <Radio.Group
-                options={employmentTypeOptions}
-                value={jobPostEmploymentType}
-                onChange={(e) => setJobPostEmploymentType(e.target.value)}
-                className="w-full"
-              />
-            </div>
-          </div>
-          <div className="flex items-center mt-4">
-            <p className="lg:text-sm text-xs w-1/5">
-              給与体系
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <div className="flex items-center justify-start gap-2 w-4/5">
-              <Radio.Group
-                options={salaryTypeOptions}
-                value={jobPostSalaryType}
-                onChange={(e) => setJobPostSalaryType(e.target.value)}
-                className="w-full"
-              />
-            </div>
-          </div>
-          <div className="flex items-center mt-4">
-            <p className="lg:text-sm text-xs w-1/5">
-              給与下限・上限
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <div className="flex items-center justify-start w-4/5">
-              <Input
-                value={jobPostSalaryMin}
-                onChange={(e) => setJobPostSalaryMin(e.target.value)}
-                className="w-1/4"
-              />
-              <span className="mx-2">~</span>
-              <Input
-                value={jobPostSalaryMax}
-                onChange={(e) => setJobPostSalaryMax(e.target.value)}
-                className="w-1/4"
-              />
-            </div>
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">給与備考</p>
-            <div className="flex items-center justify-start w-4/5">
-              <TextArea
-                value={jobPostSalaryRemarks}
-                onChange={(e) => setJobPostSalaryRemarks(e.target.value)}
-                className="w-full"
-              />
-            </div>
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">想定年収</p>
-            <Input
-              value={jobPostExpectedIncome}
-              onChange={(e) => setJobPostExpectedIncome(e.target.value)}
-              className="w-1/2"
-            />
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">待遇（選択）</p>
-            <Checkbox.Group
-              options={jobPostTreatmentTypeOptions}
-              value={jobPostTreatmentType}
-              onChange={(value) => setJobPostTreatmentType(value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">待遇</p>
-            <TextArea
-              value={jobPostTreatmentContent}
-              onChange={(e) => setJobPostTreatmentContent(e.target.value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">
-              勤務時間・休憩時間（選択）
-            </p>
-            <Checkbox.Group
-              options={jobPostWorkTimeTypeOptions}
-              value={jobPostWorkTimeType}
-              onChange={(value) => setJobPostWorkTimeType(value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">
-              勤務時間・休憩時間
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <TextArea
-              value={jobPostWorkTimeContent}
-              onChange={(e) => setJobPostWorkTimeContent(e.target.value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">休日（選択）</p>
-            <Checkbox.Group
-              options={jobPostRestTypeOptions}
-              value={jobPostRestType}
-              onChange={(value) => setJobPostRestType(value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">
-              休日<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <TextArea
-              value={jobPostRestContent}
-              onChange={(e) => setJobPostRestContent(e.target.value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">長期休暇・特別休暇</p>
-            <TextArea
-              value={jobPostSpecialContent}
-              onChange={(e) => setJobPostSpecialContent(e.target.value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">教育体制・教育</p>
-            <Checkbox.Group
-              options={jobPostEducationTypeOptions}
-              value={jobPostEducationContent}
-              onChange={(value) => setJobPostEducationContent(value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">
-              応募要件（資格）
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <Checkbox.Group
-              options={jobPostQualificationTypeOptions}
-              value={jobPostQualificationType}
-              onChange={(value) => setJobPostQualificationType(value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 desireEmployment">
-            <p className="lg:text-sm text-xs w-1/5">応募要件（他条件）</p>
-            <Checkbox.Group
-              options={jobPostQualificationOtherOptions}
-              value={jobPostQualificationOther}
-              onChange={(value) => setJobPostQualificationOther(value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">応募要件（テキスト）</p>
-            <TextArea
-              value={jobPostQualificationContent}
-              onChange={(e) => setJobPostQualificationContent(e.target.value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">歓迎要件</p>
-            <TextArea
-              value={jobPostQualificationWelcome}
-              onChange={(e) => setJobPostQualificationWelcome(e.target.value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-start mt-4 textarea">
-            <p className="lg:text-sm text-xs w-1/5">
-              選考プロセス
-              <span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
-            </p>
-            <TextArea
-              value={jobPostProcess}
-              onChange={(e) => setJobPostProcess(e.target.value)}
-              className="w-4/5"
-            />
-          </div>
-          <div className="flex items-center justify-center w-full mt-8 gap-4 border-t-[1px] border-[#e7e7e7] pt-4">
-            <button
-              className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-              onClick={() => setNewJobPostModal(false)}
-            >
-              キャンセル
-            </button>
-            <button
-              className="lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-3 hover:bg-[#ffe4e4] hover:text-red-500 duration-300"
-              onClick={handleSubmit}
-            >
-              求人を登録する
-            </button>
-          </div>
-        </Modal>
-      } */}
 
-      {
-        <Modal
-          open={copyJobPost}
-          onCancel={() => setCopyJobPost(false)}
-          footer={null}
-          width={800}
-          className="modal"
-        >
-          <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">
+      {/* Copy job post modal */}
+      <Modal
+        open={copyJobPost}
+        onCancel={() => setCopyJobPost(false)}
+        footer={null}
+        width={800}
+        className="modal"
+        maskClosable={!loading.copying}
+        closable={!loading.copying}
+      >
+        <div className="p-4">
+          <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434] mb-4">
             求人をコピーして登録
           </p>
-          <div className="p-4">
-            <p className="lg:text-base text-sm text-[#343434] mt-4">
-              コピーする対象の施設と求人を選択して、「コピーして求人作成」ボタンをクリックしてください。
-            </p>
-            <div className="flex items-center mt-4 px-4">
-              <p className="lg:text-sm text-xs w-1/5">施設</p>
-              <div className="flex items-center justify-start gap-2 w-3/4">
-                <Select
-                  placeholder="職種"
-                  options={companyFacilitiesOptions}
-                  value={selectedCompanyFacility}
-                  onChange={(value) => setSelectedCompanyFacility(value)}
-                  className="w-full"
-                />
-              </div>
+
+          {loading.facilities ? (
+            <div className="flex justify-center items-center py-8">
+              <Spin size="large" />
             </div>
-            {selectedCompanyFacility && (
+          ) : (
+            <>
+              <p className="lg:text-base text-sm text-[#343434] mb-6">
+                コピーする対象の施設と求人を選択して、「登録」ボタンをクリックしてください。
+              </p>
               <div className="flex items-center mt-4 px-4">
-                <p className="lg:text-sm text-xs w-1/5">求人</p>
+                <p className="lg:text-sm text-xs w-1/5">施設</p>
                 <div className="flex items-center justify-start gap-2 w-3/4">
                   <Select
-                    placeholder="職種"
-                    options={selectedJobPostsOptions}
-                    value={selectedJobPostId}
-                    onChange={(value) => setSelectedJobPostId(value)}
+                    placeholder="施設を選択"
+                    options={companyFacilitiesOptions}
+                    value={selectedCompanyFacility}
+                    onChange={(value) => setSelectedCompanyFacility(value)}
                     className="w-full"
+                    disabled={loading.copying}
                   />
                 </div>
               </div>
-            )}
-            <div className="flex justify-end px-12 mt-4">
-              <button
-                className={`lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-2 hover:bg-[#ffe4e4] hover:text-red-500 duration-300`}
-                onClick={handleCopy}
-              >
-                登録
-              </button>
-            </div>
-          </div>
-        </Modal>
-      }
+
+              {selectedCompanyFacility && (
+                <div className="flex items-center mt-4 px-4">
+                  <p className="lg:text-sm text-xs w-1/5">求人</p>
+                  <div className="flex items-center justify-start gap-2 w-3/4">
+                    {loading.jobPosts ? (
+                      <div className="flex justify-center items-center w-full py-2">
+                        <Spin size="small" />
+                      </div>
+                    ) : (
+                      <Select
+                        placeholder="求人を選択"
+                        options={selectedJobPostsOptions}
+                        value={selectedJobPostId}
+                        onChange={(value) => setSelectedJobPostId(value)}
+                        className="w-full"
+                        disabled={loading.copying}
+                        notFoundContent="求人が見つかりません"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-end px-12 mt-8">
+                <button
+                  className={`lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-2 hover:bg-[#ffe4e4] hover:text-red-500 duration-300 ${
+                    loading.copying ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  onClick={handleCopy}
+                  disabled={loading.copying || !selectedJobPostId}
+                >
+                  {loading.copying ? "処理中..." : "登録"}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </Modal>
+
+      {/* Facility preview modal */}
       {facilityPreviewModal && (
         <FacilityPreview
           open={facilityPreviewModal}
@@ -693,10 +545,15 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
           data={facility}
         />
       )}
-      {jobPostPreviewModal && (
+
+      {/* Job post preview modal */}
+      {jobPostPreviewModal && jobPostPreviewData && (
         <JobPostPreview
           open={jobPostPreviewModal}
-          onCancel={() => onCancelJobPostPreview()}
+          onCancel={() => {
+            setJobPostPreviewModal(false);
+            setJobPostPreviewData(null);
+          }}
           data={jobPostPreviewData}
         />
       )}
@@ -704,4 +561,11 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
   );
 };
 
-export default FacilityDetail;
+export default React.memo(FacilityDetail, (prevProps, nextProps) => {
+  // Only re-render if facility ID changes or if jobPosts length/content changes
+  return (
+    prevProps.facility?.facility_id === nextProps.facility?.facility_id &&
+    prevProps.jobPosts?.length === nextProps.jobPosts?.length &&
+    JSON.stringify(prevProps.jobPosts) === JSON.stringify(nextProps.jobPosts)
+  );
+});
