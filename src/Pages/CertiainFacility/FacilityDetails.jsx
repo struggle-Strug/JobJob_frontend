@@ -4,54 +4,57 @@ import { useEffect, useState, React, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getJobValueByKey } from "../../utils/getFunctions";
 import { Facilities } from "../../utils/constants/categories";
+import NotFound from "../NotFound";
 import { useAuth } from "../../context/AuthContext";
+
+const JOB_MAPPING = {
+  医師: "/dr",
+  薬剤師: "/ph",
+  "看護師/准看護師": "/nan",
+  助産師: "/mw",
+  保健師: "/phn",
+  看護助手: "/nuas",
+  診療放射線技師: "/mrt",
+  臨床検査技師: "/clt",
+  "管理栄養士/栄養士": "/rdn",
+  "公認心理師/臨床心理士": "/cp",
+  医療ソーシャルワーカー: "/msw",
+  歯科医師: "/de",
+  歯科衛生士: "/dh",
+  歯科技工士: "/dt",
+  歯科助手: "/deas",
+  "介護職/ヘルパー": "/cwh",
+  生活相談員: "/lc",
+  ケアマネジャー: "/cm",
+  "管理職（介護）": "/mp",
+  サービス提供責任者: "/sp",
+  生活支援員: "/lsw",
+  福祉用具専門相談員: "/wesc",
+  児童発達支援管理責任者: "/cdsm",
+  保育士: "/chil",
+  幼稚園教諭: "/kt",
+  保育補助: "/ca",
+  "児童指導員/指導員": "/cii",
+  理学療法士: "/pt",
+  言語聴覚士: "/st",
+  作業療法士: "/ot",
+  視能訓練士: "/ort",
+  "調理師/調理スタッフ": "/ccs",
+  美容師: "/hai",
+  理容師: "/bar",
+  ネイリスト: "/naar",
+  アイリスト: "/el",
+  "エステティシャン/セラピスト": "/et",
+  美容部員: "/bcm",
+  インストラクター: "/ins",
+};
 
 const FacilityDetails = () => {
   const { user } = useAuth();
   const { pathname } = useLocation();
   const [facility, setFacility] = useState(null);
   const facility_id = pathname.split("/")[3];
-  const jobMapping = {
-    医師: "/dr",
-    薬剤師: "/ph",
-    "看護師/准看護師": "/nan",
-    助産師: "/mw",
-    保健師: "/phn",
-    看護助手: "/nuas",
-    診療放射線技師: "/mrt",
-    臨床検査技師: "/clt",
-    "管理栄養士/栄養士": "/rdn",
-    "公認心理師/臨床心理士": "/cp",
-    医療ソーシャルワーカー: "/msw",
-    歯科医師: "/de",
-    歯科衛生士: "/dh",
-    歯科技工士: "/dt",
-    歯科助手: "/deas",
-    "介護職/ヘルパー": "/cwh",
-    生活相談員: "/lc",
-    ケアマネジャー: "/cm",
-    "管理職（介護）": "/mp",
-    サービス提供責任者: "/sp",
-    生活支援員: "/lsw",
-    福祉用具専門相談員: "/wesc",
-    児童発達支援管理責任者: "/cdsm",
-    保育士: "/chil",
-    幼稚園教諭: "/kt",
-    保育補助: "/ca",
-    "児童指導員/指導員": "/cii",
-    理学療法士: "/pt",
-    言語聴覚士: "/st",
-    作業療法士: "/ot",
-    視能訓練士: "/ort",
-    "調理師/調理スタッフ": "/ccs",
-    美容師: "/hai",
-    理容師: "/bar",
-    ネイリスト: "/naar",
-    アイリスト: "/el",
-    "エステティシャン/セラピスト": "/et",
-    美容部員: "/bcm",
-    インストラクター: "/ins",
-  };
+  
   const [currentSlide, setCurrentSlide] = useState(0);
   const carouselRef = useRef();
 
@@ -330,7 +333,7 @@ const FacilityDetails = () => {
                     return (
                       <Link
                         key={index}
-                        to={`${jobMapping[jobPost?.type]}`}
+                        to={`${JOB_MAPPING[jobPost?.type]}`}
                         className="lg:text-base text-sm text-[#FF2A3B] hover:underline"
                       >
                         {jobPost?.type}({jobPost?.employment_type})
