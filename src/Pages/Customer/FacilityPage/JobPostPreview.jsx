@@ -11,7 +11,9 @@ const JobPostPreview = ({ open, onCancel, data }) => {
       className="modal"
     >
       <div className="w-full min-h-screen flex flex-col p-4 bg-white rounded-lg mb-8">
-        <h1 className="lg:text-2xl md:text-base text-sm font-bold">求人編集</h1>
+        <h1 className="lg:text-2xl md:text-base text-sm font-bold">
+          求人プレビュー
+        </h1>
 
         {/* 募集職種 */}
         <div className="flex items-center mt-4">
@@ -29,7 +31,9 @@ const JobPostPreview = ({ open, onCancel, data }) => {
         {/* 写真 */}
         <div className="flex items-start mt-4">
           <div className="flex items-center justify-start gap-1 w-1/4">
-            <span className="lg:text-sm text-xs text-[#343434] w-3/4">写真</span>
+            <span className="lg:text-sm text-xs text-[#343434] w-3/4">
+              写真
+            </span>
           </div>
           <div className="flex gap-2 overflow-x-auto w-3/4">
             {data?.picture?.map((pic, index) => (

@@ -1,5 +1,11 @@
 import { Checkbox, Input, Modal, Select } from "antd";
-import { Link, Links, useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  Links,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import {
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
@@ -19,13 +25,16 @@ import { useAuth } from "../../../context/AuthContext";
 import Loading from "../../../components/Loading";
 import BreadCrumb from "../../../components/BreadCrumb";
 import Pagination from "../../../components/Pagination";
-import { getMunicipalityById, municipalitiesWithIds } from "../../../utils/getMuniId";
+import {
+  getMunicipalityById,
+  municipalitiesWithIds,
+} from "../../../utils/getMuniId";
 import { getPrefCodeByName } from "../../../utils/getPref";
 
 const JobLists = () => {
   const { user, likes, setLikes } = useAuth();
   const { pathname } = useLocation();
-  const { muniId , modal } = useParams();
+  const { muniId, modal } = useParams();
   const [pref, setPref] = useState("");
   const [muni, setMuni] = useState("");
   const [employmentType, setEmploymentType] = useState("");
@@ -63,10 +72,10 @@ const JobLists = () => {
   const path = pathname.split("/")[1];
   const JobType = getJobTypeKeyByValue(path);
 
-  const isPrefModalOpen       = modal === "pref_modal";
-  const isMuniModalOpen       = modal === "muni_modal";
+  const isPrefModalOpen = modal === "pref_modal";
+  const isMuniModalOpen = modal === "muni_modal";
   const isEmploymentTypeModalOpen = modal === "employment_modal";
-  const isFeatureModalOpen    = modal === "feature_modal";
+  const isFeatureModalOpen = modal === "feature_modal";
 
   const monthlySalaryOptions = [
     { value: "", label: "指定なし" },
@@ -190,50 +199,40 @@ const JobLists = () => {
     getJobPosts();
   };
 
-  
-
-  
-  const getConditionSearchUrl = (filterName , value) => {
+  const getConditionSearchUrl = (filterName, value) => {
     // ① 現在の filters をコピー
     const newFilters = {
       ...filters,
       page: 1, // 条件変更時はページは 1 にリセット
     };
-  
+
     // ② 配列型なら [value]、文字列型なら value で上書き
     if (filterName === "employmentType" || filterName === "feature") {
       newFilters[filterName] = [value];
     } else {
-      newFilters[filterName] = value ;
+      newFilters[filterName] = value;
     }
-  
+
     // ③ URL を組み立て
     return `/${path}/search?filters=${encodeURIComponent(
       JSON.stringify(newFilters)
     )}`;
   };
 
-const getConditionUrl = (filterName , value) => {
-  let base = `/${path}`; // 例: "/dr"
+  const getConditionUrl = (filterName, value) => {
+    let base = `/${path}`; // 例: "/dr"
 
-  switch (filterName) {
-    case "muni": {
-      // 市区町村フィルターだけは city/:id のルーティング
-      const muniObj = municipalitiesWithIds.find((m) => m.name === value);
-      return muniObj
-        ? `${base}/city/${muniObj.id}`
-        : base;
+    switch (filterName) {
+      case "muni": {
+        // 市区町村フィルターだけは city/:id のルーティング
+        const muniObj = municipalitiesWithIds.find((m) => m.name === value);
+        return muniObj ? `${base}/city/${muniObj.id}` : base;
+      }
+
+      default:
+        return getConditionSearchUrl(filterName, value);
     }
-
-    
-
-    default:
-      return getConditionSearchUrl(filterName, value);
-  }
-};
-
-
-  
+  };
 
   const handleOnChangePage = (p) => {
     setPage(p);
@@ -303,12 +302,12 @@ const getConditionUrl = (filterName , value) => {
   }, [employmentType, feature, monthlySalary, hourlySalary]);
 
   useEffect(() => {
-      const { pref, muni } = updatedFilters;
-      // 都道府県 or 市区町村 のいずれかがセットされていれば取得
-      if ((pref && pref.trim()) || (muni && muni.trim())) {
-        getJobPosts();
-      }
-    }, [filters]);
+    const { pref, muni } = updatedFilters;
+    // 都道府県 or 市区町村 のいずれかがセットされていれば取得
+    if ((pref && pref.trim()) || (muni && muni.trim())) {
+      getJobPosts();
+    }
+  }, [filters]);
 
   useEffect(() => {
     const year = new Date().getFullYear();
@@ -355,7 +354,6 @@ const getConditionUrl = (filterName , value) => {
         savedFilters.monthlySalary === "" &&
         savedFilters.feature.length === 0;
 
-      
       if (isEmptyFilters) {
         const url = `/${path}`;
         if (window.location.pathname !== url) {
@@ -369,17 +367,15 @@ const getConditionUrl = (filterName , value) => {
           navigate(url);
         }
       }
-      
     } else {
       const segments = pathname.split("/");
       if (segments[2] === "city" && muniId) {
         const muni = getMunicipalityById(pathname.split("/")[3]);
         setPref(getPrefCodeByName(muni.prefecture));
-      } else{
+      } else {
         setPref(pathname.split("/")[2]);
       }
-      
-      
+
       setFilters({ ...filters, pref: pathname.split("/")[2] });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -388,23 +384,21 @@ const getConditionUrl = (filterName , value) => {
   useEffect(() => {
     if (muniId) {
       const muni = getMunicipalityById(muniId);
-      
+
       if (muni) {
         const newFilters = {
-                  ...filters,
-                  pref: getPrefCodeByName(muni.prefecture),
-                  muni: muni.name,
-                };
-                setPref(getPrefCodeByName(muni.prefecture));
-                setMuni(muni.name);
-                setFilters(newFilters);
-                setUpdatedFilters(newFilters);
+          ...filters,
+          pref: getPrefCodeByName(muni.prefecture),
+          muni: muni.name,
+        };
+        setPref(getPrefCodeByName(muni.prefecture));
+        setMuni(muni.name);
+        setFilters(newFilters);
+        setUpdatedFilters(newFilters);
       }
     }
     // 他のパラメータ(prefId, empId…)も同様に逆引き
   }, [muniId]);
-
-  
 
   if (isLoading) {
     return <Loading />;
@@ -426,11 +420,10 @@ const getConditionUrl = (filterName , value) => {
                     {getPrefectureKeyByValue(pref)}
                   </p>
                   {muni && (
-    
-      <p className="lg:text-xl md:text-sm font-bold text-[#FF6B56]">
-        {muni}
-      </p>
-  )}
+                    <p className="lg:text-xl md:text-sm font-bold text-[#FF6B56]">
+                      {muni}
+                    </p>
+                  )}
                   <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
                     の{JobType}
                   </p>
@@ -467,26 +460,26 @@ const getConditionUrl = (filterName , value) => {
               </p> */}
             </div>
             <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl mt-8">
-            <Link
-  className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-  to={`${pathname}/modal/muni_modal`}
->
-  <div className="flex items-center justify-between gap-1">
-    <img
-      src="/assets/images/dashboard/gg_pin.png"
-      alt="map"
-      className="w-5 pt-0.5"
-    />
-    <p className="lg:text-md md:text-sm font-bold text-[#343434]">
-      市区町村から選択
-    </p>
-  </div>
-  <img
-    src="/assets/images/dashboard/ep_arrow-right_black.png"
-    alt="arrow-down"
-    className="w-4"
-  />
-</Link>
+              <Link
+                className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
+                to={`${pathname}/modal/muni_modal`}
+              >
+                <div className="flex items-center justify-between gap-1">
+                  <img
+                    src="/assets/images/dashboard/gg_pin.png"
+                    alt="map"
+                    className="w-5 pt-0.5"
+                  />
+                  <p className="lg:text-md md:text-sm font-bold text-[#343434]">
+                    市区町村から選択
+                  </p>
+                </div>
+                <img
+                  src="/assets/images/dashboard/ep_arrow-right_black.png"
+                  alt="arrow-down"
+                  className="w-4"
+                />
+              </Link>
 
               <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer">
                 <div className="flex items-center justify-between gap-1 ">
