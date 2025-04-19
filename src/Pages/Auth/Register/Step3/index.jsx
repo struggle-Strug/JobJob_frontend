@@ -1,338 +1,137 @@
 import { Input, Radio, Select } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Prefectures } from "../../../../utils/constants/categories";
 import { Municipalities } from "../../../../utils/constants/categories/municipalities";
 
 const Step3 = ({
-  setPrefecture,
-  prefecture,
+  postalCode,
   setPostalCode,
+  prefecture,
+  setPrefecture,
+  municipalities,
   setMunicipalities,
+  village,
   setVillage,
+  building,
   setBuilding,
 }) => {
-  const [togglePrefecture_1, setTogglePrefecture_1] = useState(false);
-  const [togglePrefecture_2, setTogglePrefecture_2] = useState(false);
-  const [togglePrefecture_3, setTogglePrefecture_3] = useState(false);
-  const [togglePrefecture_4, setTogglePrefecture_4] = useState(false);
-  const [togglePrefecture_5, setTogglePrefecture_5] = useState(false);
-  const [togglePrefecture_6, setTogglePrefecture_6] = useState(false);
-  const [togglePrefecture_7, setTogglePrefecture_7] = useState(false);
-
-  const prefectureKeys_1 = Object.keys(Prefectures.KANTO);
-  const prefectureKeys_2 = Object.keys(Prefectures.KANSAI);
-  const prefectureKeys_3 = Object.keys(Prefectures.TOKAI);
-  const prefectureKeys_4 = Object.keys(Prefectures.HOKKAIDO_TOHOKU);
-  const prefectureKeys_5 = Object.keys(Prefectures.KOSHINETSU_HOKURIKU);
-  const prefectureKeys_6 = Object.keys(Prefectures.CHUGOKU_SHIKOKU);
-  const prefectureKeys_7 = Object.keys(Prefectures.KYUSHU_OKINAWA);
-
-  const prefectureOptions_1 = prefectureKeys_1.map((item) => {
-    return {
-      label: item,
-      value: item,
-    };
-  });
-  const prefectureOptions_2 = prefectureKeys_2.map((item) => {
-    return {
-      label: item,
-      value: item,
-    };
-  });
-  const prefectureOptions_3 = prefectureKeys_3.map((item) => {
-    return {
-      label: item,
-      value: item,
-    };
-  });
-  const prefectureOptions_4 = prefectureKeys_4.map((item) => {
-    return {
-      label: item,
-      value: item,
-    };
-  });
-  const prefectureOptions_5 = prefectureKeys_5.map((item) => {
-    return {
-      label: item,
-      value: item,
-    };
-  });
-  const prefectureOptions_6 = prefectureKeys_6.map((item) => {
-    return {
-      label: item,
-      value: item,
-    };
-  });
-  const prefectureOptions_7 = prefectureKeys_7.map((item) => {
-    return {
-      label: item,
-      value: item,
-    };
+  const [localPostalCode, setLocalPostalCode] = useState(postalCode || "");
+  const [toggles, setToggles] = useState({
+    1: false, 2: false, 3: false, 4: false, 4: false, 5: false, 6: false, 7: false
   });
 
-  const cityOptions = (prefecture) => {
-    return [
-      {
-        label: "選択する",
-        value: "",
-      },
-      ...Municipalities[prefecture].map((type) => ({
-        value: type,
-        label: type,
-      })),
-    ];
-  };
+  useEffect(() => {
+    const code = localPostalCode.trim();
+    if (/^\d{7}$/.test(code)) {
+      axios.post(`${process.env.REACT_APP_API_URL}/api/v1/user/zipsearch`, { zipcode: code })
+        .then((res) => {
+          const result = res.data?.results?.[0];
+          if (!result) return;
 
-  const onChange = async (value) => {
-    setPrefecture(value.target.value);
-  };
+          // 1) 住所をセット
+          setPrefecture(result.address1);
+          setMunicipalities(result.address2);
+          setVillage(result.address3);
+
+          // 2) 該当する都道府県グループを自動展開
+          const regionIndex = Object.entries({
+            1: Prefectures.KANTO,
+            2: Prefectures.KANSAI,
+            3: Prefectures.TOKAI,
+            4: Prefectures.HOKKAIDO_TOHOKU,
+            5: Prefectures.KOSHINETSU_HOKURIKU,
+            6: Prefectures.CHUGOKU_SHIKOKU,
+            7: Prefectures.KYUSHU_OKINAWA,
+          }).find(([idx, grp]) =>
+            Object.keys(grp).includes(result.address1)
+          )?.[0];
+
+          if (regionIndex) {
+            setToggles(prev => ({ ...prev, [regionIndex]: true }));
+          }
+        })
+        .catch((err) => {
+          console.error("郵便番号検索エラー:", err);
+        });
+    }
+  }, [localPostalCode]);
+
+  const groups = [
+    { idx: 1, label: "関東", data: Prefectures.KANTO },
+    { idx: 2, label: "関西", data: Prefectures.KANSAI },
+    { idx: 3, label: "東海", data: Prefectures.TOKAI },
+    { idx: 4, label: "北海道・東北", data: Prefectures.HOKKAIDO_TOHOKU },
+    { idx: 5, label: "甲信越・北陸", data: Prefectures.KOSHINETSU_HOKURIKU },
+    { idx: 6, label: "中国・四国", data: Prefectures.CHUGOKU_SHIKOKU },
+    { idx: 7, label: "九州・沖縄", data: Prefectures.KYUSHU_OKINAWA },
+  ];
+
+  const cityOptions = (pref) => [
+    { label: "選択する", value: "" },
+    ...(Municipalities[pref] || []).map((m) => ({ label: m, value: m })),
+  ];
 
   return (
     <>
+      {/* 郵便番号 */}
       <div className="flex justify-between w-full mt-12">
-        <div className="flex items-start gap-2 justify-end">
-          <p>郵便番号</p>
-        </div>
+        <div className="flex items-start gap-2 justify-end"><p>郵便番号</p></div>
         <div className="flex flex-col w-4/5">
           <Input
-            onChange={(e) => setPostalCode(e.target.value)}
             className="w-1/3"
+            placeholder="ハイフンなし 例:1000001"
+            value={localPostalCode}
+            onChange={(e) => {
+              setLocalPostalCode(e.target.value);
+              setPostalCode(e.target.value);
+            }}
           />
+          <p className="text-sm text-gray-500">※7桁入力で自動検索</p>
         </div>
       </div>
+
+      {/* 都道府県ラジオグループ */}
       <div className="flex justify-between w-full mt-12">
         <div className="flex items-start gap-2 justify-end">
           <p>都道府県</p>
           <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
         </div>
         <div className="flex flex-col w-4/5">
-          <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-            <div className="w-full gap-2">
-              <p
-                className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300"
-                onClick={() => setTogglePrefecture_1(!togglePrefecture_1)}
-              >
-                <p>関東</p>
-                <img
-                  src={"/assets/images/companytop/ep_arrow-right_red.png"}
-                  alt="arrow"
-                  className={`duration-300 ${
-                    !togglePrefecture_1 ? "rotate-90" : "-rotate-90"
-                  }`}
-                />
-              </p>
-            </div>
-            <div
-              className={`duration-300 overflow-hidden ${
-                togglePrefecture_1
-                  ? "max-h-[500px] opacity-100"
-                  : "max-h-0 opacity-0"
-              }`}
-            >
-              <div className="mt-4">
-                <Radio.Group
-                  options={prefectureOptions_1}
-                  onChange={onChange}
-                  value={prefecture}
-                />
+          {groups.map(({ idx, label, data }) => {
+            const options = Object.keys(data).map((k) => ({ label: k, value: k }));
+            // collapse の開閉制御に、「現在選択中の都道府県がこのグループにあるか」も含める
+            const isOpen = toggles[idx] || Object.keys(data).includes(prefecture);
+            return (
+              <div key={idx} className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
+                <div
+                  className="w-full flex items-center justify-between cursor-pointer"
+                  onClick={() => setToggles(p => ({ ...p, [idx]: !p[idx] }))}
+                >
+                  <p className="text-lg text-[#FF2A3B]">{label}</p>
+                  <img
+                    src="/assets/images/companytop/ep_arrow-right_red.png"
+                    alt="arrow"
+                    className={`duration-300 ${isOpen ? "-rotate-90" : "rotate-90"}`}
+                  />
+                </div>
+                <div className={`duration-300 overflow-hidden ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                  <div className="mt-4">
+                    <Radio.Group
+                      options={options}
+                      onChange={(e) => setPrefecture(e.target.value)}
+                      value={prefecture}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-            <div className="w-full gap-2">
-              <p
-                className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300"
-                onClick={() => setTogglePrefecture_2(!togglePrefecture_2)}
-              >
-                <p>関西</p>
-                <img
-                  src={"/assets/images/companytop/ep_arrow-right_red.png"}
-                  alt="arrow"
-                  className={`duration-300 ${
-                    !togglePrefecture_2 ? "rotate-90" : "-rotate-90"
-                  }`}
-                />
-              </p>
-            </div>
-            <div
-              className={`duration-300 overflow-hidden ${
-                togglePrefecture_2
-                  ? "max-h-[500px] opacity-100"
-                  : "max-h-0 opacity-0"
-              }`}
-            >
-              <div className="mt-4">
-                <Radio.Group
-                  options={prefectureOptions_2}
-                  onChange={onChange}
-                  value={prefecture}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-            <div className="w-full gap-2">
-              <p
-                className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300"
-                onClick={() => setTogglePrefecture_3(!togglePrefecture_3)}
-              >
-                <p>東海</p>
-                <img
-                  src={"/assets/images/companytop/ep_arrow-right_red.png"}
-                  alt="arrow"
-                  className={`duration-300 ${
-                    !togglePrefecture_3 ? "rotate-90" : "-rotate-90"
-                  }`}
-                />
-              </p>
-            </div>
-            <div
-              className={`duration-300 overflow-hidden ${
-                togglePrefecture_3
-                  ? "max-h-[500px] opacity-100"
-                  : "max-h-0 opacity-0"
-              }`}
-            >
-              <div className="mt-4">
-                <Radio.Group
-                  options={prefectureOptions_3}
-                  onChange={onChange}
-                  value={prefecture}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-            <div className="w-full gap-2">
-              <p
-                className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300"
-                onClick={() => setTogglePrefecture_4(!togglePrefecture_4)}
-              >
-                <p>北海道・東北</p>
-                <img
-                  src={"/assets/images/companytop/ep_arrow-right_red.png"}
-                  alt="arrow"
-                  className={`duration-300 ${
-                    !togglePrefecture_4 ? "rotate-90" : "-rotate-90"
-                  }`}
-                />
-              </p>
-            </div>
-            <div
-              className={`duration-300 overflow-hidden ${
-                togglePrefecture_4
-                  ? "max-h-[500px] opacity-100"
-                  : "max-h-0 opacity-0"
-              }`}
-            >
-              <div className="mt-4">
-                <Radio.Group
-                  options={prefectureOptions_4}
-                  onChange={onChange}
-                  value={prefecture}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-            <div className="w-full gap-2">
-              <p
-                className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300"
-                onClick={() => setTogglePrefecture_5(!togglePrefecture_5)}
-              >
-                <p>甲信越・北陸</p>
-                <img
-                  src={"/assets/images/companytop/ep_arrow-right_red.png"}
-                  alt="arrow"
-                  className={`duration-300 ${
-                    !togglePrefecture_5 ? "rotate-90" : "-rotate-90"
-                  }`}
-                />
-              </p>
-            </div>
-            <div
-              className={`duration-300 overflow-hidden ${
-                togglePrefecture_5
-                  ? "max-h-[500px] opacity-100"
-                  : "max-h-0 opacity-0"
-              }`}
-            >
-              <div className="mt-4">
-                <Radio.Group
-                  options={prefectureOptions_5}
-                  onChange={onChange}
-                  value={prefecture}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-4 px-2">
-            <div className="w-full gap-2">
-              <p
-                className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300"
-                onClick={() => setTogglePrefecture_6(!togglePrefecture_6)}
-              >
-                <p>中国・四国</p>
-                <img
-                  src={"/assets/images/companytop/ep_arrow-right_red.png"}
-                  alt="arrow"
-                  className={`duration-300 ${
-                    !togglePrefecture_6 ? "rotate-90" : "-rotate-90"
-                  }`}
-                />
-              </p>
-            </div>
-            <div
-              className={`duration-300 overflow-hidden ${
-                togglePrefecture_6
-                  ? "max-h-[500px] opacity-100"
-                  : "max-h-0 opacity-0"
-              }`}
-            >
-              <div className="mt-4">
-                <Radio.Group
-                  options={prefectureOptions_6}
-                  onChange={onChange}
-                  value={prefecture}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col border-t-[0.1rem] border-b-[0.1rem] border-[#a7a3a3] py-4 px-2">
-            <div className="w-full gap-2">
-              <p
-                className="text-lg text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300"
-                onClick={() => setTogglePrefecture_7(!togglePrefecture_7)}
-              >
-                <p>九州・沖縄</p>
-                <img
-                  src={"/assets/images/companytop/ep_arrow-right_red.png"}
-                  alt="arrow"
-                  className={`duration-300 ${
-                    !togglePrefecture_7 ? "rotate-90" : "-rotate-90"
-                  }`}
-                />
-              </p>
-            </div>
-            <div
-              className={`duration-300 overflow-hidden ${
-                togglePrefecture_7
-                  ? "max-h-[500px] opacity-100"
-                  : "max-h-0 opacity-0"
-              }`}
-            >
-              <div className="mt-4">
-                <Radio.Group
-                  options={prefectureOptions_7}
-                  onChange={onChange}
-                  value={prefecture}
-                />
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
-      {prefecture !== "" && (
+
+      {/* 市区町村（自動入力済） */}
+      {prefecture && (
         <div className="flex justify-between w-full mt-12">
           <div className="flex items-start gap-2 justify-end">
             <p>市区町村</p>
@@ -340,33 +139,35 @@ const Step3 = ({
           </div>
           <div className="flex flex-col w-4/5">
             <Select
-              options={cityOptions(prefecture)}
-              onChange={(e) => setMunicipalities(e)}
               className="w-1/4"
+              options={cityOptions(prefecture)}
+              value={municipalities}
+              onChange={setMunicipalities}
             />
           </div>
         </div>
       )}
 
+      {/* 町名・番地（自動入力済） */}
       <div className="flex justify-between w-full mt-12">
-        <div className="flex items-start gap-2 justify-end">
-          <p>町名・番地</p>
-        </div>
+        <div className="flex items-start gap-2 justify-end"><p>町名・番地</p></div>
         <div className="flex flex-col w-4/5">
           <Input
-            onChange={(e) => setVillage(e.target.value)}
             className="w-1/3"
+            value={village}
+            onChange={(e) => setVillage(e.target.value)}
           />
         </div>
       </div>
+
+      {/* 建物名 */}
       <div className="flex justify-between w-full mt-12">
-        <div className="flex items-start gap-2 justify-end">
-          <p>建物名</p>
-        </div>
+        <div className="flex items-start gap-2 justify-end"><p>建物名</p></div>
         <div className="flex flex-col w-4/5">
           <Input
-            onChange={(e) => setBuilding(e.target.value)}
             className="w-1/3"
+            value={building}
+            onChange={(e) => setBuilding(e.target.value)}
           />
         </div>
       </div>

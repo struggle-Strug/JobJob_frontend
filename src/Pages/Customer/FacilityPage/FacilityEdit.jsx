@@ -299,9 +299,7 @@ const FacilityEdit = () => {
         return message.error("市区町村を入力してください。");
       } else if (facilityVillage === "") {
         return message.error("町名・番地を入力してください。");
-      } else if (facilityBuilding === "") {
-        return message.error("建物名を入力してください。");
-      }
+      } 
 
       const facilityData = {
         customer_id: customer.customer_id,
@@ -406,7 +404,10 @@ const FacilityEdit = () => {
       <div className="w-full min-h-screen flex flex-col p-4 bg-white rounded-lg mb-8">
         <h1 className="lg:text-2xl md:text-base text-sm font-bold">施設編集</h1>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">施設名</p>
+          <p className="lg:text-sm text-xs w-1/5">
+          施設名
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+          </p>
           <Input
             value={facilityName}
             onChange={(e) => setFacilityName(e.target.value)}
@@ -414,7 +415,10 @@ const FacilityEdit = () => {
           />
         </div>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">郵便番号</p>
+          <p className="lg:text-sm text-xs w-1/5">
+          郵便番号
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+          </p>
           <Input
             value={facilityPostalCode}
             onChange={(e) => setFacilityPostalCode(e.target.value)}
@@ -422,7 +426,10 @@ const FacilityEdit = () => {
           />
         </div>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">都道府県</p>
+          <p className="lg:text-sm text-xs w-1/5">
+          都道府県
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+          </p>
           <Select
             options={allPrefectureOptions}
             value={facilityPrefecture}
@@ -431,7 +438,10 @@ const FacilityEdit = () => {
           />
         </div>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">市区町村</p>
+          <p className="lg:text-sm text-xs w-1/5">
+          市区町村
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+          </p>
           <Select
             value={facilityCity}
             onChange={(e) => setFacilityCity(e)}
@@ -440,7 +450,10 @@ const FacilityEdit = () => {
           />
         </div>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">町名・番地</p>
+          <p className="lg:text-sm text-xs w-1/5">
+          町名・番地
+          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+          </p>
           <Input
             value={facilityVillage}
             onChange={(e) => setFacilityVillage(e.target.value)}
