@@ -22,7 +22,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const CertainJob = () => {
   const { pathname } = useLocation();
-  const [type, setType] = useState("1");
+  const [type, setType] = useState(1);
   const [pref, setPref] = useState("");
   const [employmentType, setEmploymentType] = useState([]);
   const [monthlySalary, setMonthlySalary] = useState("");
@@ -353,10 +353,10 @@ const CertainJob = () => {
 
           <section className="container bg-white rounded-lg mt-4">
             <div className="grid grid-cols-3 w-full px-2">
-              <Link
-                to={`/${path}/select/pref`}
+              <button
+                onClick={() => setType(1)}
                 className={`col-span-1 flex items-center justify-center hover:border-b-4 border-[#FF2A3B] py-2 lg:py-4 duration-100 ${
-                  isPrefSelected ? "border-b-4 border-[#FF2A3B]" : ""
+                  type === 1 ? "border-b-4 border-[#FF2A3B]" : ""
                 }`}
               >
                 <img
@@ -367,11 +367,11 @@ const CertainJob = () => {
                 <p className="text-xs lg:text-md font-bold text-[#343434] duration-300 ml-1">
                   都道府県から選択
                 </p>
-              </Link>
-              <Link
-                to={`/${path}/select/employmentType`}
+              </button>
+              <button
+                onClick={() => setType(2)}
                 className={`col-span-1 flex items-center justify-center hover:border-b-4 border-[#FF2A3B] py-2 lg:py-4 duration-100 ${
-                  isEmploymentSelected ? "border-b-4 border-[#FF2A3B]" : ""
+                  type === 2 ? "border-b-4 border-[#FF2A3B]" : ""
                 }`}
               >
                 <img
@@ -382,11 +382,11 @@ const CertainJob = () => {
                 <p className="text-xs lg:text-md font-bold text-[#343434] duration-300 ml-1">
                   雇用形態・給与から選択
                 </p>
-              </Link>
-              <Link
-                to={`/${path}/select/feature`}
+              </button>
+              <button
+                onClick={() => setType(3)}
                 className={`col-span-1 flex items-center justify-center hover:border-b-4 border-[#FF2A3B] py-2 lg:py-4 duration-100 ${
-                  isFeatureSelected ? "border-b-4 border-[#FF2A3B]" : ""
+                  type === 3 ? "border-b-4 border-[#FF2A3B]" : ""
                 }`}
               >
                 <img
@@ -397,10 +397,10 @@ const CertainJob = () => {
                 <p className="text-xs lg:text-md font-bold text-[#343434] duration-300 ml-1">
                   特徴から選択
                 </p>
-              </Link>
+              </button>
             </div>
 
-            {isPrefSelected && (
+            {type === 1 && (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 w-full py-3 gap-4 px-4">
                 {renderPrefectureSection("関東", Prefectures.KANTO)}
                 {renderPrefectureSection("関西", Prefectures.KANSAI)}
@@ -424,7 +424,7 @@ const CertainJob = () => {
               </div>
             )}
 
-            {isEmploymentSelected && (
+            {type === 2 && (
               <div className="w-full p-4 lg:p-6">
                 <div className="mb-6">
                   <p className="text-sm lg:text-base text-[#343434] font-bold mb-4">
@@ -511,7 +511,7 @@ const CertainJob = () => {
               </div>
             )}
 
-            {isFeatureSelected && (
+            {type === 3 && (
               <div className="w-full p-4 lg:p-6">
                 {[
                   { title: "休日の特徴", features: Features.HOLIDAY },
