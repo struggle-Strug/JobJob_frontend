@@ -219,7 +219,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
         <img
           src="/assets/images/noimage.png"
           alt="No image"
-          className="w-1/5 object-cover rounded-lg"
+          className="w-full h-32 object-cover rounded-lg"
         />
       );
 
@@ -227,13 +227,13 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
       <img
         src="/assets/images/noimage.png"
         alt={facility.name}
-        className="w-1/5 object-cover rounded-lg"
+        className="w-full h-32 object-cover rounded-lg"
       />
     ) : (
       <img
         src={facility.photo[0] || "/placeholder.svg"}
         alt={facility.name}
-        className="w-1/5 object-cover rounded-lg"
+        className="w-full h-32 object-cover rounded-lg"
       />
     );
   };
@@ -244,7 +244,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
         <img
           src="/assets/images/noimage.png"
           alt="No image"
-          className="w-full object-cover rounded-lg"
+          className="w-full h-24 object-cover rounded-lg"
         />
       );
 
@@ -252,13 +252,13 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
       <img
         src="/assets/images/noimage.png"
         alt={jobPost.sub_title}
-        className="w-full object-cover rounded-lg"
+        className="w-full h-24 object-cover rounded-lg"
       />
     ) : (
       <img
         src={jobPost.picture[0] || "/placeholder.svg"}
         alt={jobPost.sub_title}
-        className="w-full object-cover rounded-lg"
+        className="w-full h-24 object-cover rounded-lg"
       />
     );
   };
@@ -275,9 +275,9 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
     <>
       <div className="flex flex-col p-4">
         {/* Facility header */}
-        <div className="flex items-start justify-start gap-4">
-          {renderFacilityImage()}
-          <div className="flex flex-col items-start w-4/5">
+        <div className="grid grid-cols-4 gap-4">
+          <div className="col-span-1">{renderFacilityImage()}</div>
+          <div className="col-span-3 flex flex-col">
             <div className="flex justify-between w-full">
               <StatusBadge status={facility.allowed} />
               <p className="lg:text-xs text-[0.5rem] py-1 px-2 rounded-lg">
@@ -403,13 +403,13 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
             filteredJobPosts.map((jobPost, index) => (
               <div
                 key={index}
-                className="flex items-start justify-start gap-4 p-4 border-b border-gray-100 hover:bg-gray-50"
+                className="grid grid-cols-6 gap-4 p-4 border-b border-gray-100 hover:bg-gray-50"
               >
-                <div className="flex flex-col gap-2 w-1/6">
+                <div className="col-span-1 flex flex-col gap-2">
                   {renderJobPostImage(jobPost)}
                   <StatusBadge status={jobPost?.allowed} />
                 </div>
-                <div className="flex flex-col gap-2 w-5/6">
+                <div className="col-span-5 flex flex-col gap-2">
                   <div className="flex justify-between w-full gap-2">
                     <div className="flex items-center justify-start gap-2">
                       <p className="lg:text-sm text-xs text-[#343434]">

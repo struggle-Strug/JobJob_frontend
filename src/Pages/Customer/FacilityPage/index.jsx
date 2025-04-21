@@ -145,8 +145,8 @@ const FacilityPage = () => {
   return (
     <div className="w-full min-h-screen p-4 bg-gray-50">
       <div className="flex flex-col md:flex-row w-full bg-white rounded-lg shadow-lg min-h-[calc(100vh-2rem)] overflow-hidden">
-        {/* Sidebar with facility list */}
-        <div className="w-full md:w-1/4 lg:w-1/5 border-b-[1px] md:border-b-0 md:border-r-[1px] border-[#e7e7e7] flex flex-col">
+        {/* Sidebar with facility list - add min-width and max-width to prevent shrinking */}
+        <div className="w-full md:w-1/4 lg:w-1/5 md:min-w-[250px] md:max-w-[300px] border-b-[1px] md:border-b-0 md:border-r-[1px] border-[#e7e7e7] flex flex-col">
           <div className="p-4 bg-gray-50 border-b border-[#e7e7e7] sticky top-0 z-10">
             <Link
               to="/customers/facility/add"
@@ -160,7 +160,7 @@ const FacilityPage = () => {
           <div
             id="facility-list"
             className="overflow-y-auto flex-grow"
-            style={{ maxHeight: "calc(100vh - 6.45rem)" }}
+            style={{ maxHeight: "calc(100vh - 10rem)" }}
           >
             {loading ? (
               <div className="flex justify-center items-center h-40">
@@ -227,8 +227,8 @@ const FacilityPage = () => {
           )}
         </div>
 
-        {/* Main content area */}
-        <div className="flex-grow">
+        {/* Main content area - add flex-grow and overflow handling */}
+        <div className="flex-grow overflow-auto">
           {loadingDetail ? (
             <div className="flex justify-center items-center h-full">
               <Spin size="large" />
