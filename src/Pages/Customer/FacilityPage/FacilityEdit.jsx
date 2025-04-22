@@ -1,35 +1,37 @@
 "use client";
 
-import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Link } from "react-router-dom";
 import {
-  Button,
-  Carousel,
   Checkbox,
   Input,
-  message,
-  Modal,
   Radio,
   Select,
-  Spin,
   Upload,
+  message,
+  Modal,
+  Spin,
+  Button,
+  Carousel,
 } from "antd";
+import { CloseOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
+import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import Loading from "../../../components/Loading";
-import { useAuth } from "../../../context/AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Facilities,
   Features,
   JobType,
   Prefectures,
 } from "../../../utils/constants/categories";
-import { Municipalities } from "../../../utils/constants/categories/municipalities";
 import { getBase64 } from "../../../utils/getBase64";
+import { useAuth } from "../../../context/AuthContext";
 import { getJobValueByKey } from "../../../utils/getFunctions";
-import ImageEditModal from "./ImageEditModal";
 import PhotoSelectModal from "./PhotoSelectModal";
+import Loading from "../../../components/Loading";
+import { Municipalities } from "../../../utils/constants/categories/municipalities";
+import ImageEditModal from "./ImageEditModal";
 
 const FacilityEdit = () => {
   const { customer } = useAuth();
@@ -60,6 +62,7 @@ const FacilityEdit = () => {
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [previewModal, setPreviewModal] = useState(false);
   const [loading, setLoading] = useState(true); // Add loading state
+  const [endModal, setEndModal] = useState(false);
   const location = useLocation();
   const id = location.pathname.split("/").pop();
   const navigate = useNavigate();
@@ -138,6 +141,11 @@ const FacilityEdit = () => {
       label: genre,
     })),
   ];
+
+  const onCloseEndModal = async () => {
+    await setEndModal(false);
+    navigate("/customers/facility");
+  };
 
   // Modified to handle image editing
   const beforeUpload = (file) => {
@@ -299,7 +307,9 @@ const FacilityEdit = () => {
         return message.error("市区町村を入力してください。");
       } else if (facilityVillage === "") {
         return message.error("町名・番地を入力してください。");
-      } 
+      } else if (facilityBuilding === "") {
+        return message.error("建物名を入力してください。");
+      }
 
       const facilityData = {
         customer_id: customer.customer_id,
@@ -309,7 +319,7 @@ const FacilityEdit = () => {
         city: facilityCity,
         village: facilityVillage,
         building: facilityBuilding,
-        photo: photoUrl.fileUrls,
+        photo: photoUrl.fileUrls ? [...photoUrl.fileUrls, ...urls] : urls,
         introduction: facilityIntroduction,
         access: facilityAccess,
         access_text: facilityAccessText,
@@ -323,27 +333,15 @@ const FacilityEdit = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
         photoUrl.files || []
       );
-      if (facility?.allowed === "rejected" || "draft") {
-        const response = await axios.put(
-          `${process.env.REACT_APP_API_URL}/api/v1/facility/${facility?.facility_id}`,
-          facilityData
-        );
-        if (response.data.error) {
-          return message.error(response.data.error);
-        }
-        message.success(response.data.message);
-        setSuccessModalOpen(true);
-      } else {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_URL}/api/v1/facility`,
-          facilityData
-        );
-        if (response.data.error) {
-          return message.error(response.data.error);
-        }
-        message.success(response.data.message);
-        setSuccessModalOpen(true);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/facility`,
+        facilityData
+      );
+      if (response.data.error) {
+        return message.error(response.data.error);
       }
+      message.success(response.data.message);
+      setSuccessModalOpen(true);
     } catch (error) {
       console.error(error);
       message.error("施設の保存中にエラーが発生しました。");
@@ -357,6 +355,7 @@ const FacilityEdit = () => {
       `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}/${status}`
     );
     if (response.data.error) message.error(response.data.error);
+    if (status === "ended") return setEndModal(true);
     navigate(`/customers/facility`);
   };
 
@@ -385,7 +384,7 @@ const FacilityEdit = () => {
   };
 
   useEffect(() => {
-    document.title = "施設登録・編集 | JobJob (ジョブジョブ)";
+    document.title = "施設編集";
     getFacility();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -404,10 +403,7 @@ const FacilityEdit = () => {
       <div className="w-full min-h-screen flex flex-col p-4 bg-white rounded-lg mb-8">
         <h1 className="lg:text-2xl md:text-base text-sm font-bold">施設編集</h1>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">
-          施設名
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
-          </p>
+          <p className="lg:text-sm text-xs w-1/5">施設名</p>
           <Input
             value={facilityName}
             onChange={(e) => setFacilityName(e.target.value)}
@@ -415,10 +411,7 @@ const FacilityEdit = () => {
           />
         </div>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">
-          郵便番号
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
-          </p>
+          <p className="lg:text-sm text-xs w-1/5">郵便番号</p>
           <Input
             value={facilityPostalCode}
             onChange={(e) => setFacilityPostalCode(e.target.value)}
@@ -426,10 +419,7 @@ const FacilityEdit = () => {
           />
         </div>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">
-          都道府県
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
-          </p>
+          <p className="lg:text-sm text-xs w-1/5">都道府県</p>
           <Select
             options={allPrefectureOptions}
             value={facilityPrefecture}
@@ -438,10 +428,7 @@ const FacilityEdit = () => {
           />
         </div>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">
-          市区町村
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
-          </p>
+          <p className="lg:text-sm text-xs w-1/5">市区町村</p>
           <Select
             value={facilityCity}
             onChange={(e) => setFacilityCity(e)}
@@ -450,10 +437,7 @@ const FacilityEdit = () => {
           />
         </div>
         <div className="flex items-center mt-4">
-          <p className="lg:text-sm text-xs w-1/5">
-          町名・番地
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
-          </p>
+          <p className="lg:text-sm text-xs w-1/5">町名・番地</p>
           <Input
             value={facilityVillage}
             onChange={(e) => setFacilityVillage(e.target.value)}
@@ -654,6 +638,16 @@ const FacilityEdit = () => {
               </button>
             </>
           )}
+          {facility?.allowed === "rejected" && (
+            <>
+              <button
+                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
+                onClick={handleDeleteFacility}
+              >
+                削除する
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -701,11 +695,13 @@ const FacilityEdit = () => {
                     dots={false}
                     beforeChange={(_, next) => setCurrentSlide(next)}
                   >
-                    {facility?.photo?.length > 0 ? (
-                      facility.photo.map((photoUrl, index) => (
+                    {facilityPhoto?.length > 0 ? (
+                      facilityPhoto.map((photo, index) => (
                         <div key={index}>
                           <img
-                            src={photoUrl || "/placeholder.svg"}
+                            src={
+                              photo.url || photo.preview || "/placeholder.svg"
+                            }
                             alt={`facility-photo-${index}`}
                             className="w-full aspect-video object-cover rounded-t-xl"
                           />
@@ -722,9 +718,9 @@ const FacilityEdit = () => {
                     )}
                   </Carousel>
                   {/* スライドインジケーター（画像上に表示） */}
-                  {facility?.photo?.length > 0 && (
+                  {facilityPhoto?.length > 0 && (
                     <div className="absolute top-2 right-2 bg-[#fdfcf9] text-black text-xs px-2 py-1 rounded-xl z-10 border border-[#ddccc9]">
-                      {currentSlide + 1}/{facility.photo.length}
+                      {currentSlide + 1}/{facilityPhoto.length}
                     </div>
                   )}
                 </div>
@@ -733,8 +729,8 @@ const FacilityEdit = () => {
                   <button
                     onClick={() => {
                       const newIndex =
-                        (currentSlide - 1 + facility.photo.length) %
-                        facility.photo.length;
+                        (currentSlide - 1 + facilityPhoto.length) %
+                        facilityPhoto.length;
                       carouselRef.current.goTo(newIndex, false);
                       setCurrentSlide(newIndex);
                     }}
@@ -763,7 +759,7 @@ const FacilityEdit = () => {
                   <button
                     onClick={() => {
                       const newIndex =
-                        (currentSlide + 1) % facility.photo.length;
+                        (currentSlide + 1) % facilityPhoto.length;
                       carouselRef.current.goTo(newIndex, false);
                       setCurrentSlide(newIndex);
                     }}
@@ -994,6 +990,25 @@ const FacilityEdit = () => {
         }}
         onSave={handleEditSave}
       />
+
+      <Modal
+        open={endModal}
+        onCancel={onCloseEndModal}
+        footer={null}
+        className="modal"
+      >
+        <div className="flex flex-col p-4">
+          <p className="text-lg font-bold text-[#343434] pl-4">
+            施設の掲載を終了しました。再度掲載される場合は、掲載申請をお願いします。
+          </p>
+          <Link
+            to="/customers/facility"
+            className="text-center text-blue-500 mt-4"
+          >
+            施設一覧へ戻る
+          </Link>
+        </div>
+      </Modal>
     </>
   );
 };
