@@ -443,11 +443,13 @@ const JobPostEdit = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}/${status}`
       );
       if (response.data.error) message.error(response.data.error);
-      if (status === "pending") {
+
+      if (status === "pending" || status === "ended") {
         setSuccessModalOpen(true);
       }
+      
     } catch (error) {
-      console.error("Error requesting job post status change:", error);
+      message.error("エラーが発生しました");
     } finally {
       setLoading(false);
     }
@@ -460,9 +462,10 @@ const JobPostEdit = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/${jobPostId}`
       );
       if (response.data.error) message.error(response.data.error);
+      message.success("求人を削除しました");
       navigate("/customers/facility");
     } catch (error) {
-      console.error("Error deleting job post:", error);
+      message.error("エラーが発生しました");
     } finally {
       setLoading(false);
     }
