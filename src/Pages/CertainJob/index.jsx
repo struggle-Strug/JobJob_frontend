@@ -19,6 +19,7 @@ import BreadCrumb from "../../components/BreadCrumb";
 import axios from "axios";
 import { message } from "antd";
 import { useAuth } from "../../context/AuthContext";
+import { useMemo } from 'react';
 
 const CertainJob = () => {
   const { pathname } = useLocation();
@@ -32,9 +33,12 @@ const CertainJob = () => {
   const [filters, setFilters] = useState({
     pref: "",
     employmentType: [],
-    monthlySalary: "",
     hourlySalary: "",
+    monthlySalary: "",
     feature: [],
+    muni: "",
+    page: 1,
+    features: [],
   });
 
   const [toggleMedical, setToggleMedical] = useState(false);
@@ -46,18 +50,57 @@ const CertainJob = () => {
   const [toggleHealthcare, setToggleHealthcare] = useState(false);
 
   const location = useLocation();
+  const [category, ...segments] = useMemo(
+    () => pathname.split('/').filter(Boolean),
+    [pathname]
+  );
+
+
   const navigate = useNavigate();
   const path = pathname.split("/")[1];
+  
   const JobType = getJobTypeKeyByValue(path);
   const isSelected = (v) => v === type;
   const params = new URLSearchParams(location.search);
   const [jobTypeNumbers, setJobTypeNumbers] = useState([]);
   const [jobTypeNumbersByFacility, setJobTypeNumbersByFacility] = useState([]);
 
-  const isMuniSelected = pathname.endsWith("/select/muni");
-  const isEmploymentSelected = pathname.endsWith("/select/employmentType");
-  const isFeatureSelected = pathname.endsWith("/select/feature");
   const isPrefSelected = pathname.endsWith("/select/pref");
+
+  const makeLink = ({ pref, employment, feature }) => {
+    // 1) pathname を分解して base と filter セグメントを得る
+    const parts = pathname.split("/").filter(Boolean);
+    const base = parts[0];           // e.g. "dr"
+    const filters = parts.slice(1);  // ["pref1","employment2",...]
+  
+    // 2) 既存セグメントを初期化
+    let curPref = "";
+    let curEmp  = "";
+    let curFeat = "";
+  
+    // 3) 名前ベースで振り分け
+    filters.forEach(seg => {
+      if (/^pref\d+$/.test(seg)) {
+        curPref = seg;
+      } else if (/^employment\d+$/.test(seg)) {
+        curEmp = seg;
+      } else if (/^feature\d+$/.test(seg)) {
+        curFeat = seg;
+      }
+    });
+  
+    // 4) undefined は「変更なし」、'' は「クリア」、それ以外は上書き
+    const newPref = pref        !== undefined ? pref        : curPref;
+    const newEmp  = employment  !== undefined ? employment  : curEmp;
+    const newFeat = feature     !== undefined ? feature     : curFeat;
+  
+    // 5) 空文字・null・undefined は除去して、常に [pref, employment, feature] の順で組み立て
+    const segs = [newPref, newEmp, newFeat].filter(v => v);
+  
+    return `/${base}/${segs.join("/")}`;
+  };
+  
+  
 
   const monthlySalaryOptions = [
     { value: "", label: "指定なし" },
@@ -109,6 +152,7 @@ const CertainJob = () => {
     getJobTypeNumbers();
     getJobTypeNumbersByFacility();
   }, []);
+
   const renderMeshLink01 = (jobType) => {
     return Object.keys(Facilities).map((facility, index) => {
       return (
@@ -187,6 +231,7 @@ const CertainJob = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+
   const handleEmploymentTypeChange = (employmentTypeValue) => {
     setEmploymentType(
       (prev) =>
@@ -206,20 +251,29 @@ const CertainJob = () => {
   };
 
   const handleOnChangePref = (p) => {
-    if (pathname.split("/")[2] === "search") {
-      // ✅ Update filters first
-      setFilters((prevFilters) => {
-        const updatedFilters = { ...prevFilters, pref: p };
+    // 他のフィルターが一つでも設定されているかをチェック
+    const hasOtherFilters =
+      filters.pref !== "" ||
+      filters.employmentType.length > 0 ||
+      filters.monthlySalary !== "" ||
+      filters.hourlySalary !== "" ||
+      filters.feature.length > 0;
 
-        // ✅ Navigate using the updated filters
-        const url = `/${path}/search?filters=${encodeURIComponent(
-          JSON.stringify(updatedFilters)
-        )}`;
-        navigate(url);
-      });
+      const rel = pathname.replace(`/${path}`, "");
+      const segs = rel.split("/").filter(Boolean);
+      const isPathFilter = segs.length > 0 && !pathname.includes("/search");
+  
+    if (hasOtherFilters) {
+      const updated = { ...filters, pref: p };
+      window.location.href = `/${path}/search?filters=${encodeURIComponent(
+          JSON.stringify(updated)
+        )}`
+    } else if (isPathFilter) {
+      const newUrl = makeLink({ pref: p });
+      navigate(newUrl);
     } else {
-      const url = `/${path}/${p}`;
-      navigate(url);
+      // ——— フィルターなし → /{path}/{pref} ———
+      navigate(`/${path}/${p}`);
     }
   };
 
@@ -227,9 +281,12 @@ const CertainJob = () => {
     const defaultFilters = {
       pref: "",
       employmentType: [],
-      monthlySalary: "",
       hourlySalary: "",
+      monthlySalary: "",
       feature: [],
+      muni: "",
+      page: 1,
+      features: [],
     };
     // 配列で管理するフィルターの場合
     if (filterName === "employmentType" || filterName === "feature") {
@@ -243,15 +300,30 @@ const CertainJob = () => {
   };
 
   useEffect(() => {
-    setFilters({
+    if (!filters.pref) {
+      setType(1);
+    }
+  }, [location.search]);
+
+  useEffect(() => {
+    setFilters(prev => ({
+      ...prev,
       employmentType: employmentType,
       monthlySalary: monthlySalary,
       hourlySalary: hourlySalary,
       feature: feature,
-    });
+    }));
   }, [employmentType, feature, monthlySalary, hourlySalary]);
 
   useEffect(() => {
+    const relative = pathname.replace(`/${path}`, "");
+    const segments = relative.split("/").filter(Boolean);
+    const isPathFilter = segments.length > 0 && !pathname.startsWith(`/${path}/search`);
+
+    if (isPathFilter) {
+      // パスベースのフィルターURLなので、トップへのリダイレクトはせず
+      return;
+    }
     const savedFilters = params.get("filters")
       ? JSON.parse(decodeURIComponent(params.get("filters")))
       : {
@@ -260,6 +332,9 @@ const CertainJob = () => {
           hourlySalary: "",
           monthlySalary: "",
           feature: [],
+          muni: "",
+          page: 1,
+          features: [],
         };
 
     setFilters(savedFilters);
@@ -271,12 +346,11 @@ const CertainJob = () => {
       savedFilters.monthlySalary === "" &&
       savedFilters.feature.length === 0;
 
+
     if (isEmptyFilters) {
       const url = `/${path}`;
       if (window.location.pathname !== url) {
         navigate(url);
-      } else {
-        navigate(`/${path}/select/pref`);
       }
     } else {
       const url = `/${path}/search?filters=${encodeURIComponent(
@@ -298,14 +372,15 @@ const CertainJob = () => {
       </div>
       <div className="flex flex-col w-full px-2 lg:px-4">
         {Object.keys(prefectures).map((prefecture, index) => (
-          <a
+          <button
             key={index}
             className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
-            href={`/${getJobValueByKey(JobType)}/${prefectures[prefecture]}`}
+            onClick={() => {handleOnChangePref(prefectures[prefecture])}}
             aria-label={prefecture} // Added aria-label based on prefecture name
+
           >
             {prefecture}
-          </a>
+          </button>
         ))}
       </div>
     </div>
@@ -430,7 +505,7 @@ const CertainJob = () => {
                   <p className="text-sm lg:text-base text-[#343434] font-bold mb-4">
                     雇用形態
                   </p>
-                  <div className="flex flex-wrap items-center gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                     {Object.keys(EmploymentType).map(
                       (employmentTypeKey, index) => (
                         <Checkbox
@@ -444,20 +519,25 @@ const CertainJob = () => {
                           <span className="text-xs lg:text-sm mr-5">
                             {employmentTypeKey}
                           </span>
-                          <span className="absolute right-5 top-0 bottom-0 border-l border-slate-200"></span>
-                          <a
-                            href={getConditionUrl(
-                              "employmentType",
-                              employmentTypeKey
-                            )} // リンク先URLを指定
-                            className="absolute right-0 top-1/2 transform -translate-y-1/2"
-                          >
+                          <Link
+                                to={makeLink({
+                                  employment: "employment" + (index+1),
+                                })}
+                                onClick={() => setType(1)}
+                                className="
+                                      absolute inset-y-0 right-0 
+                                      flex items-center px-3 
+                                      cursor-pointer 
+                                      bg-[#ffeeee]
+                                      hover:bg-[#ffdddd] transition-colors rounded-r
+                                    "
+                              >
                             <img
                               src="/assets/images/dashboard/ep_arrow-right_black.png"
                               alt="arrow-down"
                               className="w-4"
                             />
-                          </a>
+                          </Link>
                         </Checkbox>
                       )
                     )}
@@ -551,25 +631,29 @@ const CertainJob = () => {
                           )}
                           className="relative" // 右側に十分な余白を確保
                         >
-                          <span className="text-xs lg:text-sm">
+                          <span className="text-xs lg:text-sm mr-5">
                             {featureKey}
                           </span>
-                          {/* 縦線 */}
-                          <span className="absolute right-5 top-0 bottom-0 border-l border-slate-200"></span>
                           {/* チェブロンをリンクに */}
-                          <a
-                            href={getConditionUrl(
-                              "feature",
-                              getFeatureKeyByValue(section.features[featureKey])
-                            )} // リンク先URLを指定
-                            className="absolute right-0 top-1/2 transform -translate-y-1/2"
-                          >
+                          <Link
+                                to={makeLink({
+                                  feature:   "feature" + (idx+1) 
+                                })}
+                                onClick={() => setType(1)}
+                                className="
+                                      absolute inset-y-0 right-0 
+                                      flex items-center px-3 
+                                      cursor-pointer 
+                                      bg-[#ffeeee]
+                                      hover:bg-[#ffdddd] transition-colors rounded-r
+                                    "
+                              >
                             <img
                               src="/assets/images/dashboard/ep_arrow-right_black.png"
                               alt="arrow-down"
                               className="w-4"
                             />
-                          </a>
+                          </Link>
                         </Checkbox>
                       ))}
                     </div>

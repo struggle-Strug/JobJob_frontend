@@ -31,6 +31,9 @@ import {
 } from "../../../utils/getMuniId";
 import { getPrefCodeByName } from "../../../utils/getPref";
 
+
+
+
 const JobLists = () => {
   const { user, likes, setLikes } = useAuth();
   const { pathname } = useLocation();
@@ -72,10 +75,14 @@ const JobLists = () => {
   const path = pathname.split("/")[1];
   const JobType = getJobTypeKeyByValue(path);
 
-  const isPrefModalOpen = modal === "pref_modal";
-  const isMuniModalOpen = modal === "muni_modal";
-  const isEmploymentTypeModalOpen = modal === "employment_modal";
-  const isFeatureModalOpen = modal === "feature_modal";
+  const segments     = pathname.split("/").filter(Boolean);
+  const modalSegment = segments[segments.length - 1] || "";
+
+  const isPrefModalOpen       = modalSegment === "pref_modal";
+  const isMuniModalOpen       = modalSegment === "muni_modal";
+  const isEmploymentTypeModalOpen = modalSegment === "employment_modal";
+  const isFeatureModalOpen    = modalSegment === "feature_modal";
+  
 
   const monthlySalaryOptions = [
     { value: "", label: "指定なし" },
@@ -272,15 +279,45 @@ const JobLists = () => {
   };
 
   useEffect(() => {
-    const newFilters = {
-      pref: pref,
-      muni: muni,
-      employmentType: employmentType,
-      monthlySalary: monthlySalary,
-      hourlySalary: hourlySalary,
-      feature: feature,
-      page: page,
-    };
+    const segments = pathname.split('/').filter(Boolean);
+    const empSegs  = segments.filter(s => /^employment\d+$/.test(s));
+    const featSegs = segments.filter(s => /^feature\d+$/.test(s));
+    // 1. EmploymentType の逆引きマップを作成
+const empCodeToLabel = Object.fromEntries(
+  Object.entries(EmploymentType).map(([label, code]) => [code, label])
+);
+
+// 2) Features をフラット化した逆引きマップ
+const featMap = Object.values(Features).reduce((acc, group) => {
+  Object.entries(group).forEach(([label, code]) => {
+    acc[code] = label;
+  });
+  return acc;
+}, {});
+
+// 3. empSegs, featSegs をそれぞれラベル配列に変換
+const selectedEmploymentLabels = empSegs
+  .map(code => empCodeToLabel[code])
+  .filter(Boolean); // 存在しないコードは除外
+
+const selectedFeatureLabels = featSegs
+  .map(code => featMap[code])
+  .filter(Boolean);
+
+// 4. newFilters にセット
+const newFilters = {
+  pref,
+  muni,
+  employmentType: selectedEmploymentLabels.length
+    ? selectedEmploymentLabels
+    : employmentType,
+  monthlySalary,
+  hourlySalary,
+  feature: selectedFeatureLabels.length
+    ? selectedFeatureLabels
+    : feature,
+  page,
+};
 
     setUpdatedFilters(newFilters);
     setFilters(newFilters);
@@ -288,15 +325,46 @@ const JobLists = () => {
   }, [pref, muni, page]);
 
   useEffect(() => {
-    const newFilters = {
-      pref: pref,
-      muni: muni,
-      employmentType: employmentType,
-      monthlySalary: monthlySalary,
-      hourlySalary: hourlySalary,
-      feature: feature,
-      page: page,
-    };
+    const segments = pathname.split('/').filter(Boolean);
+    const empSegs  = segments.filter(s => /^employment\d+$/.test(s));
+    const featSegs = segments.filter(s => /^feature\d+$/.test(s));
+
+    // 1. EmploymentType の逆引きマップを作成
+const empCodeToLabel = Object.fromEntries(
+  Object.entries(EmploymentType).map(([label, code]) => [code, label])
+);
+
+// 2) Features をフラット化した逆引きマップ
+const featMap = Object.values(Features).reduce((acc, group) => {
+  Object.entries(group).forEach(([label, code]) => {
+    acc[code] = label;
+  });
+  return acc;
+}, {});
+
+// 3. empSegs, featSegs をそれぞれラベル配列に変換
+const selectedEmploymentLabels = empSegs
+  .map(code => empCodeToLabel[code])
+  .filter(Boolean); // 存在しないコードは除外
+
+const selectedFeatureLabels = featSegs
+  .map(code => featMap[code])
+  .filter(Boolean);
+
+// 4. newFilters にセット
+const newFilters = {
+  pref,
+  muni,
+  employmentType: selectedEmploymentLabels.length
+    ? selectedEmploymentLabels
+    : employmentType,
+  monthlySalary,
+  hourlySalary,
+  feature: selectedFeatureLabels.length
+    ? selectedFeatureLabels
+    : feature,
+  page,
+};
 
     setUpdatedFilters(newFilters);
   }, [employmentType, feature, monthlySalary, hourlySalary]);
@@ -930,20 +998,20 @@ const JobLists = () => {
                       className="relative" // 右側に十分な余白を確保
                     >
                       {employmentTypeKey}
-                      {/* 縦線 */}
-                      <span className="absolute right-5 top-1 bottom-1 border-l border-gray-400"></span>
-                      {/* チェブロンをリンクに */}
                       <a
-                        href={getConditionUrl(
-                          "employmentType",
-                          employmentTypeKey
-                        )} // リンク先URLを指定
-                        className="absolute right-0 top-1/2 transform -translate-y-1/2"
+                        href={getConditionUrl("employmentType", employmentTypeKey)}
+                        className="
+                        absolute inset-y-0 right-0 
+                        flex items-center px-3 
+                        cursor-pointer 
+                        bg-[#ffcaca]
+                        hover:bg-[#ffaaaa] transition-colors rounded-r
+                      "
                       >
                         <img
                           src="/assets/images/dashboard/ep_arrow-right_black.png"
-                          alt="arrow-down"
-                          className="w-4"
+                          alt="arrow-right"
+                          className="w-4 transition-transform hover:translate-x-1"
                         />
                       </a>
                     </Checkbox>
@@ -1046,13 +1114,18 @@ const JobLists = () => {
                       className="relative" // 右側に十分な余白を確保
                     >
                       <span className="text-xs lg:text-sm">{featureKey}</span>
-                      <span className="absolute right-5 top-1 bottom-1 border-l border-gray-400"></span>
                       <a
                         href={getConditionUrl(
                           "feature",
                           getFeatureKeyByValue(section.features[featureKey])
                         )}
-                        className="absolute right-0 top-1/2 transform -translate-y-1/2"
+                        className="
+                        absolute inset-y-0 right-0 
+                        flex items-center px-3 
+                        cursor-pointer 
+                        bg-[#ffcaca]
+                        hover:bg-[#ffaaaa] transition-colors rounded-r
+                      "
                       >
                         <img
                           src="/assets/images/dashboard/ep_arrow-right_black.png"
