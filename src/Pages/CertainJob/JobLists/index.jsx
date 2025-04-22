@@ -479,23 +479,24 @@ const newFilters = {
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-center justify-start w-2/3">
             <div className="flex flex-col justify-center bg-white rounded-lg p-4 w-full shadow-xl">
-              <p className="text-lg font-bold text-gray-500">
-                求人・転職・アルバイト情報
-              </p>
-              <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center">
-                  <p className="lg:text-xl md:text-sm font-bold text-[#FF6B56]">
+              <h1 className="text-lg">
+              <span className="font-bold">
                     {getPrefectureKeyByValue(pref)}
-                  </p>
+                  </span>
                   {muni && (
-                    <p className="lg:text-xl md:text-sm font-bold text-[#FF6B56]">
+                    <span className="font-bold">
                       {muni}
-                    </p>
+                    </span>
                   )}
-                  <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                    の{JobType}
-                  </p>
-                </div>
+                  <span className="font-bold">
+                    ,{JobType}
+                  </span>
+                  <span>
+                  の求人・転職・アルバイト情報
+                  </span>
+                
+              </h1>
+              <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center">
                   <p className="lg:text-xl md:text-sm font-bold text-[#343434] ">
                     該当件数

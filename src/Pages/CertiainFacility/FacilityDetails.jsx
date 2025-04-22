@@ -342,7 +342,7 @@ const FacilityDetails = () => {
               </p>
               <div>
                 <p className="lg:text-sm md:text-xs text-[#343434]">
-                  <span style="margin-right:5px">{facility.postal_code}</span>
+                <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
                   {facility.prefecture}
                   {facility.city}
                   {facility.village}
@@ -423,6 +423,7 @@ const FacilityDetails = () => {
                   ))}
                 </div>
                 <p className="lg:text-base text-sm text-[#343434] mt-1">
+                <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
                   {facility.prefecture}
                   {facility.city}
                   {facility.village}
