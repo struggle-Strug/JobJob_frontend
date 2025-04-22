@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
 
-// Function to create a processed image based on orientation
+// Function to create a processed image with 4:3 aspect ratio, fitting to height
 const createProcessedImage = async (imageSrc) => {
   const image = new Image();
   image.crossOrigin = "anonymous";
@@ -14,9 +14,9 @@ const createProcessedImage = async (imageSrc) => {
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
 
-      // Set fixed output dimensions to 1024x768
-      const outputWidth = 1024;
+      // Set output dimensions with 4:3 aspect ratio
       const outputHeight = 768;
+      const outputWidth = Math.round(outputHeight * (4 / 3)); // 1024 for 4:3 ratio
 
       // Set canvas to the output dimensions
       canvas.width = outputWidth;
@@ -26,42 +26,40 @@ const createProcessedImage = async (imageSrc) => {
       ctx.fillStyle = "#FFFFFF";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Calculate dimensions to maintain aspect ratio
-      const imageAspectRatio = image.width / image.height;
-      const outputAspectRatio = outputWidth / outputHeight;
+      // Calculate dimensions to fit by height
+      const scale = outputHeight / image.height;
+      const scaledWidth = image.width * scale;
 
-      let drawWidth, drawHeight, xOffset, yOffset;
-
-      if (imageAspectRatio > outputAspectRatio) {
-        // Image is wider than output - fit to width
-        drawWidth = outputWidth;
-        drawHeight = outputWidth / imageAspectRatio;
-        xOffset = 0;
-        yOffset = (outputHeight - drawHeight) / 2;
+      // Calculate x-offset for centering (with cropping or padding as needed)
+      let xOffset = 0;
+      if (scaledWidth > outputWidth) {
+        // Image is too wide after scaling to height - crop the sides
+        xOffset = (outputWidth - scaledWidth) / 2; // This will be negative, cropping both sides equally
       } else {
-        // Image is taller than output - fit to height
-        drawHeight = outputHeight;
-        drawWidth = outputHeight * imageAspectRatio;
-        xOffset = (outputWidth - drawWidth) / 2;
-        yOffset = 0;
+        // Image is narrower than output after scaling to height - center it with padding
+        xOffset = (outputWidth - scaledWidth) / 2; // This will be positive, adding padding
       }
 
-      // Draw the image centered
-      ctx.drawImage(image, xOffset, yOffset, drawWidth, drawHeight);
+      // Draw the image centered (or cropped) horizontally, full height
+      ctx.drawImage(image, xOffset, 0, scaledWidth, outputHeight);
 
       // Convert canvas to blob
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          console.error("Canvas is empty");
-          return;
-        }
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            console.error("Canvas is empty");
+            return;
+          }
 
-        blob.name = "processed.jpeg";
-        const processedFile = new File([blob], "processed.jpeg", {
-          type: "image/jpeg",
-        });
-        resolve({ file: processedFile, preview: URL.createObjectURL(blob) });
-      }, "image/jpeg");
+          blob.name = "processed.jpeg";
+          const processedFile = new File([blob], "processed.jpeg", {
+            type: "image/jpeg",
+          });
+          resolve({ file: processedFile, preview: URL.createObjectURL(blob) });
+        },
+        "image/jpeg",
+        0.9
+      ); // Added quality parameter for better compression
     };
   });
 };
