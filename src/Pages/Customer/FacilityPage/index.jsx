@@ -160,7 +160,7 @@ const FacilityPage = () => {
           <div
             id="facility-list"
             className="overflow-y-auto flex-grow"
-            style={{ maxHeight: "calc(100vh - 10rem)" }}
+            style={{ maxHeight: "calc(100vh - 6.45rem)" }}
           >
             {loading ? (
               <div className="flex justify-center items-center h-40">
