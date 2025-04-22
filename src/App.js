@@ -232,6 +232,7 @@ function App() {
           <Route path="/:jobType/:pref" element={<JobLists/>}>
             <Route path="modal/:modal" element={<JobLists/>}/>
           </Route>
+
           
           {getAllJobTypeValues().map((jobType) => {
             const hasPrefecture =
