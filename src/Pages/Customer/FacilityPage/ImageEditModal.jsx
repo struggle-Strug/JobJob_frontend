@@ -125,13 +125,6 @@ const ImageEditModal = ({ visible, image, onCancel, onSave }) => {
           </div>
         )}
       </div>
-
-      <div className="mt-4 p-4 bg-gray-50 rounded-md">
-        <h4 className="font-medium mb-2">画像処理方法:</h4>
-        <p className="text-sm">
-          画像は4:3の比率で処理されます。元の画像の高さに合わせてサイズが調整され、幅が広すぎる場合は両側がトリミングされ、狭い場合は白い余白が追加されます。
-        </p>
-      </div>
     </Modal>
   );
 };
