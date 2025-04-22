@@ -62,6 +62,7 @@ const FacilityEdit = () => {
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [previewModal, setPreviewModal] = useState(false);
   const [loading, setLoading] = useState(true); // Add loading state
+  const [endModal, setEndModal] = useState(false);
   const location = useLocation();
   const id = location.pathname.split("/").pop();
   const navigate = useNavigate();
@@ -140,6 +141,11 @@ const FacilityEdit = () => {
       label: genre,
     })),
   ];
+
+  const onCloseEndModal = async () => {
+    await setEndModal(false);
+    navigate("/customers/facility");
+  };
 
   // Modified to handle image editing
   const beforeUpload = (file) => {
@@ -349,6 +355,7 @@ const FacilityEdit = () => {
       `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}/${status}`
     );
     if (response.data.error) message.error(response.data.error);
+    if (status === "ended") return setEndModal(true);
     navigate(`/customers/facility`);
   };
 
@@ -983,6 +990,25 @@ const FacilityEdit = () => {
         }}
         onSave={handleEditSave}
       />
+
+      <Modal
+        open={endModal}
+        onCancel={onCloseEndModal}
+        footer={null}
+        className="modal"
+      >
+        <div className="flex flex-col p-4">
+          <p className="text-lg font-bold text-[#343434] pl-4">
+            施設の掲載を終了しました。再度掲載される場合は、掲載申請をお願いします。
+          </p>
+          <Link
+            to="/customers/facility"
+            className="text-center text-blue-500 mt-4"
+          >
+            施設一覧へ戻る
+          </Link>
+        </div>
+      </Modal>
     </>
   );
 };
