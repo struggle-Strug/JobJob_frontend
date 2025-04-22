@@ -342,6 +342,7 @@ const FacilityDetails = () => {
               </p>
               <div>
                 <p className="lg:text-sm md:text-xs text-[#343434]">
+                  <span style="margin-right:5px">{facility.postal_code}</span>
                   {facility.prefecture}
                   {facility.city}
                   {facility.village}
@@ -403,14 +404,7 @@ const FacilityDetails = () => {
                 </span>
               </div>
             </div>
-            <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
-              <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
-                郵便番号
-              </p>
-              <p className="lg:text-base text-sm text-[#343434] w-4/5">
-                {facility.postal_code}
-              </p>
-            </div>
+            
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                 アクセス
