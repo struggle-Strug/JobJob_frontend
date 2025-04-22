@@ -459,7 +459,7 @@ const JobLists = () => {
                 求人検索
               </p> */}
             </div>
-            <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl mt-8">
+            <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl">
               <Link
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
                 to={`${pathname}/modal/muni_modal`}
@@ -539,7 +539,7 @@ const JobLists = () => {
                 />
               </Link>
             </div>
-            <div className="flex items-center justify-start w-full mt-8">
+            <div className="flex items-center justify-start w-full">
               {/* <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                 {getPrefectureKeyByValue(pref)}の{JobType}の求人
               </p> */}
