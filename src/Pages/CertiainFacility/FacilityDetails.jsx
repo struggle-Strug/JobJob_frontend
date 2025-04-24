@@ -232,16 +232,18 @@ const JobPostCard = ({ jobPost, facility }) => {
               ...jobPost.treatment_type,
               ...jobPost.work_time_type,
               ...jobPost.rest_type,
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-              >
-                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                  {item}
-                </p>
-              </div>
-            ))}
+            ]
+              .slice(0, 10)
+              .map((item, index) => (
+                <div
+                  key={index}
+                  className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                >
+                  <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                    {item}
+                  </p>
+                </div>
+              ))}
           </div>
         </div>
       </div>
@@ -342,7 +344,7 @@ const FacilityDetails = () => {
               </p>
               <div>
                 <p className="lg:text-sm md:text-xs text-[#343434]">
-                <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
+                  <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
                   {facility.prefecture}
                   {facility.city}
                   {facility.village}
@@ -404,7 +406,7 @@ const FacilityDetails = () => {
                 </span>
               </div>
             </div>
-            
+
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                 アクセス
@@ -423,7 +425,7 @@ const FacilityDetails = () => {
                   ))}
                 </div>
                 <p className="lg:text-base text-sm text-[#343434] mt-1">
-                <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
+                  <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
                   {facility.prefecture}
                   {facility.city}
                   {facility.village}
