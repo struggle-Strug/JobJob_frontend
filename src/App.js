@@ -101,6 +101,7 @@ const AddJobPost = lazy(() =>
 );
 const CSRule = lazy(() => import("./Pages/Rule"));
 const Coporate = lazy(() => import("./Pages/CoporatePage"));
+const LinkRequirement = lazy(() => import("./Pages/LinkRequirement"));
 
 function App() {
   const {
@@ -165,52 +166,64 @@ function App() {
           <Route path="/customers/new" element={<CustomerSignUp />} />
           <Route path="/customers/sign_in" element={<CustomerSignIn />} />
           <Route path="/customers/rule" element={<Rule />} />
+          <Route path="/customers/banner" element={<LinkRequirement />} />
         </Route>
         {token && (customer || admin) ? (
-          <Route element={<CLLayout />}>
-            <Route path="/customers" element={<CLMainLayout />}>
-              <Route path="/customers" element={<CLTop />} />
-              <Route path="/customers/facility/add" element={<FacilityAdd />} />
-              <Route path="/customers/facility" element={<FacilityPage />} />
-              <Route
-                path="/customers/facility/edit/:facility_id"
-                element={<FacilityEdit />}
-              />
-              <Route
-                path="/customers/jobpost/edit/:jobpost_id"
-                element={<JobPostEdit />}
-              />
-              <Route
-                path="/customers/jobpost/:facilityId/add"
-                element={<AddJobPost />}
-              />
-              <Route
-                path="/customers/recruit/edit/"
-                element={<ProcessManagementPage />}
-              />
-              <Route path="/customers/picture/" element={<PhotoManagement />} />
-              <Route path="/customers/message" element={<CLMessage />} />
-              <Route
-                path="/customers/settings/"
-                element={<CustomerSetting />}
-              />
-              <Route path="/customers/settings/mail" element={<MailChange />} />
-              <Route
-                path="/customers/settings/pass"
-                element={<PasswordChange />}
-              />
-              <Route
-                path="/customers/settings/corporate/"
-                element={<CoporateInformation />}
-              />
-              <Route
-                path="/customers/settings/user"
-                element={<CoporateManagement />}
-              />
+          <>
+            <Route element={<CLLayout />}>
+              <Route path="/customers" element={<CLMainLayout />}>
+                <Route path="/customers" element={<CLTop />} />
+                <Route
+                  path="/customers/facility/add"
+                  element={<FacilityAdd />}
+                />
+                <Route path="/customers/facility" element={<FacilityPage />} />
+                <Route
+                  path="/customers/facility/edit/:facility_id"
+                  element={<FacilityEdit />}
+                />
+                <Route
+                  path="/customers/jobpost/edit/:jobpost_id"
+                  element={<JobPostEdit />}
+                />
+                <Route
+                  path="/customers/jobpost/:facilityId/add"
+                  element={<AddJobPost />}
+                />
+                <Route
+                  path="/customers/recruit/edit/"
+                  element={<ProcessManagementPage />}
+                />
+                <Route
+                  path="/customers/picture/"
+                  element={<PhotoManagement />}
+                />
+                <Route path="/customers/message" element={<CLMessage />} />
+                <Route
+                  path="/customers/settings/"
+                  element={<CustomerSetting />}
+                />
+                <Route
+                  path="/customers/settings/mail"
+                  element={<MailChange />}
+                />
+                <Route
+                  path="/customers/settings/pass"
+                  element={<PasswordChange />}
+                />
+                <Route
+                  path="/customers/settings/corporate/"
+                  element={<CoporateInformation />}
+                />
+                <Route
+                  path="/customers/settings/user"
+                  element={<CoporateManagement />}
+                />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+              <Route path="/customers/contact" element={<Preparing />} />
             </Route>
-            <Route path="*" element={<NotFound />} />
-            <Route path="/customers/contact" element={<Preparing />} />
-          </Route>
+          </>
         ) : (
           <Route element={<CLLogoLayout />}>
             <Route path="/*" element={<CustomerSignIn />} />
@@ -229,11 +242,10 @@ function App() {
           <Route path=":jobtype/city/:muniId" element={<JobLists />}>
             <Route path="modal/:modal" element={<JobLists />} />
           </Route>
-          <Route path="/:jobType/:pref" element={<JobLists/>}>
-            <Route path="modal/:modal" element={<JobLists/>}/>
+          <Route path="/:jobType/:pref" element={<JobLists />}>
+            <Route path="modal/:modal" element={<JobLists />} />
           </Route>
 
-          
           {getAllJobTypeValues().map((jobType) => {
             const hasPrefecture =
               getAllPrefectureValues().includes(prefOrFacility);
