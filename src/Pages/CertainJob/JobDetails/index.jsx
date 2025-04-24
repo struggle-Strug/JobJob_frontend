@@ -322,12 +322,15 @@ const JobDetails = () => {
             <p className="lg:text-lg font-bold text-sm text-[#343434]">
               {jobPost?.sub_title || ""}
             </p>
-            <div
+            {/* <div
               dangerouslySetInnerHTML={{
                 __html: jobPost?.sub_description || "",
               }}
               className="p-2 lg:text-base text-sm mt-8 text-[#343434] overflow-auto"
-            />
+            /> */}
+            <pre className="font-bold text-sm text-[#343434]">
+              {jobPost?.sub_description || ""}
+            </pre>
           </div>
 
           {/* Job details section */}
