@@ -3,7 +3,7 @@
 import { message, Carousel, Spin } from "antd";
 import axios from "axios";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getJobValueByKey } from "../../utils/getFunctions";
 import { Facilities } from "../../utils/constants/categories";
 import NotFound from "../NotFound";
@@ -157,8 +157,16 @@ const FacilityPhotoCarousel = ({ photos = [] }) => {
 
 // Component for job post card
 const JobPostCard = ({ jobPost, facility }) => {
+  const navigate = useNavigate();
   return (
-    <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8">
+    <div
+      onClick={() =>
+        navigate(
+          `/${getJobValueByKey(jobPost.type)}/details/${jobPost.jobpost_id}`
+        )
+      }
+      className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 hover:scale-[1.02] duration-300"
+    >
       <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
         {jobPost.picture.length === 0 ? (
           <img
