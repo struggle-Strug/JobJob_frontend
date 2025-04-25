@@ -252,55 +252,41 @@ const CertainJob = () => {
     );
   };
 
-  const handleOnChangePref = (p) => {
-    // 他のフィルターが一つでも設定されているかをチェック
-    const hasOtherFilters =
-      filters.pref !== "" ||
-      filters.employmentType.length > 0 ||
-      filters.monthlySalary !== "" ||
-      filters.hourlySalary !== "" ||
-      filters.feature.length > 0;
-
-      const rel = pathname.replace(`/${path}`, "");
-      const segs = rel.split("/").filter(Boolean);
-      const isPathFilter = segs.length > 0 && !pathname.includes("/search");
   
-    if (hasOtherFilters) {
-      const updated = { ...filters, pref: p };
-      window.location.href = `/${path}/search?filters=${encodeURIComponent(
-          JSON.stringify(updated)
-        )}`
-    } else if (isPathFilter) {
-      const newUrl = makeLink({ pref: p });
-      navigate(newUrl);
-    } else {
-      // ——— フィルターなし → /{path}/{pref} ———
-      navigate(`/${path}/${p}`);
-    }
-  };
 
-  const getConditionUrl = (filterName, value) => {
-    const defaultFilters = {
-      pref: "",
-      employmentType: [],
-      hourlySalary: "",
-      monthlySalary: "",
-      feature: [],
-      muni: "",
-      page: 1,
-      features: [],
-    };
-    // 配列で管理するフィルターの場合
-    if (filterName === "employmentType" || filterName === "feature") {
-      defaultFilters[filterName] = [value];
-    } else {
-      defaultFilters[filterName] = value;
-    }
+  // CertainJob コンポーネント内
+const getPrefLink = (p) => {
+  // フィルターが既にある場合 → 検索モードへ
+  const hasOtherFilters =
+    filters.pref !== "" ||
+    filters.employmentType.length > 0 ||
+    filters.monthlySalary !== "" ||
+    filters.hourlySalary !== "" ||
+    filters.feature.length > 0;
+
+  if (hasOtherFilters) {
+    const updated = { ...filters, pref: p };
     return `/${path}/search?filters=${encodeURIComponent(
-      JSON.stringify(defaultFilters)
+      JSON.stringify(updated)
     )}`;
-  };
+  }
 
+  // パスベースフィルターかどうか
+  const rel = pathname.replace(`/${path}`, "");
+  const segs = rel.split("/").filter(Boolean);
+  const isPathFilter = segs.length > 0 && !pathname.includes("/search");
+
+  if (isPathFilter) {
+    // makeLink を使って /{path}/{pref}… 形式の URL を返す
+    return makeLink({ pref: p });
+  }
+
+  // 何もなければ /{path}/{pref}
+  return `/${path}/${p}`;
+};
+
+
+  
   useEffect(() => {
     if (!filters.pref) {
       setType(1);
@@ -374,15 +360,14 @@ const CertainJob = () => {
       </div>
       <div className="flex flex-col w-full px-2 lg:px-4">
         {Object.keys(prefectures).map((prefecture, index) => (
-          <button
+          <a
             key={index}
+            href={getPrefLink(prefectures[prefecture])}
             className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
-            onClick={() => {handleOnChangePref(prefectures[prefecture])}}
-            aria-label={prefecture} // Added aria-label based on prefecture name
-
+            aria-label={prefecture}
           >
             {prefecture}
-          </button>
+          </a>
         ))}
       </div>
     </div>
