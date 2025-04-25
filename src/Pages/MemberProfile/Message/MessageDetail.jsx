@@ -9,6 +9,7 @@ import { useAuth } from "../../../context/AuthContext";
 import TextArea from "antd/es/input/TextArea";
 import { GoPaperclip } from "react-icons/go";
 import { Button, Upload, message as antMessage } from "antd";
+import SkeletonGroup from "../../../components/SkeletonGroup";
 
 const MessageDetail = () => {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ const MessageDetail = () => {
   const [fileList, setFileList] = useState([]);
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { pathname } = useLocation();
   const message_id = pathname.split("/").pop();
 
@@ -31,13 +33,15 @@ const MessageDetail = () => {
     if (!message_id) return;
 
     try {
+      setLoading(true);
       const res = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/message/detail/${message_id}`
       );
       setMessage(res.data.message);
-    } catch (err) {
-      console.error("Failed to fetch message data:", err);
-      antMessage.error("メッセージの取得に失敗しました");
+    } catch {
+      message.error("エラーが発生しました");
+    } finally {
+      setLoading(false);
     }
   }, [message_id]);
 
@@ -178,89 +182,91 @@ const MessageDetail = () => {
   };
 
   return (
-    <div className="flex flex-col w-full h-full">
-      {/* Header */}
-      <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 shadow-xl">
-        <h1 className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">
-          {message?.facility_id?.name || "読み込み中..."}
-          {message?.jobpost_id?.type && `(${message.jobpost_id.type})`}
-        </h1>
-        {message?.jobPost_id && (
-          <Link
-            to={`/${jobType}/details/${message.jobPost_id}`}
-            className="hover:underline hover:text-[#FF2A3B] duration-300 text-[#343434] text-xs mt-1"
-          >
-            求人を確認する
-          </Link>
-        )}
-      </div>
-
-      {/* Message Thread */}
-      <div className="flex flex-col w-full bg-white rounded-t-lg p-4 shadow-xl mt-4">
-        {/* Initial Application Message */}
-        {message?.content?.[0] && (
-          <div className="flex flex-col items-end">
-            <div className="flex flex-col">
-              <p className="text-sm text-center bg-[#FF2A3B] rounded-t-lg py-1 text-white">
-                応募
-              </p>
-              <div className="flex justify-center bg-[#FF5564] rounded-b-lg">
-                <pre className="text-sm text-[#343434] p-4 leading-relaxed whitespace-pre-wrap break-words max-w-[80vw] md:max-w-[60vw]">
-                  {message.content[0].message}
-                </pre>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Conversation Messages */}
-        {message?.content
-          ?.filter((_, index) => index !== 0)
-          ?.map(renderMessageBubble)}
-
-        {/* Reply Form */}
-        <div className="w-full max-w-2xl mx-auto mt-8">
-          <Upload
-            fileList={fileList}
-            beforeUpload={() => false}
-            onChange={handleChange}
-            multiple
-            maxCount={5}
-          >
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <div className="bg-[#e7e7e7] p-2 rounded-full hover:text-[#FF2A3B] duration-300 hover:cursor-pointer">
-                <GoPaperclip className="h-4 w-4" />
-              </div>
-              <p className="text-xs">
-                ※添付ファイルは送信先の事業所には公開されません
-              </p>
-            </div>
-          </Upload>
-
-          <TextArea
-            placeholder="返信を書いてください"
-            className="bg-background mt-2"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={4}
-            maxLength={1000}
-          />
-
-          <div className="flex justify-center mt-8">
-            <Button
-              className="bg-rose-500 hover:bg-rose-600 text-white px-8"
-              onClick={sendMessage}
-              loading={isSubmitting}
-              disabled={
-                isSubmitting || (!content.trim() && fileList.length === 0)
-              }
+    <SkeletonGroup isLoading={loading}>
+      <div className="flex flex-col w-full h-full">
+        {/* Header */}
+        <div className="flex flex-col items-start justify-center w-full bg-white rounded-lg p-4 shadow-xl">
+          <h1 className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">
+            {message?.facility_id?.name || "読み込み中..."}
+            {message?.jobpost_id?.type && `(${message.jobpost_id.type})`}
+          </h1>
+          {message?.jobPost_id && (
+            <Link
+              to={`/${jobType}/details/${message.jobPost_id}`}
+              className="hover:underline hover:text-[#FF2A3B] duration-300 text-[#343434] text-xs mt-1"
             >
-              送信する
-            </Button>
+              求人を確認する
+            </Link>
+          )}
+        </div>
+
+        {/* Message Thread */}
+        <div className="flex flex-col w-full bg-white rounded-t-lg p-4 shadow-xl mt-4">
+          {/* Initial Application Message */}
+          {message?.content?.[0] && (
+            <div className="flex flex-col items-end">
+              <div className="flex flex-col">
+                <p className="text-sm text-center bg-[#FF2A3B] rounded-t-lg py-1 text-white">
+                  応募
+                </p>
+                <div className="flex justify-center bg-[#FF5564] rounded-b-lg">
+                  <pre className="text-sm text-[#343434] p-4 leading-relaxed whitespace-pre-wrap break-words max-w-[80vw] md:max-w-[60vw]">
+                    {message.content[0].message}
+                  </pre>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Conversation Messages */}
+          {message?.content
+            ?.filter((_, index) => index !== 0)
+            ?.map(renderMessageBubble)}
+
+          {/* Reply Form */}
+          <div className="w-full max-w-2xl mx-auto mt-8">
+            <Upload
+              fileList={fileList}
+              beforeUpload={() => false}
+              onChange={handleChange}
+              multiple
+              maxCount={5}
+            >
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="bg-[#e7e7e7] p-2 rounded-full hover:text-[#FF2A3B] duration-300 hover:cursor-pointer">
+                  <GoPaperclip className="h-4 w-4" />
+                </div>
+                <p className="text-xs">
+                  ※添付ファイルは送信先の事業所には公開されません
+                </p>
+              </div>
+            </Upload>
+
+            <TextArea
+              placeholder="返信を書いてください"
+              className="bg-background mt-2"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              rows={4}
+              maxLength={1000}
+            />
+
+            <div className="flex justify-center mt-8">
+              <Button
+                className="bg-rose-500 hover:bg-rose-600 text-white px-8"
+                onClick={sendMessage}
+                loading={isSubmitting}
+                disabled={
+                  isSubmitting || (!content.trim() && fileList.length === 0)
+                }
+              >
+                送信する
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </SkeletonGroup>
   );
 };
 

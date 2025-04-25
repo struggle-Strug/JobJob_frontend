@@ -37,8 +37,8 @@ const Header = ({ user, isAuthenticated }) => {
                       alt="気になる"
                       className="w-5 lg:w-6"
                     />
-                    <span className="bg-[#FF2A3B] rounded-full text-white text-xs p-1 absolute right-0 top-0 number">
-                      +{likes.length}
+                    <span className="bg-[#FF2A3B] rounded-full text-white px-[6px] py-0.5 text-xs p-1 absolute right-0 top-0 number">
+                      {likes.length}
                     </span>
                   </div>
                   <p className="text-xs lg:text-sm font-bold text-[#FF2A3B] whitespace-nowrap">
@@ -99,7 +99,7 @@ const Header = ({ user, isAuthenticated }) => {
                       alt="気になる"
                       className="w-5 lg:w-6"
                     />
-                    <span className="bg-[#FF2A3B] rounded-full text-white text-xs p-1 absolute right-0 top-0 number">
+                    <span className="bg-[#FF2A3B] rounded-full text-white text-xs px-[6px] py-0.5 absolute right-0 top-0 number">
                       {likes.length}
                     </span>
                   </div>

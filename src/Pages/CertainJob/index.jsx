@@ -1,6 +1,7 @@
+"use client";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  getEmploymentTypeKeyByValue,
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
   getJobValueByKey,
@@ -13,13 +14,12 @@ import {
   Prefectures,
   JobType as jobType,
 } from "../../utils/constants/categories";
-import { Checkbox, Select } from "antd";
-import { useEffect, useState } from "react";
+import { Checkbox, Select, Skeleton } from "antd";
+import { useEffect, useState, useMemo } from "react";
 import BreadCrumb from "../../components/BreadCrumb";
 import axios from "axios";
 import { message } from "antd";
 import { useAuth } from "../../context/AuthContext";
-import { useMemo } from "react";
 import NewJobs from "../../components/NewJobs";
 
 const CertainJob = () => {
@@ -42,6 +42,7 @@ const CertainJob = () => {
     features: [],
   });
 
+  // Toggle states for job categories
   const [toggleMedical, setToggleMedical] = useState(false);
   const [toggleDentist, setToggleDentist] = useState(false);
   const [toggleNursing, setToggleNursing] = useState(false);
@@ -49,6 +50,16 @@ const CertainJob = () => {
   const [toggleRehabilitation, setToggleRehabilitation] = useState(false);
   const [toggleOther, setToggleOther] = useState(false);
   const [toggleHealthcare, setToggleHealthcare] = useState(false);
+
+  // Loading states
+  const [isJobTypeNumbersLoading, setIsJobTypeNumbersLoading] = useState(true);
+  const [
+    isJobTypeNumbersByFacilityLoading,
+    setIsJobTypeNumbersByFacilityLoading,
+  ] = useState(true);
+
+  // Content loaded state
+  const [contentLoaded, setContentLoaded] = useState(false);
 
   const location = useLocation();
   const [category, ...segments] = useMemo(
@@ -62,8 +73,8 @@ const CertainJob = () => {
   const JobType = getJobTypeKeyByValue(path);
   const isSelected = (v) => v === type;
   const params = new URLSearchParams(location.search);
-  const [jobTypeNumbers, setJobTypeNumbers] = useState([]);
-  const [jobTypeNumbersByFacility, setJobTypeNumbersByFacility] = useState([]);
+  const [jobTypeNumbers, setJobTypeNumbers] = useState({});
+  const [jobTypeNumbersByFacility, setJobTypeNumbersByFacility] = useState({});
 
   const isPrefSelected = pathname.endsWith("/select/pref");
 
@@ -130,39 +141,109 @@ const CertainJob = () => {
   ];
 
   const getJobTypeNumbers = async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/number`
-    );
-    if (response.data.error) return message.error(response.data.message);
-    setJobTypeNumbers(response.data.JobPostsNumbers);
+    setIsJobTypeNumbersLoading(true);
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/number`
+      );
+      if (response.data.error) {
+        message.error(response.data.message);
+        return;
+      }
+
+      // Convert array to object for O(1) lookups
+      const numbersObj = {};
+      response.data.JobPostsNumbers.forEach((item) => {
+        if (typeof item === "object") {
+          Object.keys(item).forEach((key) => {
+            numbersObj[key] = item[key];
+          });
+        }
+      });
+
+      setJobTypeNumbers(numbersObj);
+    } catch (error) {
+      console.error("Error fetching job type numbers:", error);
+    } finally {
+      setIsJobTypeNumbersLoading(false);
+    }
   };
 
   const getJobTypeNumbersByFacility = async () => {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/jobpost/numberByFacility`,
-      { type: JobType }
-    );
-    if (response.data.error) return message.error(response.data.message);
-    setJobTypeNumbersByFacility(response.data.numbers);
+    setIsJobTypeNumbersByFacilityLoading(true);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/numberByFacility`,
+        {
+          type: JobType,
+        }
+      );
+      if (response.data.error) {
+        message.error(response.data.message);
+        return;
+      }
+
+      // Convert to object if it's an array
+      const numbersObj = Array.isArray(response.data.numbers)
+        ? response.data.numbers.reduce((acc, item) => {
+            if (typeof item === "object") {
+              Object.keys(item).forEach((key) => {
+                acc[key] = item[key];
+              });
+            }
+            return acc;
+          }, {})
+        : response.data.numbers;
+
+      setJobTypeNumbersByFacility(numbersObj);
+    } catch (error) {
+      console.error("Error fetching job type numbers by facility:", error);
+      message.error("施設別求人数の取得に失敗しました");
+    } finally {
+      setIsJobTypeNumbersByFacilityLoading(false);
+    }
   };
 
   useEffect(() => {
-    getJobTypeNumbers();
-    getJobTypeNumbersByFacility();
+    // Set page title
+    document.title = `${JobType}の求人・転職・就職・アルバイト募集 | JobJob`;
+
+    // Fetch data in parallel
+    Promise.all([getJobTypeNumbers(), getJobTypeNumbersByFacility()]).then(
+      () => {
+        // Mark content as loaded when both API calls complete
+        setContentLoaded(true);
+      }
+    );
   }, []);
 
   const renderMeshLink01 = (jobType) => {
     return Object.keys(Facilities).map((facility, index) => {
+      const count = jobTypeNumbersByFacility[facility] || 0;
+
       return (
         <Link
-          key={index} // Add a unique key when mapping
+          key={index}
           to={`/${getJobValueByKey(jobType)}/${Facilities[facility]}`}
           className="col-span-1 flex items-start justify-between w-full border-b-[1px] border-[#e7e7e7] lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:px-6 duration-300 group"
         >
           <p className="py-1">
             {facility}の{jobType}
             <span className="text-[#343434] text-xs">
-              ({jobTypeNumbersByFacility?.[facility]})
+              {isJobTypeNumbersByFacilityLoading ? (
+                <Skeleton.Button
+                  active
+                  size="small"
+                  style={{
+                    width: 30,
+                    height: 16,
+                    display: "inline-block",
+                    marginLeft: 4,
+                  }}
+                />
+              ) : (
+                `(${count})`
+              )}
             </span>
           </p>
           <div className="flex items-center">
@@ -200,6 +281,8 @@ const CertainJob = () => {
         <div className="flex flex-col w-full pt-6">
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
             {Object.keys(jobType[category]).map((job, index) => {
+              const count = jobTypeNumbers[job] || 0;
+
               return (
                 <Link
                   key={index}
@@ -209,7 +292,20 @@ const CertainJob = () => {
                   <p>
                     {job}
                     <span className="text-[#343434] text-xs">
-                      ({jobTypeNumbers?.[job]})
+                      {isJobTypeNumbersLoading ? (
+                        <Skeleton.Button
+                          active
+                          size="small"
+                          style={{
+                            width: 30,
+                            height: 16,
+                            display: "inline-block",
+                            marginLeft: 4,
+                          }}
+                        />
+                      ) : (
+                        `(${count})`
+                      )}
                     </span>
                   </p>
                 </Link>
@@ -375,7 +471,7 @@ const CertainJob = () => {
             onClick={() => {
               handleOnChangePref(prefectures[prefecture]);
             }}
-            aria-label={prefecture} // Added aria-label based on prefecture name
+            aria-label={prefecture}
           >
             {prefecture}
           </button>
@@ -384,6 +480,7 @@ const CertainJob = () => {
     </div>
   );
 
+  // Render content immediately without waiting for API data
   return (
     <>
       <BreadCrumb />
@@ -670,7 +767,7 @@ const CertainJob = () => {
           </section>
           <div className="flex container w-full justify-between gap-8">
             <div className="flex flex-col w-2/3">
-              <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   {JobType}について
                 </p>
@@ -686,7 +783,7 @@ const CertainJob = () => {
                   {renderMeshLink01(JobType)}
                 </div>
               </div>
-              <div className="  rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   職種から求人を探す
                 </p>
