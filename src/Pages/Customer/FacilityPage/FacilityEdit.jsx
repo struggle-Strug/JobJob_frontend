@@ -333,8 +333,8 @@ const FacilityEdit = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
         photoUrl.files || []
       );
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/facility`,
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/v1/facility/${facility?.facility_id}`,
         facilityData
       );
       if (response.data.error) {
@@ -365,15 +365,6 @@ const FacilityEdit = () => {
     );
     if (response.data.error) return message.error(response.data.error);
     message.success("削除成功");
-    navigate("/customers/facility");
-  };
-
-  const handleRequestEnd = async () => {
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/v1/facility/${id}/ended`
-    );
-    if (response.data.error) return message.error(response.data.error);
-    message.success("掲載終了成功");
     navigate("/customers/facility");
   };
 

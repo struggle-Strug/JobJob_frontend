@@ -100,7 +100,7 @@ const Header = ({ user, isAuthenticated }) => {
                       className="w-5 lg:w-6"
                     />
                     <span className="bg-[#FF2A3B] rounded-full text-white text-xs p-1 absolute right-0 top-0 number">
-                      +{likes.length}
+                      {likes.length}
                     </span>
                   </div>
                   <p className="text-xs lg:text-sm font-bold text-[#FF2A3B] whitespace-nowrap">

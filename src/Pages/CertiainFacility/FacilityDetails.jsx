@@ -3,7 +3,7 @@
 import { message, Carousel, Spin } from "antd";
 import axios from "axios";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getJobValueByKey } from "../../utils/getFunctions";
 import { Facilities } from "../../utils/constants/categories";
 import NotFound from "../NotFound";
@@ -157,8 +157,16 @@ const FacilityPhotoCarousel = ({ photos = [] }) => {
 
 // Component for job post card
 const JobPostCard = ({ jobPost, facility }) => {
+  const navigate = useNavigate();
   return (
-    <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8">
+    <div
+      onClick={() =>
+        navigate(
+          `/${getJobValueByKey(jobPost.type)}/details/${jobPost.jobpost_id}`
+        )
+      }
+      className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 hover:scale-[1.02] duration-300"
+    >
       <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
         {jobPost.picture.length === 0 ? (
           <img
@@ -175,7 +183,7 @@ const JobPostCard = ({ jobPost, facility }) => {
         )}
         <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
           <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-            {facility?.name}の{jobPost.type}求人
+            {facility?.name}の{jobPost.type}求人({jobPost.employment_type})
           </p>
           <p className="lg:text-sm md:text-xs text-[#343434] line-clamp-2">
             {jobPost.sub_title}
@@ -232,16 +240,18 @@ const JobPostCard = ({ jobPost, facility }) => {
               ...jobPost.treatment_type,
               ...jobPost.work_time_type,
               ...jobPost.rest_type,
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-              >
-                <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                  {item}
-                </p>
-              </div>
-            ))}
+            ]
+              .slice(0, 10)
+              .map((item, index) => (
+                <div
+                  key={index}
+                  className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                >
+                  <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                    {item}
+                  </p>
+                </div>
+              ))}
           </div>
         </div>
       </div>
@@ -342,7 +352,7 @@ const FacilityDetails = () => {
               </p>
               <div>
                 <p className="lg:text-sm md:text-xs text-[#343434]">
-                <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
+                  <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
                   {facility.prefecture}
                   {facility.city}
                   {facility.village}
@@ -404,7 +414,7 @@ const FacilityDetails = () => {
                 </span>
               </div>
             </div>
-            
+
             <div className="flex items-start justify-start border-b-[1px] py-6 border-[#e7e7e7]">
               <p className="lg:text-base text-sm font-bold text-[#343434] w-1/5">
                 アクセス
@@ -423,7 +433,7 @@ const FacilityDetails = () => {
                   ))}
                 </div>
                 <p className="lg:text-base text-sm text-[#343434] mt-1">
-                <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
+                  <span style={{ marginRight: 5 }}>{facility.postal_code}</span>
                   {facility.prefecture}
                   {facility.city}
                   {facility.village}
