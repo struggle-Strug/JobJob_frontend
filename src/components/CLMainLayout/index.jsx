@@ -104,11 +104,16 @@ const CLMainLayout = () => {
               設定
             </p>
           </Link>
-          <img
-            src="/assets/images/CLTop/リンク掲載のお願い.jpg"
-            alt="banner"
-            className="mt-8"
-          />
+          <Link
+            to={"/customers/banner"}
+            className="flex justify-start items-center gap-2 mt-4"
+          >
+            <img
+              src="/assets/images/CLTop/リンク掲載のお願い.jpg"
+              alt="banner"
+              className="mt-8 hover:scale-1.02"
+            />
+          </Link>
         </div>
         <div className="flex h-full w-5/6">
           <div className="h-full w-full">

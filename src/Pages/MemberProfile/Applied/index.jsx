@@ -4,12 +4,14 @@ import moment from "moment";
 import { message } from "antd";
 import Loading from "../../../components/Loading";
 import { getJobValueByKey } from "../../../utils/getFunctions";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Applied = () => {
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expandedJobId, setExpandedJobId] = useState(null); // Store the expanded job ID
+
+  const navigate = useNavigate();
 
   const getAppliedJobs = async () => {
     try {
@@ -60,6 +62,11 @@ const Applied = () => {
             <div
               key={job.id}
               className="flex flex-col w-full bg-[#F5F5F5] rounded-lg p-4 shadow-xl mt-4 hover:bg-[#EAEAEA] transition duration-300 cursor-pointer"
+              onClick={() =>
+                navigate(
+                  `/${getJobValueByKey(job.type)}/details/${job.jobpost_id}`
+                )
+              }
             >
               {/* Job Title */}
               <p className="lg:text-lg md:text-md text-sm font-bold text-[#343434] cursor-pointer">
@@ -107,7 +114,7 @@ const Applied = () => {
                     <p className="text-sm text-gray-700 w-1/5">
                       <strong>応募要件:</strong>
                     </p>
-                    <pre className="text-sm text-gray-700 w-4/5">
+                    <pre className="whitespace-pre-wrap break-words line-clamp-2 text-sm text-gray-700 w-4/5">
                       {job.qualification_content}
                     </pre>
                   </div>

@@ -9,6 +9,7 @@ import { Facilities } from "../../../utils/constants/categories/facilities";
 import Loading from "../../../components/Loading";
 import { useAuth } from "../../../context/AuthContext";
 import NotFound from "../../NotFound";
+import NewJobs from "../../../components/NewJobs";
 
 const JobDetails = () => {
   const { user } = useAuth();
@@ -852,6 +853,8 @@ const JobDetails = () => {
           </div>
         </div>
       </div>
+
+      <NewJobs />
 
       {/* Image Modal */}
       <Modal

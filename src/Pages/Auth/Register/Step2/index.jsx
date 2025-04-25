@@ -1,7 +1,7 @@
 // src/components/Register/Step2.jsx
 
 import React from "react";
-import { Checkbox, Radio } from "antd";
+import { Radio, Checkbox } from "antd";
 import { EmploymentType } from "../../../../utils/constants/categories";
 
 const Step2 = ({
@@ -23,21 +23,38 @@ const Step2 = ({
     setEmploymentType(values);
   };
 
+  const renderCheckboxGroup = (
+    options,
+    onChange,
+    selectedValues,
+    category = null
+  ) => (
+    <Checkbox.Group
+      options={options}
+      value={selectedValues}
+      onChange={(values) => onChange(values, category)}
+    />
+  );
+
   return (
     <>
       {/* 雇用形態 */}
       <div className="flex justify-between w-full mt-12">
         <div className="flex items-start gap-2 justify-end">
-          <p>雇用形態</p>
+          <p>希望勤務形態</p>
           <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
         </div>
         <div className="flex flex-col w-4/5">
-          <div className="flex flex-col border-t-[0.1rem] border-b-[0.1rem] border-[#a7a3a3] py-4 px-2">
-            <Checkbox.Group
-              options={employmentOptions}
-              value={employmentType}       // ← 親の state をそのまま反映
-              onChange={onChangeEmployment} // ← 親の setter をそのまま呼び出し
-            />
+          <div className="flex flex-col border-[#a7a3a3] px-2">
+            <div className={`duration-300 overflow-hidden opacity-100`}>
+              <div>
+                {renderCheckboxGroup(
+                  employmentOptions,
+                  onChangeEmployment,
+                  employmentType
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -30,9 +30,7 @@ import {
   municipalitiesWithIds,
 } from "../../../utils/getMuniId";
 import { getPrefCodeByName } from "../../../utils/getPref";
-
-
-
+import NewJobs from "../../../components/NewJobs";
 
 const JobLists = () => {
   const { user, likes, setLikes } = useAuth();
@@ -77,7 +75,7 @@ const JobLists = () => {
   const JobType = getJobTypeKeyByValue(path);
   
 
-  const segments     = pathname.split("/").filter(Boolean);
+  const segments = pathname.split("/").filter(Boolean);
   const modalSegment = segments[segments.length - 1] || "";
   const currentEmploymentCode =
     segments.find((seg) => /^employment\d+$/.test(seg)) || "";
@@ -86,11 +84,10 @@ const JobLists = () => {
   const currentMuniCode =
     segments.find((seg) => /^muni\d+$/.test(seg)) || "";
 
-  const isPrefModalOpen       = modalSegment === "pref_modal";
-  const isMuniModalOpen       = modalSegment === "muni_modal";
+  const isPrefModalOpen = modalSegment === "pref_modal";
+  const isMuniModalOpen = modalSegment === "muni_modal";
   const isEmploymentTypeModalOpen = modalSegment === "employment_modal";
-  const isFeatureModalOpen    = modalSegment === "feature_modal";
-  
+  const isFeatureModalOpen = modalSegment === "feature_modal";
 
   const monthlySalaryOptions = [
     { value: "", label: "指定なし" },
@@ -381,45 +378,43 @@ const handleCloseModal = () => setOpenModal(null);
 
 
   useEffect(() => {
-    const segments = pathname.split('/').filter(Boolean);
-    const empSegs  = segments.filter(s => /^employment\d+$/.test(s));
-    const featSegs = segments.filter(s => /^feature\d+$/.test(s));
+    const segments = pathname.split("/").filter(Boolean);
+    const empSegs = segments.filter((s) => /^employment\d+$/.test(s));
+    const featSegs = segments.filter((s) => /^feature\d+$/.test(s));
     // 1. EmploymentType の逆引きマップを作成
-const empCodeToLabel = Object.fromEntries(
-  Object.entries(EmploymentType).map(([label, code]) => [code, label])
-);
+    const empCodeToLabel = Object.fromEntries(
+      Object.entries(EmploymentType).map(([label, code]) => [code, label])
+    );
 
-// 2) Features をフラット化した逆引きマップ
-const featMap = Object.values(Features).reduce((acc, group) => {
-  Object.entries(group).forEach(([label, code]) => {
-    acc[code] = label;
-  });
-  return acc;
-}, {});
+    // 2) Features をフラット化した逆引きマップ
+    const featMap = Object.values(Features).reduce((acc, group) => {
+      Object.entries(group).forEach(([label, code]) => {
+        acc[code] = label;
+      });
+      return acc;
+    }, {});
 
-// 3. empSegs, featSegs をそれぞれラベル配列に変換
-const selectedEmploymentLabels = empSegs
-  .map(code => empCodeToLabel[code])
-  .filter(Boolean); // 存在しないコードは除外
+    // 3. empSegs, featSegs をそれぞれラベル配列に変換
+    const selectedEmploymentLabels = empSegs
+      .map((code) => empCodeToLabel[code])
+      .filter(Boolean); // 存在しないコードは除外
 
-const selectedFeatureLabels = featSegs
-  .map(code => featMap[code])
-  .filter(Boolean);
+    const selectedFeatureLabels = featSegs
+      .map((code) => featMap[code])
+      .filter(Boolean);
 
-// 4. newFilters にセット
-const newFilters = {
-  pref,
-  muni,
-  employmentType: selectedEmploymentLabels.length
-    ? selectedEmploymentLabels
-    : employmentType,
-  monthlySalary,
-  hourlySalary,
-  feature: selectedFeatureLabels.length
-    ? selectedFeatureLabels
-    : feature,
-  page,
-};
+    // 4. newFilters にセット
+    const newFilters = {
+      pref,
+      muni,
+      employmentType: selectedEmploymentLabels.length
+        ? selectedEmploymentLabels
+        : employmentType,
+      monthlySalary,
+      hourlySalary,
+      feature: selectedFeatureLabels.length ? selectedFeatureLabels : feature,
+      page,
+    };
 
     setUpdatedFilters(newFilters);
     setFilters(newFilters);
@@ -428,46 +423,44 @@ const newFilters = {
   }, [pref, muni, page]);
 
   useEffect(() => {
-    const segments = pathname.split('/').filter(Boolean);
-    const empSegs  = segments.filter(s => /^employment\d+$/.test(s));
-    const featSegs = segments.filter(s => /^feature\d+$/.test(s));
+    const segments = pathname.split("/").filter(Boolean);
+    const empSegs = segments.filter((s) => /^employment\d+$/.test(s));
+    const featSegs = segments.filter((s) => /^feature\d+$/.test(s));
 
     // 1. EmploymentType の逆引きマップを作成
-const empCodeToLabel = Object.fromEntries(
-  Object.entries(EmploymentType).map(([label, code]) => [code, label])
-);
+    const empCodeToLabel = Object.fromEntries(
+      Object.entries(EmploymentType).map(([label, code]) => [code, label])
+    );
 
-// 2) Features をフラット化した逆引きマップ
-const featMap = Object.values(Features).reduce((acc, group) => {
-  Object.entries(group).forEach(([label, code]) => {
-    acc[code] = label;
-  });
-  return acc;
-}, {});
+    // 2) Features をフラット化した逆引きマップ
+    const featMap = Object.values(Features).reduce((acc, group) => {
+      Object.entries(group).forEach(([label, code]) => {
+        acc[code] = label;
+      });
+      return acc;
+    }, {});
 
-// 3. empSegs, featSegs をそれぞれラベル配列に変換
-const selectedEmploymentLabels = empSegs
-  .map(code => empCodeToLabel[code])
-  .filter(Boolean); // 存在しないコードは除外
+    // 3. empSegs, featSegs をそれぞれラベル配列に変換
+    const selectedEmploymentLabels = empSegs
+      .map((code) => empCodeToLabel[code])
+      .filter(Boolean); // 存在しないコードは除外
 
-const selectedFeatureLabels = featSegs
-  .map(code => featMap[code])
-  .filter(Boolean);
+    const selectedFeatureLabels = featSegs
+      .map((code) => featMap[code])
+      .filter(Boolean);
 
-// 4. newFilters にセット
-const newFilters = {
-  pref,
-  muni,
-  employmentType: selectedEmploymentLabels.length
-    ? selectedEmploymentLabels
-    : employmentType,
-  monthlySalary,
-  hourlySalary,
-  feature: selectedFeatureLabels.length
-    ? selectedFeatureLabels
-    : feature,
-  page,
-};
+    // 4. newFilters にセット
+    const newFilters = {
+      pref,
+      muni,
+      employmentType: selectedEmploymentLabels.length
+        ? selectedEmploymentLabels
+        : employmentType,
+      monthlySalary,
+      hourlySalary,
+      feature: selectedFeatureLabels.length ? selectedFeatureLabels : feature,
+      page,
+    };
 
     setUpdatedFilters(newFilters);
   }, [employmentType, feature, monthlySalary, hourlySalary]);
@@ -582,11 +575,17 @@ const newFilters = {
   return (
     <>
       <BreadCrumb />
-      <div className="flex w-full px-4 bg-[#EFEFEF]">
+      <div className="w-full px-4 bg-[#EFEFEF]">
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-center justify-start w-2/3">
             <div className="flex flex-col justify-center bg-white rounded-lg p-4 w-full shadow-xl">
               <h1 className="text-lg">
+                <span className="font-bold">
+                  {getPrefectureKeyByValue(pref)}
+                </span>
+                {muni && <span className="font-bold">{muni}</span>}
+                <span className="font-bold">,{JobType}</span>
+                <span>の求人・転職・アルバイト情報</span>
               <span className="font-bold">
                     {getPrefectureKeyByValue(pref)}
                   </span>
@@ -1062,6 +1061,7 @@ const newFilters = {
             </div>
           </div>
         </div>
+        <NewJobs />
       </div>
       {
         <Modal

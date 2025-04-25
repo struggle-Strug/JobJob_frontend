@@ -26,7 +26,12 @@ const Footer = () => {
                 >
                   ご利用規約
                 </Link>
-                <p className="text-sm lg:text-lg py-1">転職ノウハウ</p>
+                <Link
+                  to={"/knowhow"}
+                  className="text-sm lg:text-lg py-1 hover:text-[#ff2A3B] duration-300"
+                >
+                  転職ノウハウ
+                </Link>
                 <Link
                   to={"/coporate"}
                   className="text-sm lg:text-lg py-1 hover:text-[#ff2A3B] duration-300"
@@ -43,7 +48,12 @@ const Footer = () => {
                     求人掲載をお考えの企業様
                   </p>
                 </Link>
-                <p className="text-sm lg:text-lg py-1">リンク掲載について</p>
+                <Link
+                  to={"/customers/banner"}
+                  className="text-sm lg:text-lg py-1 hover:text-[#ff2A3B] duration-300"
+                >
+                  リンク掲載について
+                </Link>
                 <Link
                   to={"/customers/sign_in"}
                   className="text-sm lg:text-lg py-1 hover:text-[#ff2A3B] duration-300"
@@ -57,9 +67,12 @@ const Footer = () => {
                 <p className="text-base lg:text-lg font-bold">お困りの方</p>
                 <p className="text-sm lg:text-lg py-2"></p>
                 <div className="mt-2 lg:mt-4 ">
-                  <span className="text-sm lg:text-lg text-[#FF2A3B] font-bold border-2 border-[#FF2A3B] rounded-lg p-2">
+                  <Link
+                    to={"/contact"}
+                    className="text-sm lg:text-lg text-[#FF2A3B] font-bold border-2 border-[#FF2A3B] rounded-lg p-2"
+                  >
                     各種ご相談・お問い合わせ窓口
-                  </span>
+                  </Link>
                 </div>
               </div>
             </div>
