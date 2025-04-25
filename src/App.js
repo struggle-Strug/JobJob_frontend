@@ -226,84 +226,37 @@ function App() {
           <Route path="/members/sign_in" element={<Login />} />
           <Route path="/:jobtype/details/:id" element={<JobDetails />} />
           <Route path="/:jobtype/apply/:id" element={<JobOffer />} />
-          <Route path=":jobtype/city/:muniId" element={<JobLists />}>
-            <Route path="modal/:modal" element={<JobLists />} />
-          </Route>
-          <Route path="/:jobType/:pref" element={<JobLists/>}>
-            <Route path="modal/:modal" element={<JobLists/>}/>
-          </Route>
+          
+
 
           
-          {getAllJobTypeValues().map((jobType) => {
-            const hasPrefecture =
-              getAllPrefectureValues().includes(prefOrFacility);
-            const hasFacility = getAllFacilityValues().includes(prefOrFacility);
+          {/* 施設詳細はここで先にマッチ */}
+    <Route path="facility/details/:id" element={<FacilityDetails />} />
 
-            if (hasPrefecture) {
-              return (
-                <Route
-                  key={jobType}
-                  path={`/${jobType}/${prefOrFacility}/*`}
-                  element={<JobLists />}
-                />
-              );
-            }
+{/* 施設一覧 */}
+{getAllFacilityValues().map(facility => (
+  <Route
+    key={facility}
+    path={`${facility}/:employmentType?/:pref?`}
+    element={<CertainFacility />}
+  />
+))}
 
-            if (hasFacility) {
-              return (
-                <Route
-                  key={jobType}
-                  path={`/${jobType}/${prefOrFacility}/:employmentType?/:pref?`}
-                  element={<CertainFacility />}
-                />
-              );
-            }
+{/* ◀ ここからジョブ系ルート ▶ */}
+{getAllJobTypeValues().map(jobType => (
+  <>
+    {/* カテゴリトップ：CertainJob */}
+    <Route path={`${jobType}`} element={<CertainJob />} />
+    <Route path={`${jobType}/search/*`} element={<JobLists />} />
 
-            if (prefOrFacility === "search") {
-              const filters = params.get("filters")
-                ? JSON.parse(decodeURIComponent(params.get("filters")))
-                : {};
-
-              return (
-                <Route
-                  key={`${jobType}-search`}
-                  path={`/${jobType}/search/*`}
-                  element={
-                    filters.pref === undefined || filters.pref === "" ? (
-                      <CertainJob />
-                    ) : (
-                      <JobLists />
-                    )
-                  }
-                />
-              );
-            }
-
-            return (
-              <>
-                <Route
-                  key={jobType}
-                  path={`/${jobType}/*`}
-                  element={<CertainJob />}
-                />
-                <Route
-                  key={jobType}
-                  path={`/${jobType}/search/*`}
-                  element={<CertainJob />}
-                />
-              </>
-            );
-          })}
-          <Route path={"/facility/details/:id"} element={<FacilityDetails />} />
-          {getAllFacilityValues().map((facility) => {
-            return (
-              <Route
-                key={facility}
-                path={`/${facility}/:employmentType?/:pref?`}
-                element={<CertainFacility />}
-              />
-            );
-          })}
+    {/* JobLists（条件絞り込み／モーダル含む）は後ろに */}
+    <Route
+      path={`${jobType}/:pref?/:muni?/:employmentType?/:feature?/*`}
+      element={<JobLists />}
+    />
+    
+    </>
+))}
           {token && user?.role === "member" ? (
             <Route element={<MyPageLayout />}>
               <Route path="/members/mypage" element={<MyPage />} />

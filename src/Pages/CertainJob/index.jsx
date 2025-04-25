@@ -157,6 +157,7 @@ const CertainJob = () => {
     return Object.keys(Facilities).map((facility, index) => {
       return (
         <Link
+          aria-label={jobType}
           key={index} // Add a unique key when mapping
           to={`/${getJobValueByKey(jobType)}/${Facilities[facility]}`}
           className="col-span-1 flex items-start justify-between w-full border-b-[1px] border-[#e7e7e7] lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:px-6 duration-300 group"
@@ -204,6 +205,7 @@ const CertainJob = () => {
             {Object.keys(jobType[category]).map((job, index) => {
               return (
                 <Link
+                  aria-label={jobTypeNumbers?.[job]}
                   key={index}
                   to={`/${getJobValueByKey(job)}`}
                   className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
@@ -520,6 +522,7 @@ const CertainJob = () => {
                             {employmentTypeKey}
                           </span>
                           <Link
+                                aria-label={employmentTypeKey}
                                 to={makeLink({
                                   employment: "employment" + (index+1),
                                 })}
@@ -636,6 +639,7 @@ const CertainJob = () => {
                           </span>
                           {/* チェブロンをリンクに */}
                           <Link
+                                aria-label={featureKey}
                                 to={makeLink({
                                   feature:   "feature" + (idx+1) 
                                 })}
