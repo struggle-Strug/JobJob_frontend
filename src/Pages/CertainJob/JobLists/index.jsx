@@ -1,11 +1,7 @@
+"use client";
+
 import { Checkbox, Input, Modal, Select } from "antd";
-import {
-  Link,
-  Links,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
@@ -22,7 +18,6 @@ import {
 } from "../../../utils/constants/categories";
 import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
-import Loading from "../../../components/Loading";
 import BreadCrumb from "../../../components/BreadCrumb";
 import Pagination from "../../../components/Pagination";
 import {
@@ -31,6 +26,7 @@ import {
 } from "../../../utils/getMuniId";
 import { getPrefCodeByName } from "../../../utils/getPref";
 import NewJobs from "../../../components/NewJobs";
+import SkeletonGroup from "../../../components/SkeletonGroup";
 
 const JobLists = () => {
   const { user, likes, setLikes } = useAuth();
@@ -224,7 +220,7 @@ const JobLists = () => {
   };
 
   const getConditionUrl = (filterName, value) => {
-    let base = `/${path}`; // 例: "/dr"
+    const base = `/${path}`; // 例: "/dr"
 
     switch (filterName) {
       case "muni": {
@@ -461,477 +457,481 @@ const JobLists = () => {
     // 他のパラメータ(prefId, empId…)も同様に逆引き
   }, [muniId]);
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <>
       <BreadCrumb />
-      <div className="w-full px-4 bg-[#EFEFEF]">
-        <div className="container flex justify-between gap-8">
-          <div className="flex flex-col items-center justify-start w-2/3">
-            <div className="flex flex-col justify-center bg-white rounded-lg p-4 w-full shadow-xl">
-              <h1 className="text-lg">
-                <span className="font-bold">
-                  {getPrefectureKeyByValue(pref)}
-                </span>
-                {muni && <span className="font-bold">{muni}</span>}
-                <span className="font-bold">,{JobType}</span>
-                <span>の求人・転職・アルバイト情報</span>
-              </h1>
-              <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center">
-                  <p className="lg:text-xl md:text-sm font-bold text-[#343434] ">
-                    該当件数
-                  </p>
-                  <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">
-                    {allJobPostsNum}
-                  </p>
-                  <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                    件
-                  </p>
+      {/* Wrap the content with BlurryLoader */}
+      <SkeletonGroup isLoading={isLoading}>
+        <div className="w-full px-4 bg-[#EFEFEF]">
+          <div className="container flex justify-between gap-8">
+            <div className="flex flex-col items-center justify-start w-2/3">
+              <div className="flex flex-col justify-center bg-white rounded-lg p-4 w-full shadow-xl">
+                <h1 className="text-lg">
+                  <span className="font-bold">
+                    {getPrefectureKeyByValue(pref)}
+                  </span>
+                  {muni && <span className="font-bold">{muni}</span>}
+                  <span className="font-bold">,{JobType}</span>
+                  <span>の求人・転職・アルバイト情報</span>
+                </h1>
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center">
+                    <p className="lg:text-xl md:text-sm font-bold text-[#343434] ">
+                      該当件数
+                    </p>
+                    <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">
+                      {allJobPostsNum}
+                    </p>
+                    <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                      件
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
+                    <Link
+                      className="lg:text-[1rem] md:text-sm font-bold text-[#FF2A3B] hover:underline"
+                      to={`${pathname}/modal/pref_modal`}
+                    >
+                      都道府県を変更
+                    </Link>
+                    <img
+                      src="/assets/images/dashboard/ep_arrow-right.png"
+                      alt="chevron-right"
+                      className="w-4"
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
-                  <Link
-                    className="lg:text-[1rem] md:text-sm font-bold text-[#FF2A3B] hover:underline"
-                    to={`${pathname}/modal/pref_modal`}
-                  >
-                    都道府県を変更
-                  </Link>
+              </div>
+              <div className="flex items-center justify-start w-full mt-8">
+                {/* <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                  求人検索
+                </p> */}
+              </div>
+              <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl">
+                <Link
+                  className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
+                  to={`${pathname}/modal/muni_modal`}
+                >
+                  <div className="flex items-center justify-between gap-1">
+                    <img
+                      src="/assets/images/dashboard/gg_pin.png"
+                      alt="map"
+                      className="w-5 pt-0.5"
+                    />
+                    <p className="lg:text-md md:text-sm font-bold text-[#343434]">
+                      市区町村から選択
+                    </p>
+                  </div>
                   <img
-                    src="/assets/images/dashboard/ep_arrow-right.png"
-                    alt="chevron-right"
+                    src="/assets/images/dashboard/ep_arrow-right_black.png"
+                    alt="arrow-down"
+                    className="w-4"
+                  />
+                </Link>
+
+                <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer">
+                  <div className="flex items-center justify-between gap-1 ">
+                    <img
+                      src="/assets/images/dashboard/ph_train-simple.png"
+                      alt="map"
+                      className="w-5 pt-0.5"
+                    />
+                    <p className="lg:text-md md:text-sm font-bold text-[#343434]">
+                      沿線から選択
+                    </p>
+                  </div>
+                  <img
+                    src="/assets/images/dashboard/ep_arrow-right_black.png"
+                    alt="arrow-down"
                     className="w-4"
                   />
                 </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-start w-full mt-8">
-              {/* <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                求人検索
-              </p> */}
-            </div>
-            <div className="flex flex-col justify-center bg-white rounded-lg px-12 py-8 w-full shadow-xl">
-              <Link
-                className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-                to={`${pathname}/modal/muni_modal`}
-              >
-                <div className="flex items-center justify-between gap-1">
-                  <img
-                    src="/assets/images/dashboard/gg_pin.png"
-                    alt="map"
-                    className="w-5 pt-0.5"
-                  />
-                  <p className="lg:text-md md:text-sm font-bold text-[#343434]">
-                    市区町村から選択
-                  </p>
-                </div>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-down"
-                  className="w-4"
-                />
-              </Link>
-
-              <div className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer">
-                <div className="flex items-center justify-between gap-1 ">
-                  <img
-                    src="/assets/images/dashboard/ph_train-simple.png"
-                    alt="map"
-                    className="w-5 pt-0.5"
-                  />
-                  <p className="lg:text-md md:text-sm font-bold text-[#343434]">
-                    沿線から選択
-                  </p>
-                </div>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-down"
-                  className="w-4"
-                />
-              </div>
-              <Link
-                className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-                to={`${pathname}/modal/employment_modal`}
-              >
-                <div className="flex items-center justify-between gap-1 ">
-                  <img
-                    src="/assets/images/dashboard/material-symbols_check-box-outline.png"
-                    alt="map"
-                    className="w-5 pt-0.5"
-                  />
-                  <p className="lg:text-md md:text-sm font-bold text-[#343434]">
-                    雇用形態・給与から選択
-                  </p>
-                </div>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-down"
-                  className="w-4"
-                />
-              </Link>
-              <Link
-                className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
-                to={`${pathname}/modal/feature_modal`}
-              >
-                <div className="flex items-center justify-between gap-1 ">
-                  <img
-                    src="/assets/images/dashboard/mdi_tag-outline.png"
-                    alt="map"
-                    className="w-5 pt-0.5"
-                  />
-                  <p className="lg:text-md md:text-sm font-bold text-[#343434]">
-                    特徴から選択
-                  </p>
-                </div>
-                <img
-                  src="/assets/images/dashboard/ep_arrow-right_black.png"
-                  alt="arrow-down"
-                  className="w-4"
-                />
-              </Link>
-            </div>
-            <div className="flex items-center justify-start w-full">
-              {/* <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                {getPrefectureKeyByValue(pref)}の{JobType}の求人
-              </p> */}
-            </div>
-            <div className="flex flex-col items-center justify-start w-full ">
-              {jobPosts?.map((jobpost) => {
-                return (
-                  <div
-                    key={jobpost.jobpost_id}
-                    className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 cursor-pointer hover:scale-[1.02] duration-300"
-                  >
-                    <div
-                      onClick={() =>
-                        navigate(`/${path}/details/${jobpost.jobpost_id}`)
-                      }
-                    >
-                      <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
-                        {jobpost?.picture?.length === 0 ? (
-                          <img
-                            src={"/assets/images/noimage.png"}
-                            alt="arrow-down"
-                            className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
-                          />
-                        ) : (
-                          <img
-                            src={`${jobpost.picture[0]}`}
-                            alt="arrow-down"
-                            className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
-                          />
-                        )}
-                        <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
-                          <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                            {jobpost.facility_id.name}の{jobpost.type}求人(
-                            {jobpost.employment_type[0]})
-                          </p>
-                          <p className="lg:text-sm md:text-xs text-[#343434]">
-                            {jobpost.sub_title}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between w-full gap-4 px-2 mt-2">
-                        <div className="flex gap-4 h-full">
-                          <div className="flex flex-col justify-center w-2/3 h-full">
-                            <div className="flex items-center justify-start">
-                              <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                                給与
-                              </p>
-                              <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
-                                {jobpost.employment_type} {jobpost.salary_type}{" "}
-                                {jobpost.salary_min}円〜{jobpost.salary_max}円
-                              </p>
-                            </div>
-                            <div className="flex items-start justify-start mt-4">
-                              <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                                仕事内容
-                              </p>
-                              <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
-                                <pre>{jobpost.work_content}</pre>
-                              </p>
-                            </div>
-                            <div className="flex items-start justify-start mt-4">
-                              <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                                応募要件
-                              </p>
-                              <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
-                                {jobpost.qualification_content}{" "}
-                                {jobpost.qualification_welcome}
-                              </p>
-                            </div>
-                            <div className="flex items-start justify-start mt-4">
-                              <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
-                                住所
-                              </p>
-                              <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
-                                {jobpost.facility_id.prefecture}{" "}
-                                {jobpost.facility_id.city}{" "}
-                                {jobpost.facility_id.village}{" "}
-                                {jobpost.facility_id.building}{" "}
-                                {jobpost.facility_id.access_text}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="inline-block items-start justify-start gap-2 w-1/3 h-full">
-                            {[
-                              ...jobpost.work_item,
-                              ...jobpost.service_subject,
-                              ...jobpost.service_type,
-                              ...jobpost.treatment_type,
-                              ...jobpost.work_time_type,
-                              ...jobpost.rest_type,
-                            ]
-                              .slice(0, 10)
-                              .map((item, index) => {
-                                return (
-                                  <div
-                                    key={index}
-                                    className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                                  >
-                                    <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                                      {item}
-                                    </p>
-                                  </div>
-                                );
-                              })}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
-                      <button
-                        className={`flex items-center justify-center gap-2 rounded-lg py-2 text-white ${
-                          likes.includes(jobpost.jobpost_id)
-                            ? "bg-[#E7E7E7]"
-                            : "border-2 border-[#FF6B56] bg-whtie"
-                        }  w-1/2 hover:bg-[#FF6B56]/20 hover:scale-105 duration-300`}
-                        onClick={() => handleLike(jobpost.jobpost_id)}
-                      >
-                        <img
-                          src={`${
-                            likes.includes(jobpost.jobpost_id)
-                              ? "/assets/images/dashboard/mdi_heart.png"
-                              : "/assets/images/dashboard/Vector.png"
-                          }`}
-                          alt="eye"
-                          className="w-4 pt-0.5"
-                        />
-                        <p
-                          className={`text-sm font-bold ${
-                            likes.includes(jobpost.jobpost_id)
-                              ? "text-[#188CE0]"
-                              : "text-[#FF6B56]"
-                          }`}
-                        >
-                          {likes.includes(jobpost.jobpost_id)
-                            ? "気になる済"
-                            : "気になる"}
-                        </p>
-                      </button>
-                      <Link
-                        to={`/${path}/details/${jobpost.jobpost_id}`}
-                        className="flex items-center justify-center bg-[#FF6B56] hover:bg-[#FF5B02] hover:scale-105 duration-300 rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2"
-                      >
-                        <p className="text-sm font-bold text-white">
-                          求人を見る
-                        </p>
-                      </Link>
-                    </div>
+                <Link
+                  className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
+                  to={`${pathname}/modal/employment_modal`}
+                >
+                  <div className="flex items-center justify-between gap-1 ">
+                    <img
+                      src="/assets/images/dashboard/material-symbols_check-box-outline.png"
+                      alt="map"
+                      className="w-5 pt-0.5"
+                    />
+                    <p className="lg:text-md md:text-sm font-bold text-[#343434]">
+                      雇用形態・給与から選択
+                    </p>
                   </div>
-                );
-              })}
-            </div>
-            <div className="flex flex-col bg-white rounded-lg px-4 py-2 w-full shadow-xl mt-8">
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={handleOnChangePage}
-              />
-              <p className="lg:text-[1rem] md:text-[0.8rem] text-[#343434] text-center mt-2">
-                ご希望の条件の求人が登録されたときに、いち早くお知らせします。
-              </p>
-              <button className="text-center w-full bg-[#FF6B56] text-white rounded-lg py-2 mt-4">
-                <p className="lg:text-sm md:text-xs font-bold">
-                  この条件で新着求人を受け取る
-                </p>
-              </button>
-              <button className="text-center w-full bg-white text-[#FF6B56] border-2 border-[#FF6B56] rounded-lg py-2 mt-4">
-                <p className="text-sm font-bold">検索条件を変更する</p>
-              </button>
-              <div className="flex items-center justify-center w-full mt-8 gap-2">
-                <img
-                  src="/assets/images/dashboard/ic_round-search.png"
-                  alt="search"
-                  className="w-6"
+                  <img
+                    src="/assets/images/dashboard/ep_arrow-right_black.png"
+                    alt="arrow-down"
+                    className="w-4"
+                  />
+                </Link>
+                <Link
+                  className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
+                  to={`${pathname}/modal/feature_modal`}
+                >
+                  <div className="flex items-center justify-between gap-1 ">
+                    <img
+                      src="/assets/images/dashboard/mdi_tag-outline.png"
+                      alt="map"
+                      className="w-5 pt-0.5"
+                    />
+                    <p className="lg:text-md md:text-sm font-bold text-[#343434]">
+                      特徴から選択
+                    </p>
+                  </div>
+                  <img
+                    src="/assets/images/dashboard/ep_arrow-right_black.png"
+                    alt="arrow-down"
+                    className="w-4"
+                  />
+                </Link>
+              </div>
+              <div className="flex items-center justify-start w-full">
+                {/* <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                  {getPrefectureKeyByValue(pref)}の{JobType}の求人
+                </p> */}
+              </div>
+              <div className="flex flex-col items-center justify-start w-full ">
+                {jobPosts?.map((jobpost) => {
+                  return (
+                    <div
+                      key={jobpost.jobpost_id}
+                      className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 cursor-pointer hover:scale-[1.02] duration-300"
+                    >
+                      <div
+                        onClick={() =>
+                          navigate(`/${path}/details/${jobpost.jobpost_id}`)
+                        }
+                      >
+                        <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
+                          {jobpost?.picture?.length === 0 ? (
+                            <img
+                              src={"/assets/images/noimage.png"}
+                              alt="arrow-down"
+                              className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                            />
+                          ) : (
+                            <img
+                              src={`${jobpost.picture[0]}`}
+                              alt="arrow-down"
+                              className="md:w-full lg:w-1/2 aspect-video object-cover rounded-lg"
+                            />
+                          )}
+                          <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
+                            <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                              {jobpost.facility_id.name}の{jobpost.type}求人(
+                              {jobpost.employment_type[0]})
+                            </p>
+                            <p className="lg:text-sm md:text-xs text-[#343434]">
+                              {jobpost.sub_title}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between w-full gap-4 px-2 mt-2">
+                          <div className="flex gap-4 h-full">
+                            <div className="flex flex-col justify-center w-2/3 h-full">
+                              <div className="flex items-center justify-start">
+                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
+                                  給与
+                                </p>
+                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6">
+                                  {jobpost.employment_type}{" "}
+                                  {jobpost.salary_type} {jobpost.salary_min}円〜
+                                  {jobpost.salary_max}円
+                                </p>
+                              </div>
+                              <div className="flex items-start justify-start mt-4">
+                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
+                                  仕事内容
+                                </p>
+                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
+                                  <pre>{jobpost.work_content}</pre>
+                                </p>
+                              </div>
+                              <div className="flex items-start justify-start mt-4">
+                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
+                                  応募要件
+                                </p>
+                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
+                                  {jobpost.qualification_content}{" "}
+                                  {jobpost.qualification_welcome}
+                                </p>
+                              </div>
+                              <div className="flex items-start justify-start mt-4">
+                                <p className="lg:text-sm md:text-xs font-bold text-[#343434] w-1/6">
+                                  住所
+                                </p>
+                                <p className="lg:text-sm md:text-xs text-[#343434] w-5/6 line-clamp-2">
+                                  {jobpost.facility_id.prefecture}{" "}
+                                  {jobpost.facility_id.city}{" "}
+                                  {jobpost.facility_id.village}{" "}
+                                  {jobpost.facility_id.building}{" "}
+                                  {jobpost.facility_id.access_text}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="inline-block items-start justify-start gap-2 w-1/3 h-full">
+                              {[
+                                ...jobpost.work_item,
+                                ...jobpost.service_subject,
+                                ...jobpost.service_type,
+                                ...jobpost.treatment_type,
+                                ...jobpost.work_time_type,
+                                ...jobpost.rest_type,
+                              ]
+                                .slice(0, 10)
+                                .map((item, index) => {
+                                  return (
+                                    <div
+                                      key={index}
+                                      className="inline-block  text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
+                                    >
+                                      <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
+                                        {item}
+                                      </p>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between w-full gap-4 px-8 mt-6">
+                        <button
+                          className={`flex items-center justify-center gap-2 rounded-lg py-2 text-white ${
+                            likes.includes(jobpost.jobpost_id)
+                              ? "bg-[#E7E7E7]"
+                              : "border-2 border-[#FF6B56] bg-whtie"
+                          }  w-1/2 hover:bg-[#FF6B56]/20 hover:scale-105 duration-300`}
+                          onClick={() => handleLike(jobpost.jobpost_id)}
+                        >
+                          <img
+                            src={`${
+                              likes.includes(jobpost.jobpost_id)
+                                ? "/assets/images/dashboard/mdi_heart.png"
+                                : "/assets/images/dashboard/Vector.png"
+                            }`}
+                            alt="eye"
+                            className="w-4 pt-0.5"
+                          />
+                          <p
+                            className={`text-sm font-bold ${
+                              likes.includes(jobpost.jobpost_id)
+                                ? "text-[#188CE0]"
+                                : "text-[#FF6B56]"
+                            }`}
+                          >
+                            {likes.includes(jobpost.jobpost_id)
+                              ? "気になる済"
+                              : "気になる"}
+                          </p>
+                        </button>
+                        <Link
+                          to={`/${path}/details/${jobpost.jobpost_id}`}
+                          className="flex items-center justify-center bg-[#FF6B56] hover:bg-[#FF5B02] hover:scale-105 duration-300 rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2"
+                        >
+                          <p className="text-sm font-bold text-white">
+                            求人を見る
+                          </p>
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex flex-col bg-white rounded-lg px-4 py-2 w-full shadow-xl mt-8">
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={handleOnChangePage}
                 />
-                <Input
-                  placeholder="例:市区町村、診療科目、特徴など"
+                <p className="lg:text-[1rem] md:text-[0.8rem] text-[#343434] text-center mt-2">
+                  ご希望の条件の求人が登録されたときに、いち早くお知らせします。
+                </p>
+                <button className="text-center w-full bg-[#FF6B56] text-white rounded-lg py-2 mt-4">
+                  <p className="lg:text-sm md:text-xs font-bold">
+                    この条件で新着求人を受け取る
+                  </p>
+                </button>
+                <button className="text-center w-full bg-white text-[#FF6B56] border-2 border-[#FF6B56] rounded-lg py-2 mt-4">
+                  <p className="text-sm font-bold">検索条件を変更する</p>
+                </button>
+                <div className="flex items-center justify-center w-full mt-8 gap-2">
+                  <img
+                    src="/assets/images/dashboard/ic_round-search.png"
+                    alt="search"
+                    className="w-6"
+                  />
+                  <Input
+                    placeholder="例:市区町村、診療科目、特徴など"
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col bg-white rounded-lg px-8 py-6 w-full mt-8 shadow-xl">
+                <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                  {JobType}について
+                </p>
+                <pre className="lg:text-[1rem] md:text-[0.8rem]">
+                  {SmallDescriptions[JobType]}
+                </pre>
+              </div>
+            </div>
+            <div className="flex h-full w-1/3">
+              <div className="flex flex-col items-center justify-start h-full w-full">
+                <img
+                  src="/assets/images/dashboard/Group 16.png"
+                  alt="banner"
                   className="w-full"
                 />
-              </div>
-            </div>
-
-            <div className="flex flex-col bg-white rounded-lg px-8 py-6 w-full mt-8 shadow-xl">
-              <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                {JobType}について
-              </p>
-              <pre className="lg:text-[1rem] md:text-[0.8rem]">
-                {SmallDescriptions[JobType]}
-              </pre>
-            </div>
-          </div>
-          <div className="flex h-full w-1/3">
-            <div className="flex flex-col items-center justify-start h-full w-full">
-              <img
-                src="/assets/images/dashboard/Group 16.png"
-                alt="banner"
-                className="w-full"
-              />
-              <div className="flex items-center justify-start w-full mt-8">
-                <p className="lg:text-lg md:text-sm font-bold text-[#343434]">
-                  必ず役立つ仕事術
-                </p>
-              </div>
-              <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
-                <div className="flex items-center justify-between w-full">
-                  <p className="lg:text-[1rem] md:text-[0.8rem]">
-                    ぴったりな仕事を探すには
-                  </p>
-                  <img
-                    src="/assets/images/dashboard/ep_arrow-right_black.png"
-                    alt="arrow-right"
-                    className="w-4 pt-0.5"
-                  />
-                </div>
-                <div className="flex items-center justify-between w-full mt-4">
-                  <p className="lg:text-[1rem] md:text-[0.8rem]">応募の仕方</p>
-                  <img
-                    src="/assets/images/dashboard/ep_arrow-right_black.png"
-                    alt="arrow-right"
-                    className="w-4 pt-0.5"
-                  />
-                </div>
-                <div className="flex items-center justify-between w-full mt-4">
-                  <p className="lg:text-[1rem] md:text-[0.8rem]">
-                    履歴書の書き方
-                  </p>
-                  <img
-                    src="/assets/images/dashboard/ep_arrow-right_black.png"
-                    alt="arrow-right"
-                    className="w-4 pt-0.5"
-                  />
-                </div>
-                <div className="flex items-center justify-between w-full mt-4">
-                  <p className="lg:text-[1rem] md:text-[0.8rem]">
-                    メッセージの書き方
-                  </p>
-                  <img
-                    src="/assets/images/dashboard/ep_arrow-right_black.png"
-                    alt="arrow-right"
-                    className="w-4 pt-0.5"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center justify-start w-full mt-8">
-                <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                  人気のコラムランキング
-                </p>
-              </div>
-              <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
-                <div className="flex items-center justify-between gap-2 w-full">
-                  <img
-                    src="/assets/images/dashboard/Group 17.png"
-                    alt="arrow-right"
-                  />
-                  <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
-                    失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
+                <div className="flex items-center justify-start w-full mt-8">
+                  <p className="lg:text-lg md:text-sm font-bold text-[#343434]">
+                    必ず役立つ仕事術
                   </p>
                 </div>
-                <div className="flex items-center justify-between gap-2 w-full mt-4">
-                  <img
-                    src="/assets/images/dashboard/Group 17_2.png"
-                    alt="arrow-right"
-                  />
-                  <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
-                    失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
-                  </p>
-                </div>
-                <div className="flex items-center justify-between gap-2 w-full mt-4">
-                  <img
-                    src="/assets/images/dashboard/Group 17_3.png"
-                    alt="arrow-right"
-                  />
-                  <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
-                    失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
-                  </p>
-                </div>
-                <div className="flex items-center justify-center">
-                  <Link
-                    to={"/#"}
-                    className="flex items-center justify-center mt-4 border-2 border-[#FF6B56] rounded-lg py-2 lg:px-16 md:px-8 px-4"
-                  >
-                    <p className="lg:text-[0.75rem] md:text-[0.6rem] text-[#FF6B56]">
-                      ランキングをもっと見る
+                <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
+                  <div className="flex items-center justify-between w-full">
+                    <p className="lg:text-[1rem] md:text-[0.8rem]">
+                      ぴったりな仕事を探すには
                     </p>
-                  </Link>
+                    <img
+                      src="/assets/images/dashboard/ep_arrow-right_black.png"
+                      alt="arrow-right"
+                      className="w-4 pt-0.5"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between w-full mt-4">
+                    <p className="lg:text-[1rem] md:text-[0.8rem]">
+                      応募の仕方
+                    </p>
+                    <img
+                      src="/assets/images/dashboard/ep_arrow-right_black.png"
+                      alt="arrow-right"
+                      className="w-4 pt-0.5"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between w-full mt-4">
+                    <p className="lg:text-[1rem] md:text-[0.8rem]">
+                      履歴書の書き方
+                    </p>
+                    <img
+                      src="/assets/images/dashboard/ep_arrow-right_black.png"
+                      alt="arrow-right"
+                      className="w-4 pt-0.5"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between w-full mt-4">
+                    <p className="lg:text-[1rem] md:text-[0.8rem]">
+                      メッセージの書き方
+                    </p>
+                    <img
+                      src="/assets/images/dashboard/ep_arrow-right_black.png"
+                      alt="arrow-right"
+                      className="w-4 pt-0.5"
+                    />
+                  </div>
                 </div>
-              </div>
-              {user == null && (
-                <>
-                  <div className="flex items-center justify-start w-full mt-8">
-                    <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                      会員登録がまだの方
+                <div className="flex items-center justify-start w-full mt-8">
+                  <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
+                    人気のコラムランキング
+                  </p>
+                </div>
+                <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
+                  <div className="flex items-center justify-between gap-2 w-full">
+                    <img
+                      src="/assets/images/dashboard/Group 17.png"
+                      alt="arrow-right"
+                    />
+                    <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
+                      失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
                     </p>
                   </div>
-                  <div className="flex flex-col items-center bg-white rounded-lg py-6 w-full mt-8 shadow-xl">
-                    <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] pb-2">
-                      <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
-                        1.
-                      </p>
-                      <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
-                        事務所からスカウトが届く
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
-                      <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
-                        2.
-                      </p>
-                      <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
-                        希望にあった求人が届く
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
-                      <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
-                        3.
-                      </p>
-                      <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
-                        会員限定機能が利用できる
-                      </p>
-                    </div>
+                  <div className="flex items-center justify-between gap-2 w-full mt-4">
+                    <img
+                      src="/assets/images/dashboard/Group 17_2.png"
+                      alt="arrow-right"
+                    />
+                    <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
+                      失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 w-full mt-4">
+                    <img
+                      src="/assets/images/dashboard/Group 17_3.png"
+                      alt="arrow-right"
+                    />
+                    <p className="lg:text-[0.75rem] md:text-[0.6rem] font-bold text-[#343434]">
+                      失業手当はいくら、いつからもらえる？受給条件や申請方法を解説！
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-center">
                     <Link
-                      to={"/members/sign_up"}
-                      className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] rounded-lg px-6 py-2 hover:scale-105 duration-300"
+                      to={"/#"}
+                      className="flex items-center justify-center mt-4 border-2 border-[#FF6B56] rounded-lg py-2 lg:px-16 md:px-8 px-4"
                     >
-                      <img
-                        src="/assets/images/dashboard/mdi_account.png"
-                        alt="register"
-                        className="pt-0.5"
-                      />
-                      <p className="lg:text-lg md:text-sm text-white font-bold">
-                        無料で会員登録する
+                      <p className="lg:text-[0.75rem] md:text-[0.6rem] text-[#FF6B56]">
+                        ランキングをもっと見る
                       </p>
                     </Link>
                   </div>
-                </>
-              )}
+                </div>
+                {user == null && (
+                  <>
+                    <div className="flex items-center justify-start w-full mt-8">
+                      <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
+                        会員登録がまだの方
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center bg-white rounded-lg py-6 w-full mt-8 shadow-xl">
+                      <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] pb-2">
+                        <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
+                          1.
+                        </p>
+                        <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
+                          事務所からスカウトが届く
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
+                        <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
+                          2.
+                        </p>
+                        <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
+                          希望にあった求人が届く
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-start gap-1 border-b-[1.5px] w-2/3 border-b-[#999999] mt-2 pb-2">
+                        <p className="lg:text-[1rem] md:text-[0.7rem] font-bold text-[#999999] number pt-0.5">
+                          3.
+                        </p>
+                        <p className="lg:text-[1rem] md:text-[0.7rem] text-[#343434]">
+                          会員限定機能が利用できる
+                        </p>
+                      </div>
+                      <Link
+                        to={"/members/sign_up"}
+                        className="flex items-center justify-center gap-2 mt-4 bg-gradient-to-tr from-[#FF1812] to-[#FF5B02] rounded-lg px-6 py-2 hover:scale-105 duration-300"
+                      >
+                        <img
+                          src="/assets/images/dashboard/mdi_account.png"
+                          alt="register"
+                          className="pt-0.5"
+                        />
+                        <p className="lg:text-lg md:text-sm text-white font-bold">
+                          無料で会員登録する
+                        </p>
+                      </Link>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
+          <NewJobs />
         </div>
-        <NewJobs />
-      </div>
+      </SkeletonGroup>
+
+      {/* Modals */}
       {
         <Modal
           open={isPrefModalOpen}

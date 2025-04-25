@@ -1,10 +1,14 @@
 import { Checkbox, message, Modal, Select } from "antd";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import SkeletonGroup from "../../components/SkeletonGroup";
+import { useAuth } from "../../context/AuthContext";
 import {
   EmploymentType,
-  Prefectures,
   JobType as JobTypes,
+  Prefectures,
 } from "../../utils/constants/categories";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   getAllEmploymentValues,
   getAllFacilityValues,
@@ -16,10 +20,6 @@ import {
   getJobValueByKey,
   getPrefectureKeyByValue,
 } from "../../utils/getFunctions";
-import { useAuth } from "../../context/AuthContext";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import Loading from "../../components/Loading";
 
 const CertaionFacility = () => {
   const { user } = useAuth();
@@ -75,22 +75,32 @@ const CertaionFacility = () => {
   ];
 
   const getFacilities = async () => {
-    const jobTypeString = jobType ? getJobTypeKeyByValue(jobType) : "";
-    const facilityString = facility ? getFacilityKeyByValue(facility) : "";
-    const prefString = pref ? getPrefectureKeyByValue(pref) : "";
-    const employmentTypeString = employmentType
-      ? getEmploymentTypeKeyByValue(employmentType)
-      : "";
+    setIsLoading(true);
 
-    const apiUrl = `${process.env.REACT_APP_API_URL}/api/v1/facility/?jobType=${jobTypeString}&facility=${facilityString}&pref=${prefString}&employmentType=${employmentTypeString}`;
+    try {
+      const jobTypeString = jobType ? getJobTypeKeyByValue(jobType) : "";
+      const facilityString = facility ? getFacilityKeyByValue(facility) : "";
+      const prefString = pref ? getPrefectureKeyByValue(pref) : "";
+      const employmentTypeString = employmentType
+        ? getEmploymentTypeKeyByValue(employmentType)
+        : "";
 
-    const response = await axios.get(apiUrl);
+      const apiUrl = `${process.env.REACT_APP_API_URL}/api/v1/facility/?jobType=${jobTypeString}&facility=${facilityString}&pref=${prefString}&employmentType=${employmentTypeString}`;
 
-    if (response.data.error) {
-      return message.error(response.data.message);
+      const response = await axios.get(apiUrl);
+
+      if (response.data.error) {
+        message.error(response.data.message);
+        return;
+      }
+
+      setFacilities(response.data.facility);
+    } catch (error) {
+      console.error(error);
+      message.error("Failed to fetch facilities.");
+    } finally {
+      setIsLoading(false);
     }
-
-    setFacilities(response.data.facility);
   };
 
   useEffect(() => {
@@ -137,12 +147,8 @@ const CertaionFacility = () => {
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [document.title]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
   return (
-    <>
+    <SkeletonGroup isLoading={isLoading}>
       <div className="flex w-full px-4 bg-[#EFEFEF]">
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-start justify-start w-2/3">
@@ -1022,7 +1028,7 @@ const CertaionFacility = () => {
           </div>
         </Modal>
       }
-    </>
+    </SkeletonGroup>
   );
 };
 
