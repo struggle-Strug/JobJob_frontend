@@ -75,8 +75,8 @@ const PhotoManagement = () => {
 
   const handleDelete = async (phototUrl) => {
     try {
-      const deleteResult = await handleDeleteImage(phototUrl);
-      if (!deleteResult) return;
+      // const deleteResult = await handleDeleteImage(phototUrl);
+      // if (!deleteResult) return;
       const photoName = phototUrl.split("/").pop();
       const response = await axios.delete(
         `${process.env.REACT_APP_API_URL}/api/v1/photo/${photoName}`
