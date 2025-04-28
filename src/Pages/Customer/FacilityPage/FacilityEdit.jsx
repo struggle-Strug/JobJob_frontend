@@ -613,7 +613,8 @@ const FacilityEdit = () => {
               </button>
             </>
           )}
-          {facility?.allowed === ("ended" || "rejected") && (
+          {(facility?.allowed === "ended" ||
+            facility?.allowed === "rejected") && (
             <>
               <button
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
@@ -621,16 +622,6 @@ const FacilityEdit = () => {
               >
                 掲載を申請する
               </button>
-              <button
-                className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
-                onClick={handleDeleteFacility}
-              >
-                削除する
-              </button>
-            </>
-          )}
-          {facility?.allowed === "rejected" && (
-            <>
               <button
                 className="lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-3 duration-300"
                 onClick={handleDeleteFacility}
