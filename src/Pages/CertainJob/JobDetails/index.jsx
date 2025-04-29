@@ -9,7 +9,7 @@ import { Facilities } from "../../../utils/constants/categories/facilities";
 import { useAuth } from "../../../context/AuthContext";
 import NotFound from "../../NotFound";
 import NewJobs from "../../../components/NewJobs";
-import SkeletonGroup from "../../../components/SkeletonGroup";
+import BlurryLoader from "../../../components/SkeletonGroup";
 
 const JobDetails = () => {
   const { user } = useAuth();
@@ -109,6 +109,7 @@ const JobDetails = () => {
 
   // Handle carousel navigation
   const handleCarouselChange = useCallback((current) => {
+    console.log("Slide changed to:", current);
     setCurrentSlide(current);
   }, []);
 
@@ -118,8 +119,10 @@ const JobDetails = () => {
 
     const newIndex =
       (currentSlide - 1 + jobPost.picture.length) % jobPost.picture.length;
-    carouselRef.current?.goTo(newIndex, false);
-    setCurrentSlide(newIndex);
+    if (carouselRef.current) {
+      carouselRef.current.goTo(newIndex);
+      setCurrentSlide(newIndex);
+    }
   }, [currentSlide, jobPost?.picture?.length]);
 
   // Navigate to next slide
@@ -127,8 +130,10 @@ const JobDetails = () => {
     if (!jobPost?.picture?.length) return;
 
     const newIndex = (currentSlide + 1) % jobPost.picture.length;
-    carouselRef.current?.goTo(newIndex, false);
-    setCurrentSlide(newIndex);
+    if (carouselRef.current) {
+      carouselRef.current.goTo(newIndex);
+      setCurrentSlide(newIndex);
+    }
   }, [currentSlide, jobPost?.picture?.length]);
 
   // Open image modal
@@ -191,7 +196,7 @@ const JobDetails = () => {
   }
 
   return (
-    <SkeletonGroup isLoading={loading}>
+    <BlurryLoader isLoading={loading}>
       <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
         <div className="container flex flex-col md:flex-row items-stretch justify-between p-4 bg-white rounded-lg">
           <div className="relative w-full md:w-2/3">
@@ -200,7 +205,9 @@ const JobDetails = () => {
                 <Carousel
                   ref={carouselRef}
                   dots={false}
-                  beforeChange={handleCarouselChange}
+                  afterChange={handleCarouselChange}
+                  effect="fade"
+                  lazyLoad="ondemand"
                 >
                   {jobPost.picture.map((photoUrl, index) => (
                     <div key={index} onClick={() => openImageModal(photoUrl)}>
@@ -222,6 +229,7 @@ const JobDetails = () => {
                     onClick={goToPrevSlide}
                     className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center"
                     aria-label="前の写真を表示"
+                    type="button"
                   >
                     <svg
                       width="24"
@@ -243,6 +251,7 @@ const JobDetails = () => {
                     onClick={goToNextSlide}
                     className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center"
                     aria-label="次の写真を表示"
+                    type="button"
                   >
                     <svg
                       width="24"
@@ -343,22 +352,8 @@ const JobDetails = () => {
                 <p className="lg:text-base text-sm font-bold text-[#343434] py-6 w-1/5">
                   仕事内容
                 </p>
-                <pre className="flex flex-col lg:text-base text-sm text-[#343434] py-6 w-4/5 overflow-auto whitespace-pre-wrap break-words">
-                  <div className="inline-block items-start justify-start gap-2 w-4/5">
-                    {jobPost?.work_item.map((item, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="inline-block text-center bg-[#F5BD2E] text-white m-1 px-2 py-1 rounded-lg"
-                        >
-                          <p className="lg:text-[0.7rem] md:text-[0.6rem] font-bold">
-                            {item}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {jobPost?.work_content}
+                <pre className="lg:text-base text-sm text-[#343434] py-6 w-4/5 overflow-auto whitespace-pre-wrap break-words">
+                  {jobPost?.work_content || ""}
                 </pre>
               </div>
               <div className="flex items-start justify-start border-b-[1px] border-[#e7e7e7]">
@@ -896,7 +891,7 @@ const JobDetails = () => {
           />
         </Modal>
       </div>
-    </SkeletonGroup>
+    </BlurryLoader>
   );
 };
 
