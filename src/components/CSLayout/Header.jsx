@@ -90,7 +90,7 @@ const Header = ({ user, isAuthenticated }) => {
             <div className="flex items-center gap-2 lg:gap-8 justify-between">
               <div className="hidden sm:flex items-center justify-between gap-2">
                 <Link
-                  to={"/members/job_offers/favorite"}
+                  to={"#"}
                   className="flex flex-col items-center bg-white rounded-lg px-3 lg:px-5 py-2 hover:scale-[1.05] hover:shadow-xl duration-300"
                 >
                   <div className="flex w-full relative justify-center">
