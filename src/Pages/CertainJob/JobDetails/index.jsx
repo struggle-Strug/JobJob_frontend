@@ -577,7 +577,7 @@ const JobDetails = () => {
                   法人・施設名
                 </p>
                 <Link
-                  to={`/facility/${jobPost?.facility_id?.facility_id}`}
+                  to={`/facility/details/${jobPost?.facility_id?.facility_id}`}
                   className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
                 >
                   {jobPost?.facility_id?.name || ""}
