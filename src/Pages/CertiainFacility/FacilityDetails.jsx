@@ -183,9 +183,14 @@ const JobPostCard = ({ jobPost, facility }) => {
           />
         )}
         <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
-          <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+          <Link
+            to={`/${getJobValueByKey(jobPost.type)}/details/${
+              jobPost.jobpost_id
+            }`}
+            className="lg:text-xl md:text-sm font-bold text-[#343434] hover:underline"
+          >
             {facility?.name}の{jobPost.type}求人({jobPost.employment_type})
-          </p>
+          </Link>
           <p className="lg:text-sm md:text-xs text-[#343434] line-clamp-2">
             {jobPost.sub_title}
           </p>

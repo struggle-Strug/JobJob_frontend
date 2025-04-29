@@ -86,7 +86,6 @@ const CertaionFacility = () => {
         : "";
 
       const apiUrl = `${process.env.REACT_APP_API_URL}/api/v1/facility/?jobType=${jobTypeString}&facility=${facilityString}&pref=${prefString}&employmentType=${employmentTypeString}`;
-      console.log(apiUrl);
 
       const response = await axios.get(apiUrl);
 
