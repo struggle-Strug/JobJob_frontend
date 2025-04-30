@@ -34,10 +34,10 @@ const JobLists = () => {
   const { muniId, modal } = useParams();
   const [pref, setPref] = useState("");
   const [muni, setMuni] = useState("");
-  const [employmentType, setEmploymentType] = useState([]);  
+  const [employmentType, setEmploymentType] = useState("");
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
-  const [feature, setFeature] = useState([]);
+  const [feature, setFeature] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState();
   const [jobPosts, setJobPosts] = useState([]);
@@ -177,6 +177,7 @@ const handleCloseModal = () => setOpenModal(null);
 
   const getJobPosts = async () => {
     try {
+      
       setIsLoading(true); // Set loading before fetching data
       const muniObj = getMunicipalityById(currentMuniCode);
       const muniName = muniObj ? muniObj.name : "";
@@ -191,8 +192,8 @@ const handleCloseModal = () => setOpenModal(null);
         }
       );
 
-
       if (!response.data || !response.data.jobposts) {
+        console.error("Job posts not found in response");
         setJobPosts([]); // Set empty array if response is not valid
       } else {
         setJobPosts(response.data.jobposts);
