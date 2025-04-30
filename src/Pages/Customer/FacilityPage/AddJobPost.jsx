@@ -292,14 +292,14 @@ const AddJobPost = () => {
       return message.error("給与体系を入力してください。");
     if (jobPostSalaryMin === 0 || jobPostSalaryMax === 0)
       return message.error("給与下限・上限を入力してください。");
-    if (
-      isNaN(jobPostSalaryMin) ||
-      isNaN(jobPostSalaryMax) ||
-      isNaN(jobPostExpectedIncome)
-    )
-      return message.error(
-        "給与下限・上限、想定年収を正しく入力してください。"
-      );
+    // if (
+    //   isNaN(jobPostSalaryMin) ||
+    //   isNaN(jobPostSalaryMax) ||
+    //   isNaN(jobPostExpectedIncome)
+    // )
+    //   return message.error(
+    //     "給与下限・上限、想定年収を正しく入力してください。"
+    //   );
     if (jobPostWorkTimeContent === "")
       return message.error("勤務時間・休憩時間を入力してください。");
     if (jobPostRestContent === "")
