@@ -193,7 +193,7 @@ const handleCloseModal = () => setOpenModal(null);
       );
 
       if (!response.data || !response.data.jobposts) {
-        console.error("Job posts not found in response");
+        
         setJobPosts([]); // Set empty array if response is not valid
       } else {
         setJobPosts(response.data.jobposts);
@@ -201,7 +201,7 @@ const handleCloseModal = () => setOpenModal(null);
         setAllJobPostsNum(response.data.allJobPostsNumbers);
       }
     } catch (error) {
-      console.error("Error fetching job posts:", error);
+      message.error("求人情報の取得に失敗しました");
     } finally {
       setIsLoading(false); // Stop loading after fetching data
     }
@@ -629,7 +629,6 @@ const handleCloseModal = () => setOpenModal(null);
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
                 onClick={(e) => {
                   if (!getPrefectureKeyByValue(pref)) {
-                    console.log("都道府県が選択されていません");
                     e.preventDefault();
                     message.error("都道府県を選択してください");
                   }else{
