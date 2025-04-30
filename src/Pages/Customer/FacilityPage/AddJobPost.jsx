@@ -520,7 +520,7 @@ const AddJobPost = () => {
             onEditorChange={(value) => setJobPostSubDescription(value)}
             editorStyle={editorStyle}
           /> */}
-          <Input
+          <TextArea
             value={jobPostSubDescription}
             onChange={(e) => setJobPostSubDescription(e.target.value)}
             className="w-1/2"
