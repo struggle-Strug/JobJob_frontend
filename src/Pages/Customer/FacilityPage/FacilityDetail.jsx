@@ -360,17 +360,7 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
         <div className="flex items-center justify-center w-full gap-4 py-2 mt-2 border-t-[1px] border-[#e7e7e7]">
           <Link
             to={`/customers/jobpost/${facility.facility_id}/add`}
-            className={`lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-2 duration-300 ${
-              facility.allowed !== "allowed"
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-            onClick={(e) => {
-              if (facility.allowed !== "allowed") {
-                e.preventDefault();
-                message.warning("掲載中の施設のみ求人を登録できます");
-              }
-            }}
+            className={`lg:text-base md:text-sm text-xs text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-4 py-2 duration-300 `}
           >
             求人を新規登録
           </Link>

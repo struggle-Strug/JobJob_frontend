@@ -5,7 +5,7 @@ const NewJobs = () => {
   return (
     <div className="container mt-4 py-4 px-12 bg-white rounded-lg shadow-xl">
       <p className="text-[#343434] font-bold lg:text-2xl md:text-xl">
-        なるほど! ジョブジョブ新着記事
+        ジョブジョブ 転職ノウハウ新着記事
       </p>
       <div className="flex justify-center w-full">
         <Link

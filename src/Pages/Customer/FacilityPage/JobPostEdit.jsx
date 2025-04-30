@@ -452,7 +452,6 @@ const JobPostEdit = () => {
         message.success("求人を終了しました");
         navigate("/customers/facility");
       }
-      
     } catch (error) {
       message.error("エラーが発生しました");
     } finally {
@@ -582,10 +581,15 @@ const JobPostEdit = () => {
           <p className="lg:text-sm text-xs w-1/5">
             訴求文<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
-          <EditorComponent
+          {/* <EditorComponent
             editorValue={jobPostSubDescription}
             onEditorChange={(value) => setJobPostSubDescription(value)}
             editorStyle={editorStyle}
+          /> */}
+          <Input
+            value={jobPostSubDescription}
+            onChange={(e) => setJobPostSubDescription(e.target.value)}
+            className="w-1/2"
           />
         </div>
         <div className="flex items-start mt-4 desireEmployment">

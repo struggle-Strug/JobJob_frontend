@@ -37,8 +37,8 @@ const Header = ({ user, isAuthenticated }) => {
                       alt="気になる"
                       className="w-5 lg:w-6"
                     />
-                    <span className="bg-[#FF2A3B] rounded-full text-white text-xs p-1 absolute right-0 top-0 number">
-                      +{likes.length}
+                    <span className="bg-[#FF2A3B] rounded-full text-white px-[6px] py-0.5 text-xs p-1 absolute right-0 top-0 number">
+                      {likes.length}
                     </span>
                   </div>
                   <p className="text-xs lg:text-sm font-bold text-[#FF2A3B] whitespace-nowrap">
@@ -90,7 +90,7 @@ const Header = ({ user, isAuthenticated }) => {
             <div className="flex items-center gap-2 lg:gap-8 justify-between">
               <div className="hidden sm:flex items-center justify-between gap-2">
                 <Link
-                  to={"/members/job_offers/favorite"}
+                  to={"#"}
                   className="flex flex-col items-center bg-white rounded-lg px-3 lg:px-5 py-2 hover:scale-[1.05] hover:shadow-xl duration-300"
                 >
                   <div className="flex w-full relative justify-center">
@@ -99,8 +99,8 @@ const Header = ({ user, isAuthenticated }) => {
                       alt="気になる"
                       className="w-5 lg:w-6"
                     />
-                    <span className="bg-[#FF2A3B] rounded-full text-white text-xs p-1 absolute right-0 top-0 number">
-                      +{likes.length}
+                    <span className="bg-[#FF2A3B] rounded-full text-white text-xs px-[6px] py-0.5 absolute right-0 top-0 number">
+                      {likes.length}
                     </span>
                   </div>
                   <p className="text-xs lg:text-sm font-bold text-[#FF2A3B] whitespace-nowrap">

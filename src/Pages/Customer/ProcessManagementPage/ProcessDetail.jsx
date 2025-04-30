@@ -132,10 +132,20 @@ const ProcessDetail = ({ processes, getProcessesByStatus }) => {
         dataIndex: "profile",
         key: "profile",
         render: (_, record) => (
-          <div className="flex flex-col gap-2 items-start h-full">
+          <div className="flex flex-col gap-2 items-start h-full max-w-40">
             <div className="flex justify-start gap-4 w-full">
-              <p className="text-sm font-bold">{record.user.name}</p>
-              <p className="text-sm">{record.user.hiraganaName}</p>
+              <p
+                className="text-sm font-bold truncate max-w-[120px]"
+                title={record.user.name}
+              >
+                {record.user.name}
+              </p>
+              <p
+                className="text-sm truncate max-w-[80px]"
+                title={record.user.hiraganaName}
+              >
+                {record.user.hiraganaName}
+              </p>
             </div>
             <div className="flex justify-start gap-4">
               <p className="text-sm">{record.user.member_id}</p>
@@ -161,8 +171,18 @@ const ProcessDetail = ({ processes, getProcessesByStatus }) => {
         key: "jobpost",
         render: (_, record) => (
           <div className="flex flex-col gap-2 items-start">
-            <p className="text-sm">{record.facility.name}</p>
-            <p className="text-sm">{record.jobPost.type}</p>
+            <p
+              className="text-sm truncate max-w-[180px]"
+              title={record.facility.name}
+            >
+              {record.facility.name}
+            </p>
+            <p
+              className="text-sm truncate max-w-[180px]"
+              title={record.jobPost.type}
+            >
+              {record.jobPost.type}
+            </p>
             <p className="text-sm">{record.jobPost.employment_type[0]}</p>
             <button
               className="text-[#FF2A3B] hover:underline duration-300"
