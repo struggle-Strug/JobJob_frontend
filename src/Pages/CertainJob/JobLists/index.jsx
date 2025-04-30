@@ -34,10 +34,10 @@ const JobLists = () => {
   const { muniId, modal } = useParams();
   const [pref, setPref] = useState("");
   const [muni, setMuni] = useState("");
-  const [employmentType, setEmploymentType] = useState([]);  
+  const [employmentType, setEmploymentType] = useState("");
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
-  const [feature, setFeature] = useState([]);
+  const [feature, setFeature] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState();
   const [jobPosts, setJobPosts] = useState([]);
@@ -177,6 +177,7 @@ const handleCloseModal = () => setOpenModal(null);
 
   const getJobPosts = async () => {
     try {
+      
       setIsLoading(true); // Set loading before fetching data
       const muniObj = getMunicipalityById(currentMuniCode);
       const muniName = muniObj ? muniObj.name : "";
@@ -191,8 +192,8 @@ const handleCloseModal = () => setOpenModal(null);
         }
       );
 
-
       if (!response.data || !response.data.jobposts) {
+        
         setJobPosts([]); // Set empty array if response is not valid
       } else {
         setJobPosts(response.data.jobposts);
@@ -200,7 +201,7 @@ const handleCloseModal = () => setOpenModal(null);
         setAllJobPostsNum(response.data.allJobPostsNumbers);
       }
     } catch (error) {
-      console.error("Error fetching job posts:", error);
+      message.error("求人情報の取得に失敗しました");
     } finally {
       setIsLoading(false); // Stop loading after fetching data
     }
@@ -628,7 +629,6 @@ const handleCloseModal = () => setOpenModal(null);
                 className="flex items-center justify-between py-4 px-8 bg-[#F6F6F6] rounded-lg mt-4 hover:px-12 duration-300 cursor-pointer"
                 onClick={(e) => {
                   if (!getPrefectureKeyByValue(pref)) {
-                    console.log("都道府県が選択されていません");
                     e.preventDefault();
                     message.error("都道府県を選択してください");
                   }else{
