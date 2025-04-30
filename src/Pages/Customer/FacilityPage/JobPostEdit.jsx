@@ -444,8 +444,13 @@ const JobPostEdit = () => {
       );
       if (response.data.error) message.error(response.data.error);
 
-      if (status === "pending" || status === "ended") {
+      if (status === "pending") {
         setSuccessModalOpen(true);
+      }
+
+      if (status === "ended") {
+        message.success("求人を終了しました");
+        navigate("/customers/facility");
       }
     } catch (error) {
       message.error("エラーが発生しました");

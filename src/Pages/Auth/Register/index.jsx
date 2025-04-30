@@ -181,22 +181,26 @@ const Register = () => {
           {step === 1 && <Step1 jobType={jobType} setJobType={setJobType} />}
           {step === 2 && (
             <Step2
-              setEmploymentType={setEmploymentType}
-              setCurrentStatus={setCurrentStatus}
-              //   setQualification={setQualification}
-              //   setFeature={setFeature}
-            />
+            employmentType={employmentType}
+            setEmploymentType={setEmploymentType}
+            currentStatus={currentStatus}
+            setCurrentStatus={setCurrentStatus}
+            setErrorMessage={setErrorMessage}
+          />
           )}
           {step === 3 && (
             <Step3
-              setPrefecture={setPrefecture}
-              prefecture={prefecture}
-              setPostalCode={setPostalCode}
-              setMunicipalities={setMunicipalities}
-              setVillage={setVillage}
-              setBuilding={setBuilding}
-              errorMessage={errorMessage}
-            />
+            postalCode={postalCode}
+            setPostalCode={setPostalCode}
+            prefecture={prefecture}
+            setPrefecture={setPrefecture}
+            municipalities={municipalities}
+            setMunicipalities={setMunicipalities}
+            village={village}
+            setVillage={setVillage}
+            building={building}
+            setBuilding={setBuilding}
+          />
           )}
           {/* {step === 4 && (
             <Step4
@@ -206,23 +210,35 @@ const Register = () => {
           )} */}
           {step === 4 && (
             <Step5
-              setSei={setSei}
-              setMei={setMei}
-              setHiraganaSei={setHiraganaSei}
-              setHiraganaMei={setHiraganaMei}
-              setGender={setGender}
-              setYear={setYear}
-              setMonth={setMonth}
-              setDay={setDay}
-            />
+            sei={sei}
+            setSei={setSei}
+            mei={mei}
+            setMei={setMei}
+            hiraganaSei={hiraganaSei}
+            setHiraganaSei={setHiraganaSei}
+            hiraganaMei={hiraganaMei}
+            setHiraganaMei={setHiraganaMei}
+            gender={gender}
+            setGender={setGender}
+            year={year}
+            setYear={setYear}
+            month={month}
+            setMonth={setMonth}
+            day={day}
+            setDay={setDay}
+          />
           )}
           {step === 5 && (
             <Step6
-              setPhoneNumber={setPhoneNumber}
-              setEmail={setEmail}
-              setPassword={setPassword}
-              setPasswordConfirm={setPasswordConfirm}
-            />
+            phoneNumber={phoneNumber}
+            setPhoneNumber={setPhoneNumber}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            passwordConfirm={passwordConfirm}
+            setPasswordConfirm={setPasswordConfirm}
+          />
           )}
           {/* 入力部分とボタンの間は、元々の隙間（mt-12）を残す */}
           <div className="mt-12 w-full">

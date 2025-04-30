@@ -223,6 +223,7 @@ const CertainJob = () => {
 
       return (
         <Link
+          aria-label={jobType}
           key={index}
           to={`/${getJobValueByKey(jobType)}/${Facilities[facility]}`}
           className="col-span-1 flex items-start justify-between w-full border-b-[1px] border-[#e7e7e7] lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:px-6 duration-300 group"
@@ -285,6 +286,7 @@ const CertainJob = () => {
 
               return (
                 <Link
+                  aria-label={jobTypeNumbers?.[job]}
                   key={index}
                   to={`/${getJobValueByKey(job)}`}
                   className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
@@ -343,32 +345,25 @@ const CertainJob = () => {
     );
   };
 
-  const handleOnChangePref = (p) => {
-    // 他のフィルターが一つでも設定されているかをチェック
+  
+
+  // CertainJob コンポーネント内
+  const getPrefLink = (p) => {
+    // フィルターが既にある場合 → 検索モードへ
     const hasOtherFilters =
       filters.pref !== "" ||
       filters.employmentType.length > 0 ||
       filters.monthlySalary !== "" ||
       filters.hourlySalary !== "" ||
       filters.feature.length > 0;
-
-    const rel = pathname.replace(`/${path}`, "");
-    const segs = rel.split("/").filter(Boolean);
-    const isPathFilter = segs.length > 0 && !pathname.includes("/search");
-
+  
     if (hasOtherFilters) {
       const updated = { ...filters, pref: p };
-      window.location.href = `/${path}/search?filters=${encodeURIComponent(
+      return `/${path}/search?filters=${encodeURIComponent(
         JSON.stringify(updated)
       )}`;
-    } else if (isPathFilter) {
-      const newUrl = makeLink({ pref: p });
-      navigate(newUrl);
-    } else {
-      // ——— フィルターなし → /{path}/{pref} ———
-      navigate(`/${path}/${p}`);
     }
-  };
+  }
 
   const getConditionUrl = (filterName, value) => {
     const defaultFilters = {
@@ -413,7 +408,7 @@ const CertainJob = () => {
     const segments = relative.split("/").filter(Boolean);
     const isPathFilter =
       segments.length > 0 && !pathname.startsWith(`/${path}/search`);
-
+    
     if (isPathFilter) {
       // パスベースのフィルターURLなので、トップへのリダイレクトはせず
       return;
@@ -465,8 +460,9 @@ const CertainJob = () => {
       </div>
       <div className="flex flex-col w-full px-2 lg:px-4">
         {Object.keys(prefectures).map((prefecture, index) => (
-          <button
+          <a
             key={index}
+            href={getPrefLink(prefectures[prefecture])}
             className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
             onClick={() => {
               handleOnChangePref(prefectures[prefecture]);
@@ -474,7 +470,7 @@ const CertainJob = () => {
             aria-label={prefecture}
           >
             {prefecture}
-          </button>
+          </a>
         ))}
       </div>
     </div>
@@ -731,11 +727,11 @@ const CertainJob = () => {
                           </span>
                           {/* チェブロンをリンクに */}
                           <Link
-                            to={makeLink({
-                              feature: "feature" + (idx + 1),
-                            })}
-                            onClick={() => setType(1)}
-                            className="
+                                to={makeLink({
+                                  feature:   "feature" + (idx+1) 
+                                })}
+                                onClick={() => setType(1)}
+                                className="
                                       absolute inset-y-0 right-0 
                                       flex items-center px-3 
                                       cursor-pointer 
