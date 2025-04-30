@@ -349,7 +349,7 @@ const CertainJob = () => {
 
   // CertainJob コンポーネント内
   const getPrefLink = (p) => {
-    // フィルターが既にある場合 → 検索モードへ
+    // 他のフィルターが一つでも設定されているかをチェック
     const hasOtherFilters =
       filters.pref !== "" ||
       filters.employmentType.length > 0 ||
@@ -357,13 +357,27 @@ const CertainJob = () => {
       filters.hourlySalary !== "" ||
       filters.feature.length > 0;
   
+    // 他のフィルターがあれば検索モードへ
     if (hasOtherFilters) {
       const updated = { ...filters, pref: p };
       return `/${path}/search?filters=${encodeURIComponent(
         JSON.stringify(updated)
       )}`;
     }
-  }
+  
+    // パスベースフィルター中か判定
+    const rel = pathname.replace(`/${path}`, "");
+    const segs = rel.split("/").filter(Boolean);
+    const isPathFilter = segs.length > 0 && !pathname.includes("/search");
+    if (isPathFilter) {
+      // makeLink を使って階層付き URL を生成
+      return makeLink({ pref: p });
+    }
+  
+    // それ以外はシンプルに /{path}/{pref}
+    return `/${path}/${p}`;
+  };
+  
 
   const getConditionUrl = (filterName, value) => {
     const defaultFilters = {
@@ -464,9 +478,6 @@ const CertainJob = () => {
             key={index}
             href={getPrefLink(prefectures[prefecture])}
             className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
-            onClick={() => {
-              handleOnChangePref(prefectures[prefecture]);
-            }}
             aria-label={prefecture}
           >
             {prefecture}

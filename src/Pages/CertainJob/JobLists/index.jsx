@@ -1,7 +1,7 @@
 "use client";
 
-import { Checkbox, Input, Modal, Select } from "antd";
-import { Link, useLocation, useNavigate, useParams, message } from "react-router-dom";
+import { Checkbox, Input, Modal, Select, message } from "antd";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   getFeatureKeyByValue,
   getJobTypeKeyByValue,
@@ -34,10 +34,10 @@ const JobLists = () => {
   const { muniId, modal } = useParams();
   const [pref, setPref] = useState("");
   const [muni, setMuni] = useState("");
-  const [employmentType, setEmploymentType] = useState("");
+  const [employmentType, setEmploymentType] = useState([]);  
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
-  const [feature, setFeature] = useState("");
+  const [feature, setFeature] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState();
   const [jobPosts, setJobPosts] = useState([]);
@@ -177,7 +177,6 @@ const handleCloseModal = () => setOpenModal(null);
 
   const getJobPosts = async () => {
     try {
-      
       setIsLoading(true); // Set loading before fetching data
       const muniObj = getMunicipalityById(currentMuniCode);
       const muniName = muniObj ? muniObj.name : "";
@@ -192,8 +191,8 @@ const handleCloseModal = () => setOpenModal(null);
         }
       );
 
+
       if (!response.data || !response.data.jobposts) {
-        console.error("Job posts not found in response");
         setJobPosts([]); // Set empty array if response is not valid
       } else {
         setJobPosts(response.data.jobposts);
@@ -289,6 +288,64 @@ const handleCloseModal = () => setOpenModal(null);
 
       default:
         return getConditionSearchUrl(filterName, value);
+    }
+  };
+
+  const buildPathFilter = ({
+    pref: newPref,
+    muni: newMuni,
+    employment: newEmploymentCode,
+    feature: newFeatureCode,
+  }) => {
+    const isSearch = pathname.includes("/search");
+    if (isSearch) {
+      // ── 検索モードなら既存の filters を JSON から読み出して上書き ──
+      const sp = new URLSearchParams(location.search);
+      let current = {};
+      if (sp.has("filters")) {
+        try {
+          current = JSON.parse(decodeURIComponent(sp.get("filters")));
+        } catch {
+          current = {};
+        }
+      }
+      // pref, muni を上書き
+      if (newPref !== undefined)     current.pref           = newPref;
+      if (newMuni !== undefined)     current.muni           = newMuni;
+      // employmentType はコード → ラベル変換して配列まるっと置き換え
+      if (newEmploymentCode) {
+        const label = Object.entries(EmploymentType)
+          .find(([, code]) => code === newEmploymentCode)?.[0];
+        current.employmentType = label ? [label] : [];
+      }
+      // feature も同様にフラットマップで
+      if (newFeatureCode) {
+        const flat = Object.values(Features).reduce((a, g) => ({ ...a, ...g }), {});
+        const label = Object.entries(flat)
+          .find(([, code]) => code === newFeatureCode)?.[0];
+        current.feature = label ? [label] : [];
+      }
+      // ページはリセット
+      current.page = 1;
+      // 新しい search?filters=... を返す
+      return `/${path}/search?filters=${encodeURIComponent(
+        JSON.stringify(current)
+      )}`;
+    } else {
+      // ── ドリルダウンモード──
+      const segs = [];
+      if (newPref) segs.push(newPref);
+      if (newMuni) {
+        if (/^muni\d+$/.test(newMuni)) {
+          segs.push(newMuni);
+        } else {
+          const obj = municipalitiesWithIds.find((m) => m.name === newMuni);
+          if (obj) segs.push(obj.id);
+        }
+      }
+      if (newEmploymentCode) segs.push(newEmploymentCode);
+      if (newFeatureCode)    segs.push(newFeatureCode);
+      return `/${path}/${segs.join("/")}`;
     }
   };
 
