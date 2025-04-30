@@ -38,12 +38,11 @@ const JobOffer = () => {
   const [meetingDate, setMeetingDate] = useState([
     {
       date: "", // A date string (e.g., '2025-01-06')
-      times: [
-        { time: "", minute: "" }, // Each time object
-      ],
+      times: [{ time: "", minute: "" }], // Each time object
     },
   ]);
   const [successModal, setSuccessModal] = useState(false);
+  const [dateOptions, setDateOptions] = useState([]);
 
   const { pathname } = useLocation();
   const jobType = pathname.split("/")[1];
@@ -66,10 +65,10 @@ const JobOffer = () => {
         label: "選択する",
         value: "",
       },
-      ...Municipalities[prefecture]?.map((type) => ({
+      ...(Municipalities[prefecture]?.map((type) => ({
         value: type,
         label: type,
-      })),
+      })) || []),
     ];
   };
   const periodOptions = [
@@ -92,14 +91,14 @@ const JobOffer = () => {
     { label: "女性", value: "女性" },
   ];
 
-  const requiredQualificationsOptions = jobPost?.qualification_type.map(
+  const requiredQualificationsOptions = jobPost?.qualification_type?.map(
     (qualification) => ({
       label: qualification,
       value: qualification,
     })
   );
 
-  const userQualifications = user?.qualification.map(
+  const userQualifications = user?.qualification?.map(
     (qualificationObject) => qualificationObject.qualification
   );
 
@@ -117,16 +116,15 @@ const JobOffer = () => {
       const weekDay = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()]; // Japanese-style day of the week
       const formattedDate = `${month}月${day}日 (${weekDay})`;
 
-      dates.push(formattedDate);
+      dates.push({
+        label: formattedDate,
+        value: formattedDate,
+      });
     }
 
     return dates;
   };
 
-  const dateOptions = generateDateOptions().map((date) => ({
-    label: date,
-    value: date,
-  }));
   const timeOptions = Array.from({ length: 19 }, (_, i) => ({
     label: i + 6, // Start from 6
     value: i + 6, // Start from 6
@@ -501,6 +499,11 @@ const JobOffer = () => {
     }
   };
 
+  // Generate date options when component mounts
+  useEffect(() => {
+    setDateOptions(generateDateOptions());
+  }, []);
+
   useEffect(() => {
     document.title = "応募フォーム | JobJob (ジョブジョブ)";
     if (user !== null) {
@@ -537,7 +540,9 @@ const JobOffer = () => {
             <div className="flex flex-col items-center justify-center w-full">
               <div className="flex justify-start bg-white rounded-lg px-6 py-6 w-full shadow-xl">
                 <p className="lg:text-lg md:text-base text-sm text-[#343434]">
-                  <span className="font-bold">{jobPost?.facility_id.name}</span>
+                  <span className="font-bold">
+                    {jobPost?.facility_id?.name}
+                  </span>
                   の
                   <span className="font-bold">
                     {getJobTypeKeyByValue(jobType)}求人
@@ -818,7 +823,7 @@ const JobOffer = () => {
                   </div>
                   <div className="flex items-start justify-start w-4/5">
                     {getJobTypeKeyByValue(jobType)}(
-                    {jobPost?.employment_type[0]})
+                    {jobPost?.employment_type?.[0]})
                   </div>
                 </div>
                 <div className="flex justify-between w-full mt-6">
@@ -882,93 +887,107 @@ const JobOffer = () => {
                         </p>
                         {meetingDate.map((meeting, dateIndex) => {
                           return (
-                            <>
-                              <div className="flex flex-col w-full">
-                                <div
-                                  key={dateIndex}
-                                  className="flex flex-col bg-[#EFEFEF] rounded-lg p-2 mt-4 w-2/5"
-                                >
-                                  <Select
-                                    options={dateOptions}
-                                    placeholder="日程を選択"
-                                    value={meeting.date}
-                                    onChange={(value) =>
-                                      handleDateChange(value, dateIndex)
-                                    }
-                                    className="w-full"
-                                  />
-                                  {meeting.times.map((time, timeIndex) => {
-                                    return (
-                                      <div
-                                        key={timeIndex}
-                                        className="flex mt-4 gap-2 items-center"
+                            <div
+                              className="flex flex-col w-full"
+                              key={`meeting-date-${dateIndex}`}
+                            >
+                              <div className="flex flex-col bg-[#EFEFEF] rounded-lg p-2 mt-4 w-2/5">
+                                <Select
+                                  options={dateOptions}
+                                  placeholder="日程を選択"
+                                  value={meeting.date}
+                                  onChange={(value) =>
+                                    handleDateChange(value, dateIndex)
+                                  }
+                                  className="w-full"
+                                  dropdownStyle={{ zIndex: 1050 }}
+                                  getPopupContainer={(triggerNode) =>
+                                    triggerNode.parentNode
+                                  }
+                                />
+                                {meeting.times.map((time, timeIndex) => {
+                                  return (
+                                    <div
+                                      key={`time-${dateIndex}-${timeIndex}`}
+                                      className="flex mt-4 gap-2 items-center"
+                                    >
+                                      <Select
+                                        options={timeOptions}
+                                        placeholder="時間を選択"
+                                        value={time.time}
+                                        onChange={(value) =>
+                                          handleTimeChange(
+                                            value,
+                                            dateIndex,
+                                            timeIndex
+                                          )
+                                        }
+                                        className="w-1/3"
+                                        dropdownStyle={{ zIndex: 1050 }}
+                                        getPopupContainer={(triggerNode) =>
+                                          triggerNode.parentNode
+                                        }
+                                      />
+                                      :
+                                      <Select
+                                        options={minuteOptions}
+                                        placeholder="分を選択"
+                                        value={time.minute}
+                                        onChange={(value) =>
+                                          handleMinuteChange(
+                                            value,
+                                            dateIndex,
+                                            timeIndex
+                                          )
+                                        }
+                                        className="w-1/3"
+                                        dropdownStyle={{ zIndex: 1050 }}
+                                        getPopupContainer={(triggerNode) =>
+                                          triggerNode.parentNode
+                                        }
+                                      />
+                                      ~
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteMeetingTime(
+                                            dateIndex,
+                                            timeIndex
+                                          )
+                                        }
+                                        className="text-[#FF2A3B] text-xs"
+                                        type="button"
                                       >
-                                        <Select
-                                          options={timeOptions}
-                                          placeholder="時間を選択"
-                                          value={time.time}
-                                          onChange={(value) =>
-                                            handleTimeChange(
-                                              value,
-                                              dateIndex,
-                                              timeIndex
-                                            )
-                                          }
-                                          className="w-1/3"
-                                        />
-                                        :
-                                        <Select
-                                          options={minuteOptions}
-                                          placeholder="分を選択"
-                                          value={time.minute}
-                                          onChange={(value) =>
-                                            handleMinuteChange(
-                                              value,
-                                              dateIndex,
-                                              timeIndex
-                                            )
-                                          }
-                                          className="w-1/3"
-                                        />
-                                        ~
-                                        <button
-                                          onClick={() =>
-                                            handleDeleteMeetingTime(
-                                              dateIndex,
-                                              timeIndex
-                                            )
-                                          }
-                                          className="text-[#FF2A3B] text-xs"
-                                        >
-                                          時間を削除
-                                        </button>
-                                      </div>
-                                    );
-                                  })}
-                                  <button
-                                    onClick={() =>
-                                      handleAddMeetingTime(dateIndex)
-                                    }
-                                    className="text-[#FF2A3B] text-xs mt-2"
-                                  >
-                                    時間を追加
-                                  </button>
-                                </div>
+                                        時間を削除
+                                      </button>
+                                    </div>
+                                  );
+                                })}
                                 <button
                                   onClick={() =>
-                                    handleDeleteMeetingDate(dateIndex)
+                                    handleAddMeetingTime(dateIndex)
                                   }
-                                  className="text-[#FF2A3B] text-xs w-2/5 text-right mt-2"
+                                  className="text-[#FF2A3B] text-xs mt-2"
+                                  type="button"
                                 >
-                                  希望日を削除する
+                                  時間を追加
                                 </button>
                               </div>
-                            </>
+                              <button
+                                onClick={() =>
+                                  handleDeleteMeetingDate(dateIndex)
+                                }
+                                className="text-[#FF2A3B] text-xs w-2/5 text-right mt-2"
+                                type="button"
+                              >
+                                希望日を削除する
+                              </button>
+                            </div>
                           );
                         })}
                         <button
                           onClick={() => handleAddMeetingDate()}
                           className="text-[#FF2A3B] text-xs w-2/5 text-left mt-1"
+                          type="button"
                         >
                           面接希望日を追加する
                         </button>
@@ -991,6 +1010,7 @@ const JobOffer = () => {
                   <button
                     className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300"
                     onClick={handleApply}
+                    type="button"
                   >
                     応募する
                   </button>
@@ -1006,14 +1026,14 @@ const JobOffer = () => {
       {
         <Modal
           open={successModal}
-          close={onModalClose}
+          onCancel={onModalClose}
           footer={false}
           className="modal"
         >
           <div className="flex flex-col items-start justify-start">
             <h1 className="lg:text-base text-sm font-bold text-[#343434]">
-              {jobPost?.facility_id.name}({jobPost?.type}/
-              {jobPost?.employment_type[0]})への応募が完了しました。
+              {jobPost?.facility_id?.name}({jobPost?.type}/
+              {jobPost?.employment_type?.[0]})への応募が完了しました。
             </h1>
             <p className="text-xs text-[#343434] mt-4">
               ご応募ありがとうございます。応募後の流れなどを紹介している応募完了メールを送信しました。質問や追加アピール、履歴書の送付などはメッセージにて応募先へ直接連絡できます。
