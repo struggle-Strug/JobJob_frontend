@@ -49,7 +49,7 @@ const NearByJobs = ({ jobType, path }) => {
 
   useEffect(() => {
     getJobPosts();
-  }, [user, jobType]);
+  }, []);
 
   // Check if we can scroll left or right
   const checkScrollability = () => {
