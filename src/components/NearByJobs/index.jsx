@@ -46,7 +46,6 @@ const NearByJobs = ({ jobType, path }) => {
       setLoading(false);
     }
   };
-  console.log(jobs);
 
   useEffect(() => {
     getJobPosts();
