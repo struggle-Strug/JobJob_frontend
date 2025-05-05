@@ -1,11 +1,12 @@
 "use client";
 
+import { Checkbox, Select, Skeleton, message } from "antd";
+import axios from "axios";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  getFeatureKeyByValue,
-  getJobTypeKeyByValue,
-  getJobValueByKey,
-} from "../../utils/getFunctions";
+import BreadCrumb from "../../components/BreadCrumb";
+import NewJobs from "../../components/NewJobs";
+import { useAuth } from "../../context/AuthContext";
 import {
   Descriptions,
   EmploymentType,
@@ -14,13 +15,11 @@ import {
   Prefectures,
   JobType as jobType,
 } from "../../utils/constants/categories";
-import { Checkbox, Select, Skeleton } from "antd";
-import { useEffect, useState, useMemo } from "react";
-import BreadCrumb from "../../components/BreadCrumb";
-import axios from "axios";
-import { message } from "antd";
-import { useAuth } from "../../context/AuthContext";
-import NewJobs from "../../components/NewJobs";
+import {
+  getFeatureKeyByValue,
+  getJobTypeKeyByValue,
+  getJobValueByKey,
+} from "../../utils/getFunctions";
 
 const CertainJob = () => {
   const { pathname } = useLocation();
@@ -345,8 +344,6 @@ const CertainJob = () => {
     );
   };
 
-  
-
   // CertainJob コンポーネント内
   const getPrefLink = (p) => {
     // 他のフィルターが一つでも設定されているかをチェック
@@ -356,7 +353,7 @@ const CertainJob = () => {
       filters.monthlySalary !== "" ||
       filters.hourlySalary !== "" ||
       filters.feature.length > 0;
-  
+
     // 他のフィルターがあれば検索モードへ
     if (hasOtherFilters) {
       const updated = { ...filters, pref: p };
@@ -364,7 +361,7 @@ const CertainJob = () => {
         JSON.stringify(updated)
       )}`;
     }
-  
+
     // パスベースフィルター中か判定
     const rel = pathname.replace(`/${path}`, "");
     const segs = rel.split("/").filter(Boolean);
@@ -373,11 +370,10 @@ const CertainJob = () => {
       // makeLink を使って階層付き URL を生成
       return makeLink({ pref: p });
     }
-  
+
     // それ以外はシンプルに /{path}/{pref}
     return `/${path}/${p}`;
   };
-  
 
   const getConditionUrl = (filterName, value) => {
     const defaultFilters = {
@@ -422,7 +418,7 @@ const CertainJob = () => {
     const segments = relative.split("/").filter(Boolean);
     const isPathFilter =
       segments.length > 0 && !pathname.startsWith(`/${path}/search`);
-    
+
     if (isPathFilter) {
       // パスベースのフィルターURLなので、トップへのリダイレクトはせず
       return;
@@ -738,11 +734,11 @@ const CertainJob = () => {
                           </span>
                           {/* チェブロンをリンクに */}
                           <Link
-                                to={makeLink({
-                                  feature:   "feature" + (idx+1) 
-                                })}
-                                onClick={() => setType(1)}
-                                className="
+                            to={makeLink({
+                              feature: "feature" + (idx + 1),
+                            })}
+                            onClick={() => setType(1)}
+                            className="
                                       absolute inset-y-0 right-0 
                                       flex items-center px-3 
                                       cursor-pointer 
