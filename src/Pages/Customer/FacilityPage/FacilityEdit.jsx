@@ -307,8 +307,6 @@ const FacilityEdit = () => {
         return message.error("市区町村を入力してください。");
       } else if (facilityVillage === "") {
         return message.error("町名・番地を入力してください。");
-      } else if (facilityBuilding === "") {
-        return message.error("建物名を入力してください。");
       }
 
       const facilityData = {
@@ -395,8 +393,8 @@ const FacilityEdit = () => {
         <h1 className="lg:text-2xl md:text-base text-sm font-bold">施設編集</h1>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-          施設名
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+            施設名
+            <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
           </p>
           <Input
             value={facilityName}
@@ -406,8 +404,8 @@ const FacilityEdit = () => {
         </div>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-          郵便番号
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+            郵便番号
+            <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
           </p>
           <Input
             value={facilityPostalCode}
@@ -417,8 +415,8 @@ const FacilityEdit = () => {
         </div>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-          都道府県
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+            都道府県
+            <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
           </p>
           <Select
             options={allPrefectureOptions}
@@ -429,8 +427,8 @@ const FacilityEdit = () => {
         </div>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-          市区町村
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+            市区町村
+            <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
           </p>
           <Select
             value={facilityCity}
@@ -441,8 +439,8 @@ const FacilityEdit = () => {
         </div>
         <div className="flex items-center mt-4">
           <p className="lg:text-sm text-xs w-1/5">
-          町名・番地
-          <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
+            町名・番地
+            <span className="text-[0.7rem] text-[#FF2A3B] pl-1">(必須)</span>
           </p>
           <Input
             value={facilityVillage}
