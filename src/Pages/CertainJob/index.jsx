@@ -2,7 +2,7 @@
 
 import { Checkbox, Select, Skeleton, message } from "antd";
 import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import BreadCrumb from "../../components/BreadCrumb";
 import NewJobs from "../../components/NewJobs";
@@ -29,6 +29,11 @@ const CertainJob = () => {
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
   const [feature, setFeature] = useState([]);
+  const [jobData, setJobData] = useState({
+    jobPosts: [],
+    isLoading: false,
+  });
+
   const { user, likes, setLikes } = useAuth();
   const [filters, setFilters] = useState({
     pref: "",
@@ -203,6 +208,37 @@ const CertainJob = () => {
     }
   };
 
+  const getJobPosts = useCallback(async () => {
+    try {
+      setJobData((prev) => ({ ...prev, isLoading: true }));
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/filter`,
+        {
+          ...filters,
+          JobType: JobType,
+        }
+      );
+
+      if (!response.data || !response.data.jobposts) {
+        setJobData((prev) => ({
+          ...prev,
+          jobPosts: [],
+          isLoading: false,
+        }));
+      } else {
+        setJobData({
+          jobPosts: response.data.jobposts,
+          isLoading: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching job posts:", error);
+      message.error("求人情報の取得に失敗しました");
+      setJobData((prev) => ({ ...prev, isLoading: false }));
+    }
+  }, [filters]);
+
   useEffect(() => {
     // Set page title
     document.title = `${JobType}の求人・転職・就職・アルバイト募集 | JobJob`;
@@ -214,6 +250,7 @@ const CertainJob = () => {
         setContentLoaded(true);
       }
     );
+    getJobPosts();
   }, []);
 
   const renderMeshLink01 = (jobType) => {
