@@ -69,6 +69,12 @@ const JobLists = () => {
 
   const [modalType, setModalType] = useState(null);
 
+  // Temporary filter states for modals
+  const [tempEmploymentTypes, setTempEmploymentTypes] = useState([]);
+  const [tempFeatures, setTempFeatures] = useState([]);
+  const [tempMonthlySalary, setTempMonthlySalary] = useState("");
+  const [tempHourlySalary, setTempHourlySalary] = useState("");
+
   // Path and route information
   const path = pathname.split("/")[1];
   const JobType = useMemo(() => getJobTypeKeyByValue(path), [path]);
@@ -139,11 +145,22 @@ const JobLists = () => {
     openModal("muni");
   }, [filters.pref, openModal]);
 
-  const openEmploymentModal = useCallback(
-    () => openModal("employment"),
-    [openModal]
-  );
-  const openFeatureModal = useCallback(() => openModal("feature"), [openModal]);
+  const openEmploymentModal = useCallback(() => {
+    setTempEmploymentTypes(filters.employmentType);
+    setTempMonthlySalary(filters.monthlySalary);
+    setTempHourlySalary(filters.hourlySalary);
+    openModal("employment");
+  }, [
+    filters.employmentType,
+    filters.monthlySalary,
+    filters.hourlySalary,
+    openModal,
+  ]);
+
+  const openFeatureModal = useCallback(() => {
+    setTempFeatures(filters.feature);
+    openModal("feature");
+  }, [filters.feature, openModal]);
 
   // Progressive loading of UI sections
   useEffect(() => {
@@ -265,31 +282,49 @@ const JobLists = () => {
 
   // Handle search with current filters
   const handleSearch = useCallback(() => {
+    // Apply temporary filters if modal is open
+    let updatedFilters = { ...filters };
+
+    if (modalType === "employment") {
+      updatedFilters = {
+        ...updatedFilters,
+        employmentType: tempEmploymentTypes,
+        monthlySalary: tempMonthlySalary,
+        hourlySalary: tempHourlySalary,
+      };
+    } else if (modalType === "feature") {
+      updatedFilters = {
+        ...updatedFilters,
+        feature: tempFeatures,
+      };
+    }
+
     const muniObj = getMunicipalityById(currentMuniCode);
     const muniName = muniObj ? muniObj.name : "";
-    const muniToSend = filters.muni || muniName;
+    const muniToSend = updatedFilters.muni || muniName;
 
     const filtersToApply = {
-      ...filters,
-      muni: muniToSend || filters.muni,
+      ...updatedFilters,
+      muni: muniToSend || updatedFilters.muni,
       employmentType: currentEmploymentCode
         ? [
             Object.entries(EmploymentType).find(
               ([, code]) => code === currentEmploymentCode
             )?.[0],
           ]
-        : filters.employmentType,
+        : updatedFilters.employmentType,
       feature: currentFeatureCode
         ? [
             Object.values(Features)
               .flatMap((group) => Object.entries(group))
               .find(([, code]) => code === currentFeatureCode)?.[0],
           ]
-        : filters.feature,
+        : updatedFilters.feature,
       page: 1, // Reset page on new search
     };
 
     setFilters(filtersToApply);
+    closeModal();
 
     const url = `/${path}/search?filters=${encodeURIComponent(
       JSON.stringify(filtersToApply)
@@ -301,8 +336,14 @@ const JobLists = () => {
     currentFeatureCode,
     currentMuniCode,
     filters,
+    modalType,
     navigate,
     path,
+    tempEmploymentTypes,
+    tempFeatures,
+    tempMonthlySalary,
+    tempHourlySalary,
+    closeModal,
   ]);
 
   // Build path for filter navigation
@@ -403,32 +444,32 @@ const JobLists = () => {
 
   // Handle employment type checkbox change
   const handleEmploymentTypeChange = useCallback((employmentTypeValue) => {
-    setFilters((prev) => {
-      const currentTypes = [...prev.employmentType];
-      const newTypes = currentTypes.includes(employmentTypeValue)
+    setTempEmploymentTypes((prev) => {
+      const currentTypes = [...prev];
+      return currentTypes.includes(employmentTypeValue)
         ? currentTypes.filter((type) => type !== employmentTypeValue)
         : [...currentTypes, employmentTypeValue];
-
-      return { ...prev, employmentType: newTypes };
     });
   }, []);
 
   // Handle feature checkbox change
   const handleFeatureChange = useCallback((feature) => {
-    setFilters((prev) => {
+    setTempFeatures((prev) => {
       const featureKey = getFeatureKeyByValue(feature);
-      const currentFeatures = [...prev.feature];
-      const newFeatures = currentFeatures.includes(featureKey)
+      const currentFeatures = [...prev];
+      return currentFeatures.includes(featureKey)
         ? currentFeatures.filter((type) => type !== featureKey)
         : [...currentFeatures, featureKey];
-
-      return { ...prev, feature: newFeatures };
     });
   }, []);
 
   // Handle salary changes
   const handleSalaryChange = useCallback((type, value) => {
-    setFilters((prev) => ({ ...prev, [type]: value }));
+    if (type === "monthlySalary") {
+      setTempMonthlySalary(value);
+    } else if (type === "hourlySalary") {
+      setTempHourlySalary(value);
+    }
   }, []);
 
   // Initialize filters from URL or path segments
@@ -530,11 +571,13 @@ const JobLists = () => {
 
   // Fetch job posts when filters change
   useEffect(() => {
-    closeModal();
-    if (filters.pref) {
-      getJobPosts();
+    // Only close modal and fetch if not in a modal selection process
+    if (!modalType) {
+      if (filters.pref) {
+        getJobPosts();
+      }
     }
-  }, [closeModal, filters, getJobPosts]);
+  }, [modalType, filters, getJobPosts]);
 
   // Render prefecture section for modal
   const renderPrefectureSection = useCallback(
@@ -806,10 +849,25 @@ const JobLists = () => {
                   <span className="font-bold">
                     {getPrefectureKeyByValue(filters.pref)}
                   </span>
+                  {currentMuniCode && (
+                    <span className="font-bold">
+                      ,{getMunicipalityById(currentMuniCode).name}
+                    </span>
+                  )}
                   {filters.muni && (
-                    <span className="font-bold">{filters.muni}</span>
+                    <span className="font-bold">,{filters.muni}</span>
                   )}
                   <span className="font-bold">,{JobType}</span>
+                  {filters.employmentType.length > 0 && (
+                    <span className="font-bold">
+                      ,{filters.employmentType.join(",")}
+                    </span>
+                  )}
+                  {filters.feature.length > 0 && (
+                    <span className="font-bold">
+                      ({filters.feature.join(",")})
+                    </span>
+                  )}
                   <span>の求人・転職・アルバイト情報</span>
                 </h1>
                 <div className="flex items-center justify-between mt-4">
@@ -1090,7 +1148,7 @@ const JobLists = () => {
                 </div>
                 <div className="flex items-center justify-start w-full mt-8">
                   <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                    人気のコラムランキング
+                    人気のコラムランキン���
                   </p>
                 </div>
                 <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
@@ -1252,7 +1310,7 @@ const JobLists = () => {
                 <Checkbox
                   key={index}
                   onChange={() => handleEmploymentTypeChange(employmentTypeKey)}
-                  checked={filters.employmentType.includes(employmentTypeKey)}
+                  checked={tempEmploymentTypes.includes(employmentTypeKey)}
                   className="relative"
                 >
                   {employmentTypeKey}
@@ -1290,7 +1348,7 @@ const JobLists = () => {
                   onChange={(value) =>
                     handleSalaryChange("monthlySalary", value)
                   }
-                  value={filters.monthlySalary}
+                  value={tempMonthlySalary}
                   className="h-10"
                 />
                 <span className="lg:text-base md:text-sm text-xs text-[#343434]">
@@ -1306,7 +1364,7 @@ const JobLists = () => {
                   onChange={(value) =>
                     handleSalaryChange("hourlySalary", value)
                   }
-                  value={filters.hourlySalary}
+                  value={tempHourlySalary}
                   className="h-10"
                 />
                 <span className="lg:text-base md:text-sm text-xs text-[#343434]">
@@ -1368,7 +1426,7 @@ const JobLists = () => {
                     onChange={() =>
                       handleFeatureChange(section.features[featureKey])
                     }
-                    checked={filters.feature.includes(
+                    checked={tempFeatures.includes(
                       getFeatureKeyByValue(section.features[featureKey])
                     )}
                     className="relative"
