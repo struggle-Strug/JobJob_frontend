@@ -365,19 +365,8 @@ const FacilityDetail = ({ facility, jobPosts, setJobPosts }) => {
             求人を新規登録
           </Link>
           <button
-            className={`lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-2 hover:bg-[#ffe4e4] hover:text-red-500 duration-300 ${
-              facility.allowed !== "allowed"
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-            disabled={facility.allowed !== "allowed"}
-            onClick={() => {
-              if (facility.allowed === "allowed") {
-                setCopyJobPost(true);
-              } else {
-                message.warning("掲載中の施設のみ求人をコピーできます");
-              }
-            }}
+            className={`lg:text-base md:text-sm text-xs bg-[#ff6e7a] text-white rounded-lg px-4 py-2 hover:bg-[#ffe4e4] hover:text-red-500 duration-300 `}
+            onClick={() => setCopyJobPost(true)}
           >
             求人をコピーして登録
           </button>

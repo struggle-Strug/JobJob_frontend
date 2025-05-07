@@ -166,7 +166,7 @@ const JobPostCard = ({ jobPost, facility }) => {
           `/${getJobValueByKey(jobPost.type)}/details/${jobPost.jobpost_id}`
         )
       }
-      className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 hover:scale-[1.02] duration-300"
+      className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 hover:scale-[1.02] duration-300 cursor-pointer"
     >
       <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
         {jobPost.picture.length === 0 ? (

@@ -1,11 +1,12 @@
 "use client";
 
+import { Checkbox, Select, Skeleton, message } from "antd";
+import axios from "axios";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  getFeatureKeyByValue,
-  getJobTypeKeyByValue,
-  getJobValueByKey,
-} from "../../utils/getFunctions";
+import BreadCrumb from "../../components/BreadCrumb";
+import NewJobs from "../../components/NewJobs";
+import { useAuth } from "../../context/AuthContext";
 import {
   Descriptions,
   EmploymentType,
@@ -14,13 +15,11 @@ import {
   Prefectures,
   JobType as jobType,
 } from "../../utils/constants/categories";
-import { Checkbox, Select, Skeleton } from "antd";
-import { useEffect, useState, useMemo } from "react";
-import BreadCrumb from "../../components/BreadCrumb";
-import axios from "axios";
-import { message } from "antd";
-import { useAuth } from "../../context/AuthContext";
-import NewJobs from "../../components/NewJobs";
+import {
+  getFeatureKeyByValue,
+  getJobTypeKeyByValue,
+  getJobValueByKey,
+} from "../../utils/getFunctions";
 
 const CertainJob = () => {
   const { pathname } = useLocation();
@@ -30,6 +29,11 @@ const CertainJob = () => {
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
   const [feature, setFeature] = useState([]);
+  const [jobData, setJobData] = useState({
+    jobPosts: [],
+    isLoading: false,
+  });
+
   const { user, likes, setLikes } = useAuth();
   const [filters, setFilters] = useState({
     pref: "",
@@ -204,6 +208,37 @@ const CertainJob = () => {
     }
   };
 
+  const getJobPosts = useCallback(async () => {
+    try {
+      setJobData((prev) => ({ ...prev, isLoading: true }));
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/filter`,
+        {
+          ...filters,
+          JobType: JobType,
+        }
+      );
+
+      if (!response.data || !response.data.jobposts) {
+        setJobData((prev) => ({
+          ...prev,
+          jobPosts: [],
+          isLoading: false,
+        }));
+      } else {
+        setJobData({
+          jobPosts: response.data.jobposts,
+          isLoading: false,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching job posts:", error);
+      message.error("求人情報の取得に失敗しました");
+      setJobData((prev) => ({ ...prev, isLoading: false }));
+    }
+  }, [filters]);
+
   useEffect(() => {
     // Set page title
     document.title = `${JobType}の求人・転職・就職・アルバイト募集 | JobJob`;
@@ -215,6 +250,7 @@ const CertainJob = () => {
         setContentLoaded(true);
       }
     );
+    getJobPosts();
   }, []);
 
   const renderMeshLink01 = (jobType) => {
@@ -345,8 +381,6 @@ const CertainJob = () => {
     );
   };
 
-  
-
   // CertainJob コンポーネント内
   const getPrefLink = (p) => {
     // 他のフィルターが一つでも設定されているかをチェック
@@ -356,7 +390,7 @@ const CertainJob = () => {
       filters.monthlySalary !== "" ||
       filters.hourlySalary !== "" ||
       filters.feature.length > 0;
-  
+
     // 他のフィルターがあれば検索モードへ
     if (hasOtherFilters) {
       const updated = { ...filters, pref: p };
@@ -364,7 +398,7 @@ const CertainJob = () => {
         JSON.stringify(updated)
       )}`;
     }
-  
+
     // パスベースフィルター中か判定
     const rel = pathname.replace(`/${path}`, "");
     const segs = rel.split("/").filter(Boolean);
@@ -373,11 +407,10 @@ const CertainJob = () => {
       // makeLink を使って階層付き URL を生成
       return makeLink({ pref: p });
     }
-  
+
     // それ以外はシンプルに /{path}/{pref}
     return `/${path}/${p}`;
   };
-  
 
   const getConditionUrl = (filterName, value) => {
     const defaultFilters = {
@@ -422,7 +455,7 @@ const CertainJob = () => {
     const segments = relative.split("/").filter(Boolean);
     const isPathFilter =
       segments.length > 0 && !pathname.startsWith(`/${path}/search`);
-    
+
     if (isPathFilter) {
       // パスベースのフィルターURLなので、トップへのリダイレクトはせず
       return;
@@ -739,12 +772,12 @@ const CertainJob = () => {
                           </span>
                           {/* チェブロンをリンクに */}
                           <Link
-                                to={makeLink({
-                                  feature:   "feature" + (idx+1) 
-                                })}
-                                onClick={() => setType(1)}
-                                aria-label={featureKey}
-                                className="
+                            aria-label={featureKey}
+                            to={makeLink({
+                              feature: "feature" + (idx + 1),
+                            })}
+                            onClick={() => setType(1)}
+                            className="
                                       absolute inset-y-0 right-0 
                                       flex items-center px-3 
                                       cursor-pointer 
