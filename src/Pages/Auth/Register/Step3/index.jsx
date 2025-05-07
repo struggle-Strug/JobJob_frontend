@@ -45,7 +45,7 @@ const Step3 = ({
           setPostalCode(code);
           setPrefecture(result.address1);
           setMunicipalities(result.address2);
-          setVillage(result.address3);
+          setVillage(prev => prev || result.address3);
 
           // 自動で該当グループを開く
           const regionIndex = Object.entries({

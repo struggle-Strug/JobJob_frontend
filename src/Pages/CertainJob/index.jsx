@@ -626,6 +626,7 @@ const CertainJob = () => {
                               employment: "employment" + (index + 1),
                             })}
                             onClick={() => setType(1)}
+                            aria-label={employmentTypeKey}
                             className="
                                       absolute inset-y-0 right-0 
                                       flex items-center px-3 
@@ -742,6 +743,7 @@ const CertainJob = () => {
                                   feature:   "feature" + (idx+1) 
                                 })}
                                 onClick={() => setType(1)}
+                                aria-label={featureKey}
                                 className="
                                       absolute inset-y-0 right-0 
                                       flex items-center px-3 
