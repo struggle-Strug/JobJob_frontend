@@ -56,7 +56,7 @@ const Favorites = () => {
         </p> */}
         </div>
         <div className="mt-4">
-          {likes?.length === 0 && (
+          {jobPosts?.length === 0 && (
             <>
               <p className="lg:text-2xl md:text-xl text-lg font-bold text-[#343434]">
                 応募済みの求人はありません
