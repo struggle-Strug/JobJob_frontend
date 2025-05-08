@@ -63,8 +63,8 @@ const JobLists = () => {
   const [jobData, setJobData] = useState({
     jobPosts: [],
     totalPages: 0,
-    allJobPostsNum: 0,
-    isLoading: false,
+    allJobPostsNum: null, // Use null instead of 0 to indicate "not loaded yet"
+    isLoading: true, // Start with loading true
   });
 
   const [modalType, setModalType] = useState(null);
@@ -169,40 +169,34 @@ const JobLists = () => {
       const style = document.createElement("style");
       style.id = "progressive-loading-styles";
       style.innerHTML = `
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-in-out forwards;
-        }
-      `;
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fadeIn {
+        animation: fadeIn 0.2s ease-in-out forwards;
+      }
+    `;
       document.head.appendChild(style);
     }
 
-    // Load sections progressively
-    const loadSections = async () => {
-      // Load header immediately
-      setLoadedSections((prev) => ({ ...prev, header: true }));
+    // Load critical sections immediately
+    setLoadedSections((prev) => ({
+      ...prev,
+      header: true,
+      filters: true,
+      sidebar: true,
+      jobList: true,
+    }));
 
-      // Load other sections with delays
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      setLoadedSections((prev) => ({ ...prev, filters: true }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      setLoadedSections((prev) => ({ ...prev, sidebar: true }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      setLoadedSections((prev) => ({ ...prev, jobList: true }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      setLoadedSections((prev) => ({ ...prev, pagination: true }));
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      setLoadedSections((prev) => ({ ...prev, description: true }));
-    };
-
-    loadSections();
+    // Load less critical sections with minimal delay
+    setTimeout(() => {
+      setLoadedSections((prev) => ({
+        ...prev,
+        pagination: true,
+        description: true,
+      }));
+    }, 50);
   }, []);
 
   // Progressive loading of job cards
@@ -210,14 +204,29 @@ const JobLists = () => {
     if (jobData.jobPosts.length > 0 && !jobData.isLoading) {
       setVisibleJobCards([]);
 
-      const loadCards = async () => {
-        for (let i = 0; i < jobData.jobPosts.length; i++) {
-          await new Promise((resolve) => setTimeout(resolve, 100));
-          setVisibleJobCards((prev) => [...prev, i]);
-        }
-      };
+      // Load first 5 cards immediately
+      const initialBatch = Array.from(
+        { length: Math.min(5, jobData.jobPosts.length) },
+        (_, i) => i
+      );
+      setVisibleJobCards(initialBatch);
 
-      loadCards();
+      // Load remaining cards in batches
+      if (jobData.jobPosts.length > 5) {
+        const loadRemainingCards = () => {
+          const remainingCards = Array.from(
+            { length: jobData.jobPosts.length },
+            (_, i) => i
+          ).filter((i) => i >= 5);
+
+          // Load all remaining cards with a small delay
+          setTimeout(() => {
+            setVisibleJobCards((prev) => [...prev, ...remainingCards]);
+          }, 100);
+        };
+
+        loadRemainingCards();
+      }
     }
   }, [jobData.jobPosts, jobData.isLoading]);
 
@@ -579,6 +588,13 @@ const JobLists = () => {
     }
   }, [modalType, filters, getJobPosts]);
 
+  // Initial data fetch on component mount
+  useEffect(() => {
+    if (initialRenderRef.current && filters.pref) {
+      getJobPosts();
+    }
+  }, []);
+
   // Render prefecture section for modal
   const renderPrefectureSection = useCallback(
     (region, prefectures) => (
@@ -849,25 +865,10 @@ const JobLists = () => {
                   <span className="font-bold">
                     {getPrefectureKeyByValue(filters.pref)}
                   </span>
-                  {currentMuniCode && (
-                    <span className="font-bold">
-                      ,{getMunicipalityById(currentMuniCode).name}
-                    </span>
-                  )}
                   {filters.muni && (
-                    <span className="font-bold">,{filters.muni}</span>
+                    <span className="font-bold">{filters.muni}</span>
                   )}
                   <span className="font-bold">,{JobType}</span>
-                  {filters.employmentType.length > 0 && (
-                    <span className="font-bold">
-                      ,{filters.employmentType.join(",")}
-                    </span>
-                  )}
-                  {filters.feature.length > 0 && (
-                    <span className="font-bold">
-                      ({filters.feature.join(",")})
-                    </span>
-                  )}
                   <span>の求人・転職・アルバイト情報</span>
                 </h1>
                 <div className="flex items-center justify-between mt-4">
@@ -875,12 +876,23 @@ const JobLists = () => {
                     <p className="lg:text-xl md:text-sm font-bold text-[#343434] ">
                       該当件数
                     </p>
-                    <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">
-                      {jobData.allJobPostsNum}
-                    </p>
-                    <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                      件
-                    </p>
+                    {jobData.allJobPostsNum === null ? (
+                      <div className="flex items-center">
+                        <div className="w-16 h-8 bg-gray-200 animate-pulse rounded mx-2"></div>
+                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                          件
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number ml-2">
+                          {jobData.allJobPostsNum}
+                        </p>
+                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                          件
+                        </p>
+                      </>
+                    )}
                   </div>
                   <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
                     <button
@@ -1148,7 +1160,7 @@ const JobLists = () => {
                 </div>
                 <div className="flex items-center justify-start w-full mt-8">
                   <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                    人気のコラムランキン���
+                    人気のコラムランキング
                   </p>
                 </div>
                 <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
