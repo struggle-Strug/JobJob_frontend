@@ -20,6 +20,7 @@ import {
   getJobTypeKeyByValue,
   getJobValueByKey,
 } from "../../utils/getFunctions";
+import MeshLink02 from "../../components/MeshLink02";
 
 const CertainJob = () => {
   const { pathname } = useLocation();
@@ -830,25 +831,13 @@ const CertainJob = () => {
                   職種から求人を探す
                 </p>
                 <div className="w-full mt-4">
-                  {renderMeshLink02("医科", toggleMedical, setToggleMedical)}
-                  {renderMeshLink02("歯科", toggleDentist, setToggleDentist)}
-                  {renderMeshLink02("介護", toggleNursing, setToggleNursing)}
-                  {renderMeshLink02(
-                    "保育",
-                    toggleChildcare,
-                    setToggleChildcare
-                  )}
-                  {renderMeshLink02(
-                    "リハビリ／代替医療",
-                    toggleRehabilitation,
-                    setToggleRehabilitation
-                  )}
-                  {renderMeshLink02("その他", toggleOther, setToggleOther)}
-                  {renderMeshLink02(
-                    "ヘルスケア／美容",
-                    toggleHealthcare,
-                    setToggleHealthcare
-                  )}
+                  <MeshLink02 category="医科" />
+                  <MeshLink02 category="歯科" />
+                  <MeshLink02 category="介護" />
+                  <MeshLink02 category="保育" />
+                  <MeshLink02 category="リハビリ／代替医療" />
+                  <MeshLink02 category="その他" />
+                  <MeshLink02 category="ヘルスケア／美容" />
                 </div>
               </div>
             </div>

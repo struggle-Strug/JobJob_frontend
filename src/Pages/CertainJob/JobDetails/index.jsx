@@ -12,6 +12,7 @@ import NewJobs from "../../../components/NewJobs";
 import BlurryLoader from "../../../components/SkeletonGroup";
 import NearByJobs from "../../../components/NearByJobs";
 import { getJobValueByKey } from "../../../utils/getFunctions";
+import MeshLink02 from "../../../components/MeshLink02";
 
 const JobDetails = () => {
   const { user } = useAuth();
@@ -728,6 +729,20 @@ const JobDetails = () => {
                     {jobPost?.facility_id?.rest_day || ""}
                   </pre>
                 </div>
+              </div>
+            </div>
+            <div className="rounded-lg px-6 py-4 mt-8 shadow-xl bg-white w-full">
+              <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                職種から求人を探す
+              </p>
+              <div className="w-full mt-4">
+                <MeshLink02 category="医科" />
+                <MeshLink02 category="歯科" />
+                <MeshLink02 category="介護" />
+                <MeshLink02 category="保育" />
+                <MeshLink02 category="リハビリ／代替医療" />
+                <MeshLink02 category="その他" />
+                <MeshLink02 category="ヘルスケア／美容" />
               </div>
             </div>
           </div>
