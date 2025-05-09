@@ -63,17 +63,11 @@ const JobLists = () => {
   const [jobData, setJobData] = useState({
     jobPosts: [],
     totalPages: 0,
-    allJobPostsNum: null, // Use null instead of 0 to indicate "not loaded yet"
-    isLoading: true, // Start with loading true
+    allJobPostsNum: 0,
+    isLoading: false,
   });
 
   const [modalType, setModalType] = useState(null);
-
-  // Temporary filter states for modals
-  const [tempEmploymentTypes, setTempEmploymentTypes] = useState([]);
-  const [tempFeatures, setTempFeatures] = useState([]);
-  const [tempMonthlySalary, setTempMonthlySalary] = useState("");
-  const [tempHourlySalary, setTempHourlySalary] = useState("");
 
   // Path and route information
   const path = pathname.split("/")[1];
@@ -145,22 +139,11 @@ const JobLists = () => {
     openModal("muni");
   }, [filters.pref, openModal]);
 
-  const openEmploymentModal = useCallback(() => {
-    setTempEmploymentTypes(filters.employmentType);
-    setTempMonthlySalary(filters.monthlySalary);
-    setTempHourlySalary(filters.hourlySalary);
-    openModal("employment");
-  }, [
-    filters.employmentType,
-    filters.monthlySalary,
-    filters.hourlySalary,
-    openModal,
-  ]);
-
-  const openFeatureModal = useCallback(() => {
-    setTempFeatures(filters.feature);
-    openModal("feature");
-  }, [filters.feature, openModal]);
+  const openEmploymentModal = useCallback(
+    () => openModal("employment"),
+    [openModal]
+  );
+  const openFeatureModal = useCallback(() => openModal("feature"), [openModal]);
 
   // Progressive loading of UI sections
   useEffect(() => {
@@ -169,34 +152,40 @@ const JobLists = () => {
       const style = document.createElement("style");
       style.id = "progressive-loading-styles";
       style.innerHTML = `
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fadeIn {
-        animation: fadeIn 0.2s ease-in-out forwards;
-      }
-    `;
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-in-out forwards;
+        }
+      `;
       document.head.appendChild(style);
     }
 
-    // Load critical sections immediately
-    setLoadedSections((prev) => ({
-      ...prev,
-      header: true,
-      filters: true,
-      sidebar: true,
-      jobList: true,
-    }));
+    // Load sections progressively
+    const loadSections = async () => {
+      // Load header immediately
+      setLoadedSections((prev) => ({ ...prev, header: true }));
 
-    // Load less critical sections with minimal delay
-    setTimeout(() => {
-      setLoadedSections((prev) => ({
-        ...prev,
-        pagination: true,
-        description: true,
-      }));
-    }, 50);
+      // Load other sections with delays
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      setLoadedSections((prev) => ({ ...prev, filters: true }));
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      setLoadedSections((prev) => ({ ...prev, sidebar: true }));
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      setLoadedSections((prev) => ({ ...prev, jobList: true }));
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      setLoadedSections((prev) => ({ ...prev, pagination: true }));
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      setLoadedSections((prev) => ({ ...prev, description: true }));
+    };
+
+    loadSections();
   }, []);
 
   // Progressive loading of job cards
@@ -204,29 +193,14 @@ const JobLists = () => {
     if (jobData.jobPosts.length > 0 && !jobData.isLoading) {
       setVisibleJobCards([]);
 
-      // Load first 5 cards immediately
-      const initialBatch = Array.from(
-        { length: Math.min(5, jobData.jobPosts.length) },
-        (_, i) => i
-      );
-      setVisibleJobCards(initialBatch);
+      const loadCards = async () => {
+        for (let i = 0; i < jobData.jobPosts.length; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          setVisibleJobCards((prev) => [...prev, i]);
+        }
+      };
 
-      // Load remaining cards in batches
-      if (jobData.jobPosts.length > 5) {
-        const loadRemainingCards = () => {
-          const remainingCards = Array.from(
-            { length: jobData.jobPosts.length },
-            (_, i) => i
-          ).filter((i) => i >= 5);
-
-          // Load all remaining cards with a small delay
-          setTimeout(() => {
-            setVisibleJobCards((prev) => [...prev, ...remainingCards]);
-          }, 100);
-        };
-
-        loadRemainingCards();
-      }
+      loadCards();
     }
   }, [jobData.jobPosts, jobData.isLoading]);
 
@@ -291,49 +265,31 @@ const JobLists = () => {
 
   // Handle search with current filters
   const handleSearch = useCallback(() => {
-    // Apply temporary filters if modal is open
-    let updatedFilters = { ...filters };
-
-    if (modalType === "employment") {
-      updatedFilters = {
-        ...updatedFilters,
-        employmentType: tempEmploymentTypes,
-        monthlySalary: tempMonthlySalary,
-        hourlySalary: tempHourlySalary,
-      };
-    } else if (modalType === "feature") {
-      updatedFilters = {
-        ...updatedFilters,
-        feature: tempFeatures,
-      };
-    }
-
     const muniObj = getMunicipalityById(currentMuniCode);
     const muniName = muniObj ? muniObj.name : "";
-    const muniToSend = updatedFilters.muni || muniName;
+    const muniToSend = filters.muni || muniName;
 
     const filtersToApply = {
-      ...updatedFilters,
-      muni: muniToSend || updatedFilters.muni,
+      ...filters,
+      muni: muniToSend || filters.muni,
       employmentType: currentEmploymentCode
         ? [
             Object.entries(EmploymentType).find(
               ([, code]) => code === currentEmploymentCode
             )?.[0],
           ]
-        : updatedFilters.employmentType,
+        : filters.employmentType,
       feature: currentFeatureCode
         ? [
             Object.values(Features)
               .flatMap((group) => Object.entries(group))
               .find(([, code]) => code === currentFeatureCode)?.[0],
           ]
-        : updatedFilters.feature,
+        : filters.feature,
       page: 1, // Reset page on new search
     };
 
     setFilters(filtersToApply);
-    closeModal();
 
     const url = `/${path}/search?filters=${encodeURIComponent(
       JSON.stringify(filtersToApply)
@@ -345,14 +301,8 @@ const JobLists = () => {
     currentFeatureCode,
     currentMuniCode,
     filters,
-    modalType,
     navigate,
     path,
-    tempEmploymentTypes,
-    tempFeatures,
-    tempMonthlySalary,
-    tempHourlySalary,
-    closeModal,
   ]);
 
   // Build path for filter navigation
@@ -453,32 +403,32 @@ const JobLists = () => {
 
   // Handle employment type checkbox change
   const handleEmploymentTypeChange = useCallback((employmentTypeValue) => {
-    setTempEmploymentTypes((prev) => {
-      const currentTypes = [...prev];
-      return currentTypes.includes(employmentTypeValue)
+    setFilters((prev) => {
+      const currentTypes = [...prev.employmentType];
+      const newTypes = currentTypes.includes(employmentTypeValue)
         ? currentTypes.filter((type) => type !== employmentTypeValue)
         : [...currentTypes, employmentTypeValue];
+
+      return { ...prev, employmentType: newTypes };
     });
   }, []);
 
   // Handle feature checkbox change
   const handleFeatureChange = useCallback((feature) => {
-    setTempFeatures((prev) => {
+    setFilters((prev) => {
       const featureKey = getFeatureKeyByValue(feature);
-      const currentFeatures = [...prev];
-      return currentFeatures.includes(featureKey)
+      const currentFeatures = [...prev.feature];
+      const newFeatures = currentFeatures.includes(featureKey)
         ? currentFeatures.filter((type) => type !== featureKey)
         : [...currentFeatures, featureKey];
+
+      return { ...prev, feature: newFeatures };
     });
   }, []);
 
   // Handle salary changes
   const handleSalaryChange = useCallback((type, value) => {
-    if (type === "monthlySalary") {
-      setTempMonthlySalary(value);
-    } else if (type === "hourlySalary") {
-      setTempHourlySalary(value);
-    }
+    setFilters((prev) => ({ ...prev, [type]: value }));
   }, []);
 
   // Initialize filters from URL or path segments
@@ -489,9 +439,10 @@ const JobLists = () => {
     // Set document title
     const year = new Date().getFullYear();
     const month = String(new Date().getMonth() + 1).padStart(2, "0");
-    document.title = `【${year}年${month}月最新】${getPrefectureKeyByValue(
-      filters.pref
-    )}の${JobType}の求人・転職・募集 | JobJob (ジョブジョブ)`;
+    const prefName = filters.pref ? getPrefectureKeyByValue(filters.pref) : "";
+    document.title = `【${year}年${month}月最新】${
+      prefName ? prefName + "の" : ""
+    }${JobType}の求人・転職・募集 | JobJob (ジョブジョブ)`;
 
     // Initialize likes from localStorage
     const storedLikes = localStorage.getItem("likes");
@@ -580,20 +531,21 @@ const JobLists = () => {
 
   // Fetch job posts when filters change
   useEffect(() => {
-    // Only close modal and fetch if not in a modal selection process
-    if (!modalType) {
-      if (filters.pref) {
-        getJobPosts();
-      }
-    }
-  }, [modalType, filters, getJobPosts]);
-
-  // Initial data fetch on component mount
-  useEffect(() => {
-    if (initialRenderRef.current && filters.pref) {
+    closeModal();
+    if (filters.pref) {
       getJobPosts();
     }
-  }, []);
+  }, [closeModal, filters, getJobPosts]);
+
+  // Update document title when prefecture changes
+  useEffect(() => {
+    if (filters.pref) {
+      const year = new Date().getFullYear();
+      const month = String(new Date().getMonth() + 1).padStart(2, "0");
+      const prefName = getPrefectureKeyByValue(filters.pref);
+      document.title = `【${year}年${month}月最新】${prefName}の${JobType}の求人・転職・募集 | JobJob (ジョブジョブ)`;
+    }
+  }, [filters.pref, JobType]);
 
   // Render prefecture section for modal
   const renderPrefectureSection = useCallback(
@@ -721,8 +673,8 @@ const JobLists = () => {
                   to={`/${path}/details/${jobpost.jobpost_id}`}
                   className="lg:text-xl md:text-sm font-bold text-[#343434] hover:underline"
                 >
-                  {jobpost.facility_id.name}の{jobpost.type}求人(
-                  {jobpost.employment_type[0]})
+                  {jobpost.facility_id?.name || "求人"}の{jobpost.type}求人(
+                  {jobpost.employment_type?.[0] || ""})
                 </Link>
                 <p className="lg:text-sm md:text-xs text-[#343434]">
                   {jobpost.sub_title}
@@ -876,23 +828,12 @@ const JobLists = () => {
                     <p className="lg:text-xl md:text-sm font-bold text-[#343434] ">
                       該当件数
                     </p>
-                    {jobData.allJobPostsNum === null ? (
-                      <div className="flex items-center">
-                        <div className="w-16 h-8 bg-gray-200 animate-pulse rounded mx-2"></div>
-                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                          件
-                        </p>
-                      </div>
-                    ) : (
-                      <>
-                        <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number ml-2">
-                          {jobData.allJobPostsNum}
-                        </p>
-                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                          件
-                        </p>
-                      </>
-                    )}
+                    <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">
+                      {jobData.allJobPostsNum}
+                    </p>
+                    <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                      件
+                    </p>
                   </div>
                   <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
                     <button
@@ -1271,12 +1212,12 @@ const JobLists = () => {
               <NewJobs />
             </div>
 
-            {/* <div
+            <div
               className="mt-8 animate-fadeIn"
               style={{ animationDelay: "600ms" }}
             >
               <NearByJobs jobType={JobType} path={path} />
-            </div> */}
+            </div>
           </>
         )}
       </div>
@@ -1322,7 +1263,7 @@ const JobLists = () => {
                 <Checkbox
                   key={index}
                   onChange={() => handleEmploymentTypeChange(employmentTypeKey)}
-                  checked={tempEmploymentTypes.includes(employmentTypeKey)}
+                  checked={filters.employmentType.includes(employmentTypeKey)}
                   className="relative"
                 >
                   {employmentTypeKey}
@@ -1360,7 +1301,7 @@ const JobLists = () => {
                   onChange={(value) =>
                     handleSalaryChange("monthlySalary", value)
                   }
-                  value={tempMonthlySalary}
+                  value={filters.monthlySalary}
                   className="h-10"
                 />
                 <span className="lg:text-base md:text-sm text-xs text-[#343434]">
@@ -1376,7 +1317,7 @@ const JobLists = () => {
                   onChange={(value) =>
                     handleSalaryChange("hourlySalary", value)
                   }
-                  value={tempHourlySalary}
+                  value={filters.hourlySalary}
                   className="h-10"
                 />
                 <span className="lg:text-base md:text-sm text-xs text-[#343434]">
@@ -1438,7 +1379,7 @@ const JobLists = () => {
                     onChange={() =>
                       handleFeatureChange(section.features[featureKey])
                     }
-                    checked={tempFeatures.includes(
+                    checked={filters.feature.includes(
                       getFeatureKeyByValue(section.features[featureKey])
                     )}
                     className="relative"
