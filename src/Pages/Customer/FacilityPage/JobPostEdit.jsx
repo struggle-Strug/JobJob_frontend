@@ -611,7 +611,7 @@ const JobPostEdit = () => {
             className="w-1/2"
           />
         </div>
-        <div className="flex items-start mt-4">
+        <div className="flex items-start mt-4 textarea">
           <p className="lg:text-sm text-xs w-1/5">
             訴求文<span className="text-[0.7rem] text-[#FF2A3B]">(必須)</span>
           </p>
