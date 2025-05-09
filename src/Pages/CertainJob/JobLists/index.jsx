@@ -1271,12 +1271,12 @@ const JobLists = () => {
               <NewJobs />
             </div>
 
-            <div
+            {/* <div
               className="mt-8 animate-fadeIn"
               style={{ animationDelay: "600ms" }}
             >
               <NearByJobs jobType={JobType} path={path} />
-            </div>
+            </div> */}
           </>
         )}
       </div>
