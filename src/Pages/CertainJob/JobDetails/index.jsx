@@ -896,7 +896,6 @@ const JobDetails = () => {
           </div>
         </div>
 
-        <NewJobs />
         <div
           className="mt-8 animate-fadeIn"
           style={{ animationDelay: "600ms" }}
@@ -908,6 +907,7 @@ const JobDetails = () => {
             muni={jobPost?.facility_id?.city}
           />
         </div>
+        <NewJobs />
 
         {/* Image Modal */}
         <Modal
