@@ -828,12 +828,23 @@ const JobLists = () => {
                     <p className="lg:text-xl md:text-sm font-bold text-[#343434] ">
                       該当件数
                     </p>
-                    <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">
-                      {jobData.allJobPostsNum}
-                    </p>
-                    <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                      件
-                    </p>
+                    {jobData.isLoading ? (
+                      <div className="flex items-center">
+                        <div className="w-16 h-8 bg-gray-200 animate-pulse rounded mx-2"></div>
+                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                          件
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number ml-2">
+                          {jobData.allJobPostsNum}
+                        </p>
+                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                          件
+                        </p>
+                      </>
+                    )}
                   </div>
                   <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
                     <button
