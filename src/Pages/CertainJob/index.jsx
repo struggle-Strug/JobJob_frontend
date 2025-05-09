@@ -809,7 +809,7 @@ const CertainJob = () => {
           </section>
           <div className="flex container w-full justify-between gap-8">
             <div className="flex flex-col w-2/3">
-              <div className="rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="rounded-lg px-6 py-4 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   {JobType}について
                 </p>
@@ -817,7 +817,7 @@ const CertainJob = () => {
                   {Descriptions[JobType]}
                 </pre>
               </div>
-              <div className="flex flex-col gap-2 rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="flex flex-col gap-2 rounded-lg px-6 py-4 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   施設形態から{JobType}の求人を探す
                 </p>
@@ -825,7 +825,7 @@ const CertainJob = () => {
                   {renderMeshLink01(JobType)}
                 </div>
               </div>
-              <div className="rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="rounded-lg px-6 py-4 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   職種から求人を探す
                 </p>
