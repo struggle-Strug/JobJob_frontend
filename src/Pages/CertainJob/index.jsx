@@ -530,21 +530,21 @@ const CertainJob = () => {
             <section className="container bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
               <p className="text-sm font-bold lg:text-lg text-[#343434]">
                 <span className="lg:text-2xl text-base">{JobType}</span>
-                の検索結果
-                {filters?.feature.length > 0 && (
-                  <>
-                    <span className="text-base lg:text-xl font-bold text-[#343434]">
-                      ({filters.feature.join("/")}/
-                    </span>
-                  </>
-                )}
                 {filters?.employmentType.length > 0 && (
                   <>
                     <span className="text-base lg:text-xl font-bold text-[#343434]">
-                      {filters.employmentType.join("/")})
+                      ({filters.employmentType.join("/")})
                     </span>
                   </>
                 )}
+                {filters?.feature.length > 0 && (
+                  <>
+                    <span className="text-base lg:text-xl font-bold text-[#343434]">
+                      ({filters.feature.join("/")})
+                    </span>
+                  </>
+                )}
+                の検索結果
               </p>
             </section>
           ) : (

@@ -12,7 +12,7 @@ const NewJobs = () => {
           to={"/knowhow"}
           className="bg-[#e9e9e9] hover:shadow-xl text-center font-bold lg:text-lg md:text-sm text-xs duration-500 text-[#188CE0] hover:text-[#343434] lg:px-8 md:px-6 px-4 lg:py-2 py-1 rounded-lg my-2 mt-8"
         >
-          なるほど! ジョブジョブをもっと見る
+          転職ノウハウをもっと見る
         </Link>
       </div>
     </div>

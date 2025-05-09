@@ -10,6 +10,8 @@ import { useAuth } from "../../../context/AuthContext";
 import NotFound from "../../NotFound";
 import NewJobs from "../../../components/NewJobs";
 import BlurryLoader from "../../../components/SkeletonGroup";
+import NearByJobs from "../../../components/NearByJobs";
+import { getJobValueByKey } from "../../../utils/getFunctions";
 
 const JobDetails = () => {
   const { user } = useAuth();
@@ -880,6 +882,17 @@ const JobDetails = () => {
         </div>
 
         <NewJobs />
+        <div
+          className="mt-8 animate-fadeIn"
+          style={{ animationDelay: "600ms" }}
+        >
+          <NearByJobs
+            path={job_type}
+            jobType={jobPost?.type}
+            pref={jobPost?.facility_id?.prefecture}
+            muni={jobPost?.facility_id?.city}
+          />
+        </div>
 
         {/* Image Modal */}
         <Modal
