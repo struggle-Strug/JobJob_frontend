@@ -18,9 +18,12 @@ const CLTop = () => {
           />
         </div>
         <div className="flex flex-col items-start justify-start gap-2 border-b-[1px] border-[#e7e7e7] py-3">
-          <p className="lg:text-xl md:text-lg text-base font-bold text-[#5d9eff]">
+          <Link
+            to={"/customers/banner"}
+            className="lg:text-xl md:text-lg text-base font-bold text-[#5d9eff] cursor-pointer hover:scale-105 duration-300"
+          >
             リンク掲載のお願い
-          </p>
+          </Link>
           <p className="lg:text-base md:text-sm text-xs text-[#343434]">
             ジョブジョブでは、求人情報がよりたくさんの人の目に触れてほしいという思いから、皆さまへリンク掲載をお願いしています。医院や施設のホームページ・個人のブログなど問いませんので、是非ご協力ください
           </p>
