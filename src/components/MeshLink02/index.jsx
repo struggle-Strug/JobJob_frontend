@@ -44,7 +44,6 @@ const MeshLink02 = ({ category }) => {
       setIsJobTypeNumbersLoading(false);
     }
   };
-  console.log(jobTypeNumbers);
 
   // Fetch data on component mount
   useEffect(() => {

@@ -58,9 +58,7 @@ const Applied = () => {
                 key={job.id}
                 className="flex flex-col w-full bg-[#F5F5F5] rounded-lg p-4 shadow-xl mt-4 hover:bg-[#EAEAEA] transition duration-300 cursor-pointer"
                 onClick={() =>
-                  navigate(
-                    `/${getJobValueByKey(job.type)}/details/${job.jobpost_id}`
-                  )
+                  navigate(`/${getJobValueByKey(job.type)}/${job.jobpost_id}`)
                 }
               >
                 {/* Job Title */}
@@ -115,9 +113,7 @@ const Applied = () => {
                     </div>
                     <div className="mt-8">
                       <Link
-                        to={`/${getJobValueByKey(job.type)}/details/${
-                          job.jobpost_id
-                        }`}
+                        to={`/${getJobValueByKey(job.type)}/${job.jobpost_id}`}
                         className="bg-[#FF2A3B] text-white px-4 py-2 rounded-lg hover:text-gray-300 duration-300"
                       >
                         詳細を見る

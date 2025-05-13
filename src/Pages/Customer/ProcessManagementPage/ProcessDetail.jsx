@@ -34,7 +34,7 @@ const ProcessDetail = ({ processes, getProcessesByStatus }) => {
   // Create job post link
   const jobPostLink = useCallback((jobPost) => {
     const jobType = getJobTypeValue(JobType, jobPost.type);
-    return `/${jobType}/details/${jobPost.jobpost_id}`;
+    return `/${jobType}/${jobPost.jobpost_id}`;
   }, []);
 
   // Handle profile modal

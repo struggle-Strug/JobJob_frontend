@@ -22,7 +22,7 @@ const JobDetails = () => {
   const [modalImage, setModalImage] = useState(null);
   const { pathname } = useLocation();
   const job_type = pathname.split("/")[1];
-  const jobpost_id = pathname.split("/")[3];
+  const jobpost_id = pathname.split("/")[2];
   const carouselRef = useRef();
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -214,7 +214,7 @@ const JobDetails = () => {
                   {jobPost.picture.map((photoUrl, index) => (
                     <div key={index} onClick={() => openImageModal(photoUrl)}>
                       <img
-                        src={photoUrl.url || "/placeholder.svg"}
+                        src={photoUrl.url || "/assets/images/noimage.png"}
                         alt={`${jobPost?.type}の求人写真-${index + 1}`}
                         className="w-full aspect-video object-cover rounded-t-xl cursor-pointer"
                       />
@@ -580,7 +580,7 @@ const JobDetails = () => {
                   jobPost?.picture?.map((item, index) => (
                     <img
                       key={index}
-                      src={item.url || "/placeholder.svg"}
+                      src={item.url || "/assets/images/noimage.png"}
                       alt={`${jobPost?.type}の求人写真-${index + 1}`}
                       className="col-span-1 aspect-[2/1] object-cover rounded-lg cursor-pointer"
                       onClick={() => openImageModal(item)}
@@ -599,7 +599,7 @@ const JobDetails = () => {
                   法人・施設名
                 </p>
                 <Link
-                  to={`/facility/details/${jobPost?.facility_id?.facility_id}`}
+                  to={`/facility/${jobPost?.facility_id?.facility_id}`}
                   className="lg:text-base text-sm text-[#FF2A3B] hover:underline w-4/5"
                 >
                   {jobPost?.facility_id?.name || ""}

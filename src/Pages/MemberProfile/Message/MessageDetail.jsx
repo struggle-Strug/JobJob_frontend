@@ -192,7 +192,7 @@ const MessageDetail = () => {
           </h1>
           {message?.jobPost_id && (
             <Link
-              to={`/${jobType}/details/${message.jobPost_id}`}
+              to={`/${jobType}/${message.jobPost_id}`}
               className="hover:underline hover:text-[#FF2A3B] duration-300 text-[#343434] text-xs mt-1"
             >
               求人を確認する

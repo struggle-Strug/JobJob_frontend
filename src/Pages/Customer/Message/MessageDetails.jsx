@@ -264,7 +264,7 @@ const MessageDetails = ({ id, onMessageSent, onMessageRead }) => {
           <div className="flex items-center gap-3">
             {message?.jobPost_id && (
               <Link
-                to={`/${getJobValueByKey(message.jobpost_id?.type)}/details/${
+                to={`/${getJobValueByKey(message.jobpost_id?.type)}/${
                   message.jobPost_id
                 }`}
                 target="_blank"

@@ -304,7 +304,7 @@ const CertaionFacility = () => {
                     </div>
                     <div className="flex items-center justify-between w-full gap-4 mt-6">
                       <Link
-                        to={`/facility/details/${facility.facility_id}`}
+                        to={`/facility/${facility.facility_id}`}
                         className="flex items-center justify-center bg-[#FF6B56] rounded-lg py-2 text-white border-2 border-[#FF6B56] w-full hover:scale-[1.02] duration-300"
                       >
                         <p className="text-sm font-bold text-white">
@@ -317,7 +317,7 @@ const CertaionFacility = () => {
                         return (
                           <Link
                             key={index}
-                            to={`/${getJobValueByKey(jobPost.type)}/details/${
+                            to={`/${getJobValueByKey(jobPost.type)}/${
                               jobPost.jobpost_id
                             }`}
                             className="flex items-center justify-between gap-4 border-y-[1px] border-[#e7e7e7] py-2 hover:px-6 duration-300"

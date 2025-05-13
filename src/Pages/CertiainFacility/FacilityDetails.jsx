@@ -163,9 +163,7 @@ const JobPostCard = ({ jobPost, facility }) => {
   return (
     <div
       onClick={() =>
-        navigate(
-          `/${getJobValueByKey(jobPost.type)}/details/${jobPost.jobpost_id}`
-        )
+        navigate(`/${getJobValueByKey(jobPost.type)}/${jobPost.jobpost_id}`)
       }
       className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 hover:scale-[1.02] duration-300 cursor-pointer"
     >
@@ -185,9 +183,7 @@ const JobPostCard = ({ jobPost, facility }) => {
         )}
         <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
           <Link
-            to={`/${getJobValueByKey(jobPost.type)}/details/${
-              jobPost.jobpost_id
-            }`}
+            to={`/${getJobValueByKey(jobPost.type)}/${jobPost.jobpost_id}`}
             className="lg:text-xl md:text-sm font-bold text-[#343434] hover:underline"
           >
             {facility?.name}の{jobPost.type}求人({jobPost.employment_type})
@@ -276,9 +272,7 @@ const JobPostCard = ({ jobPost, facility }) => {
           <p className="text-sm font-bold text-[#FF6B56]">気になる</p>
         </button>
         <Link
-          to={`/${getJobValueByKey(jobPost.type)}/details/${
-            jobPost.jobpost_id
-          }`}
+          to={`/${getJobValueByKey(jobPost.type)}/${jobPost.jobpost_id}`}
           className="flex items-center justify-center bg-[#FF6B56] hover:bg-[#FF5B02] hover:scale-105 duration-300 rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2"
         >
           <p className="text-sm font-bold text-white">求人を見る</p>
@@ -295,7 +289,7 @@ const FacilityDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
-  const facility_id = useMemo(() => pathname.split("/")[3], [pathname]);
+  const facility_id = useMemo(() => pathname.split("/")[2], [pathname]);
 
   const getFacility = useCallback(async () => {
     try {
