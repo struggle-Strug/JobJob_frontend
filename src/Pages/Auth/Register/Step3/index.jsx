@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Radio, Select } from "antd";
+import { Input, Radio } from "antd";
 import axios from "axios";
 import { Prefectures } from "../../../../utils/constants/categories";
 import { Municipalities } from "../../../../utils/constants/categories/municipalities";
@@ -163,12 +163,16 @@ const Step3 = ({
             <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
           </div>
           <div className="flex flex-col w-4/5">
-            <Select
-              className="w-1/4"
-              options={cityOptions(prefecture)}
+            <select
+              className="w-1/4 px-2 py-1 border rounded focus:outline-none"
               value={municipalities}
-              onChange={setMunicipalities}
-            />
+              onChange={e => setMunicipalities(e.target.value)}
+            >
+              <option value="">選択する</option>
+              {(Municipalities[prefecture] || []).map(m => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
           </div>
         </div>
       )}

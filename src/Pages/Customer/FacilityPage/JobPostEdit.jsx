@@ -703,12 +703,14 @@ const JobPostEdit = () => {
               onChange={(e) => setJobPostSalaryMin(e.target.value)}
               className="w-1/4"
             />
+            <span className="mx-2 lg:text-sm text-xs">円</span>
             <span className="mx-2">~</span>
             <Input
               value={jobPostSalaryMax}
               onChange={(e) => setJobPostSalaryMax(e.target.value)}
               className="w-1/4"
             />
+            <span className="mx-2 lg:text-sm text-xs">円</span>
           </div>
         </div>
         <div className="flex items-start mt-4 textarea">
