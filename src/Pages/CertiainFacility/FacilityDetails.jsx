@@ -365,8 +365,8 @@ const FacilityDetails = () => {
             </div>
 
             <div className="bg-white rounded-lg flex flex-col w-full px-4 py-2 mt-8">
-              <p className="text-xs font-bold text-[#343434]">募集中の求人</p>
-              <p className="text-xs font-bold text-[#343434]">
+              <p className="text-base font-bold text-[#343434]">募集中の求人</p>
+              <p className="text-base font-bold text-[#343434]">
                 <span className="text-[#FF2A3B] number">
                   {facility?.jobPosts.length}
                 </span>

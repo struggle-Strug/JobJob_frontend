@@ -730,7 +730,6 @@ const JobOffer = () => {
                 <div className="flex justify-between w-full mt-6">
                   <div className="flex items-start gap-2 justify-end">
                     <p>郵便番号</p>
-                    <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
                   </div>
                   <div className="flex flex-col w-4/5">
                     <div className="flex flex-col px-2">
