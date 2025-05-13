@@ -11,7 +11,6 @@ import NotFound from "../../NotFound";
 import NewJobs from "../../../components/NewJobs";
 import BlurryLoader from "../../../components/SkeletonGroup";
 import NearByJobs from "../../../components/NearByJobs";
-import { getJobValueByKey } from "../../../utils/getFunctions";
 import MeshLink02 from "../../../components/MeshLink02";
 
 const JobDetails = () => {
@@ -215,7 +214,7 @@ const JobDetails = () => {
                   {jobPost.picture.map((photoUrl, index) => (
                     <div key={index} onClick={() => openImageModal(photoUrl)}>
                       <img
-                        src={photoUrl || "/placeholder.svg"}
+                        src={photoUrl.url || "/placeholder.svg"}
                         alt={`${jobPost?.type}の求人写真-${index + 1}`}
                         className="w-full aspect-video object-cover rounded-t-xl cursor-pointer"
                       />
@@ -227,51 +226,57 @@ const JobDetails = () => {
                   {currentSlide + 1}/{jobPost.picture.length}
                 </div>
 
-                <div className="flex items-center justify-between w-full bg-[#fdfcf9] h-11 rounded-b-xl border border-[#ddccc9]">
-                  <button
-                    onClick={goToPrevSlide}
-                    className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center"
-                    aria-label="前の写真を表示"
-                    type="button"
-                  >
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                <div className="flex flex-col w-full bg-[#fdfcf9] rounded-b-xl border border-[#ddccc9]">
+                  <div className="flex items-center justify-between w-full h-11">
+                    <button
+                      onClick={goToPrevSlide}
+                      className="bg-transparent text-[#FF6B56] border-r border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center"
+                      aria-label="前の写真を表示"
+                      type="button"
                     >
-                      <path
-                        d="M11 13L5.27083 8L11 3"
-                        stroke="#FF6B56"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={goToNextSlide}
-                    className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center"
-                    aria-label="次の写真を表示"
-                    type="button"
-                  >
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M11 13L5.27083 8L11 3"
+                          stroke="#FF6B56"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                    <p className="text-sm text-[#343434]">
+                      {jobPost?.picture &&
+                        jobPost.picture[currentSlide].description}
+                    </p>
+                    <button
+                      onClick={goToNextSlide}
+                      className="bg-transparent text-[#FF6B56] border-l border-[#ddccc9] p-2 w-11 h-11 flex items-center justify-center"
+                      aria-label="次の写真を表示"
+                      type="button"
                     >
-                      <path
-                        d="M5 13L10.7292 8L5 3"
-                        stroke="#FF6B56"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5 13L10.7292 8L5 3"
+                          stroke="#FF6B56"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </>
             ) : (
@@ -575,7 +580,7 @@ const JobDetails = () => {
                   jobPost?.picture?.map((item, index) => (
                     <img
                       key={index}
-                      src={item || "/placeholder.svg"}
+                      src={item.url || "/placeholder.svg"}
                       alt={`${jobPost?.type}の求人写真-${index + 1}`}
                       className="col-span-1 aspect-[2/1] object-cover rounded-lg cursor-pointer"
                       onClick={() => openImageModal(item)}
