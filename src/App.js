@@ -237,16 +237,8 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/members/sign_up" element={<Register />} />
           <Route path="/members/sign_in" element={<Login />} />
-          <Route path="/:jobtype/details/:id" element={<JobDetails />} />
           <Route path="/:jobtype/apply/:id" element={<JobOffer />} />
-          <Route path=":jobtype/city/:muniId" element={<JobLists />}>
-            <Route path="modal/:modal" element={<JobLists />} />
-          </Route>
-          <Route path="/:jobType/:pref" element={<JobLists/>}>
-            <Route path="modal/:modal" element={<JobLists/>}/>
-          </Route>
 
-          
           {getAllJobTypeValues().map((jobType) => {
             const hasPrefecture =
               getAllPrefectureValues().includes(prefOrFacility);
@@ -272,6 +264,34 @@ function App() {
               );
             }
 
+            const prefOrMuniOrJobId = pathname.split("/").pop();
+
+            if (
+              !prefOrMuniOrJobId.includes("muni") &&
+              !prefOrMuniOrJobId.includes("pref") &&
+              !prefOrMuniOrJobId.includes("search")
+            ) {
+              return (
+                <Route path={`/${jobType}/:id`} element={<JobDetails />} />
+              );
+            }
+
+            if (prefOrMuniOrJobId.includes("muni")) {
+              return (
+                <Route path={`/${jobType}/:muniId`} element={<JobLists />}>
+                  <Route path="modal/:modal" element={<JobLists />} />
+                </Route>
+              );
+            }
+
+            if (prefOrMuniOrJobId.includes("pref")) {
+              return (
+                <Route path={`/${jobType}/:prefId`} element={<JobLists />}>
+                  <Route path="modal/:modal" element={<JobLists />} />
+                </Route>
+              );
+            }
+
             if (prefOrFacility === "search") {
               const filters = params.get("filters")
                 ? JSON.parse(decodeURIComponent(params.get("filters")))
@@ -291,27 +311,8 @@ function App() {
                 />
               );
             }
-
-            return (
-              <>
-                <Route
-                  key={jobType}
-                  path={`/${jobType}/*`}
-                  element={<CertainJob />}
-                />
-                <Route
-                  key={jobType}
-                  path={`/${jobType}/search/*`}
-                  element={<CertainJob />}
-                />
-                <Route
-      path={`${jobType}/:pref?/:muni?/:employmentType?/:feature?/*`}
-      element={<JobLists />}
-    />
-              </>
-            );
           })}
-          <Route path={"/facility/details/:id"} element={<FacilityDetails />} />
+          <Route path={"/facility/:id"} element={<FacilityDetails />} />
           {getAllFacilityValues().map((facility) => {
             return (
               <Route

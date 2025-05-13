@@ -93,7 +93,7 @@ const NearByJobs = ({ jobType, pref, muni, path }) => {
 
   // Function to handle job card click
   const handleJobClick = (jobId) => {
-    navigate(`/${path}/details/${jobId}`);
+    navigate(`/${path}/${jobId}`);
   };
 
   // Render job cards

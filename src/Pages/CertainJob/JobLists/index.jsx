@@ -564,7 +564,7 @@ const JobLists = () => {
               className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
               href={buildPathFilter({
                 pref: prefectures[prefecture],
-                muni: currentMuniCode,
+                muni: "",
                 employment: currentEmploymentCode,
                 feature: currentFeatureCode,
               })}
@@ -595,7 +595,7 @@ const JobLists = () => {
               aria-label={municipality}
               key={index}
               href={buildPathFilter({
-                pref: filters.pref,
+                // pref: filters.pref,
                 muni: municipality,
                 employment: currentEmploymentCode,
                 feature: currentFeatureCode,
@@ -650,9 +650,7 @@ const JobLists = () => {
           className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 cursor-pointer hover:scale-[1.02] duration-300 animate-fadeIn"
           style={{ animationDelay: `${index * 100}ms` }}
         >
-          <div
-            onClick={() => navigate(`/${path}/details/${jobpost.jobpost_id}`)}
-          >
+          <div onClick={() => navigate(`/${path}/${jobpost.jobpost_id}`)}>
             <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
               {jobpost?.picture?.length === 0 ? (
                 <img
@@ -671,7 +669,7 @@ const JobLists = () => {
               )}
               <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
                 <Link
-                  to={`/${path}/details/${jobpost.jobpost_id}`}
+                  to={`/${path}/${jobpost.jobpost_id}`}
                   className="lg:text-xl md:text-sm font-bold text-[#343434] hover:underline"
                 >
                   {jobpost.facility_id?.name || "求人"}の{jobpost.type}求人(
@@ -780,7 +778,7 @@ const JobLists = () => {
               </p>
             </button>
             <Link
-              to={`/${path}/details/${jobpost.jobpost_id}`}
+              to={`/${path}/${jobpost.jobpost_id}`}
               className="flex items-center justify-center bg-[#FF6B56] hover:bg-[#FF5B02] hover:scale-105 duration-300 rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2"
             >
               <p className="text-sm font-bold text-white">求人を見る</p>
