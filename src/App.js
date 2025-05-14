@@ -196,11 +196,12 @@ function App() {
             }
             if (pathname.split("/").length >= 3) {
               const prefOrMuniOrJobId = pathname.split("/").pop();
-
               if (
                 !prefOrMuniOrJobId.includes("muni") &&
                 !prefOrMuniOrJobId.includes("pref") &&
-                !prefOrMuniOrJobId.includes("search")
+                !prefOrMuniOrJobId.includes("search") &&
+                !prefOrMuniOrJobId.includes("employment") &&
+                !prefOrMuniOrJobId.includes("condition")
               ) {
                 return (
                   <Route path={`/${jobType}/:id`} element={<JobDetails />} />
@@ -220,6 +221,24 @@ function App() {
                   <Route path={`/${jobType}/:prefId`} element={<JobLists />}>
                     <Route path="modal/:modal" element={<JobLists />} />
                   </Route>
+                );
+              }
+
+              if (prefOrMuniOrJobId.includes("employment")) {
+                return (
+                  <Route
+                    path={`/${jobType}/:employmentId`}
+                    element={<CertainJob />}
+                  />
+                );
+              }
+
+              if (prefOrMuniOrJobId.includes("condition")) {
+                return (
+                  <Route
+                    path={`/${jobType}/:employmentId?/:conditionId`}
+                    element={<CertainJob />}
+                  />
                 );
               }
 
