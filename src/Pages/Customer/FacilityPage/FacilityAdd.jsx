@@ -296,6 +296,29 @@ const FacilityAdd = () => {
     document.title = "施設登録・編集 | JobJob (ジョブジョブ)";
   }, []);
 
+  const createProcessedImage = async (base64) => {
+    return new Promise((resolve) => {
+      const file = base64ToFile(base64, "image.jpeg");
+      const croppedImage = {
+        file: file,
+        preview: base64,
+      };
+      resolve({ file: file, preview: base64 });
+    });
+  };
+
+  const base64ToFile = (base64String, filename) => {
+    let arr = base64String.split(","),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
   return (
     <>
       {loading ? <Loading /> : <></>}
@@ -400,8 +423,10 @@ const FacilityAdd = () => {
                     const file = e.target.files[0];
                     if (file) {
                       getBase64(file).then((base64) => {
-                        setCurrentImage(base64);
-                        setEditModalVisible(true);
+                        // Instead of showing the modal, directly process the image
+                        createProcessedImage(base64).then((processedImage) => {
+                          handleEditSave(processedImage);
+                        });
                       });
                     }
                   };
@@ -543,7 +568,7 @@ const FacilityAdd = () => {
             style={{ width: "100%" }}
           />
         </Modal>
-        {/* Image Edit Modal */}
+        {/* Image Edit Modal - still needed for direct processing */}
         <ImageEditModal
           visible={editModalVisible}
           image={currentImage}

@@ -15,7 +15,6 @@ import TextArea from "antd/es/input/TextArea";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import EditorComponent from "../../../components/EditorComponent";
 import Loading from "../../../components/Loading";
 import { useAuth } from "../../../context/AuthContext";
 import {
@@ -214,6 +213,70 @@ const JobPostEdit = () => {
     }
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
+  };
+
+  // Function to create a processed image object
+  const createProcessedImage = async (base64) => {
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = base64;
+
+    return new Promise((resolve) => {
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Set output dimensions with 4:3 aspect ratio
+        const outputHeight = 768;
+        const outputWidth = Math.round(outputHeight * (4 / 3)); // 1024 for 4:3 ratio
+
+        // Set canvas to the output dimensions
+        canvas.width = outputWidth;
+        canvas.height = outputHeight;
+
+        // Fill with white background
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Calculate dimensions to fit by height
+        const scale = outputHeight / image.height;
+        const scaledWidth = image.width * scale;
+
+        // Calculate x-offset for centering (with cropping or padding as needed)
+        let xOffset = 0;
+        if (scaledWidth > outputWidth) {
+          // Image is too wide after scaling to height - crop the sides
+          xOffset = (outputWidth - scaledWidth) / 2; // This will be negative, cropping both sides equally
+        } else {
+          // Image is narrower than output after scaling to height - center it with padding
+          xOffset = (outputWidth - scaledWidth) / 2; // This will be positive, adding padding
+        }
+
+        // Draw the image centered (or cropped) horizontally, full height
+        ctx.drawImage(image, xOffset, 0, scaledWidth, outputHeight);
+
+        // Convert canvas to blob
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              console.error("Canvas is empty");
+              return;
+            }
+
+            blob.name = "processed.jpeg";
+            const processedFile = new File([blob], "processed.jpeg", {
+              type: "image/jpeg",
+            });
+            resolve({
+              file: processedFile,
+              preview: URL.createObjectURL(blob),
+            });
+          },
+          "image/jpeg",
+          0.9
+        );
+      };
+    });
   };
 
   // Handle the edited image save
@@ -577,8 +640,10 @@ const JobPostEdit = () => {
                     const file = e.target.files[0];
                     if (file) {
                       getBase64(file).then((base64) => {
-                        setCurrentImage(base64);
-                        setEditModalVisible(true);
+                        // Instead of showing the modal, directly process the image
+                        createProcessedImage(base64).then((processedImage) => {
+                          handleEditSave(processedImage);
+                        });
                       });
                     }
                   };
@@ -1012,7 +1077,7 @@ const JobPostEdit = () => {
         />
       </Modal>
 
-      {/* Image Edit Modal */}
+      {/* Image Edit Modal - still needed for direct processing */}
       <ImageEditModal
         visible={editModalVisible}
         image={currentImage}

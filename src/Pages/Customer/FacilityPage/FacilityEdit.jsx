@@ -386,6 +386,21 @@ const FacilityEdit = () => {
     );
   }
 
+  const createProcessedImage = async (base64) => {
+    return new Promise((resolve) => {
+      // Simulate image processing (replace with actual processing logic)
+      setTimeout(() => {
+        const processedImage = {
+          file: {
+            name: "processed-image.jpg",
+          },
+          preview: base64,
+        };
+        resolve(processedImage);
+      }, 500); // Simulate processing time
+    });
+  };
+
   return (
     <>
       {loading ? <Loading /> : <></>}
@@ -488,8 +503,10 @@ const FacilityEdit = () => {
                     const file = e.target.files[0];
                     if (file) {
                       getBase64(file).then((base64) => {
-                        setCurrentImage(base64);
-                        setEditModalVisible(true);
+                        // Instead of showing the modal, directly process the image
+                        createProcessedImage(base64).then((processedImage) => {
+                          handleEditSave(processedImage);
+                        });
                       });
                     }
                   };
@@ -975,7 +992,7 @@ const FacilityEdit = () => {
         }}
       />
 
-      {/* Image Edit Modal */}
+      {/* Image Edit Modal - still needed for direct processing */}
       <ImageEditModal
         visible={editModalVisible}
         image={currentImage}
