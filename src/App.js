@@ -18,6 +18,7 @@ import {
 
 // Lazy load components
 const Register = lazy(() => import("./Pages/Auth/Register"));
+const RegisterComplete = lazy(() => import("./Pages/Auth/Register/CompleteRegister"));
 const Login = lazy(() => import("./Pages/Auth/Login"));
 const ForgotPasswordRequest = lazy(() =>
   import("./Pages/Auth/ForgotPassword/ForgotPasswordRequest")
@@ -237,6 +238,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/members/sign_up" element={<Register />} />
           <Route path="/members/sign_in" element={<Login />} />
+          <Route path="/members/sign_up/complete" element={<RegisterComplete />} />
           <Route path="/:jobtype/details/:id" element={<JobDetails />} />
           <Route path="/:jobtype/apply/:id" element={<JobOffer />} />
           <Route path=":jobtype/city/:muniId" element={<JobLists />}>
