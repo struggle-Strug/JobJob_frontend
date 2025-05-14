@@ -309,7 +309,7 @@ function App() {
               <Route path="/members/settings" element={<Setting />} />
             </Route>
           ) : (
-            <Route path="/*" element={<Navigate to="/members/sign_in" />} />
+            <Route path="/*" element={<Navigate to="/" />} />
           )}
           <Route path="*" element={<NotFound />} />
           <Route path="/contact" element={<Preparing />} />
@@ -379,7 +379,7 @@ function App() {
           </>
         ) : (
           <Route element={<CLLogoLayout />}>
-            <Route path="/*" element={<CustomerSignIn />} />
+            <Route path="/*" element={<Navigate to="/" />} />
           </Route>
         )}
       </Routes>
