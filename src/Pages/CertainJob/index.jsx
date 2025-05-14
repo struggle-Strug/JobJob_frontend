@@ -5,6 +5,7 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import BreadCrumb from "../../components/BreadCrumb";
+import MeshLink02 from "../../components/MeshLink02";
 import NewJobs from "../../components/NewJobs";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -13,19 +14,30 @@ import {
   Facilities,
   Features,
   Prefectures,
-  JobType as jobType,
 } from "../../utils/constants/categories";
 import {
+  getEmploymentTypeKeyByValue,
   getFeatureKeyByValue,
+  getFeatureValueByKey,
   getJobTypeKeyByValue,
   getJobValueByKey,
 } from "../../utils/getFunctions";
-import MeshLink02 from "../../components/MeshLink02";
+
+// Default filters state
+const DEFAULT_FILTERS = {
+  pref: "",
+  employmentType: [],
+  hourlySalary: "",
+  monthlySalary: "",
+  feature: [],
+  muni: "",
+  page: 1,
+  features: [],
+};
 
 const CertainJob = () => {
   const { pathname } = useLocation();
   const [type, setType] = useState(1);
-  const [pref, setPref] = useState("");
   const [employmentType, setEmploymentType] = useState([]);
   const [monthlySalary, setMonthlySalary] = useState("");
   const [hourlySalary, setHourlySalary] = useState("");
@@ -35,26 +47,8 @@ const CertainJob = () => {
     isLoading: false,
   });
 
-  const { user, likes, setLikes } = useAuth();
-  const [filters, setFilters] = useState({
-    pref: "",
-    employmentType: [],
-    hourlySalary: "",
-    monthlySalary: "",
-    feature: [],
-    muni: "",
-    page: 1,
-    features: [],
-  });
-
-  // Toggle states for job categories
-  const [toggleMedical, setToggleMedical] = useState(false);
-  const [toggleDentist, setToggleDentist] = useState(false);
-  const [toggleNursing, setToggleNursing] = useState(false);
-  const [toggleChildcare, setToggleChildcare] = useState(false);
-  const [toggleRehabilitation, setToggleRehabilitation] = useState(false);
-  const [toggleOther, setToggleOther] = useState(false);
-  const [toggleHealthcare, setToggleHealthcare] = useState(false);
+  const { user } = useAuth();
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
 
   // Loading states
   const [isJobTypeNumbersLoading, setIsJobTypeNumbersLoading] = useState(true);
@@ -63,89 +57,148 @@ const CertainJob = () => {
     setIsJobTypeNumbersByFacilityLoading,
   ] = useState(true);
 
-  // Content loaded state
-  const [contentLoaded, setContentLoaded] = useState(false);
-
   const location = useLocation();
-  const [category, ...segments] = useMemo(
-    () => pathname.split("/").filter(Boolean),
+  const navigate = useNavigate();
+  const path = useMemo(() => pathname.split("/")[1], [pathname]);
+  const params = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search]
+  );
+
+  const JobType = useMemo(() => getJobTypeKeyByValue(path), [path]);
+  const isPrefSelected = useMemo(
+    () => pathname.endsWith("/select/pref"),
     [pathname]
   );
 
-  const navigate = useNavigate();
-  const path = pathname.split("/")[1];
-
-  const JobType = getJobTypeKeyByValue(path);
-  const isSelected = (v) => v === type;
-  const params = new URLSearchParams(location.search);
+  // Memoize job type numbers
   const [jobTypeNumbers, setJobTypeNumbers] = useState({});
   const [jobTypeNumbersByFacility, setJobTypeNumbersByFacility] = useState({});
 
-  const isPrefSelected = pathname.endsWith("/select/pref");
+  // Memoize options for selects
+  const monthlySalaryOptions = useMemo(
+    () => [
+      { value: "", label: "指定なし" },
+      { value: "180000", label: "18" },
+      { value: "200000", label: "20" },
+      { value: "250000", label: "25" },
+      { value: "300000", label: "30" },
+      { value: "400000", label: "40" },
+      { value: "500000", label: "50" },
+      { value: "600000", label: "60" },
+      { value: "700000", label: "70" },
+      { value: "800000", label: "80" },
+      { value: "900000", label: "90" },
+      { value: "1000000", label: "100" },
+    ],
+    []
+  );
 
-  const makeLink = ({ pref, employment, feature }) => {
-    // 1) pathname を分解して base と filter セグメントを得る
-    const parts = pathname.split("/").filter(Boolean);
-    const base = parts[0]; // e.g. "dr"
-    const filters = parts.slice(1); // ["pref1","employment2",...]
+  const hourlySalaryOptions = useMemo(
+    () => [
+      { value: "", label: "指定なし" },
+      { value: "800", label: "800" },
+      { value: "1000", label: "1000" },
+      { value: "1200", label: "1200" },
+      { value: "1400", label: "1400" },
+      { value: "1600", label: "1600" },
+      { value: "1800", label: "1800" },
+      { value: "2000", label: "2000" },
+      { value: "3000", label: "3000" },
+      { value: "4000", label: "4000" },
+      { value: "5000", label: "5000" },
+    ],
+    []
+  );
 
-    // 2) 既存セグメントを初期化
-    let curPref = "";
-    let curEmp = "";
-    let curFeat = "";
+  // URL generation functions
+  const makeLink = useCallback(
+    ({ pref, employment, feature }) => {
+      // 1) pathname を分解して base と filter セグメントを得る
+      const parts = pathname.split("/").filter(Boolean);
+      const base = parts[0]; // e.g. "dr"
+      const filters = parts.slice(1); // ["pref1","employment2",...]
 
-    // 3) 名前ベースで振り分け
-    filters.forEach((seg) => {
-      if (/^pref\d+$/.test(seg)) {
-        curPref = seg;
-      } else if (/^employment\d+$/.test(seg)) {
-        curEmp = seg;
-      } else if (/^feature\d+$/.test(seg)) {
-        curFeat = seg;
+      // 2) 既存セグメントを初期化
+      let curPref = "";
+      let curEmp = "";
+      let curFeat = "";
+
+      // 3) 名前ベースで振り分け
+      filters.forEach((seg) => {
+        if (/^pref\d+$/.test(seg)) {
+          curPref = seg;
+        } else if (/^employment\d+$/.test(seg)) {
+          curEmp = seg;
+        } else if (/^feature\d+$/.test(seg)) {
+          curFeat = seg;
+        }
+      });
+
+      // 4) undefined は「変更なし」、'' は「クリア」、それ以外は上書き
+      const newPref = pref !== undefined ? pref : curPref;
+      const newEmp = employment !== undefined ? employment : curEmp;
+      const newFeat = feature !== undefined ? feature : curFeat;
+
+      // 5) 空文字・null・undefined は除去して、常に [pref, employment, feature] の順で組み立て
+      const segs = [newPref, newEmp, newFeat].filter((v) => v);
+
+      return `/${base}/${segs.join("/")}`;
+    },
+    [pathname]
+  );
+
+  const getPrefLink = useCallback(
+    (p) => {
+      // 他のフィルターが一つでも設定されているかをチェック
+      const hasOtherFilters =
+        filters.pref !== "" ||
+        filters.employmentType.length > 0 ||
+        filters.monthlySalary !== "" ||
+        filters.hourlySalary !== "" ||
+        filters.feature.length > 0;
+
+      // 他のフィルターがあれば検索モードへ
+      if (hasOtherFilters) {
+        const updated = { ...filters, pref: p };
+        return `/${path}/search?filters=${encodeURIComponent(
+          JSON.stringify(updated)
+        )}`;
       }
-    });
 
-    // 4) undefined は「変更なし」、'' は「クリア」、それ以外は上書き
-    const newPref = pref !== undefined ? pref : curPref;
-    const newEmp = employment !== undefined ? employment : curEmp;
-    const newFeat = feature !== undefined ? feature : curFeat;
+      // パスベースフィルター中か判定
+      const rel = pathname.replace(`/${path}`, "");
+      const segs = rel.split("/").filter(Boolean);
+      const isPathFilter = segs.length > 0 && !pathname.includes("/search");
+      if (isPathFilter) {
+        // makeLink を使って階層付き URL を生成
+        return makeLink({ pref: p });
+      }
 
-    // 5) 空文字・null・undefined は除去して、常に [pref, employment, feature] の順で組み立て
-    const segs = [newPref, newEmp, newFeat].filter((v) => v);
+      // それ以外はシンプルに /{path}/{pref}
+      return `/${path}/${p}`;
+    },
+    [filters, path, pathname, makeLink]
+  );
 
-    return `/${base}/${segs.join("/")}`;
-  };
+  const getConditionUrl = useCallback(
+    (filterName, value) => {
+      const defaultFilters = { ...DEFAULT_FILTERS };
+      // 配列で管理するフィルターの場合
+      if (filterName === "employmentType" || filterName === "feature") {
+        defaultFilters[filterName] = [value];
+      } else {
+        defaultFilters[filterName] = value;
+      }
+      return `/${path}/search?filters=${encodeURIComponent(
+        JSON.stringify(defaultFilters)
+      )}`;
+    },
+    [path]
+  );
 
-  const monthlySalaryOptions = [
-    { value: "", label: "指定なし" },
-    { value: "180000", label: "18" },
-    { value: "200000", label: "20" },
-    { value: "250000", label: "25" },
-    { value: "300000", label: "30" },
-    { value: "1600", label: "40" },
-    { value: "500000", label: "50" },
-    { value: "600000", label: "60" },
-    { value: "700000", label: "70" },
-    { value: "800000", label: "80" },
-    { value: "900000", label: "90" },
-    { value: "1000000", label: "100" },
-  ];
-
-  const hourlySalaryOptions = [
-    { value: "", label: "指定なし" },
-    { value: "800", label: "800" },
-    { value: "1000", label: "1000" },
-    { value: "1200", label: "1200" },
-    { value: "1400", label: "1400" },
-    { value: "1600", label: "1600" },
-    { value: "1800", label: "1800" },
-    { value: "2000", label: "2000" },
-    { value: "3000", label: "3000" },
-    { value: "4000", label: "4000" },
-    { value: "5000", label: "5000" },
-  ];
-
-  const getJobTypeNumbers = async () => {
+  // API calls
+  const getJobTypeNumbers = useCallback(async () => {
     setIsJobTypeNumbersLoading(true);
     try {
       const response = await axios.get(
@@ -172,9 +225,9 @@ const CertainJob = () => {
     } finally {
       setIsJobTypeNumbersLoading(false);
     }
-  };
+  }, []);
 
-  const getJobTypeNumbersByFacility = async () => {
+  const getJobTypeNumbersByFacility = useCallback(async () => {
     setIsJobTypeNumbersByFacilityLoading(true);
     try {
       const response = await axios.post(
@@ -207,7 +260,7 @@ const CertainJob = () => {
     } finally {
       setIsJobTypeNumbersByFacilityLoading(false);
     }
-  };
+  }, [JobType]);
 
   const getJobPosts = useCallback(async () => {
     try {
@@ -238,8 +291,107 @@ const CertainJob = () => {
       message.error("求人情報の取得に失敗しました");
       setJobData((prev) => ({ ...prev, isLoading: false }));
     }
-  }, [filters]);
+  }, [filters, JobType]);
 
+  // Event handlers
+  const handleSearch = useCallback(() => {
+    const url = `/${path}/search?filters=${encodeURIComponent(
+      JSON.stringify(filters)
+    )}`;
+    navigate(url);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [navigate, path, filters]);
+
+  const handleEmploymentTypeChange = useCallback((employmentTypeValue) => {
+    setEmploymentType(
+      (prev) =>
+        prev.includes(employmentTypeValue)
+          ? prev.filter((type) => type !== employmentTypeValue) // Remove if already selected
+          : [...prev, employmentTypeValue] // Add if not selected
+    );
+  }, []);
+
+  const handleFeatureChange = useCallback((featureValue) => {
+    setFeature(
+      (prev) =>
+        prev.includes(getFeatureKeyByValue(featureValue))
+          ? prev.filter((type) => type !== getFeatureKeyByValue(featureValue)) // Remove if already selected
+          : [...prev, getFeatureKeyByValue(featureValue)] // Add if not selected
+    );
+  }, []);
+
+  // Render helpers
+  const renderMeshLink01 = useCallback(
+    (jobType) => {
+      return Object.keys(Facilities).map((facility, index) => {
+        const count = jobTypeNumbersByFacility[facility] || 0;
+
+        return (
+          <Link
+            aria-label={jobType}
+            key={index}
+            to={`/${getJobValueByKey(jobType)}/${Facilities[facility]}`}
+            className="col-span-1 flex items-start justify-between w-full border-b-[1px] border-[#e7e7e7] lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:px-6 duration-300 group"
+          >
+            <p className="py-1">
+              {facility}の{jobType}
+              <span className="text-[#343434] text-xs">
+                {isJobTypeNumbersByFacilityLoading ? (
+                  <Skeleton.Button
+                    active
+                    size="small"
+                    style={{
+                      width: 30,
+                      height: 16,
+                      display: "inline-block",
+                      marginLeft: 4,
+                    }}
+                  />
+                ) : (
+                  `(${count})`
+                )}
+              </span>
+            </p>
+            <div className="flex items-center">
+              <img
+                src={"/assets/images/companytop/ep_arrow-right_red.png"}
+                alt="arrow"
+                className="duration-300 w-4"
+              />
+            </div>
+          </Link>
+        );
+      });
+    },
+    [jobTypeNumbersByFacility, isJobTypeNumbersByFacilityLoading]
+  );
+
+  const renderPrefectureSection = useCallback(
+    (region, prefectures) => (
+      <div className="col-span-1 flex flex-col justify-start items-center">
+        <div className="w-full px-2 lg:px-4">
+          <p className="text-xs lg:text-base font-bold text-[#343434] border-b-[1px] border-[#bdbdbd] w-full text-center py-2 lg:py-3">
+            {region}
+          </p>
+        </div>
+        <div className="flex flex-col w-full px-2 lg:px-4">
+          {Object.keys(prefectures).map((prefecture, index) => (
+            <a
+              key={index}
+              href={getPrefLink(prefectures[prefecture])}
+              className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
+              aria-label={prefecture}
+            >
+              {prefecture}
+            </a>
+          ))}
+        </div>
+      </div>
+    ),
+    [getPrefLink]
+  );
+
+  // Effects
   useEffect(() => {
     // Set page title
     document.title = `${JobType}の求人・転職・就職・アルバイト募集 | JobJob`;
@@ -247,199 +399,18 @@ const CertainJob = () => {
     // Fetch data in parallel
     Promise.all([getJobTypeNumbers(), getJobTypeNumbersByFacility()]).then(
       () => {
-        // Mark content as loaded when both API calls complete
-        setContentLoaded(true);
+        // Data loaded
       }
     );
+
     getJobPosts();
-  }, []);
-
-  const renderMeshLink01 = (jobType) => {
-    return Object.keys(Facilities).map((facility, index) => {
-      const count = jobTypeNumbersByFacility[facility] || 0;
-
-      return (
-        <Link
-          aria-label={jobType}
-          key={index}
-          to={`/${getJobValueByKey(jobType)}/${Facilities[facility]}`}
-          className="col-span-1 flex items-start justify-between w-full border-b-[1px] border-[#e7e7e7] lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:px-6 duration-300 group"
-        >
-          <p className="py-1">
-            {facility}の{jobType}
-            <span className="text-[#343434] text-xs">
-              {isJobTypeNumbersByFacilityLoading ? (
-                <Skeleton.Button
-                  active
-                  size="small"
-                  style={{
-                    width: 30,
-                    height: 16,
-                    display: "inline-block",
-                    marginLeft: 4,
-                  }}
-                />
-              ) : (
-                `(${count})`
-              )}
-            </span>
-          </p>
-          <div className="flex items-center">
-            <img
-              src={"/assets/images/companytop/ep_arrow-right_red.png"}
-              alt="arrow"
-              className="duration-300 w-4"
-            />
-          </div>
-        </Link>
-      );
-    });
-  };
-
-  const renderMeshLink02 = (category, toggle, setToggle) => (
-    <div className="flex flex-col border-t-[0.1rem] border-[#a7a3a3] py-2 px-2">
-      <div className="w-full gap-2">
-        <p
-          className="text-base text-[#FF2A3B] flex items-center justify-between cursor-pointer duration-300"
-          onClick={() => setToggle(!toggle)}
-        >
-          <span>{category}</span>
-          <img
-            src={"/assets/images/companytop/ep_arrow-right_red.png"}
-            alt="arrow"
-            className={`duration-300 ${!toggle ? "rotate-90" : "-rotate-90"}`}
-          />
-        </p>
-      </div>
-      <div
-        className={`duration-300 overflow-hidden ${
-          toggle ? "opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="flex flex-col w-full pt-6">
-          <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
-            {Object.keys(jobType[category]).map((job, index) => {
-              const count = jobTypeNumbers[job] || 0;
-
-              return (
-                <Link
-                  aria-label={jobTypeNumbers?.[job]}
-                  key={index}
-                  to={`/${getJobValueByKey(job)}`}
-                  className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
-                >
-                  <p>
-                    {job}
-                    <span className="text-[#343434] text-xs">
-                      {isJobTypeNumbersLoading ? (
-                        <Skeleton.Button
-                          active
-                          size="small"
-                          style={{
-                            width: 30,
-                            height: 16,
-                            display: "inline-block",
-                            marginLeft: 4,
-                          }}
-                        />
-                      ) : (
-                        `(${count})`
-                      )}
-                    </span>
-                  </p>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const handleSearch = () => {
-    const url = `/${path}/search?filters=${encodeURIComponent(
-      JSON.stringify(filters)
-    )}`;
-    navigate(url);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleEmploymentTypeChange = (employmentTypeValue) => {
-    setEmploymentType(
-      (prev) =>
-        prev.includes(employmentTypeValue)
-          ? prev.filter((type) => type !== employmentTypeValue) // Remove if already selected
-          : [...prev, employmentTypeValue] // Add if not selected
-    );
-  };
-
-  const handleFeatureChange = (feature) => {
-    setFeature(
-      (prev) =>
-        prev.includes(getFeatureKeyByValue(feature))
-          ? prev.filter((type) => type !== getFeatureKeyByValue(feature)) // Remove if already selected
-          : [...prev, getFeatureKeyByValue(feature)] // Add if not selected
-    );
-  };
-
-  // CertainJob コンポーネント内
-  const getPrefLink = (p) => {
-    // 他のフィルターが一つでも設定されているかをチェック
-    const hasOtherFilters =
-      filters.pref !== "" ||
-      filters.employmentType.length > 0 ||
-      filters.monthlySalary !== "" ||
-      filters.hourlySalary !== "" ||
-      filters.feature.length > 0;
-
-    // 他のフィルターがあれば検索モードへ
-    if (hasOtherFilters) {
-      const updated = { ...filters, pref: p };
-      return `/${path}/search?filters=${encodeURIComponent(
-        JSON.stringify(updated)
-      )}`;
-    }
-
-    // パスベースフィルター中か判定
-    const rel = pathname.replace(`/${path}`, "");
-    const segs = rel.split("/").filter(Boolean);
-    const isPathFilter = segs.length > 0 && !pathname.includes("/search");
-    if (isPathFilter) {
-      // makeLink を使って階層付き URL を生成
-      return makeLink({ pref: p });
-    }
-
-    // それ以外はシンプルに /{path}/{pref}
-    return `/${path}/${p}`;
-  };
-
-  const getConditionUrl = (filterName, value) => {
-    const defaultFilters = {
-      pref: "",
-      employmentType: [],
-      hourlySalary: "",
-      monthlySalary: "",
-      feature: [],
-      muni: "",
-      page: 1,
-      features: [],
-    };
-    // 配列で管理するフィルターの場合
-    if (filterName === "employmentType" || filterName === "feature") {
-      defaultFilters[filterName] = [value];
-    } else {
-      defaultFilters[filterName] = value;
-    }
-    return `/${path}/search?filters=${encodeURIComponent(
-      JSON.stringify(defaultFilters)
-    )}`;
-  };
+  }, [JobType, getJobTypeNumbers, getJobTypeNumbersByFacility, getJobPosts]);
 
   useEffect(() => {
     if (!filters.pref) {
       setType(1);
     }
-  }, [location.search]);
+  }, [filters.pref, location.search]);
 
   useEffect(() => {
     setFilters((prev) => ({
@@ -459,22 +430,43 @@ const CertainJob = () => {
 
     if (isPathFilter) {
       // パスベースのフィルターURLなので、トップへのリダイレクトはせず
+      const parts = pathname.split("/");
+      const employmentType = parts.find((part) =>
+        part.startsWith("employment")
+      );
+      const condition = parts.find((part) => part.startsWith("condition"));
+      setFilters((prev) => ({
+        ...prev,
+        employmentType: employmentType
+          ? [getEmploymentTypeKeyByValue(employmentType)]
+          : [],
+        feature: condition ? [getFeatureKeyByValue(condition)] : [],
+      }));
+
+      // Also update the UI state to match the URL filters
+      if (employmentType) {
+        setEmploymentType(
+          employmentType ? [getEmploymentTypeKeyByValue(employmentType)] : []
+        );
+      }
+      if (condition) {
+        setFeature(condition ? [getFeatureKeyByValue(condition)] : []);
+      }
+
       return;
     }
+
     const savedFilters = params.get("filters")
       ? JSON.parse(decodeURIComponent(params.get("filters")))
-      : {
-          pref: "",
-          employmentType: [],
-          hourlySalary: "",
-          monthlySalary: "",
-          feature: [],
-          muni: "",
-          page: 1,
-          features: [],
-        };
+      : DEFAULT_FILTERS;
 
     setFilters(savedFilters);
+
+    // Also update the UI state to match the URL filters
+    setEmploymentType(savedFilters.employmentType || []);
+    setFeature(savedFilters.feature || []);
+    setMonthlySalary(savedFilters.monthlySalary || "");
+    setHourlySalary(savedFilters.hourlySalary || "");
 
     const isEmptyFilters =
       savedFilters.pref === "" &&
@@ -483,43 +475,17 @@ const CertainJob = () => {
       savedFilters.monthlySalary === "" &&
       savedFilters.feature.length === 0;
 
-    if (isEmptyFilters) {
-      const url = `/${path}`;
-      if (window.location.pathname !== url) {
-        navigate(url);
-      }
-    } else {
-      const url = `/${path}/search?filters=${encodeURIComponent(
-        JSON.stringify(savedFilters)
-      )}`;
-      if (window.location.pathname !== url) {
-        navigate(url);
-      }
+    if (isEmptyFilters && pathname !== `/${path}`) {
+      navigate(`/${path}`);
     }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []); // ✅ Make sure it runs when the search query updates
 
-  const renderPrefectureSection = (region, prefectures) => (
-    <div className="col-span-1 flex flex-col justify-start items-center">
-      <div className="w-full px-2 lg:px-4">
-        <p className="text-xs lg:text-base font-bold text-[#343434] border-b-[1px] border-[#bdbdbd] w-full text-center py-2 lg:py-3">
-          {region}
-        </p>
-      </div>
-      <div className="flex flex-col w-full px-2 lg:px-4">
-        {Object.keys(prefectures).map((prefecture, index) => (
-          <a
-            key={index}
-            href={getPrefLink(prefectures[prefecture])}
-            className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
-            aria-label={prefecture}
-          >
-            {prefecture}
-          </a>
-        ))}
-      </div>
-    </div>
-  );
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname, location.search, params, path, navigate]);
+
+  // Fetch job posts when filters change
+  useEffect(() => {
+    getJobPosts();
+  }, [filters, getJobPosts]);
 
   // Render content immediately without waiting for API data
   return (
@@ -659,7 +625,15 @@ const CertainJob = () => {
                             to={makeLink({
                               employment: "employment" + (index + 1),
                             })}
-                            onClick={() => setType(1)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setType(1);
+                              navigate(
+                                makeLink({
+                                  employment: "employment" + (index + 1),
+                                })
+                              );
+                            }}
                             aria-label={employmentTypeKey}
                             className="
                                       absolute inset-y-0 right-0 
@@ -775,9 +749,17 @@ const CertainJob = () => {
                           <Link
                             aria-label={featureKey}
                             to={makeLink({
-                              feature: "feature" + (idx + 1),
+                              feature: getFeatureValueByKey(featureKey),
                             })}
-                            onClick={() => setType(1)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setType(1);
+                              navigate(
+                                makeLink({
+                                  feature: getFeatureValueByKey(featureKey),
+                                })
+                              );
+                            }}
                             className="
                                       absolute inset-y-0 right-0 
                                       flex items-center px-3 

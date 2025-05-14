@@ -74,6 +74,20 @@ export const getFeatureKeyByValue = (value) => {
   return null; // Return null if no match is found
 };
 
+export const getFeatureValueByKey = (featureKey) => {
+  // Loop through each category in the Features object
+  for (const category in Features) {
+    // Check if the category exists in the Features object
+    if (Features[category][featureKey]) {
+      // Return the corresponding value
+      return Features[category][featureKey];
+    }
+  }
+
+  // If the featureKey doesn't exist, return a message or null
+  return null;
+};
+
 export const getAllJobTypeValues = () => {
   const values = [];
   for (const category in jobTypes) {
