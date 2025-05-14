@@ -161,6 +161,140 @@ function App() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
+        <Route element={<CSLayout />}>
+          <Route path="/rule" element={<CSRule />} />
+          <Route path="/" element={<Top />} />
+          <Route path="/coporate" element={<Coporate />} />
+          <Route path="/forgot-password" element={<ForgotPasswordRequest />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/members/sign_up" element={<Register />} />
+          <Route path="/members/sign_in" element={<Login />} />
+          <Route path="/:jobtype/apply/:id" element={<JobOffer />} />
+
+          {getAllJobTypeValues().map((jobType) => {
+            const hasPrefecture =
+              getAllPrefectureValues().includes(prefOrFacility);
+            const hasFacility = getAllFacilityValues().includes(prefOrFacility);
+            if (hasPrefecture) {
+              return (
+                <Route
+                  key={jobType}
+                  path={`/${jobType}/${prefOrFacility}/*`}
+                  element={<JobLists />}
+                />
+              );
+            }
+
+            if (hasFacility) {
+              return (
+                <Route
+                  key={jobType}
+                  path={`/${jobType}/${prefOrFacility}/:employmentType?/:pref?`}
+                  element={<CertainFacility />}
+                />
+              );
+            }
+            if (pathname.split("/").length >= 3) {
+              const prefOrMuniOrJobId = pathname.split("/").pop();
+
+              if (
+                !prefOrMuniOrJobId.includes("muni") &&
+                !prefOrMuniOrJobId.includes("pref") &&
+                !prefOrMuniOrJobId.includes("search")
+              ) {
+                return (
+                  <Route path={`/${jobType}/:id`} element={<JobDetails />} />
+                );
+              }
+
+              if (prefOrMuniOrJobId.includes("muni")) {
+                return (
+                  <Route path={`/${jobType}/:muniId`} element={<JobLists />}>
+                    <Route path="modal/:modal" element={<JobLists />} />
+                  </Route>
+                );
+              }
+
+              if (prefOrMuniOrJobId.includes("pref")) {
+                return (
+                  <Route path={`/${jobType}/:prefId`} element={<JobLists />}>
+                    <Route path="modal/:modal" element={<JobLists />} />
+                  </Route>
+                );
+              }
+
+              if (prefOrFacility === "search") {
+                const filters = params.get("filters")
+                  ? JSON.parse(decodeURIComponent(params.get("filters")))
+                  : {};
+
+                return (
+                  <Route
+                    key={`${jobType}-search`}
+                    path={`/${jobType}/search/*`}
+                    element={
+                      filters.pref === undefined || filters.pref === "" ? (
+                        <CertainJob />
+                      ) : (
+                        <JobLists />
+                      )
+                    }
+                  />
+                );
+              }
+            }
+
+            return (
+              <>
+                <Route
+                  key={jobType}
+                  path={`/${jobType}/*`}
+                  element={<CertainJob />}
+                />
+                <Route
+                  key={jobType}
+                  path={`/${jobType}/search/*`}
+                  element={<CertainJob />}
+                />
+                <Route
+                  path={`${jobType}/:pref?/:muni?/:employmentType?/:feature?/*`}
+                  element={<JobLists />}
+                />
+              </>
+            );
+          })}
+          <Route path={"/facility/:id"} element={<FacilityDetails />} />
+          {getAllFacilityValues().map((facility) => {
+            return (
+              <Route
+                key={facility}
+                path={`/${facility}/:employmentType?/:pref?`}
+                element={<CertainFacility />}
+              />
+            );
+          })}
+          {token && user?.role === "member" ? (
+            <Route element={<MyPageLayout />}>
+              <Route path="/members/mypage" element={<MyPage />} />
+              <Route path="/members/profiles" element={<Profile />} />
+              <Route path="/members/profiles/edit/*" element={<Edit />} />
+              <Route path="/members/message" element={<Message />} />
+              <Route path="/members/message/:id" element={<MessageDetail />} />
+              <Route path="/members/job_offers/apply" element={<Applied />} />
+              <Route
+                path="/members/job_offers/favorite"
+                element={<Favorites />}
+              />
+              <Route path="/members/job_offers/recent" element={<Recent />} />
+              <Route path="/members/resumes/*" element={<Resumes />} />
+              <Route path="/members/settings" element={<Setting />} />
+            </Route>
+          ) : (
+            <Route path="/*" element={<Navigate to="/members/sign_in" />} />
+          )}
+          <Route path="*" element={<NotFound />} />
+          <Route path="/contact" element={<Preparing />} />
+        </Route>
         <Route path="/company" element={<CompanyLandingPage />} />
         <Route element={<CLLogoLayout />}>
           <Route path="/customers/new" element={<CustomerSignUp />} />
@@ -229,121 +363,6 @@ function App() {
             <Route path="/*" element={<CustomerSignIn />} />
           </Route>
         )}
-        <Route element={<CSLayout />}>
-          <Route path="/rule" element={<CSRule />} />
-          <Route path="/" element={<Top />} />
-          <Route path="/coporate" element={<Coporate />} />
-          <Route path="/forgot-password" element={<ForgotPasswordRequest />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/members/sign_up" element={<Register />} />
-          <Route path="/members/sign_in" element={<Login />} />
-          <Route path="/:jobtype/apply/:id" element={<JobOffer />} />
-
-          {getAllJobTypeValues().map((jobType) => {
-            const hasPrefecture =
-              getAllPrefectureValues().includes(prefOrFacility);
-            const hasFacility = getAllFacilityValues().includes(prefOrFacility);
-
-            if (hasPrefecture) {
-              return (
-                <Route
-                  key={jobType}
-                  path={`/${jobType}/${prefOrFacility}/*`}
-                  element={<JobLists />}
-                />
-              );
-            }
-
-            if (hasFacility) {
-              return (
-                <Route
-                  key={jobType}
-                  path={`/${jobType}/${prefOrFacility}/:employmentType?/:pref?`}
-                  element={<CertainFacility />}
-                />
-              );
-            }
-
-            const prefOrMuniOrJobId = pathname.split("/").pop();
-
-            if (
-              !prefOrMuniOrJobId.includes("muni") &&
-              !prefOrMuniOrJobId.includes("pref") &&
-              !prefOrMuniOrJobId.includes("search")
-            ) {
-              return (
-                <Route path={`/${jobType}/:id`} element={<JobDetails />} />
-              );
-            }
-
-            if (prefOrMuniOrJobId.includes("muni")) {
-              return (
-                <Route path={`/${jobType}/:muniId`} element={<JobLists />}>
-                  <Route path="modal/:modal" element={<JobLists />} />
-                </Route>
-              );
-            }
-
-            if (prefOrMuniOrJobId.includes("pref")) {
-              return (
-                <Route path={`/${jobType}/:prefId`} element={<JobLists />}>
-                  <Route path="modal/:modal" element={<JobLists />} />
-                </Route>
-              );
-            }
-
-            if (prefOrFacility === "search") {
-              const filters = params.get("filters")
-                ? JSON.parse(decodeURIComponent(params.get("filters")))
-                : {};
-
-              return (
-                <Route
-                  key={`${jobType}-search`}
-                  path={`/${jobType}/search/*`}
-                  element={
-                    filters.pref === undefined || filters.pref === "" ? (
-                      <CertainJob />
-                    ) : (
-                      <JobLists />
-                    )
-                  }
-                />
-              );
-            }
-          })}
-          <Route path={"/facility/:id"} element={<FacilityDetails />} />
-          {getAllFacilityValues().map((facility) => {
-            return (
-              <Route
-                key={facility}
-                path={`/${facility}/:employmentType?/:pref?`}
-                element={<CertainFacility />}
-              />
-            );
-          })}
-          {token && user?.role === "member" ? (
-            <Route element={<MyPageLayout />}>
-              <Route path="/members/mypage" element={<MyPage />} />
-              <Route path="/members/profiles" element={<Profile />} />
-              <Route path="/members/profiles/edit/*" element={<Edit />} />
-              <Route path="/members/message" element={<Message />} />
-              <Route path="/members/message/:id" element={<MessageDetail />} />
-              <Route path="/members/job_offers/apply" element={<Applied />} />
-              <Route
-                path="/members/job_offers/favorite"
-                element={<Favorites />}
-              />
-              <Route path="/members/job_offers/recent" element={<Recent />} />
-              <Route path="/members/resumes/*" element={<Resumes />} />
-              <Route path="/members/settings" element={<Setting />} />
-            </Route>
-          ) : (
-            <Route path="/*" element={<Navigate to="/members/sign_in" />} />
-          )}
-          <Route path="*" element={<NotFound />} />
-          <Route path="/contact" element={<Preparing />} />
-        </Route>
       </Routes>
     </Suspense>
   );
