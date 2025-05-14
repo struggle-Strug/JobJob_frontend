@@ -20,6 +20,7 @@ import {
   getJobValueByKey,
   getPrefectureKeyByValue,
 } from "../../utils/getFunctions";
+import MeshLink02 from "../../components/MeshLink02";
 
 const CertaionFacility = () => {
   const { user } = useAuth();
@@ -303,7 +304,7 @@ const CertaionFacility = () => {
                     </div>
                     <div className="flex items-center justify-between w-full gap-4 mt-6">
                       <Link
-                        to={`/facility/details/${facility.facility_id}`}
+                        to={`/facility/${facility.facility_id}`}
                         className="flex items-center justify-center bg-[#FF6B56] rounded-lg py-2 text-white border-2 border-[#FF6B56] w-full hover:scale-[1.02] duration-300"
                       >
                         <p className="text-sm font-bold text-white">
@@ -316,7 +317,7 @@ const CertaionFacility = () => {
                         return (
                           <Link
                             key={index}
-                            to={`/${getJobValueByKey(jobPost.type)}/details/${
+                            to={`/${getJobValueByKey(jobPost.type)}/${
                               jobPost.jobpost_id
                             }`}
                             className="flex items-center justify-between gap-4 border-y-[1px] border-[#e7e7e7] py-2 hover:px-6 duration-300"
@@ -343,6 +344,20 @@ const CertaionFacility = () => {
                   </div>
                 );
               })}
+            </div>
+            <div className="rounded-lg px-6 py-4 mt-8 shadow-xl bg-white w-full">
+              <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                職種から求人を探す
+              </p>
+              <div className="w-full mt-4">
+                <MeshLink02 category="医科" />
+                <MeshLink02 category="歯科" />
+                <MeshLink02 category="介護" />
+                <MeshLink02 category="保育" />
+                <MeshLink02 category="リハビリ／代替医療" />
+                <MeshLink02 category="その他" />
+                <MeshLink02 category="ヘルスケア／美容" />
+              </div>
             </div>
           </div>
           <div className="flex h-full w-1/3">

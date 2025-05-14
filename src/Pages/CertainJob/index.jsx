@@ -20,6 +20,7 @@ import {
   getJobTypeKeyByValue,
   getJobValueByKey,
 } from "../../utils/getFunctions";
+import MeshLink02 from "../../components/MeshLink02";
 
 const CertainJob = () => {
   const { pathname } = useLocation();
@@ -530,21 +531,21 @@ const CertainJob = () => {
             <section className="container bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
               <p className="text-sm font-bold lg:text-lg text-[#343434]">
                 <span className="lg:text-2xl text-base">{JobType}</span>
-                の検索結果
-                {filters?.feature.length > 0 && (
-                  <>
-                    <span className="text-base lg:text-xl font-bold text-[#343434]">
-                      ({filters.feature.join("/")}/
-                    </span>
-                  </>
-                )}
                 {filters?.employmentType.length > 0 && (
                   <>
                     <span className="text-base lg:text-xl font-bold text-[#343434]">
-                      {filters.employmentType.join("/")})
+                      ({filters.employmentType.join("/")})
                     </span>
                   </>
                 )}
+                {filters?.feature.length > 0 && (
+                  <>
+                    <span className="text-base lg:text-xl font-bold text-[#343434]">
+                      ({filters.feature.join("/")})
+                    </span>
+                  </>
+                )}
+                の検索結果
               </p>
             </section>
           ) : (
@@ -809,7 +810,7 @@ const CertainJob = () => {
           </section>
           <div className="flex container w-full justify-between gap-8">
             <div className="flex flex-col w-2/3">
-              <div className="rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="rounded-lg px-6 py-4 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   {JobType}について
                 </p>
@@ -817,7 +818,7 @@ const CertainJob = () => {
                   {Descriptions[JobType]}
                 </pre>
               </div>
-              <div className="flex flex-col gap-2 rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="flex flex-col gap-2 rounded-lg px-6 py-4 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   施設形態から{JobType}の求人を探す
                 </p>
@@ -825,30 +826,18 @@ const CertainJob = () => {
                   {renderMeshLink01(JobType)}
                 </div>
               </div>
-              <div className="rounded-lg px-12 py-6 mt-8 shadow-xl bg-white">
+              <div className="rounded-lg px-6 py-4 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   職種から求人を探す
                 </p>
                 <div className="w-full mt-4">
-                  {renderMeshLink02("医科", toggleMedical, setToggleMedical)}
-                  {renderMeshLink02("歯科", toggleDentist, setToggleDentist)}
-                  {renderMeshLink02("介護", toggleNursing, setToggleNursing)}
-                  {renderMeshLink02(
-                    "保育",
-                    toggleChildcare,
-                    setToggleChildcare
-                  )}
-                  {renderMeshLink02(
-                    "リハビリ／代替医療",
-                    toggleRehabilitation,
-                    setToggleRehabilitation
-                  )}
-                  {renderMeshLink02("その他", toggleOther, setToggleOther)}
-                  {renderMeshLink02(
-                    "ヘルスケア／美容",
-                    toggleHealthcare,
-                    setToggleHealthcare
-                  )}
+                  <MeshLink02 category="医科" />
+                  <MeshLink02 category="歯科" />
+                  <MeshLink02 category="介護" />
+                  <MeshLink02 category="保育" />
+                  <MeshLink02 category="リハビリ／代替医療" />
+                  <MeshLink02 category="その他" />
+                  <MeshLink02 category="ヘルスケア／美容" />
                 </div>
               </div>
             </div>

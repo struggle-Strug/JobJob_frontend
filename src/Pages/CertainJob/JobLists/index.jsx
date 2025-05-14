@@ -26,6 +26,7 @@ import {
 import { getPrefCodeByName } from "../../../utils/getPref";
 import NewJobs from "../../../components/NewJobs";
 import NearByJobs from "../../../components/NearByJobs";
+import MeshLink02 from "../../../components/MeshLink02";
 
 const JobLists = () => {
   const { user, likes, setLikes } = useAuth();
@@ -68,12 +69,6 @@ const JobLists = () => {
   });
 
   const [modalType, setModalType] = useState(null);
-
-  // Temporary filter states for modals
-  const [tempEmploymentTypes, setTempEmploymentTypes] = useState([]);
-  const [tempFeatures, setTempFeatures] = useState([]);
-  const [tempMonthlySalary, setTempMonthlySalary] = useState("");
-  const [tempHourlySalary, setTempHourlySalary] = useState("");
 
   // Path and route information
   const path = pathname.split("/")[1];
@@ -145,22 +140,11 @@ const JobLists = () => {
     openModal("muni");
   }, [filters.pref, openModal]);
 
-  const openEmploymentModal = useCallback(() => {
-    setTempEmploymentTypes(filters.employmentType);
-    setTempMonthlySalary(filters.monthlySalary);
-    setTempHourlySalary(filters.hourlySalary);
-    openModal("employment");
-  }, [
-    filters.employmentType,
-    filters.monthlySalary,
-    filters.hourlySalary,
-    openModal,
-  ]);
-
-  const openFeatureModal = useCallback(() => {
-    setTempFeatures(filters.feature);
-    openModal("feature");
-  }, [filters.feature, openModal]);
+  const openEmploymentModal = useCallback(
+    () => openModal("employment"),
+    [openModal]
+  );
+  const openFeatureModal = useCallback(() => openModal("feature"), [openModal]);
 
   // Progressive loading of UI sections
   useEffect(() => {
@@ -282,49 +266,31 @@ const JobLists = () => {
 
   // Handle search with current filters
   const handleSearch = useCallback(() => {
-    // Apply temporary filters if modal is open
-    let updatedFilters = { ...filters };
-
-    if (modalType === "employment") {
-      updatedFilters = {
-        ...updatedFilters,
-        employmentType: tempEmploymentTypes,
-        monthlySalary: tempMonthlySalary,
-        hourlySalary: tempHourlySalary,
-      };
-    } else if (modalType === "feature") {
-      updatedFilters = {
-        ...updatedFilters,
-        feature: tempFeatures,
-      };
-    }
-
     const muniObj = getMunicipalityById(currentMuniCode);
     const muniName = muniObj ? muniObj.name : "";
-    const muniToSend = updatedFilters.muni || muniName;
+    const muniToSend = filters.muni || muniName;
 
     const filtersToApply = {
-      ...updatedFilters,
-      muni: muniToSend || updatedFilters.muni,
+      ...filters,
+      muni: muniToSend || filters.muni,
       employmentType: currentEmploymentCode
         ? [
             Object.entries(EmploymentType).find(
               ([, code]) => code === currentEmploymentCode
             )?.[0],
           ]
-        : updatedFilters.employmentType,
+        : filters.employmentType,
       feature: currentFeatureCode
         ? [
             Object.values(Features)
               .flatMap((group) => Object.entries(group))
               .find(([, code]) => code === currentFeatureCode)?.[0],
           ]
-        : updatedFilters.feature,
+        : filters.feature,
       page: 1, // Reset page on new search
     };
 
     setFilters(filtersToApply);
-    closeModal();
 
     const url = `/${path}/search?filters=${encodeURIComponent(
       JSON.stringify(filtersToApply)
@@ -336,14 +302,8 @@ const JobLists = () => {
     currentFeatureCode,
     currentMuniCode,
     filters,
-    modalType,
     navigate,
     path,
-    tempEmploymentTypes,
-    tempFeatures,
-    tempMonthlySalary,
-    tempHourlySalary,
-    closeModal,
   ]);
 
   // Build path for filter navigation
@@ -444,32 +404,32 @@ const JobLists = () => {
 
   // Handle employment type checkbox change
   const handleEmploymentTypeChange = useCallback((employmentTypeValue) => {
-    setTempEmploymentTypes((prev) => {
-      const currentTypes = [...prev];
-      return currentTypes.includes(employmentTypeValue)
+    setFilters((prev) => {
+      const currentTypes = [...prev.employmentType];
+      const newTypes = currentTypes.includes(employmentTypeValue)
         ? currentTypes.filter((type) => type !== employmentTypeValue)
         : [...currentTypes, employmentTypeValue];
+
+      return { ...prev, employmentType: newTypes };
     });
   }, []);
 
   // Handle feature checkbox change
   const handleFeatureChange = useCallback((feature) => {
-    setTempFeatures((prev) => {
+    setFilters((prev) => {
       const featureKey = getFeatureKeyByValue(feature);
-      const currentFeatures = [...prev];
-      return currentFeatures.includes(featureKey)
+      const currentFeatures = [...prev.feature];
+      const newFeatures = currentFeatures.includes(featureKey)
         ? currentFeatures.filter((type) => type !== featureKey)
         : [...currentFeatures, featureKey];
+
+      return { ...prev, feature: newFeatures };
     });
   }, []);
 
   // Handle salary changes
   const handleSalaryChange = useCallback((type, value) => {
-    if (type === "monthlySalary") {
-      setTempMonthlySalary(value);
-    } else if (type === "hourlySalary") {
-      setTempHourlySalary(value);
-    }
+    setFilters((prev) => ({ ...prev, [type]: value }));
   }, []);
 
   // Initialize filters from URL or path segments
@@ -480,9 +440,10 @@ const JobLists = () => {
     // Set document title
     const year = new Date().getFullYear();
     const month = String(new Date().getMonth() + 1).padStart(2, "0");
-    document.title = `【${year}年${month}月最新】${getPrefectureKeyByValue(
-      filters.pref
-    )}の${JobType}の求人・転職・募集 | JobJob (ジョブジョブ)`;
+    const prefName = filters.pref ? getPrefectureKeyByValue(filters.pref) : "";
+    document.title = `【${year}年${month}月最新】${
+      prefName ? prefName + "の" : ""
+    }${JobType}の求人・転職・募集 | JobJob (ジョブジョブ)`;
 
     // Initialize likes from localStorage
     const storedLikes = localStorage.getItem("likes");
@@ -571,13 +532,21 @@ const JobLists = () => {
 
   // Fetch job posts when filters change
   useEffect(() => {
-    // Only close modal and fetch if not in a modal selection process
-    if (!modalType) {
-      if (filters.pref) {
-        getJobPosts();
-      }
+    closeModal();
+    if (filters.pref) {
+      getJobPosts();
     }
-  }, [modalType, filters, getJobPosts]);
+  }, [closeModal, filters, getJobPosts]);
+
+  // Update document title when prefecture changes
+  useEffect(() => {
+    if (filters.pref) {
+      const year = new Date().getFullYear();
+      const month = String(new Date().getMonth() + 1).padStart(2, "0");
+      const prefName = getPrefectureKeyByValue(filters.pref);
+      document.title = `【${year}年${month}月最新】${prefName}の${JobType}の求人・転職・募集 | JobJob (ジョブジョブ)`;
+    }
+  }, [filters.pref, JobType]);
 
   // Render prefecture section for modal
   const renderPrefectureSection = useCallback(
@@ -595,7 +564,7 @@ const JobLists = () => {
               className="text-xs lg:text-md text-[#343434] hover:text-[#FF2A3B] border-b-[1px] border-[#bdbdbd] w-full text-center py-1 lg:py-[0.5rem] duration-300"
               href={buildPathFilter({
                 pref: prefectures[prefecture],
-                muni: currentMuniCode,
+                muni: "",
                 employment: currentEmploymentCode,
                 feature: currentFeatureCode,
               })}
@@ -626,7 +595,7 @@ const JobLists = () => {
               aria-label={municipality}
               key={index}
               href={buildPathFilter({
-                pref: filters.pref,
+                // pref: filters.pref,
                 muni: municipality,
                 employment: currentEmploymentCode,
                 feature: currentFeatureCode,
@@ -681,9 +650,7 @@ const JobLists = () => {
           className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 cursor-pointer hover:scale-[1.02] duration-300 animate-fadeIn"
           style={{ animationDelay: `${index * 100}ms` }}
         >
-          <div
-            onClick={() => navigate(`/${path}/details/${jobpost.jobpost_id}`)}
-          >
+          <div onClick={() => navigate(`/${path}/${jobpost.jobpost_id}`)}>
             <div className="flex md:flex-col lg:flex-row items-start justify-between w-full">
               {jobpost?.picture?.length === 0 ? (
                 <img
@@ -702,11 +669,11 @@ const JobLists = () => {
               )}
               <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
                 <Link
-                  to={`/${path}/details/${jobpost.jobpost_id}`}
+                  to={`/${path}/${jobpost.jobpost_id}`}
                   className="lg:text-xl md:text-sm font-bold text-[#343434] hover:underline"
                 >
-                  {jobpost.facility_id.name}の{jobpost.type}求人(
-                  {jobpost.employment_type[0]})
+                  {jobpost.facility_id?.name || "求人"}の{jobpost.type}求人(
+                  {jobpost.employment_type?.[0] || ""})
                 </Link>
                 <p className="lg:text-sm md:text-xs text-[#343434]">
                   {jobpost.sub_title}
@@ -811,7 +778,7 @@ const JobLists = () => {
               </p>
             </button>
             <Link
-              to={`/${path}/details/${jobpost.jobpost_id}`}
+              to={`/${path}/${jobpost.jobpost_id}`}
               className="flex items-center justify-center bg-[#FF6B56] hover:bg-[#FF5B02] hover:scale-105 duration-300 rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2"
             >
               <p className="text-sm font-bold text-white">求人を見る</p>
@@ -849,25 +816,10 @@ const JobLists = () => {
                   <span className="font-bold">
                     {getPrefectureKeyByValue(filters.pref)}
                   </span>
-                  {currentMuniCode && (
-                    <span className="font-bold">
-                      ,{getMunicipalityById(currentMuniCode).name}
-                    </span>
-                  )}
                   {filters.muni && (
-                    <span className="font-bold">,{filters.muni}</span>
+                    <span className="font-bold">{filters.muni}</span>
                   )}
                   <span className="font-bold">,{JobType}</span>
-                  {filters.employmentType.length > 0 && (
-                    <span className="font-bold">
-                      ,{filters.employmentType.join(",")}
-                    </span>
-                  )}
-                  {filters.feature.length > 0 && (
-                    <span className="font-bold">
-                      ({filters.feature.join(",")})
-                    </span>
-                  )}
                   <span>の求人・転職・アルバイト情報</span>
                 </h1>
                 <div className="flex items-center justify-between mt-4">
@@ -875,12 +827,23 @@ const JobLists = () => {
                     <p className="lg:text-xl md:text-sm font-bold text-[#343434] ">
                       該当件数
                     </p>
-                    <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number">
-                      {jobData.allJobPostsNum}
-                    </p>
-                    <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                      件
-                    </p>
+                    {jobData.isLoading ? (
+                      <div className="flex items-center">
+                        <div className="w-16 h-8 bg-gray-200 animate-pulse rounded mx-2"></div>
+                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                          件
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="font-bold text-[#FF2A3B] lg:text-[1.7rem] md:text-[1.2rem] number ml-2">
+                          {jobData.allJobPostsNum}
+                        </p>
+                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                          件
+                        </p>
+                      </>
+                    )}
                   </div>
                   <div className="flex items-center justify-between lg:px-8 md:px-2 lg:py-2 md:py-1 border-[#FF2A3B] border-2 rounded-lg gap-4">
                     <button
@@ -1076,14 +1039,30 @@ const JobLists = () => {
 
             {/* Description Section - Lowest Priority */}
             {loadedSections.description ? (
-              <div className="flex flex-col bg-white rounded-lg px-8 py-6 w-full mt-8 shadow-xl animate-fadeIn">
-                <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
-                  {JobType}について
-                </p>
-                <pre className="lg:text-[1rem] md:text-[0.8rem]">
-                  {SmallDescriptions[JobType]}
-                </pre>
-              </div>
+              <>
+                <div className="flex flex-col bg-white rounded-lg px-8 py-6 w-full mt-8 shadow-xl animate-fadeIn">
+                  <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                    {JobType}について
+                  </p>
+                  <pre className="lg:text-[1rem] md:text-[0.8rem]">
+                    {SmallDescriptions[JobType]}
+                  </pre>
+                </div>
+                <div className="rounded-lg px-6 py-4 mt-8 shadow-xl bg-white w-full">
+                  <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                    職種から求人を探す
+                  </p>
+                  <div className="w-full mt-4">
+                    <MeshLink02 category="医科" />
+                    <MeshLink02 category="歯科" />
+                    <MeshLink02 category="介護" />
+                    <MeshLink02 category="保育" />
+                    <MeshLink02 category="リハビリ／代替医療" />
+                    <MeshLink02 category="その他" />
+                    <MeshLink02 category="ヘルスケア／美容" />
+                  </div>
+                </div>
+              </>
             ) : (
               renderSectionSkeleton("150px")
             )}
@@ -1148,7 +1127,7 @@ const JobLists = () => {
                 </div>
                 <div className="flex items-center justify-start w-full mt-8">
                   <p className="lg:text-lg md:text-sm text-[#343434] font-bold">
-                    人気のコラムランキン���
+                    人気のコラムランキング
                   </p>
                 </div>
                 <div className="flex flex-col bg-white rounded-lg lg:px-8 md:px-4 py-6 w-full mt-8 shadow-xl">
@@ -1310,7 +1289,7 @@ const JobLists = () => {
                 <Checkbox
                   key={index}
                   onChange={() => handleEmploymentTypeChange(employmentTypeKey)}
-                  checked={tempEmploymentTypes.includes(employmentTypeKey)}
+                  checked={filters.employmentType.includes(employmentTypeKey)}
                   className="relative"
                 >
                   {employmentTypeKey}
@@ -1348,7 +1327,7 @@ const JobLists = () => {
                   onChange={(value) =>
                     handleSalaryChange("monthlySalary", value)
                   }
-                  value={tempMonthlySalary}
+                  value={filters.monthlySalary}
                   className="h-10"
                 />
                 <span className="lg:text-base md:text-sm text-xs text-[#343434]">
@@ -1364,7 +1343,7 @@ const JobLists = () => {
                   onChange={(value) =>
                     handleSalaryChange("hourlySalary", value)
                   }
-                  value={tempHourlySalary}
+                  value={filters.hourlySalary}
                   className="h-10"
                 />
                 <span className="lg:text-base md:text-sm text-xs text-[#343434]">
@@ -1426,7 +1405,7 @@ const JobLists = () => {
                     onChange={() =>
                       handleFeatureChange(section.features[featureKey])
                     }
-                    checked={tempFeatures.includes(
+                    checked={filters.feature.includes(
                       getFeatureKeyByValue(section.features[featureKey])
                     )}
                     className="relative"

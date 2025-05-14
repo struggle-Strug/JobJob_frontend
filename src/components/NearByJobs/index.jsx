@@ -6,8 +6,9 @@ import { Button, message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getJobTypeKeyByValue } from "../../utils/getFunctions";
 
-const NearByJobs = ({ jobType, path }) => {
+const NearByJobs = ({ jobType, pref, muni, path }) => {
   const { user } = useAuth();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,8 +23,8 @@ const NearByJobs = ({ jobType, path }) => {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/filter`,
         {
-          pref: user?.prefecture,
-          muni: user?.municipalities,
+          pref: pref,
+          muni: muni,
           JobType: jobType,
           employmentType: [],
           monthlySalary: "",
@@ -92,7 +93,7 @@ const NearByJobs = ({ jobType, path }) => {
 
   // Function to handle job card click
   const handleJobClick = (jobId) => {
-    navigate(`/${path}/details/${jobId}`);
+    navigate(`/${path}/${jobId}`);
   };
 
   // Render job cards

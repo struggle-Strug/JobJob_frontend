@@ -21,7 +21,7 @@ const Step6 = ({
           <p className="lg:text-lg md:text-base text-sm">電話番号</p>
           <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
         </div>
-        <div className="flex flex-col w-3/5 px-2">
+        <div className="flex flex-col w-3/4 px-2">
           <Input
             placeholder="電話番号"
             className="w-1/2 py-2"
@@ -37,10 +37,9 @@ const Step6 = ({
           <p className="lg:text-lg md:text-base text-sm">メールアドレス</p>
           <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
         </div>
-        <div className="flex flex-col w-3/5 px-2">
+        <div className="flex flex-col w-3/4 px-2">
           <Input
             type="email"
-            placeholder="メールアドレス"
             className="w-1/2 py-2"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -54,10 +53,9 @@ const Step6 = ({
           <p className="lg:text-lg md:text-base text-sm">パスワード</p>
           <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
         </div>
-        <div className="flex flex-col w-3/5 px-2">
+        <div className="flex flex-col w-3/4 px-2">
           <Input
             type="password"
-            placeholder="PASSWORD"
             className="w-1/2 py-2"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -71,10 +69,9 @@ const Step6 = ({
           <p className="lg:text-lg md:text-base text-sm">パスワード(確認)</p>
           <p className="text-[#FF2A3B] text-sm pt-1">必須</p>
         </div>
-        <div className="flex flex-col w-3/5 px-2">
+        <div className="flex flex-col w-3/4 px-2">
           <Input
             type="password"
-            placeholder="PASSWORD(確認)"
             className="w-1/2 py-2"
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}

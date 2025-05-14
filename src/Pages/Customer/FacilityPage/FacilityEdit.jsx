@@ -823,7 +823,7 @@ const FacilityEdit = () => {
                     {facility?.jobPosts?.map((jobPost, index) => (
                       <Link
                         key={index}
-                        to={`/${getJobValueByKey(jobPost.type)}/details/${
+                        to={`/${getJobValueByKey(jobPost.type)}/${
                           jobPost?.jobpost_id
                         }`}
                         className="lg:text-base text-sm text-[#FF2A3B] hover:underline"

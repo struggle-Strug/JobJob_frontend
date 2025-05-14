@@ -92,7 +92,7 @@ const Recent = () => {
                       応募画面に進む
                     </Link>
                     <Link
-                      to={`/${getJobTypeValue(JobType, jobPost.type)}/details/${
+                      to={`/${getJobTypeValue(JobType, jobPost.type)}/${
                         jobPost.jobpost_id
                       }`}
                       className="bg-[#e7e7e7] text-[#FF2A3B] w-1/2 text-center rounded-lg py-1 hover:shadow-2xl hover:scale-[1.02] duration-300"

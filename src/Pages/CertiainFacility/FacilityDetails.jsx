@@ -9,6 +9,7 @@ import { Facilities } from "../../utils/constants/categories";
 import NotFound from "../NotFound";
 import { useAuth } from "../../context/AuthContext";
 import SkeletonGroup from "../../components/SkeletonGroup";
+import MeshLink02 from "../../components/MeshLink02";
 
 // Job type to URL path mapping
 const JOB_MAPPING = {
@@ -162,9 +163,7 @@ const JobPostCard = ({ jobPost, facility }) => {
   return (
     <div
       onClick={() =>
-        navigate(
-          `/${getJobValueByKey(jobPost.type)}/details/${jobPost.jobpost_id}`
-        )
+        navigate(`/${getJobValueByKey(jobPost.type)}/${jobPost.jobpost_id}`)
       }
       className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-4 w-full shadow-xl mt-8 hover:scale-[1.02] duration-300 cursor-pointer"
     >
@@ -184,9 +183,7 @@ const JobPostCard = ({ jobPost, facility }) => {
         )}
         <div className="flex flex-col items-start justify-between p-4 w-full gap-8">
           <Link
-            to={`/${getJobValueByKey(jobPost.type)}/details/${
-              jobPost.jobpost_id
-            }`}
+            to={`/${getJobValueByKey(jobPost.type)}/${jobPost.jobpost_id}`}
             className="lg:text-xl md:text-sm font-bold text-[#343434] hover:underline"
           >
             {facility?.name}の{jobPost.type}求人({jobPost.employment_type})
@@ -275,9 +272,7 @@ const JobPostCard = ({ jobPost, facility }) => {
           <p className="text-sm font-bold text-[#FF6B56]">気になる</p>
         </button>
         <Link
-          to={`/${getJobValueByKey(jobPost.type)}/details/${
-            jobPost.jobpost_id
-          }`}
+          to={`/${getJobValueByKey(jobPost.type)}/${jobPost.jobpost_id}`}
           className="flex items-center justify-center bg-[#FF6B56] hover:bg-[#FF5B02] hover:scale-105 duration-300 rounded-lg py-2 text-white border-2 border-[#FF6B56] w-1/2"
         >
           <p className="text-sm font-bold text-white">求人を見る</p>
@@ -294,7 +289,7 @@ const FacilityDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
-  const facility_id = useMemo(() => pathname.split("/")[3], [pathname]);
+  const facility_id = useMemo(() => pathname.split("/")[2], [pathname]);
 
   const getFacility = useCallback(async () => {
     try {
@@ -364,8 +359,8 @@ const FacilityDetails = () => {
             </div>
 
             <div className="bg-white rounded-lg flex flex-col w-full px-4 py-2 mt-8">
-              <p className="text-xs font-bold text-[#343434]">募集中の求人</p>
-              <p className="text-xs font-bold text-[#343434]">
+              <p className="text-base font-bold text-[#343434]">募集中の求人</p>
+              <p className="text-base font-bold text-[#343434]">
                 <span className="text-[#FF2A3B] number">
                   {facility?.jobPosts.length}
                 </span>
@@ -511,6 +506,20 @@ const FacilityDetails = () => {
                     {facility?.rest_day}
                   </span>
                 </p>
+              </div>
+            </div>
+            <div className="rounded-lg px-6 py-4 mt-8 shadow-xl bg-white w-full">
+              <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
+                職種から求人を探す
+              </p>
+              <div className="w-full mt-4">
+                <MeshLink02 category="医科" />
+                <MeshLink02 category="歯科" />
+                <MeshLink02 category="介護" />
+                <MeshLink02 category="保育" />
+                <MeshLink02 category="リハビリ／代替医療" />
+                <MeshLink02 category="その他" />
+                <MeshLink02 category="ヘルスケア／美容" />
               </div>
             </div>
           </div>

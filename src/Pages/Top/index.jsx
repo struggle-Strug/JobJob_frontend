@@ -10,6 +10,7 @@ import { message } from "antd";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import NewJobs from "../../components/NewJobs";
 
 const Top = () => {
   const { user } = useAuth();
@@ -2010,6 +2011,7 @@ const Top = () => {
             </Link>
           </div>
         </section>
+        <NewJobs />
       </div>
     </>
   );
