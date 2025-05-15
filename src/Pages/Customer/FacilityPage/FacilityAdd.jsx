@@ -267,8 +267,8 @@ const FacilityAdd = () => {
         rest_day: facilityRestDay,
       };
 
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/photo`,
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
         photoUrls.files || []
       );
 
