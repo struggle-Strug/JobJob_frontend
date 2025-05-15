@@ -35,6 +35,10 @@ const CustomerSignUp = () => {
       email: email,
     };
 
+    await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/photo`, {
+      companyName: companyName,
+    });
+
     const resData = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/v1/customers/signup`,
       newCustomer
