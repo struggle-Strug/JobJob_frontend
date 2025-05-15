@@ -24,6 +24,12 @@ const CoporateManagement = () => {
       width: 600,
     },
     {
+      title: "氏名",
+      dataIndex: "contactPerson",
+      key: "contactPerson",
+      width: 600,
+    },
+    {
       title: "操作",
       key: "actions",
       align: "center", // Center-align the column title and content
@@ -48,12 +54,10 @@ const CoporateManagement = () => {
     key: user._id,
     id: user._id,
     email: user.email,
+    contactPerson: user.contactPerson,
   }));
 
   const handleAdd = async () => {
-    if ((contactPersonSei || contactPersonMei) === "")
-      return message.error("担当者名を入力してください");
-    if (phoneNumber === "") return message.error("電話番号を入力してください");
     if (email === "") return message.error("メールアドレスを入力してください");
     if (password === "") return message.error("パスワードを入力してください");
     if (password !== confirmPassword)
@@ -148,22 +152,7 @@ const CoporateManagement = () => {
         <div className="border-r-[1px] border-b-[1px] border-[#EFEFEF] m-8">
           <div className="flex w-full border-t-[1px] border-[#EFEFEF]">
             <div className="w-1/4 p-4 bg-[#f5f5f5] flex items-start">
-              <p className="text-sm font-bold text-[#343434]">法人名・貴社名</p>
-            </div>
-            <div className="w-3/4 p-4">
-              <p className="text-sm font-bold text-[#343434]">
-                {customer?.companyName}
-              </p>
-            </div>
-          </div>
-          <div className="flex w-full border-t-[1px] border-[#EFEFEF]">
-            <div className="w-1/4 p-4 bg-[#f5f5f5] flex items-start">
-              <p className="text-sm font-bold text-[#343434]">
-                <span className="bg-red-600 text-white rounded-sm px-1 text-xs mr-1">
-                  必須
-                </span>
-                担当者氏名
-              </p>
+              <p className="text-sm font-bold text-[#343434]">担当者氏名</p>
             </div>
             <div className="w-3/4 p-4">
               <div className="w-full flex items-center gap-6">
@@ -200,24 +189,6 @@ const CoporateManagement = () => {
                 className="w-1/2 h-10"
                 value={huriganaContactPersonMei}
                 onChange={(e) => setHuriganaContactPersonMei(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="flex w-full border-t-[1px] border-[#EFEFEF]">
-            <div className="w-1/4 p-4 bg-[#f5f5f5] flex items-center">
-              <p className="text-sm font-bold text-[#343434]">
-                <span className="bg-red-600 text-white rounded-sm px-1 text-xs mr-1">
-                  必須
-                </span>
-                電話番号
-              </p>
-            </div>
-            <div className="w-3/4 p-4 flex flex-col items-start">
-              <Input
-                placeholder="03-1234-5678"
-                className="w-full h-10"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </div>
           </div>
