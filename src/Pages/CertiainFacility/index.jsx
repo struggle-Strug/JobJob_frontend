@@ -21,6 +21,7 @@ import {
   getPrefectureKeyByValue,
 } from "../../utils/getFunctions";
 import MeshLink02 from "../../components/MeshLink02";
+import NewJobs from "../../components/NewJobs";
 
 const CertaionFacility = () => {
   const { user } = useAuth();
@@ -150,7 +151,7 @@ const CertaionFacility = () => {
   }, [document.title]);
   return (
     <SkeletonGroup isLoading={isLoading}>
-      <div className="flex w-full px-4 bg-[#EFEFEF]">
+      <div className="flex flex-col w-full px-4 bg-[#EFEFEF]">
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-start justify-start w-2/3">
             <div className="flex flex-col justify-center bg-white rounded-lg p-4 w-full shadow-xl">
@@ -543,9 +544,11 @@ const CertaionFacility = () => {
                   className="w-full"
                 />
               </div>
+              <NewJobs />
             </div>
           </div>
         </div>
+        <NewJobs />
       </div>
       {
         <Modal

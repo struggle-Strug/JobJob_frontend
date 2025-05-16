@@ -10,6 +10,7 @@ import NotFound from "../NotFound";
 import { useAuth } from "../../context/AuthContext";
 import SkeletonGroup from "../../components/SkeletonGroup";
 import MeshLink02 from "../../components/MeshLink02";
+import NewJobs from "../../components/NewJobs";
 
 // Job type to URL path mapping
 const JOB_MAPPING = {
@@ -331,7 +332,7 @@ const FacilityDetails = () => {
 
   return (
     <SkeletonGroup isLoading={loading}>
-      <div className="flex w-full px-4 bg-[#EFEFEF] pt-5">
+      <div className="flex flex-col w-full px-4 bg-[#EFEFEF] pt-5">
         <div className="container flex justify-between gap-8">
           <div className="flex flex-col items-start justify-start w-full lg:w-2/3">
             <div className="flex relative flex-col items-center justify-between bg-white rounded-2xl p-6 w-full shadow-xl hover:scale-[1.02] duration-300">
@@ -670,6 +671,7 @@ const FacilityDetails = () => {
             </div>
           </div>
         </div>
+        <NewJobs />
       </div>
     </SkeletonGroup>
   );
