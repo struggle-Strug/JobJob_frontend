@@ -174,27 +174,6 @@ const CoporateManagement = () => {
           <div className="flex w-full border-t-[1px] border-[#EFEFEF]">
             <div className="w-1/4 p-4 bg-[#f5f5f5] flex items-center">
               <p className="text-sm font-bold text-[#343434]">
-                担当者氏名(フリガナ)
-              </p>
-            </div>
-            <div className="w-3/4 p-4 flex items-center gap-6">
-              <Input
-                placeholder="ヤマダ"
-                className="w-1/2 h-10"
-                value={huriganaContactPersonSei}
-                onChange={(e) => setHuriganaContactPersonSei(e.target.value)}
-              />
-              <Input
-                placeholder="タロウ"
-                className="w-1/2 h-10"
-                value={huriganaContactPersonMei}
-                onChange={(e) => setHuriganaContactPersonMei(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="flex w-full border-t-[1px] border-[#EFEFEF]">
-            <div className="w-1/4 p-4 bg-[#f5f5f5] flex items-center">
-              <p className="text-sm font-bold text-[#343434]">
                 <span className="bg-red-600 text-white rounded-sm px-1 text-xs mr-1">
                   必須
                 </span>
