@@ -214,14 +214,24 @@ const JobLists = () => {
       const muniName = muniObj ? muniObj.name : "";
       const muniToSend = filters.muni || muniName;
 
+      // Create a properly formatted request object that preserves all filter values
+      const requestData = {
+        JobType: JobType,
+        pref: filters.pref ? getPrefectureKeyByValue(filters.pref) : "",
+        muni: muniToSend || "",
+        employmentType: filters.employmentType,
+        monthlySalary: filters.monthlySalary,
+        hourlySalary: filters.hourlySalary,
+        feature: filters.feature,
+        page: filters.page,
+      };
+
+      console.log("Sending filters to API:", requestData);
+      console.log("Current filter state:", filters);
+
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/filter`,
-        {
-          ...filters,
-          JobType: JobType,
-          pref: getPrefectureKeyByValue(filters.pref),
-          muni: muniToSend || "",
-        }
+        requestData
       );
 
       if (!response.data || !response.data.jobposts) {
@@ -459,14 +469,23 @@ const JobLists = () => {
       const savedFilters = params.get("filters")
         ? JSON.parse(decodeURIComponent(params.get("filters")))
         : {
-            pref: "",
-            muni: "",
+            pref: filters.pref || "",
+            muni: filters.muni || "",
             page: 1,
             employmentType: [],
             hourlySalary: "",
             monthlySalary: "",
             feature: [],
           };
+
+      // Preserve existing pref and muni if they exist
+      if (filters.pref && !savedFilters.pref) {
+        savedFilters.pref = filters.pref;
+      }
+
+      if (filters.muni && !savedFilters.muni) {
+        savedFilters.muni = filters.muni;
+      }
 
       setFilters(savedFilters);
 
@@ -522,7 +541,7 @@ const JobLists = () => {
 
       if (muni) {
         setFilters((prev) => ({
-          ...prev,
+          ...prev, // Preserve all existing filters
           pref: getPrefCodeByName(muni.prefecture),
           muni: muni.name,
         }));
@@ -533,7 +552,9 @@ const JobLists = () => {
   // Fetch job posts when filters change
   useEffect(() => {
     closeModal();
-    if (filters.pref) {
+    // Only fetch if we have a prefecture and the component has mounted
+    if (filters.pref && !initialRenderRef.current) {
+      console.log("Fetching job posts with filters:", filters);
       getJobPosts();
     }
   }, [closeModal, filters, getJobPosts]);
