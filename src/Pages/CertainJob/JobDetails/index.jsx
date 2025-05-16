@@ -910,6 +910,7 @@ const JobDetails = () => {
             jobType={jobPost?.type}
             pref={jobPost?.facility_id?.prefecture}
             muni={jobPost?.facility_id?.city}
+            jobpost_id={jobPost?.jobpost_id}
           />
         </div>
         <NewJobs />
