@@ -77,7 +77,7 @@ const MeshLink02 = ({ category }) => {
 
               return (
                 <Link
-                  aria-label={jobTypeNumbers?.[job]}
+                  aria-label={`${job}の求人情報を見る`}
                   key={index}
                   to={`/${getJobValueByKey(job)}`}
                   className="col-span-1 flex items-start justify-between w-full lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:underline duration-300 group"
