@@ -517,9 +517,23 @@ const CertainJob = () => {
           ) : (
             <section className="container bg-white rounded-lg px-8 lg:px-12 py-6 lg:py-12">
               <p className="flex flex-wrap gap-1 items-end">
-                <span className="text-base lg:text-xl font-bold text-[#343434]">
+                <span className="lg:text-xl font-bold text-base">
                   {JobType}
                 </span>
+                {filters?.employmentType.length > 0 && (
+                  <>
+                    <span className="text-base lg:text-xl font-bold text-[#343434]">
+                      ({filters.employmentType.join("/")})
+                    </span>
+                  </>
+                )}
+                {filters?.feature.length > 0 && (
+                  <>
+                    <span className="text-base lg:text-xl font-bold text-[#343434]">
+                      ({filters.feature.join("/")})
+                    </span>
+                  </>
+                )}
                 <span className="text-xs lg:text-base text-[#343434]">の</span>
               </p>
               <p className="text-sm lg:text-lg text-[#343434]">
