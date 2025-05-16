@@ -258,7 +258,7 @@ function App() {
                   element={<CertainJob />}
                 />
                 <Route
-                  path={`${jobType}/:pref?/:muni?/:employmentType?/:feature?/*`}
+                  path={`/${jobType}/:pref?/:muni?/:employmentType?/:feature?/*`}
                   element={<JobLists />}
                 />
               </>
