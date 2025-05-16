@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Modal, Button } from "antd";
+import { useEffect } from "react";
 
 // Function to create a processed image with 4:3 aspect ratio, fitting to height
 const createProcessedImage = async (imageSrc) => {
@@ -64,69 +63,27 @@ const createProcessedImage = async (imageSrc) => {
   });
 };
 
-const ImageEditModal = ({ visible, image, onCancel, onSave }) => {
-  const [previewUrl, setPreviewUrl] = useState(null);
-
-  // Generate preview when image changes
+// Modified component that automatically processes images without showing UI
+const ImageEditModal = ({ image, onSave }) => {
   useEffect(() => {
     if (image) {
-      const generatePreview = async () => {
-        const result = await createProcessedImage(image);
-        setPreviewUrl(result.preview);
+      const processImage = async () => {
+        try {
+          const processedImage = await createProcessedImage(image);
+          if (onSave) {
+            onSave(processedImage);
+          }
+        } catch (e) {
+          console.error("Error processing image:", e);
+        }
       };
 
-      generatePreview();
+      processImage();
     }
+  }, [image, onSave]);
 
-    // Clean up preview URL when component unmounts or image changes
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [image]);
-
-  const handleSave = async () => {
-    try {
-      if (!image) return;
-      const processedImage = await createProcessedImage(image);
-      onSave(processedImage);
-    } catch (e) {
-      console.error("Error processing image:", e);
-    }
-  };
-
-  return (
-    <Modal
-      title="画像編集"
-      open={visible}
-      onCancel={onCancel}
-      width={800}
-      footer={[
-        <Button key="back" onClick={onCancel}>
-          キャンセル
-        </Button>,
-        <Button key="submit" type="primary" onClick={handleSave}>
-          保存
-        </Button>,
-      ]}
-    >
-      <div className="flex flex-col gap-4">
-        {previewUrl && (
-          <div className="w-full flex flex-col">
-            <h4 className="font-medium mb-2">プレビュー:</h4>
-            <div className="border rounded-md overflow-hidden">
-              <img
-                src={previewUrl || "/placeholder.svg"}
-                alt="Preview"
-                className="w-full"
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    </Modal>
-  );
+  // Return null since we don't want to render any UI
+  return null;
 };
 
 export default ImageEditModal;
