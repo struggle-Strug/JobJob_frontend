@@ -39,7 +39,7 @@ const CoporateManagement = () => {
           {/* Center the button in the cell */}
           <Button
             className="text-white text-sm bg-[#FF2A3B] px-4 py-2 rounded-lg"
-            disabled={data?.length === 1}
+            disabled={data?.length === 2 || record.email === users[0].email}
             onClick={() => handleDelete(record.id)}
           >
             削除
