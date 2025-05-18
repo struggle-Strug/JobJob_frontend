@@ -22,6 +22,7 @@ import {
   getJobTypeKeyByValue,
   getJobValueByKey,
 } from "../../utils/getFunctions";
+import JobPosts from "../../components/JobPosts";
 
 // Default filters state
 const DEFAULT_FILTERS = {
@@ -114,6 +115,8 @@ const CertainJob = () => {
   // URL generation functions
   const makeLink = useCallback(
     ({ pref, employment, feature }) => {
+      console.log(pref, employment, feature);
+
       // 1) pathname を分解して base と filter セグメントを得る
       const parts = pathname.split("/").filter(Boolean);
       const base = parts[0]; // e.g. "dr"
@@ -139,7 +142,7 @@ const CertainJob = () => {
       const newPref = pref !== undefined ? pref : curPref;
       const newEmp = employment !== undefined ? employment : curEmp;
       const newFeat = feature !== undefined ? feature : curFeat;
-
+      console.log(newPref, newEmp, newFeat);
       // 5) 空文字・null・undefined は除去して、常に [pref, employment, feature] の順で組み立て
       const segs = [newPref, newEmp, newFeat].filter((v) => v);
 
@@ -262,37 +265,6 @@ const CertainJob = () => {
     }
   }, [JobType]);
 
-  const getJobPosts = useCallback(async () => {
-    try {
-      setJobData((prev) => ({ ...prev, isLoading: true }));
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/jobpost/filter`,
-        {
-          ...filters,
-          JobType: JobType,
-        }
-      );
-
-      if (!response.data || !response.data.jobposts) {
-        setJobData((prev) => ({
-          ...prev,
-          jobPosts: [],
-          isLoading: false,
-        }));
-      } else {
-        setJobData({
-          jobPosts: response.data.jobposts,
-          isLoading: false,
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching job posts:", error);
-      message.error("求人情報の取得に失敗しました");
-      setJobData((prev) => ({ ...prev, isLoading: false }));
-    }
-  }, [filters, JobType]);
-
   // Event handlers
   const handleSearch = useCallback(() => {
     const url = `/${path}/search?filters=${encodeURIComponent(
@@ -402,9 +374,7 @@ const CertainJob = () => {
         // Data loaded
       }
     );
-
-    getJobPosts();
-  }, [JobType, getJobTypeNumbers, getJobTypeNumbersByFacility, getJobPosts]);
+  }, [JobType, getJobTypeNumbers, getJobTypeNumbersByFacility]);
 
   useEffect(() => {
     if (!filters.pref) {
@@ -481,11 +451,6 @@ const CertainJob = () => {
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [pathname, location.search, params, path, navigate]);
-
-  // Fetch job posts when filters change
-  useEffect(() => {
-    getJobPosts();
-  }, [filters, getJobPosts]);
 
   // Render content immediately without waiting for API data
   return (
@@ -637,14 +602,14 @@ const CertainJob = () => {
                           </span>
                           <Link
                             to={makeLink({
-                              employment: "employment" + (index + 1),
+                              employment: EmploymentType[employmentTypeKey],
                             })}
                             onClick={(e) => {
                               e.preventDefault();
                               setType(1);
                               navigate(
                                 makeLink({
-                                  employment: "employment" + (index + 1),
+                                  employment: EmploymentType[employmentTypeKey],
                                 })
                               );
                             }}
@@ -987,6 +952,14 @@ const CertainJob = () => {
             </div>
           </div>
           <NewJobs />
+          <JobPosts
+            jobType={JobType}
+            employmentType={filters?.employmentType}
+            feature={filters?.feature}
+            monthlySalary={filters?.monthlySalary}
+            hourlySalary={filters?.hourlySalary}
+            path={path}
+          />
         </div>
       )}
     </>

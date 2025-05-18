@@ -11,6 +11,7 @@ import {
   Prefectures,
 } from "../../../utils/constants/categories";
 import axios from "axios";
+import moment from "moment";
 
 const JobOffer = () => {
   const { user } = useAuth();
@@ -333,6 +334,7 @@ const JobOffer = () => {
         building: building,
         prefecture: prefecture,
         qualification: updatedQualifications,
+        updated_at: new Date(),
       };
 
       const resData = await axios.post(
@@ -549,6 +551,32 @@ const JobOffer = () => {
                   </span>
                   に応募する
                 </p>
+              </div>
+              <div className="flex flex-col justify-center bg-white rounded-lg px-6 py-6 w-full shadow-xl mt-4">
+                <p className="lg:text-base md:text-sm text-xs text-[#343434] text-center">
+                  前回の入力内容({moment(user?.updated_at).format("YYYY/MM/DD")}
+                  )で応募できます。変更したい場合は下部のフォームよりご変更ください。
+                </p>
+                <div className="w-full mt-4 text-center p-4">
+                  <p className="text-sm text-center mb-2">
+                    <Link
+                      to="/rule"
+                      className="text-[#FF2A3B] hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      利用規約・個人情報の取り扱い
+                    </Link>
+                    に同意の上、ご登録ください
+                  </p>
+                  <button
+                    className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300"
+                    onClick={handleApply}
+                    type="button"
+                  >
+                    応募する
+                  </button>
+                </div>
               </div>
               <div className="flex flex-col justify-center bg-white rounded-lg px-6 py-6 w-full shadow-xl mt-4">
                 <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">
