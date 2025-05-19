@@ -1,3 +1,5 @@
+"use client";
+
 import { message } from "antd";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
@@ -16,7 +18,7 @@ const ProcessManagementPage = () => {
     );
     if (res.data.error) return message.error(res.data.error);
     setProcesses(res.data.processes);
-  }, [status]);
+  }, [status, customer]);
 
   const getJobNumbersByStatus = useCallback(async () => {
     const res = await axios.get(
@@ -28,8 +30,10 @@ const ProcessManagementPage = () => {
 
   useEffect(() => {
     document.title = "選考管理 | JobJob (ジョブジョブ)";
-    getProcessesByStatus();
-  }, [status]);
+    if (customer?._id) {
+      getProcessesByStatus();
+    }
+  }, [status, customer, getProcessesByStatus]);
 
   useEffect(() => {
     getJobNumbersByStatus();
@@ -191,6 +195,7 @@ const ProcessManagementPage = () => {
             <ProcessDetail
               processes={processes}
               getProcessesByStatus={getProcessesByStatus}
+              getJobNumbersByStatus={getJobNumbersByStatus}
             />
           </div>
         </div>
