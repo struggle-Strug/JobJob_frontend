@@ -24,7 +24,11 @@ const STATUS_OPTIONS = [
   "選考終了",
 ];
 
-const ProcessDetail = ({ processes, getProcessesByStatus }) => {
+const ProcessDetail = ({
+  processes,
+  getProcessesByStatus,
+  getJobNumbersByStatus,
+}) => {
   const [message_id, setMessage_id] = useState("");
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [memberData, setMemberData] = useState(null);
@@ -79,6 +83,7 @@ const ProcessDetail = ({ processes, getProcessesByStatus }) => {
 
         message.success("ステータスを変更しました。");
         getProcessesByStatus();
+        getJobNumbersByStatus(); // Add this line to update the job numbers
       } catch (error) {
         message.error("ステータスの更新に失敗しました。");
         console.error("Status update error:", error);
@@ -87,7 +92,7 @@ const ProcessDetail = ({ processes, getProcessesByStatus }) => {
         setStatusModalOpen(false);
       }
     },
-    [message_id, getProcessesByStatus]
+    [message_id, getProcessesByStatus, getJobNumbersByStatus]
   );
 
   // Handle memo changes and saves
@@ -136,23 +141,23 @@ const ProcessDetail = ({ processes, getProcessesByStatus }) => {
             <div className="flex justify-start gap-4 w-full">
               <p
                 className="text-sm font-bold truncate max-w-[120px]"
-                title={record.user.name}
+                title={record.user?.name}
               >
-                {record.user.name}
+                {record.user?.name}
               </p>
               <p
                 className="text-sm truncate max-w-[80px]"
-                title={record.user.hiraganaName}
+                title={record.user?.hiraganaName}
               >
-                {record.user.hiraganaName}
+                {record.user?.hiraganaName}
               </p>
             </div>
             <div className="flex justify-start gap-4">
-              <p className="text-sm">{record.user.member_id}</p>
-              <p className="text-sm">{record.user.gender}</p>
+              <p className="text-sm">{record.user?.member_id}</p>
+              <p className="text-sm">{record.user?.gender}</p>
               <p className="text-sm">
                 {new Date().getFullYear() -
-                  new Date(record.user.birthday).getFullYear()}
+                  new Date(record.user?.birthday).getFullYear()}
               </p>
             </div>
             <button
@@ -173,17 +178,17 @@ const ProcessDetail = ({ processes, getProcessesByStatus }) => {
           <div className="flex flex-col gap-2 items-start">
             <p
               className="text-sm truncate max-w-[180px]"
-              title={record.facility.name}
+              title={record.facility?.name}
             >
-              {record.facility.name}
+              {record.facility?.name}
             </p>
             <p
               className="text-sm truncate max-w-[180px]"
-              title={record.jobPost.type}
+              title={record.jobPost?.type}
             >
-              {record.jobPost.type}
+              {record.jobPost?.type}
             </p>
-            <p className="text-sm">{record.jobPost.employment_type[0]}</p>
+            <p className="text-sm">{record.jobPost?.employment_type[0]}</p>
             <button
               className="text-[#FF2A3B] hover:underline duration-300"
               onClick={() => handleJobpostPageOpen(record.jobPost)}
