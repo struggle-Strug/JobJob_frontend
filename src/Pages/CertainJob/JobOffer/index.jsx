@@ -14,7 +14,7 @@ import axios from "axios";
 import moment from "moment";
 
 const JobOffer = () => {
-  const { user } = useAuth();
+  const { user, setUser, isAuthenticated, setIsAuthenticated } = useAuth();
   const [customer, setCustomer] = useState(null);
   const [jobPost, setJobPost] = useState(null);
   const [sei, setSei] = useState("");
@@ -259,16 +259,11 @@ const JobOffer = () => {
       );
       setJobPost(res.data.jobpost);
       // Don't overwrite qualifications here
-      // setQualification(user?.qualification?.map((q) => q.qualification));
-      const resData = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/v1/customers/${res.data.jobpost.customer_id.customer_id}`
-      );
-      setCustomer(resData.data.customer);
+      setCustomer(res.data.jobpost.customer_id);
     } catch (err) {
       console.error("Failed to fetch user data:", err);
     }
   };
-
   const onModalClose = () => {
     setSuccessModal(false);
     navigate(`/${jobType}/${jobpost_id}`);
@@ -449,10 +444,22 @@ const JobOffer = () => {
       );
       if (resData.data.error) return message.error(resData.data.message);
 
+      const resLogin = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/user/login`,
+        {
+          email: email,
+          password: password,
+        }
+      );
+      localStorage.setItem("token", resLogin.data.token);
+      setIsAuthenticated(true);
+      await setUser(resLogin.data.user);
+
       const messageData = {
         jobPost_id: jobpost_id,
-        sender: resData?.user?._id,
+        sender: resLogin.data.user?._id,
         recevier: customer?._id,
+        meetingDate: meetingDate,
         content: `
             この度は、ジョブジョブの求人広告を見て応募いたしました。
 
@@ -491,6 +498,7 @@ const JobOffer = () => {
           .trim()
           .replace(/^\s+/gm, ""),
       };
+      axios.defaults.headers.common["Authorization"] = resLogin.data.token;
 
       const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/message`,
@@ -552,32 +560,35 @@ const JobOffer = () => {
                   に応募する
                 </p>
               </div>
-              <div className="flex flex-col justify-center bg-white rounded-lg px-6 py-6 w-full shadow-xl mt-4">
-                <p className="lg:text-base md:text-sm text-xs text-[#343434] text-center">
-                  前回の入力内容({moment(user?.updated_at).format("YYYY/MM/DD")}
-                  )で応募できます。変更したい場合は下部のフォームよりご変更ください。
-                </p>
-                <div className="w-full mt-4 text-center p-4">
-                  <p className="text-sm text-center mb-2">
-                    <Link
-                      to="/rule"
-                      className="text-[#FF2A3B] hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      利用規約・個人情報の取り扱い
-                    </Link>
-                    に同意の上、ご登録ください
+              {user && (
+                <div className="flex flex-col justify-center bg-white rounded-lg px-6 py-6 w-full shadow-xl mt-4">
+                  <p className="lg:text-base md:text-sm text-xs text-[#343434] text-center">
+                    前回の入力内容(
+                    {moment(user?.updated_at).format("YYYY/MM/DD")}
+                    )で応募できます。変更したい場合は下部のフォームよりご変更ください。
                   </p>
-                  <button
-                    className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300"
-                    onClick={handleApply}
-                    type="button"
-                  >
-                    応募する
-                  </button>
+                  <div className="w-full mt-4 text-center p-4">
+                    <p className="text-sm text-center mb-2">
+                      <Link
+                        to="/rule"
+                        className="text-[#FF2A3B] hover:underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        利用規約・個人情報の取り扱い
+                      </Link>
+                      に同意の上、ご登録ください
+                    </p>
+                    <button
+                      className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300"
+                      onClick={handleApply}
+                      type="button"
+                    >
+                      応募する
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
               <div className="flex flex-col justify-center bg-white rounded-lg px-6 py-6 w-full shadow-xl mt-4">
                 <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">
                   基本情報
