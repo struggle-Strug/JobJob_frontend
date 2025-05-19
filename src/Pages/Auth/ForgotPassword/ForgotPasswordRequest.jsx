@@ -7,30 +7,24 @@ const ForgotPasswordRequest = () => {
   const [message, setMessage] = useState("");
 
   const onSubmit = async () => {
-    try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/user/forgot-password-request`,
-        { email }
-      );
-      setMessage(res.data.message);
-    } catch (error) {
-      // エラーオブジェクトの詳細をコンソールに出力
-      if (error.response) {
-        // サーバーからのレスポンスがある場合
-        console.error("Error Response:", error.response.data);
-        console.error("Status:", error.response.status);
-        console.error("Headers:", error.response.headers);
-        console.error("Error Message:", error.message);
-      } else if (error.request) {
-        // リクエストが送信されたがレスポンスがない場合
-        console.error("Error Request:", error.request);
-      } else {
-        // その他のエラー
-        console.error("Error Message:", error.message);
-      }
-      console.error("Error Config:", error.config);
-      setMessage("エラーが発生しました");
-    }
+    const successMessage = `${email} 宛にパスワードの再設定のご案内メールを送信しました。
+なお、しばらく経ってもメールが届かない場合は、以下の原因が考えられます。
+・誤ったメールアドレスを入力している
+・迷惑メールフォルダに振り分けられてしまっている
+入力したメールアドレスが誤っている場合は、再度手続きをやり直してください。`;
+
+  try {
+    await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/v1/user/forgot-password-request`,
+      { email }
+    );
+    // ユーザー有無にかかわらず常に同じメッセージを出す
+    setMessage(successMessage);
+  } catch (error) {
+    console.error(error);
+    // エラー時もセキュリティ的に同じ表示にする
+    setMessage(successMessage);
+  }
   };
   
 
