@@ -300,7 +300,7 @@ const CertainJob = () => {
 
         return (
           <Link
-            aria-label={jobType}
+            aria-label={`${facility}の${jobType}`}
             key={index}
             to={`/${getJobValueByKey(jobType)}/${Facilities[facility]}`}
             className="col-span-1 flex items-start justify-between w-full border-b-[1px] border-[#e7e7e7] lg:text-sm md:text-xs text-[0.6rem] text-[#188CE0] py-2 font-bold px-2 hover:px-6 duration-300 group"
