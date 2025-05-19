@@ -18,6 +18,7 @@ import {
 
 // Lazy load components
 const Register = lazy(() => import("./Pages/Auth/Register"));
+const RegisterComplete = lazy(() => import("./Pages/Auth/Register/CompleteRegister"));
 const Login = lazy(() => import("./Pages/Auth/Login"));
 const ForgotPasswordRequest = lazy(() =>
   import("./Pages/Auth/ForgotPassword/ForgotPasswordRequest")
@@ -276,7 +277,7 @@ function App() {
                   element={<CertainJob />}
                 />
                 <Route
-                  path={`${jobType}/:pref?/:muni?/:employmentType?/:feature?/*`}
+                  path={`/${jobType}/:pref?/:muni?/:employmentType?/:feature?/*`}
                   element={<JobLists />}
                 />
               </>
