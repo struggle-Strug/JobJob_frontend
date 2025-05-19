@@ -29,7 +29,7 @@ const Login = () => {
       payload
     );
     if (res.data.error) return setErrorMessage(res.data.message);
-    setErrorMessage(res.data.message);
+    setErrorMessage("メールアドレスまたはパスワードが間違えています 。");
     localStorage.setItem("token", res.data.token);
     setIsAuthenticated(true);
     await setUser(res.data.user);
