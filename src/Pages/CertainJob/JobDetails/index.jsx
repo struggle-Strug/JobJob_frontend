@@ -267,7 +267,7 @@ const JobDetails = () => {
                         />
                       </svg>
                     </button>
-                    <p className="text-sm text-[#343434]">
+                    <p className="text-sm text-[#343434] line-clamp-1">
                       {jobPost?.picture &&
                         jobPost.picture[currentSlide].description}
                     </p>
@@ -613,7 +613,7 @@ const JobDetails = () => {
                       src={item.url || "/assets/images/noimage.png"}
                       alt={`${jobPost?.type}の求人写真-${index + 1}`}
                       className="col-span-1 aspect-[2/1] object-cover rounded-lg cursor-pointer"
-                      onClick={() => openImageModal(item)}
+                      onClick={() => openImageModal(item.url)}
                     />
                   ))}
               </div>
@@ -965,7 +965,7 @@ const JobDetails = () => {
           <img
             src={modalImage || "/placeholder.svg"}
             alt="拡大画像"
-            style={{ width: "100%" }}
+            style={{ width: "100%", objectFit: "contain", maxHeight: "80vh" }}
           />
         </Modal>
       </div>
