@@ -23,7 +23,6 @@ const Step6 = ({
         </div>
         <div className="flex flex-col w-3/4 px-2">
           <Input
-            placeholder="電話番号"
             className="w-1/2 py-2"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
