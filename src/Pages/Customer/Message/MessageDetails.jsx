@@ -224,7 +224,10 @@ const MessageDetails = ({ id, onMessageSent, onMessageRead }) => {
       <div className="bg-white p-4 border-b shadow-sm">
         <div className="flex items-center justify-between">
           <p className="text-lg font-medium">
-            <span className="text-gray-700">{message?.facility_id.name}</span>
+            <span className="text-gray-700">
+              {message?.facility_id.name}({message?.jobpost_id?.type}/
+              {message?.jobpost_id?.employment_type?.[0]})
+            </span>
           </p>
           <Tooltip title="メッセージを更新">
             <button
