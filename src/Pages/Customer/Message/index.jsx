@@ -89,6 +89,7 @@ const Message = () => {
   }, []);
 
   const calculateAge = (birthday) => {
+    if (!birthday) return "";
     return new Date().getFullYear() - birthday.split("-")[0];
   };
 
@@ -141,7 +142,7 @@ const Message = () => {
               メッセージがありません
             </div>
           ) : (
-            filteredMessages.map((message) => {
+            filteredMessages?.map((message) => {
               // Check if this message is the last sender
               const lastMessage =
                 message.content && message.content.length > 0
@@ -164,10 +165,10 @@ const Message = () => {
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="text-xs font-medium">
-                        {message.user_id.name}
+                        {message.user_id?.name}
                       </p>
                       <p className="text-xs text-gray-500">
-                        ID: {message.user_id.member_id}
+                        ID: {message.user_id?.member_id}
                       </p>
                     </div>
                     <div className="flex gap-1">
@@ -188,11 +189,11 @@ const Message = () => {
 
                   <div className="mt-1">
                     <p className="text-xs text-gray-700">
-                      {calculateAge(message.user_id.birthday)}歳・
-                      {message.user_id.gender}
+                      {calculateAge(message.user_id?.birthday)}歳・
+                      {message.user_id?.gender}
                     </p>
                     <p className="text-xs text-gray-700">
-                      {message.facility_id.name}
+                      {message.facility_id?.name}
                     </p>
                   </div>
 
