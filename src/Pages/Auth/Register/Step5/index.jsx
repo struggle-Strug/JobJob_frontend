@@ -99,29 +99,44 @@ const Step5 = ({
         </div>
         <div className="flex flex-col w-4/5 px-2">
           <div className="flex justify-start gap-4 lg:text-sm md:text-xs text-xs items-center">
-            <Select
-              className="w-1/4"
-              options={yearsOptions}
+          <select
+              className="w-1/4 px-2 py-1 border rounded focus:outline-none"
               value={year}
-              onChange={setYear}
-              placeholder="年"
-            />
+              onChange={(e) => setYear(e.target.value)}
+            >
+              <option value="">年</option>
+              {yearsOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
             年
-            <Select
-              className="w-1/4"
-              options={monthsOptions}
+            <select
+              className="w-1/4 px-2 py-1 border rounded focus:outline-none"
               value={month}
-              onChange={setMonth}
-              placeholder="月"
-            />
+              onChange={(e) => setMonth(e.target.value)}
+            >
+              <option value="">月</option>
+              {monthsOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
             月
-            <Select
-              className="w-1/4"
-              options={daysOptions}
+            <select
+              className="w-1/4 px-2 py-1 border rounded focus:outline-none"
               value={day}
-              onChange={setDay}
-              placeholder="日"
-            />
+              onChange={(e) => setDay(e.target.value)}
+            >
+              <option value="">日</option>
+              {daysOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
             日
           </div>
         </div>
