@@ -111,6 +111,7 @@ const ProcessDetail = ({
           `${process.env.REACT_APP_API_URL}/api/v1/message/${messageId}`,
           {
             memo: memoValue,
+            updated_at: new Date(),
           }
         );
 
