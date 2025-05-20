@@ -1065,6 +1065,7 @@ const JobOffer = () => {
         <Modal
           open={successModal}
           onCancel={onModalClose}
+          closable={false}
           footer={false}
           className="modal"
         >
