@@ -287,9 +287,14 @@ const CertaionFacility = () => {
                       )}
 
                       <div className="flex flex-col items-start justify-start p-4 w-full h-full gap-4">
-                        <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
-                          {facility.name}
-                        </p>
+                        <Link
+                          to={`/facility/${facility.facility_id}`}
+                          className="hover:underline duration-300"
+                        >
+                          <p className="lg:text-xl md:text-sm font-bold text-[#343434]">
+                            {facility.name}
+                          </p>
+                        </Link>
                         <div>
                           <p className="lg:text-sm md:text-xs text-[#343434]">
                             {facility.prefecture}
