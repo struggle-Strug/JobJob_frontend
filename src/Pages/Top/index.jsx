@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PiStethoscope } from "react-icons/pi";
 import { LiaToothSolid } from "react-icons/lia";
 import { MdWheelchairPickup } from "react-icons/md";
@@ -14,34 +14,37 @@ import { useAuth } from "../../context/AuthContext";
 import NewJobs from "../../components/NewJobs";
 
 // Component for job category links
-const JobTypeLink = ({ to, jobType, count }) => (
-  <div className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
-    <Link to={to} className="text-[#188CE0]" aria-label={`${jobType} jobs`}>
-      <p>
-        {jobType}
-        <span className="text-[#343434] text-xs">({count || 0})</span>
-      </p>
-    </Link>
-    <div className="flex items-center">
-      <img
-        src="/assets/images/companytop/ep_arrow-right_red.png"
-        alt="arrow"
-        className="duration-300 w-4 opacity-0 group-hover:opacity-100"
-      />
+const JobTypeLink = ({ to, jobType, count }) => {
+  const navigate = useNavigate();
+  return (
+    <div
+      onClick={() => navigate(`${to}`)}
+      className="col-span-1 flex items-center justify-between w-full lg:text-sm md:text-xs text-xs border-y-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
+    >
+      <Link to={to} className="text-[#188CE0]" aria-label={`${jobType} jobs`}>
+        <p>
+          {jobType}
+          <span className="text-[#343434] text-xs">({count || 0})</span>
+        </p>
+      </Link>
+      <div className="flex items-center">
+        <img
+          src="/assets/images/companytop/ep_arrow-right_red.png"
+          alt="arrow"
+          className="duration-300 w-4 opacity-0 group-hover:opacity-100"
+        />
+      </div>
     </div>
-  </div>
-);
-
+  );
+};
 // Component for facility type links
 const FacilityLink = ({ to, facilityType }) => (
-  <div className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group">
-    <Link
-      to={to}
-      className="text-[#188CE0]"
-      aria-label={`${facilityType} facilities`}
-    >
-      <p>{facilityType}</p>
-    </Link>
+  <Link
+    to={to}
+    className="flex items-center justify-between w-full lg:text-sm md:text-xs text-xs text-[#188CE0] border-b-[1px] border-[#e7e7e7] py-2 font-bold px-2 hover:px-6 duration-300 group"
+    aria-label={`${facilityType} facilities`}
+  >
+    <p>{facilityType}</p>
     <div className="flex items-center">
       <img
         src="/assets/images/companytop/ep_arrow-right_red.png"
@@ -49,7 +52,7 @@ const FacilityLink = ({ to, facilityType }) => (
         className="duration-300 w-4 opacity-0 group-hover:opacity-100"
       />
     </div>
-  </div>
+  </Link>
 );
 
 // Component for prefecture links
