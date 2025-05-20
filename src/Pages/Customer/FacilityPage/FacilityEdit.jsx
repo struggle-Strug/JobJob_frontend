@@ -325,6 +325,7 @@ const FacilityEdit = () => {
         establishment_date: `${facilityEstablishmentDateYear}-${facilityEstablishmentDateMonth}`,
         service_time: facilityServiceTime,
         rest_day: facilityRestDay,
+        updated_at: new Date(),
       };
 
       await axios.put(

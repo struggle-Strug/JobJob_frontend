@@ -511,6 +511,7 @@ const JobPostEdit = () => {
         qualification_content: jobPostQualificationContent,
         qualification_welcome: jobPostQualificationWelcome,
         process: jobPostProcess,
+        updated_at: new Date(),
       };
 
       await axios.put(
