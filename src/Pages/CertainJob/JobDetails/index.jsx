@@ -14,7 +14,7 @@ import NearByJobs from "../../../components/NearByJobs";
 import MeshLink02 from "../../../components/MeshLink02";
 
 const JobDetails = () => {
-  const { user } = useAuth();
+  const { user, likes, setLikes } = useAuth();
   const [jobPost, setJobPost] = useState(null);
   const [allFacilityJobPosts, setAllFacilityJobPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -167,6 +167,23 @@ const JobDetails = () => {
     }
   }, [jobPost?.jobpost_id]);
 
+  // Handle like/favorite toggle
+  const handleLike = useCallback(
+    (id) => {
+      let newLikes = Array.isArray(likes) ? [...likes] : [];
+
+      if (newLikes.includes(id)) {
+        newLikes = newLikes.filter((like) => like !== id);
+      } else {
+        newLikes.push(id);
+      }
+
+      localStorage.setItem("likes", JSON.stringify(newLikes));
+      setLikes(newLikes);
+    },
+    [likes, setLikes]
+  );
+
   // Initial data fetch
   useEffect(() => {
     getJobPost();
@@ -317,14 +334,27 @@ const JobDetails = () => {
               <button
                 className="flex items-center justify-center gap-2 bg-white rounded-lg py-3 text-white border-2 border-[#FF6B56] w-full hover:bg-[#FF6B56]/20 hover:scale-105 duration-300"
                 aria-label="気になるボタン"
+                onClick={() => handleLike(jobPost?.jobpost_id)}
               >
                 <img
-                  src="/assets/images/dashboard/Vector.png"
-                  alt=""
+                  src={`${
+                    likes.includes(jobPost?.jobpost_id)
+                      ? "/assets/images/dashboard/mdi_heart.png"
+                      : "/assets/images/dashboard/Vector.png"
+                  }`}
+                  alt="Favorite icon"
                   className="w-4 pt-0.5"
                 />
-                <p className="lg:text-base text-sm font-bold text-[#FF6B56]">
-                  気になる
+                <p
+                  className={`text-base font-bold ${
+                    likes.includes(jobPost?.jobpost_id)
+                      ? "text-[#188CE0]"
+                      : "text-[#FF6B56]"
+                  }`}
+                >
+                  {likes.includes(jobPost?.jobpost_id)
+                    ? "気になる済"
+                    : "気になる"}
                 </p>
               </button>
             </div>
