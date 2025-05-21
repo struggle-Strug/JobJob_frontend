@@ -44,6 +44,7 @@ const JobOffer = () => {
   ]);
   const [successModal, setSuccessModal] = useState(false);
   const [dateOptions, setDateOptions] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { pathname } = useLocation();
   const jobType = pathname.split("/")[1];
@@ -282,185 +283,75 @@ const JobOffer = () => {
     if (email === "")
       return message.error("メールアドレスを入力してください。");
 
-    if (user !== null) {
-      // 1. Separate unchangeable qualifications (those not in job posting) from changeable ones
-      const jobPostQualifications = jobPost?.qualification_type || [];
+    // Set loading state to true when starting submission
+    setIsSubmitting(true);
 
-      // Unchangeable qualifications - those not in the job posting
-      const unchangeableQualifications =
-        user?.qualification?.filter(
-          (qual) => !jobPostQualifications.includes(qual.qualification)
-        ) || [];
+    try {
+      if (user !== null) {
+        // 1. Separate unchangeable qualifications (those not in job posting) from changeable ones
+        const jobPostQualifications = jobPost?.qualification_type || [];
 
-      // 2. Create new qualification objects for the selected qualifications
-      const newQualifications = qualification.map((qualName) => {
-        // Check if this qualification already exists in user's qualifications
-        const existingQual = user?.qualification?.find(
-          (q) => q.qualification === qualName
-        );
+        // Unchangeable qualifications - those not in the job posting
+        const unchangeableQualifications =
+          user?.qualification?.filter(
+            (qual) => !jobPostQualifications.includes(qual.qualification)
+          ) || [];
 
-        // If it exists, keep its data; otherwise create new with empty year/month
-        return (
-          existingQual || {
-            qualification: qualName,
-            year: "",
-            month: "",
-          }
-        );
-      });
+        // 2. Create new qualification objects for the selected qualifications
+        const newQualifications = qualification.map((qualName) => {
+          // Check if this qualification already exists in user's qualifications
+          const existingQual = user?.qualification?.find(
+            (q) => q.qualification === qualName
+          );
 
-      // 3. Combine unchangeable qualifications with the new ones
-      const updatedQualifications = [
-        ...unchangeableQualifications,
-        ...newQualifications,
-      ];
-
-      const userData = {
-        name: `${sei} ${mei}`,
-        hiraganaName: `${hiraganaSei} ${hiraganaMei}`,
-        gender: gender,
-        birthday: `${year}-${month}-${day}`,
-        phoneNumber: phoneNumber,
-        email: email,
-        currentStatus: currentStatus,
-        postalCode: postalCode,
-        municipalities: municipalities,
-        village: village,
-        building: building,
-        prefecture: prefecture,
-        qualification: updatedQualifications,
-        updated_at: new Date(),
-      };
-
-      const resData = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/user/${user._id}/update`,
-        userData
-      );
-      if (resData.data.error) return message.error(resData.data.message);
-
-      const messageData = {
-        jobPost_id: jobpost_id,
-        sender: user?._id,
-        recevier: customer?._id,
-        meetingDate: meetingDate,
-        content: `
-            この度は、ジョブジョブの求人広告を見て応募いたしました。
-
-            宜しければ、面接の機会をいただけましたら幸いです。
-
-            ご多忙の所恐縮ですが、どうぞよろしくお願い致します。
-
-            ■応募勤務形態 ${jobPost?.employment_type[0]}
-
-            ${period !== "" ? `■応募職種の経験 ${period}` : ""}
-
-            ${
-              jobPost?.qualification_type?.every((q) =>
-                qualification?.includes(q)
-              )
-                ? `■資格 ${jobPost?.qualification_type.join(",")}`
-                : ""
+          // If it exists, keep its data; otherwise create new with empty year/month
+          return (
+            existingQual || {
+              qualification: qualName,
+              year: "",
+              month: "",
             }
-            ${
-              meetingDate[0].date !== ""
-                ? `■面接日時
-            ${meetingDate
-              .map(
-                (meeting) =>
-                  `${meeting.date} ${meeting.times
-                    .map(
-                      (meetingTime) =>
-                        `${meetingTime.time}:${meetingTime.minute}~`
-                    )
-                    .join(", ")}`
-              )
-              .join("\n")}`
-                : ""
-            }
-            `
-          .trim()
-          .replace(/^\s+/gm, ""),
-      };
+          );
+        });
 
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/message`,
-        messageData
-      );
-      if (res.data.error) return message.error(res.data.message);
-      setSuccessModal(true);
-    } else {
-      // 1. Separate unchangeable qualifications (those not in job posting) from changeable ones
-      const jobPostQualifications = jobPost?.qualification_type || [];
+        // 3. Combine unchangeable qualifications with the new ones
+        const updatedQualifications = [
+          ...unchangeableQualifications,
+          ...newQualifications,
+        ];
 
-      // Unchangeable qualifications - those not in the job posting
-      const unchangeableQualifications =
-        user?.qualification?.filter(
-          (qual) => !jobPostQualifications.includes(qual.qualification)
-        ) || [];
-
-      // 2. Create new qualification objects for the selected qualifications
-      const newQualifications = qualification.map((qualName) => {
-        // Check if this qualification already exists in user's qualifications
-        const existingQual = user?.qualification?.find(
-          (q) => q.qualification === qualName
-        );
-
-        // If it exists, keep its data; otherwise create new with empty year/month
-        return (
-          existingQual || {
-            qualification: qualName,
-            year: "",
-            month: "",
-          }
-        );
-      });
-
-      // 3. Combine unchangeable qualifications with the new ones
-      const updatedQualifications = [
-        ...unchangeableQualifications,
-        ...newQualifications,
-      ];
-
-      const userData = {
-        name: `${sei} ${mei}`,
-        hiraganaName: `${hiraganaSei} ${hiraganaMei}`,
-        gender: gender,
-        birthday: `${year}-${month}-${day}`,
-        phoneNumber: phoneNumber,
-        email: email,
-        currentStatus: currentStatus,
-        postalCode: postalCode,
-        municipalities: municipalities,
-        village: village,
-        building: building,
-        password: password,
-        prefecture: prefecture,
-        qualification: updatedQualifications,
-      };
-
-      const resData = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/user/`,
-        userData
-      );
-      if (resData.data.error) return message.error(resData.data.message);
-
-      const resLogin = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/user/login`,
-        {
+        const userData = {
+          name: `${sei} ${mei}`,
+          hiraganaName: `${hiraganaSei} ${hiraganaMei}`,
+          gender: gender,
+          birthday: `${year}-${month}-${day}`,
+          phoneNumber: phoneNumber,
           email: email,
-          password: password,
-        }
-      );
-      localStorage.setItem("token", resLogin.data.token);
-      setIsAuthenticated(true);
-      await setUser(resLogin.data.user);
+          currentStatus: currentStatus,
+          postalCode: postalCode,
+          municipalities: municipalities,
+          village: village,
+          building: building,
+          prefecture: prefecture,
+          qualification: updatedQualifications,
+          updated_at: new Date(),
+        };
 
-      const messageData = {
-        jobPost_id: jobpost_id,
-        sender: resLogin.data.user?._id,
-        recevier: customer?._id,
-        meetingDate: meetingDate,
-        content: `
+        const resData = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/user/${user._id}/update`,
+          userData
+        );
+        if (resData.data.error) {
+          setIsSubmitting(false);
+          return message.error(resData.data.message);
+        }
+
+        const messageData = {
+          jobPost_id: jobpost_id,
+          sender: user?._id,
+          recevier: customer?._id,
+          meetingDate: meetingDate,
+          content: `
             この度は、ジョブジョブの求人広告を見て応募いたしました。
 
             宜しければ、面接の機会をいただけましたら幸いです。
@@ -495,17 +386,152 @@ const JobOffer = () => {
                 : ""
             }
             `
-          .trim()
-          .replace(/^\s+/gm, ""),
-      };
-      axios.defaults.headers.common["Authorization"] = resLogin.data.token;
+            .trim()
+            .replace(/^\s+/gm, ""),
+        };
 
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/message`,
-        messageData
+        const res = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/message`,
+          messageData
+        );
+        if (res.data.error) {
+          setIsSubmitting(false);
+          return message.error(res.data.message);
+        }
+        setSuccessModal(true);
+      } else {
+        // 1. Separate unchangeable qualifications (those not in job posting) from changeable ones
+        const jobPostQualifications = jobPost?.qualification_type || [];
+
+        // Unchangeable qualifications - those not in the job posting
+        const unchangeableQualifications =
+          user?.qualification?.filter(
+            (qual) => !jobPostQualifications.includes(qual.qualification)
+          ) || [];
+
+        // 2. Create new qualification objects for the selected qualifications
+        const newQualifications = qualification.map((qualName) => {
+          // Check if this qualification already exists in user's qualifications
+          const existingQual = user?.qualification?.find(
+            (q) => q.qualification === qualName
+          );
+
+          // If it exists, keep its data; otherwise create new with empty year/month
+          return (
+            existingQual || {
+              qualification: qualName,
+              year: "",
+              month: "",
+            }
+          );
+        });
+
+        // 3. Combine unchangeable qualifications with the new ones
+        const updatedQualifications = [
+          ...unchangeableQualifications,
+          ...newQualifications,
+        ];
+
+        const userData = {
+          name: `${sei} ${mei}`,
+          hiraganaName: `${hiraganaSei} ${hiraganaMei}`,
+          gender: gender,
+          birthday: `${year}-${month}-${day}`,
+          phoneNumber: phoneNumber,
+          email: email,
+          currentStatus: currentStatus,
+          postalCode: postalCode,
+          municipalities: municipalities,
+          village: village,
+          building: building,
+          password: password,
+          prefecture: prefecture,
+          qualification: updatedQualifications,
+        };
+
+        const resData = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/user/`,
+          userData
+        );
+        if (resData.data.error) {
+          setIsSubmitting(false);
+          return message.error(resData.data.message);
+        }
+
+        const resLogin = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/user/login`,
+          {
+            email: email,
+            password: password,
+          }
+        );
+        localStorage.setItem("token", resLogin.data.token);
+        setIsAuthenticated(true);
+        await setUser(resLogin.data.user);
+
+        const messageData = {
+          jobPost_id: jobpost_id,
+          sender: resLogin.data.user?._id,
+          recevier: customer?._id,
+          meetingDate: meetingDate,
+          content: `
+            この度は、ジョブジョブの求人広告を見て応募いたしました。
+
+            宜しければ、面接の機会をいただけましたら幸いです。
+
+            ご多忙の所恐縮ですが、どうぞよろしくお願い致します。
+
+            ■応募勤務形態 ${jobPost?.employment_type[0]}
+
+            ${period !== "" ? `■応募職種の経験 ${period}` : ""}
+
+            ${
+              jobPost?.qualification_type?.every((q) =>
+                qualification?.includes(q)
+              )
+                ? `■資格 ${jobPost?.qualification_type.join(",")}`
+                : ""
+            }
+            ${
+              meetingDate[0].date !== ""
+                ? `■面接日時
+            ${meetingDate
+              .map(
+                (meeting) =>
+                  `${meeting.date} ${meeting.times
+                    .map(
+                      (meetingTime) =>
+                        `${meetingTime.time}:${meetingTime.minute}~`
+                    )
+                    .join(", ")}`
+              )
+              .join("\n")}`
+                : ""
+            }
+            `
+            .trim()
+            .replace(/^\s+/gm, ""),
+        };
+        axios.defaults.headers.common["Authorization"] = resLogin.data.token;
+
+        const res = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/message`,
+          messageData
+        );
+        if (res.data.error) {
+          setIsSubmitting(false);
+          return message.error(res.data.message);
+        }
+        setSuccessModal(true);
+      }
+    } catch (error) {
+      console.error("Application submission error:", error);
+      message.error(
+        "応募処理中にエラーが発生しました。もう一度お試しください。"
       );
-      if (res.data.error) return message.error(res.data.message);
-      setSuccessModal(true);
+    } finally {
+      // Set loading state to false when submission completes (success or error)
+      setIsSubmitting(false);
     }
   };
 
@@ -580,11 +606,38 @@ const JobOffer = () => {
                       に同意の上、ご登録ください
                     </p>
                     <button
-                      className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300"
+                      className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300 disabled:opacity-70"
                       onClick={handleApply}
+                      disabled={isSubmitting}
                       type="button"
                     >
-                      応募する
+                      {isSubmitting ? (
+                        <div className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          応募中...
+                        </div>
+                      ) : (
+                        "応募する"
+                      )}
                     </button>
                   </div>
                 </div>
@@ -1046,11 +1099,38 @@ const JobOffer = () => {
                     に同意の上、ご登録ください
                   </p>
                   <button
-                    className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300"
+                    className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300 disabled:opacity-70"
                     onClick={handleApply}
+                    disabled={isSubmitting}
                     type="button"
                   >
-                    応募する
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center">
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        応募中...
+                      </div>
+                    ) : (
+                      "応募する"
+                    )}
                   </button>
                   <p className="lg:text-sm md:text-xs text-xs text-[#343434] mt-2">
                     応募が完了すると応募先に質問事項などを自由に送れるようになります。

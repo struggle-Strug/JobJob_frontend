@@ -170,8 +170,7 @@ function App() {
     } else {
       // If no token, ensure user is not authenticated
       logout({
-        showMessage:
-          pathname.includes("members") || pathname.includes("customers"),
+        showMessage: false,
       });
       setIsLoading(false);
     }
