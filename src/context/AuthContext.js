@@ -1,4 +1,11 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
+import { message } from "antd";
 
 const AuthContext = createContext(null);
 
@@ -19,6 +26,25 @@ export const AuthProvider = ({ children }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  // Create a proper logout function that handles all cleanup
+  const logout = useCallback((options) => {
+    // Clear authentication data
+    localStorage.removeItem("token");
+
+    // Reset all user states
+    setIsAuthenticated(false);
+    setUser(null);
+    setCustomer(null);
+    setAdmin(null);
+
+    // Show message to user - only if this is not an automatic logout
+    if (options?.showMessage !== false) {
+      message.error(
+        "セッションの有効期限が切れました。再度ログインしてください。"
+      );
+    }
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -32,6 +58,7 @@ export const AuthProvider = ({ children }) => {
         setAdmin,
         likes,
         setLikes,
+        logout,
       }}
     >
       {children}
