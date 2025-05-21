@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { Link } from "react-router-dom";
 import { message } from "antd";
+import moment from "moment";
 import SkeletonGroup from "../../../components/SkeletonGroup";
 
 const Message = () => {
@@ -171,6 +172,9 @@ const Message = () => {
                                 message?.content[message?.content?.length - 1]
                                   ?.message
                               }
+                            </p>
+                            <p className="text-xs text-[#858585] text-right mt-1">
+                              {moment(message?.updated_at).format("YYYY/MM/DD")}
                             </p>
                           </div>
                         </Link>
