@@ -15,10 +15,14 @@ import {
   getAllJobTypeValues,
   getAllPrefectureValues,
 } from "./utils/getFunctions";
+import { useCallback } from "react";
+import { setupAxiosInterceptors } from "./utils/axiosConfig";
 
 // Lazy load components
 const Register = lazy(() => import("./Pages/Auth/Register"));
-const RegisterComplete = lazy(() => import("./Pages/Auth/Register/CompleteRegister"));
+const RegisterComplete = lazy(() =>
+  import("./Pages/Auth/Register/CompleteRegister")
+);
 const Login = lazy(() => import("./Pages/Auth/Login"));
 const ForgotPasswordRequest = lazy(() =>
   import("./Pages/Auth/ForgotPassword/ForgotPasswordRequest")
@@ -106,6 +110,7 @@ const LinkRequirement = lazy(() => import("./Pages/LinkRequirement"));
 
 function App() {
   const {
+    isAuthenticated,
     setIsAuthenticated,
     setUser,
     user,
@@ -113,7 +118,9 @@ function App() {
     customer,
     admin,
     setAdmin,
+    logout,
   } = useAuth();
+
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("token");
   const { pathname } = useLocation();
@@ -123,37 +130,52 @@ function App() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
-  const getUserData = async () => {
+  // Set up axios interceptors once when the component mounts
+  useEffect(() => {
+    // Pass the logout function to the interceptor
+    setupAxiosInterceptors(navigate, setIsAuthenticated, logout);
+  }, [navigate, setIsAuthenticated, logout]);
+
+  // Use useCallback to memoize the getUserData function
+  const getUserData = useCallback(async () => {
     try {
       const res = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/v1/user/tokenlogin`
       );
-      res.data.user.type === "member" && setUser(res.data.user.data);
-      res.data.user.type === "member" && setIsAuthenticated(true);
-      res.data.user.type === "customer" && setCustomer(res.data.user.data);
-      res.data.user.type === "admin" && setAdmin(res.data.user.data);
-    } catch (err) {
-      if (err.response?.status === 401) {
-        message.error("ログインしてください。");
-        localStorage.removeItem("token"); // Remove token from localStorage
-        setIsAuthenticated(false); // Set authentication state to false
-        setTimeout(() => {
-          navigate("/"); // Redirect to login page after a short delay
-        }, 500);
+
+      if (res.data?.isAuthError) {
+        // This is handled by the interceptor, just return
+        return;
       }
+
+      if (res.data.user.type === "member") {
+        setUser(res.data.user.data);
+        setIsAuthenticated(true);
+      } else if (res.data.user.type === "customer") {
+        setCustomer(res.data.user.data);
+      } else if (res.data.user.type === "admin") {
+        setAdmin(res.data.user.data);
+      }
+    } catch (error) {
+      // Error handling is now managed by the axios interceptor
+      console.error("Error fetching user data:", error);
     } finally {
       setIsLoading(false); // Ensure loading state is updated
     }
-  };
+  }, [setIsAuthenticated, setUser, setCustomer, setAdmin]);
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common["Authorization"] = token;
       getUserData();
     } else {
-      setIsLoading(false); // No token, skip loading
+      // If no token, ensure user is not authenticated
+      logout({
+        showMessage:
+          pathname.includes("members") || pathname.includes("customers"),
+      });
+      setIsLoading(false);
     }
-  }, [token]);
+  }, [token, getUserData, logout]);
 
   if (isLoading) {
     return <Loading />;
