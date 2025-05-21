@@ -1407,6 +1407,10 @@ const JobLists = () => {
               title: "診療科目の特徴",
               features: Features.MEDICAL_DEPARTMENT,
             },
+            {
+              title: "応募要件の特徴",
+              features: Features.APPLY_REQUIREMENTS,
+            }
           ].map((section, index) => (
             <div key={index} className="mb-6">
               <p className="text-sm lg:text-base text-[#343434] font-bold mb-4">
