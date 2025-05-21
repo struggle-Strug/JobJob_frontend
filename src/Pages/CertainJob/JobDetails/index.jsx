@@ -368,7 +368,7 @@ const JobDetails = () => {
               <p className="lg:text-lg font-bold text-sm text-[#343434]">
                 {jobPost?.sub_title || ""}
               </p>
-              <pre className="font-bold text-sm text-[#343434]">
+              <pre className="lg:text-base text-sm text-[#343434] mt-2">
                 {jobPost?.sub_description || ""}
               </pre>
             </div>
