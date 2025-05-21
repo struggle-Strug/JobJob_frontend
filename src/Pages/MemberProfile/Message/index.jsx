@@ -10,8 +10,8 @@ import SkeletonGroup from "../../../components/SkeletonGroup";
 
 const Message = () => {
   const { user } = useAuth();
-  const [showUnreplied, setShowUnreplied] = useState(true);
-  const [showAll, setShowAll] = useState(false);
+  const [showUnreplied, setShowUnreplied] = useState(false);
+  const [showAll, setShowAll] = useState(true);
   const [showHidden, setShowHidden] = useState(false);
   const [unRepliedMessages, setUnRepliedMessages] = useState([]);
   const [allMessages, setAllMessages] = useState([]);
@@ -75,19 +75,6 @@ const Message = () => {
               <div className="relative">
                 <button
                   className={`lg:text-sm md:text-xs text-xs font-bold text-[#343434] hover:text-[#FF2A3B] duration-300 ${
-                    showUnreplied ? "text-[#FF2A3B]" : ""
-                  }`}
-                  onClick={onClickUnreplied}
-                >
-                  未返信
-                </button>
-                {showUnreplied && (
-                  <div className="absolute -bottom-2 left-0 w-full h-0.5 bg-[#FF2A3B]"></div>
-                )}
-              </div>
-              <div className="relative">
-                <button
-                  className={`lg:text-sm md:text-xs text-xs font-bold text-[#343434] hover:text-[#FF2A3B] duration-300 ${
                     showAll ? "text-[#FF2A3B]" : ""
                   }`}
                   onClick={onClickAll}
@@ -95,6 +82,19 @@ const Message = () => {
                   すべて
                 </button>
                 {showAll && (
+                  <div className="absolute -bottom-2 left-0 w-full h-0.5 bg-[#FF2A3B]"></div>
+                )}
+              </div>
+              <div className="relative">
+                <button
+                  className={`lg:text-sm md:text-xs text-xs font-bold text-[#343434] hover:text-[#FF2A3B] duration-300 ${
+                    showUnreplied ? "text-[#FF2A3B]" : ""
+                  }`}
+                  onClick={onClickUnreplied}
+                >
+                  未返信
+                </button>
+                {showUnreplied && (
                   <div className="absolute -bottom-2 left-0 w-full h-0.5 bg-[#FF2A3B]"></div>
                 )}
               </div>
