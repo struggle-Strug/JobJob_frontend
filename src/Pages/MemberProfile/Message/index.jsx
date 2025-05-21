@@ -195,7 +195,7 @@ const Message = () => {
             </>
           )}
         </div>
-        <div className="flex items-center justify-center w-full bg-white rounded-lg px-4 py-6 shadow-xl mt-4">
+        {/* <div className="flex items-center justify-center w-full bg-white rounded-lg px-4 py-6 shadow-xl mt-4">
           <div className="relative">
             <button
               className={`lg:text-sm md:text-xs text-xs ${
@@ -209,7 +209,7 @@ const Message = () => {
               <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#FF2A3B]"></div>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
     </SkeletonGroup>
   );
