@@ -37,6 +37,9 @@ const JobLists = () => {
   const params = new URLSearchParams(location.search);
   const initialRenderRef = useRef(true);
 
+
+  console.log("joblists")
+
   // UI loading states
   const [loadedSections, setLoadedSections] = useState({
     header: false,
@@ -225,9 +228,6 @@ const JobLists = () => {
         feature: filters.feature,
         page: filters.page,
       };
-
-      console.log("Sending filters to API:", requestData);
-      console.log("Current filter state:", filters);
 
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/filter`,

@@ -115,7 +115,6 @@ const CertainJob = () => {
   // URL generation functions
   const makeLink = useCallback(
     ({ pref, employment, feature }) => {
-      console.log(pref, employment, feature);
 
       // 1) pathname を分解して base と filter セグメントを得る
       const parts = pathname.split("/").filter(Boolean);
@@ -142,7 +141,6 @@ const CertainJob = () => {
       const newPref = pref !== undefined ? pref : curPref;
       const newEmp = employment !== undefined ? employment : curEmp;
       const newFeat = feature !== undefined ? feature : curFeat;
-      console.log(newPref, newEmp, newFeat);
       // 5) 空文字・null・undefined は除去して、常に [pref, employment, feature] の順で組み立て
       const segs = [newPref, newEmp, newFeat].filter((v) => v);
 
@@ -265,8 +263,13 @@ const CertainJob = () => {
     }
   }, [JobType]);
 
+
+  console.log(filters)
+
   // Event handlers
   const handleSearch = useCallback(() => {
+    console.log("click")
+    console.log(filters)
     const url = `/${path}/search?filters=${encodeURIComponent(
       JSON.stringify(filters)
     )}`;
