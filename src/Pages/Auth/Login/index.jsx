@@ -28,9 +28,12 @@ const Login = () => {
       `${process.env.REACT_APP_API_URL}/api/v1/user/login`,
       payload
     );
-    if (res.data.error) return setErrorMessage(res.data.message);
-    setErrorMessage("メールアドレスまたはパスワードが間違えています 。");
+    if (res.data.error)
+      return setErrorMessage(
+        "メールアドレスまたはパスワードが間違えています 。"
+      );
     localStorage.setItem("token", res.data.token);
+    setErrorMessage(res.data.message);
     setIsAuthenticated(true);
     await setUser(res.data.user);
     setTimeout(() => {
