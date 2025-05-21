@@ -17,8 +17,6 @@ const Education = () => {
   const [graduationMonth, setGraduationMonth] = useState("");
   const { user, setUser } = useAuth();
 
-  console.log("education")
-
   const navigate = useNavigate();
 
   const lastEducationOptions = [
@@ -61,8 +59,6 @@ const Education = () => {
       `${process.env.REACT_APP_API_URL}/api/v1/user/${user._id}/update`,
       userData
     );
-
-    console.log(res)
     
     if (res.data.error) return message.error(res.data.message);
     setUser(res.data.user);

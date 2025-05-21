@@ -37,8 +37,6 @@ const JobPosts = ({
         }
       );
 
-      console.log(response)
-
       if (response.data?.jobposts) {
         setJobs(response.data.jobposts.slice(0, 10));
       } else {
@@ -54,9 +52,8 @@ const JobPosts = ({
   };
 
   useEffect(() => {
-    console.log("jobposts")
     getJobPosts();
-  }, [path, employmentType, monthlySalary, hourlySalary, feature]);
+  }, [path, jobType, employmentType, monthlySalary, hourlySalary, feature]);
 
   // Function to handle job card click
   const handleJobClick = (jobId) => {

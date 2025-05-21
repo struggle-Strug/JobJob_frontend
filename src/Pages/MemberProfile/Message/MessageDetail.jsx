@@ -225,7 +225,7 @@ const MessageDetail = () => {
 
           {/* Reply Form */}
           <div className="w-full max-w-2xl mx-auto mt-8">
-            <Upload
+            {/* <Upload
               fileList={fileList}
               beforeUpload={() => false}
               onChange={handleChange}
@@ -240,7 +240,7 @@ const MessageDetail = () => {
                   ※添付ファイルは送信先の事業所には公開されません
                 </p>
               </div>
-            </Upload>
+            </Upload> */}
 
             <TextArea
               placeholder="返信を書いてください"

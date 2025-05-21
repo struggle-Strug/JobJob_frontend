@@ -263,13 +263,8 @@ const CertainJob = () => {
     }
   }, [JobType]);
 
-
-  console.log(filters)
-
   // Event handlers
   const handleSearch = useCallback(() => {
-    console.log("click")
-    console.log(filters)
     const url = `/${path}/search?filters=${encodeURIComponent(
       JSON.stringify(filters)
     )}`;

@@ -119,11 +119,8 @@ const WorkHistory = () => {
       "amount",
     ];
 
-    console.log(history)
-
     for (let field of requiredFields) {
       if (!history[field]) {
-        console.log(history[field])
         return { status: false, field: field };
       }
     }

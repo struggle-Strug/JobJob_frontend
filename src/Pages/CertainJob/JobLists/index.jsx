@@ -37,9 +37,6 @@ const JobLists = () => {
   const params = new URLSearchParams(location.search);
   const initialRenderRef = useRef(true);
 
-
-  console.log("joblists")
-
   // UI loading states
   const [loadedSections, setLoadedSections] = useState({
     header: false,
