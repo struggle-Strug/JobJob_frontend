@@ -131,6 +131,13 @@ const Message = () => {
                                   ?.message
                               }
                             </p>
+                            <p className="text-xs text-[#858585] text-right mt-1">
+                              {moment(message?.updated_at).format("YYYY/MM/DD")}{" "}
+                              {message?.content[message?.content?.length - 1]
+                                ?.sender === user?._id
+                                ? user?.name
+                                : message?.customer_id?.name}
+                            </p>
                           </div>
                         </Link>
                       );
@@ -174,7 +181,11 @@ const Message = () => {
                               }
                             </p>
                             <p className="text-xs text-[#858585] text-right mt-1">
-                              {moment(message?.updated_at).format("YYYY/MM/DD")}
+                              {moment(message?.updated_at).format("YYYY/MM/DD")}{" "}
+                              {message?.content[message?.content?.length - 1]
+                                ?.sender === user?._id
+                                ? user?.name
+                                : message?.customer_id?.name}
                             </p>
                           </div>
                         </Link>
