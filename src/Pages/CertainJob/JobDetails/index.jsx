@@ -111,7 +111,6 @@ const JobDetails = () => {
 
   // Handle carousel navigation
   const handleCarouselChange = useCallback((current) => {
-    console.log("Slide changed to:", current);
     setCurrentSlide(current);
   }, []);
 

@@ -354,7 +354,7 @@ const MessageDetails = ({ id, onMessageSent, onMessageRead }) => {
 
       {/* Message Input */}
       <div className="bg-white p-4 border-t shadow-md">
-        <Upload
+        {/* <Upload
           fileList={fileList}
           beforeUpload={beforeUpload}
           onChange={handleChange}
@@ -369,7 +369,7 @@ const MessageDetails = ({ id, onMessageSent, onMessageRead }) => {
               ※添付ファイルは送信先の事業所には公開されません
             </p>
           </div>
-        </Upload>
+        </Upload> */}
 
         <TextArea
           placeholder="返信を書いてください"

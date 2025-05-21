@@ -22,6 +22,7 @@ const JobPosts = ({
   const getJobPosts = async () => {
     try {
       setLoading(true);
+      setJobs([]);
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/jobpost/filter`,
         {
@@ -52,7 +53,7 @@ const JobPosts = ({
 
   useEffect(() => {
     getJobPosts();
-  }, []);
+  }, [path, jobType, employmentType, monthlySalary, hourlySalary, feature]);
 
   // Function to handle job card click
   const handleJobClick = (jobId) => {

@@ -59,6 +59,7 @@ const Education = () => {
       `${process.env.REACT_APP_API_URL}/api/v1/user/${user._id}/update`,
       userData
     );
+    
     if (res.data.error) return message.error(res.data.message);
     setUser(res.data.user);
     message.success(res.data.message);
