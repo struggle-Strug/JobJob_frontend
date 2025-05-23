@@ -149,7 +149,7 @@ const MessageDetail = () => {
         <div className="flex flex-col">
           <div
             className={`flex justify-center rounded-lg ${
-              isCurrentUser ? "bg-[#f0f0f0]" : "bg-[#e7e7e7]"
+              isCurrentUser ? "bg-[#91ceff]" : "bg-[#e7e7e7]"
             }`}
           >
             {messageItem?.message && (
@@ -206,10 +206,10 @@ const MessageDetail = () => {
           {message?.content?.[0] && (
             <div className="flex flex-col items-end">
               <div className="flex flex-col">
-                <p className="text-sm text-center bg-[#FF2A3B] rounded-t-lg py-1 text-white">
+                <p className="text-sm text-center bg-[#65baff] rounded-t-lg py-1 text-white">
                   応募
                 </p>
-                <div className="flex justify-center bg-[#FF5564] rounded-b-lg">
+                <div className="flex justify-center bg-[#91ceff] rounded-b-lg">
                   <pre className="text-sm text-[#343434] p-4 leading-relaxed whitespace-pre-wrap break-words max-w-[80vw] md:max-w-[60vw]">
                     {message.content[0].message}
                   </pre>
