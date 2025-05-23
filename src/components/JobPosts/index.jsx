@@ -38,7 +38,7 @@ const JobPosts = ({
       );
 
       if (response.data?.jobposts) {
-        setJobs(response.data.jobposts.slice(0, 10));
+        setJobs(response.data.jobposts.slice(0, response.data.jobposts.length));
       } else {
         setJobs([]);
       }
