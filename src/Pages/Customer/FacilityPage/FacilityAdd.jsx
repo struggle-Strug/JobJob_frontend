@@ -189,34 +189,58 @@ const FacilityAdd = () => {
       return { fileUrls: [], files: [] };
     }
 
-    const formData = new FormData();
-    // 新規アップロードするファイルのみを抽出
+    // Extract new files that need to be uploaded
     const newFiles = facilityPhoto.filter((file) => file.originFileObj);
     const existingFiles = facilityPhoto.filter((file) => !file.originFileObj);
-
-    newFiles.forEach((file) => {
-      formData.append("files", file.originFileObj);
-    });
 
     let uploadedFileUrls = [];
     let uploadedFiles = [];
 
+    // Process files in smaller batches to prevent server overload
     if (newFiles.length > 0) {
       try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        // Split files into batches of 3 to prevent server overload
+        const batchSize = 3;
+        const batches = [];
+
+        for (let i = 0; i < newFiles.length; i += batchSize) {
+          batches.push(newFiles.slice(i, i + batchSize));
+        }
+
+        // Upload each batch sequentially
+        for (const batch of batches) {
+          const formData = new FormData();
+          batch.forEach((file) => {
+            formData.append("files", file.originFileObj);
+          });
+
+          const response = await axios.post(
+            `${process.env.REACT_APP_API_URL}/api/v1/file/multi`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+              timeout: 30000, // Increase timeout to 30 seconds
+            }
+          );
+
+          // Collect results from each batch
+          uploadedFileUrls = [
+            ...uploadedFileUrls,
+            ...response.data.files.map((item) => item.fileUrl),
+          ];
+          uploadedFiles = [...uploadedFiles, ...response.data.files];
+        }
+
         message.success("ファイルのアップロードに完了しました");
-        uploadedFileUrls = response.data.files.map((item) => item.fileUrl);
-        uploadedFiles = response.data.files;
       } catch (error) {
-        message.error("ファイルのアップロードに失敗しました");
+        console.error("Upload error:", error);
+        message.error(
+          `ファイルのアップロードに失敗しました: ${
+            error.message || "Unknown error"
+          }`
+        );
         return { fileUrls: [], files: [] };
       }
     }
@@ -234,8 +258,7 @@ const FacilityAdd = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const photoUrls = await handleUpload();
-
+      // Validate required fields first
       if (facilityName === "")
         return message.error("施設名を入力してください。");
       if (facilityPostalCode === "")
@@ -248,6 +271,14 @@ const FacilityAdd = () => {
         return message.error("町名・番地を入力してください。");
       if (facilityGenre === "")
         return message.error("施設ジャンルを選択してください。");
+
+      // Handle photo upload first
+      let photoUrls = { fileUrls: [], files: [] };
+      if (facilityPhoto.length > 0) {
+        message.loading("写真をアップロード中...", 0);
+        photoUrls = await handleUpload();
+        message.destroy();
+      }
 
       const facilityData = {
         customer_id: customer.customer_id,
@@ -267,10 +298,13 @@ const FacilityAdd = () => {
         rest_day: facilityRestDay,
       };
 
-      await axios.put(
-        `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
-        photoUrls.files || []
-      );
+      // Only call the photo API if we have new files
+      if (photoUrls.files && photoUrls.files.length > 0) {
+        await axios.put(
+          `${process.env.REACT_APP_API_URL}/api/v1/photo/image`,
+          photoUrls.files
+        );
+      }
 
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/v1/facility`,
@@ -280,7 +314,10 @@ const FacilityAdd = () => {
       message.success(response.data.message);
       navigate(`/customers/facility`);
     } catch (error) {
-      console.error(error);
+      console.error("Facility save error:", error);
+      message.error(
+        `施設の登録に失敗しました: ${error.message || "Unknown error"}`
+      );
     } finally {
       setLoading(false);
     }
@@ -298,12 +335,64 @@ const FacilityAdd = () => {
 
   const createProcessedImage = async (base64) => {
     return new Promise((resolve) => {
-      const file = base64ToFile(base64, "image.jpeg");
-      const croppedImage = {
-        file: file,
-        preview: base64,
-      };
-      resolve({ file: file, preview: base64 });
+      // Check if the base64 string is valid
+      if (!base64 || !base64.startsWith("data:image")) {
+        message.error("Invalid image format");
+        resolve(null);
+        return;
+      }
+
+      try {
+        // Compress the image if it's too large
+        const img = new Image();
+        img.src = base64;
+
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          // Set maximum dimensions
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+
+          let width = img.width;
+          let height = img.height;
+
+          // Calculate new dimensions while maintaining aspect ratio
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          // Set canvas dimensions and draw the resized image
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Get the compressed image as base64
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
+
+          // Convert to file
+          const file = base64ToFile(compressedBase64, "image.jpeg");
+          resolve({ file: file, preview: compressedBase64 });
+        };
+
+        img.onerror = () => {
+          message.error("Image processing failed");
+          resolve(null);
+        };
+      } catch (error) {
+        console.error("Image processing error:", error);
+        message.error("Image processing failed");
+        resolve(null);
+      }
     });
   };
 
@@ -415,6 +504,12 @@ const FacilityAdd = () => {
               <div
                 className="flex items-center justify-center aspect-square w-32 cursor-pointer flex-col rounded-lg border border-dashed bg-light-gray p-3"
                 onClick={() => {
+                  // Check if we've already reached the maximum number of photos
+                  if (facilityPhoto.length >= 10) {
+                    message.error("最大10枚までしか選択できません");
+                    return;
+                  }
+
                   // Create a file input element
                   const input = document.createElement("input");
                   input.type = "file";
@@ -422,12 +517,27 @@ const FacilityAdd = () => {
                   input.onchange = (e) => {
                     const file = e.target.files[0];
                     if (file) {
-                      getBase64(file).then((base64) => {
-                        // Instead of showing the modal, directly process the image
-                        createProcessedImage(base64).then((processedImage) => {
-                          handleEditSave(processedImage);
+                      // Check file size (limit to 5MB)
+                      if (file.size > 5 * 1024 * 1024) {
+                        message.error("ファイルサイズは5MB以下にしてください");
+                        return;
+                      }
+
+                      getBase64(file)
+                        .then((base64) => {
+                          // Instead of showing the modal, directly process the image
+                          createProcessedImage(base64).then(
+                            (processedImage) => {
+                              if (processedImage) {
+                                handleEditSave(processedImage);
+                              }
+                            }
+                          );
+                        })
+                        .catch((error) => {
+                          console.error("File processing error:", error);
+                          message.error("ファイル処理中にエラーが発生しました");
                         });
-                      });
                     }
                   };
                   input.click();
