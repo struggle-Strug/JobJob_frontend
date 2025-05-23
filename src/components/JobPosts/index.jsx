@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Button, message } from "antd";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { getJobTypeKeyByValue } from "../../utils/getFunctions";
 
 const JobPosts = ({
   jobType,
@@ -70,76 +71,83 @@ const JobPosts = ({
     }
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-        {jobs.map((job) => (
-          <Link
-            key={job._id}
-            to={`/${path}/${job.jobpost_id}`}
-            className="job-card flex flex-col bg-white rounded-lg p-3 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
-          >
-            <div className="flex flex-col gap-4">
-              <div className="relative w-full aspect-video overflow-hidden rounded-lg">
-                <img
-                  src={
-                    job?.picture?.length > 0
-                      ? job.picture[0]
-                      : "/assets/images/noimage.png"
-                  }
-                  alt={job.sub_title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+      <>
+        <p className="lg:text-lg md:text-base text-sm font-bold text-[#343434]">
+          {`${jobType}の新着求人`}
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-2">
+          {jobs.map((job) => (
+            <Link
+              key={job._id}
+              aria-label={`${job.facility_id?.name}の${job.type}求人(
+                ${job.employment_type[0]})`}
+              to={`/${path}/${job.jobpost_id}`}
+              className="job-card flex flex-col bg-white rounded-lg p-3 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100"
+            >
+              <div className="flex flex-col gap-4">
+                <div className="relative w-full aspect-video overflow-hidden rounded-lg">
+                  <img
+                    src={
+                      job?.picture?.length > 0
+                        ? job.picture[0]
+                        : "/assets/images/noimage.png"
+                    }
+                    alt={job.sub_title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
 
-              <div className="flex flex-col flex-1">
-                <h3 className="text-sm font-bold text-[#343434] line-clamp-2 mb-2">
-                  {job.facility_id?.name}の{job.type}求人(
-                  {job.employment_type[0]})
-                </h3>
+                <div className="flex flex-col flex-1">
+                  <h3 className="text-sm font-bold text-[#343434] line-clamp-2 mb-2">
+                    {job.facility_id?.name}の{job.type}求人(
+                    {job.employment_type[0]})
+                  </h3>
 
-                <p className="text-xs text-[#343434] line-clamp-2 mb-3">
-                  {job.sub_title}
-                </p>
+                  <p className="text-xs text-[#343434] line-clamp-2 mb-3">
+                    {job.sub_title}
+                  </p>
 
-                <div className="space-y-2 text-xs">
-                  <div className="grid grid-cols-3 gap-1">
-                    <span className="font-bold text-[#343434]">給与</span>
-                    <span className="col-span-2 text-[#343434] line-clamp-1">
-                      {job.employment_type[0]} {job.salary_type}{" "}
-                      {job.salary_min}
-                      円〜{job.salary_max}円
-                    </span>
-                  </div>
+                  <div className="space-y-2 text-xs">
+                    <div className="grid grid-cols-3 gap-1">
+                      <span className="font-bold text-[#343434]">給与</span>
+                      <span className="col-span-2 text-[#343434] line-clamp-1">
+                        {job.employment_type[0]} {job.salary_type}{" "}
+                        {job.salary_min}
+                        円〜{job.salary_max}円
+                      </span>
+                    </div>
 
-                  <div className="grid grid-cols-3 gap-1">
-                    <span className="font-bold text-[#343434]">仕事内容</span>
-                    <div className="col-span-2 text-[#343434] line-clamp-2 whitespace-pre-line">
-                      {job.work_content}
+                    <div className="grid grid-cols-3 gap-1">
+                      <span className="font-bold text-[#343434]">仕事内容</span>
+                      <div className="col-span-2 text-[#343434] line-clamp-2 whitespace-pre-line">
+                        {job.work_content}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-1">
+                      <span className="font-bold text-[#343434]">応募要件</span>
+                      <div className="col-span-2 text-[#343434] line-clamp-2">
+                        {job.qualification_content} {job.qualification_welcome}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-1">
-                    <span className="font-bold text-[#343434]">応募要件</span>
-                    <div className="col-span-2 text-[#343434] line-clamp-2">
-                      {job.qualification_content} {job.qualification_welcome}
-                    </div>
+                  <div className="mt-4 flex justify-end">
+                    <Button
+                      type="default"
+                      size="small"
+                      className="rounded-lg border-[#afafaf] hover:border-[#343434] hover:text-[#343434]"
+                      onClick={() => handleJobClick(job.jobpost_id)}
+                    >
+                      詳しく見る
+                    </Button>
                   </div>
                 </div>
-
-                <div className="mt-4 flex justify-end">
-                  <Button
-                    type="default"
-                    size="small"
-                    className="rounded-lg border-[#afafaf] hover:border-[#343434] hover:text-[#343434]"
-                    onClick={() => handleJobClick(job.jobpost_id)}
-                  >
-                    詳しく見る
-                  </Button>
-                </div>
               </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+            </Link>
+          ))}
+        </div>
+      </>
     );
   };
 
