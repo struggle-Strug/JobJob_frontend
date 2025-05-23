@@ -468,6 +468,21 @@ const JobOffer = () => {
         localStorage.setItem("token", resLogin.data.token);
         setIsAuthenticated(true);
         await setUser(resLogin.data.user);
+        const updateUser = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/user/${resLogin.data.user._id}/update/desire`,
+          {
+            jobTypes: [{ type: jobPost?.type, period: "" }],
+            employmentType: jobPost?.employment_type,
+            employmentDate: "",
+            prefectures: [prefecture],
+            yearSalary: "",
+            asks: [],
+          }
+        );
+        if (updateUser.data.error) {
+          setIsSubmitting(false);
+          return message.error(updateUser.data.message);
+        }
 
         const messageData = {
           jobPost_id: jobpost_id,
