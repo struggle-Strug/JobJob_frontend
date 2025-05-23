@@ -773,6 +773,14 @@ const CertainJob = () => {
           </section>
           <div className="flex container w-full justify-between gap-8">
             <div className="flex flex-col w-2/3">
+              <JobPosts
+                jobType={JobType}
+                employmentType={filters?.employmentType}
+                feature={filters?.feature}
+                monthlySalary={filters?.monthlySalary}
+                hourlySalary={filters?.hourlySalary}
+                path={path}
+              />
               <div className="rounded-lg px-6 py-4 mt-8 shadow-xl bg-white">
                 <p className="lg:text-2xl md:text-xl font-bold text-[#343434]">
                   {JobType}について
@@ -954,14 +962,6 @@ const CertainJob = () => {
             </div>
           </div>
           <NewJobs />
-          <JobPosts
-            jobType={JobType}
-            employmentType={filters?.employmentType}
-            feature={filters?.feature}
-            monthlySalary={filters?.monthlySalary}
-            hourlySalary={filters?.hourlySalary}
-            path={path}
-          />
         </div>
       )}
     </>
