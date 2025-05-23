@@ -510,7 +510,7 @@ const JobOffer = () => {
             }
             ${
               meetingDate[0].date !== ""
-                ? `■面接日時
+                ? `■面接希望日
             ${meetingDate
               .map(
                 (meeting) =>
@@ -619,7 +619,7 @@ const JobOffer = () => {
                       >
                         利用規約・個人情報の取り扱い
                       </Link>
-                      に同意の上、ご登録ください
+                      に同意の上、ご応募ください
                     </p>
                     <button
                       className="lg:text-base md:text-sm text-xs font-bold text-[#FF2A3B] hover:text-white bg-[#ffdbdb] hover:bg-red-500 rounded-lg px-24 py-3 duration-300 disabled:opacity-70"
