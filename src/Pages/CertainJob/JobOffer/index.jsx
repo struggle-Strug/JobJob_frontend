@@ -121,6 +121,7 @@ const JobOffer = () => {
       dates.push({
         label: formattedDate,
         value: formattedDate,
+        disabled: false,
       });
     }
 
@@ -1010,6 +1011,9 @@ const JobOffer = () => {
                                   getPopupContainer={(triggerNode) =>
                                     triggerNode.parentNode
                                   }
+                                  dropdownMatchSelectWidth={true}
+                                  listHeight={256}
+                                  virtual={false}
                                 />
                                 {meeting.times.map((time, timeIndex) => {
                                   return (
@@ -1033,8 +1037,11 @@ const JobOffer = () => {
                                         getPopupContainer={(triggerNode) =>
                                           triggerNode.parentNode
                                         }
+                                        dropdownMatchSelectWidth={true}
+                                        listHeight={256}
+                                        virtual={false}
                                       />
-                                      :
+                                      <span className="flex-shrink-0">:</span>
                                       <Select
                                         options={minuteOptions}
                                         placeholder="分を選択"
@@ -1051,8 +1058,11 @@ const JobOffer = () => {
                                         getPopupContainer={(triggerNode) =>
                                           triggerNode.parentNode
                                         }
+                                        dropdownMatchSelectWidth={true}
+                                        listHeight={256}
+                                        virtual={false}
                                       />
-                                      ~
+                                      <span className="flex-shrink-0">~</span>
                                       <button
                                         onClick={() =>
                                           handleDeleteMeetingTime(
